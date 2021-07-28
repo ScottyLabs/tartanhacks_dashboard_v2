@@ -1,0 +1,314 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'login.dart';
+
+
+InputDecoration FormFieldStyle(BuildContext context, String labelText) {
+  return InputDecoration(
+      labelText: labelText,
+      enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onSurface),
+          borderRadius: BorderRadius.all(Radius.circular(15.0))
+      ),
+      focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onSurface),
+          borderRadius: BorderRadius.all(Radius.circular(15.0))
+      )
+  );
+}
+
+class CurvedTop extends CustomPainter {
+  Color color1;
+  Color color2;
+  bool reverse;
+
+  CurvedTop({this.color1, this.color2, this.reverse = false});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = color1
+      ..strokeWidth = 15
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors:[color1, color2],
+      ).createShader(!reverse ? Rect.fromLTRB(0, 0, size.width, size.height) : Rect.fromLTRB(size.width, size.height, 0, 0));
+
+    var path = Path();
+
+    double curveHeight = size.height * (2/5);
+
+    path.moveTo(0, curveHeight);
+    path.cubicTo(.03*size.width, .17*curveHeight, .97*size.width, .83*curveHeight, size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class CurvedBottom extends CustomPainter {
+  Color color1;
+  Color color2;
+
+  CurvedBottom({this.color1, this.color2});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Color blend = Color.alphaBlend(color2, color1);
+    var paint = Paint()
+      ..color = color1
+      ..strokeWidth = 15
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors:[color1, blend],
+      ).createShader(Rect.fromLTRB(size.width, size.height, 0, 0));
+
+    var path = Path();
+
+    double curveOffset = size.height * (3/5);
+    double curveHeight = size.height - curveOffset;
+
+    path.moveTo(0, size.height);
+    path.cubicTo(.03*size.width, curveOffset+.17*curveHeight, .97*size.width, curveOffset+.83*curveHeight, size.width, curveOffset);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class CurvedCorner extends CustomPainter {
+  Color color;
+
+  CurvedCorner({this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = color
+      ..strokeWidth = 15;
+
+    var path = Path();
+
+    path.moveTo(0, size.height);
+    path.cubicTo(.15*size.width, .3*size.height, size.width, size.height, size.width, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(0, 0);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class GradBox extends StatelessWidget{
+  double width;
+  double height;
+  Widget child;
+  bool reverse;
+  EdgeInsets padding;
+  Function onTap;
+
+  GradBox({this.width, this.height, this.child, this.reverse=false,
+    this.padding, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color1 = Theme.of(context).colorScheme.background;
+    Color color2 = Theme.of(context).colorScheme.surface;
+    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
+
+    return Container(
+      width: width,
+      height: height,
+      alignment: Alignment.center,
+      padding: padding==null ? EdgeInsets.all(10) : padding,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: !reverse ? [color1, color2] : [color2, color1],
+        ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [BoxShadow(
+          color: shadow,
+          offset: Offset(0.0, 5.0),
+          blurRadius: 5.0)]
+      ),
+      child: (onTap==null) ? child : InkWell(onTap: onTap, child: child)
+    );
+  }
+}
+
+class SolidButton extends StatelessWidget{
+  String text;
+  Function onPressed;
+
+  SolidButton({this.text, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: null,
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+          shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+          elevation: MaterialStateProperty.all(5)
+        ),
+        child: Text(text,
+          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary)
+        )
+    );
+  }
+}
+
+class GradText extends StatelessWidget {
+  String text;
+  Color color1;
+  Color color2;
+  double size;
+
+  GradText({this.text, this.size, this.color1, this.color2});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) =>
+          LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors:[color1, color2]
+          ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(text,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: size,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+    );
+  }
+}
+
+class TextLogo extends StatelessWidget {
+  Color color;
+  double width;
+  double height;
+
+  TextLogo({this.color, this.width, this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    print(height);
+    return Container(
+      width: width,
+      height: height,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children:[
+          Container(
+            height: height,
+            width: width*0.15,
+            child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                color: color
+            )
+          ),
+          RichText(
+            text: TextSpan(
+              text: " Tartanhacks ",
+              style: TextStyle(
+                fontSize: height*0.36,
+                fontWeight: FontWeight.w600,
+                color: color,
+              ),
+              children: [
+                TextSpan(
+                  text: "Scottylabs",
+                  style: TextStyle(
+                    fontSize: height*0.2,
+                    color: color,
+                  ),
+                )
+              ]
+            )
+          ),
+        ]
+      )
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+
+    return Row(
+      children: [
+        Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              CustomPaint(
+                size: Size(screenWidth*0.75, screenHeight*0.2),
+                painter: CurvedCorner(color: Theme.of(context).colorScheme.primary),
+              ),
+              Container(
+                  width: screenWidth*0.75,
+                  height: screenHeight*0.2,
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+                  child:TextLogo(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      width: screenWidth*0.75,
+                      height: screenHeight*0.10
+                  )
+              ),
+            ]
+        ),
+        Container(
+            width: screenWidth/4,
+            alignment: Alignment.topCenter,
+            child: GradBox(
+                width: 55,
+                height: 55,
+                padding: EdgeInsets.all(0),
+                child: Icon(Icons.menu,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: 35
+                ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      Login()),
+                );
+              }
+            )
+        )
+      ],
+    );
+  }
+}
