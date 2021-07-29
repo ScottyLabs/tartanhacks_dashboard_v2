@@ -128,9 +128,10 @@ class GradBox extends StatelessWidget{
   bool reverse;
   EdgeInsets padding;
   Function onTap;
+  Alignment alignment;
 
   GradBox({this.width, this.height, this.child, this.reverse=false,
-    this.padding, this.onTap});
+    this.padding, this.onTap, this.alignment});
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +142,7 @@ class GradBox extends StatelessWidget{
     return Container(
       width: width,
       height: height,
-      alignment: Alignment.center,
+      alignment: alignment==null ? Alignment.center : alignment,
       padding: padding==null ? EdgeInsets.all(10) : padding,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -170,7 +171,7 @@ class SolidButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: null,
+        onPressed: onPressed,
         style: ButtonStyle(
           foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
@@ -357,6 +358,7 @@ class TopBar extends StatelessWidget {
     final screenWidth = mqData.size.width;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(
             alignment: Alignment.topLeft,
@@ -381,7 +383,6 @@ class TopBar extends StatelessWidget {
                   width: screenWidth*0.75,
                   height: screenHeight*0.2,
                   alignment: Alignment.bottomLeft,
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
                   child: BackFlag()
               ),
             ]
@@ -389,6 +390,7 @@ class TopBar extends StatelessWidget {
         Container(
             width: screenWidth/4,
             alignment: Alignment.topCenter,
+            padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: GradBox(
                 width: 55,
                 height: 55,

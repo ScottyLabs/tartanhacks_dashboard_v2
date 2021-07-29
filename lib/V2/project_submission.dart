@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
-import 'home.dart';
+import 'enter_prizes.dart';
 
 class ProjSubmit extends StatefulWidget {
   @override
@@ -187,9 +187,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         ),
                         Container(
                             alignment: Alignment.center,
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                             child: GradBox(
                               width: screenWidth*0.9,
-                              height: screenHeight*0.78,
+                              height: screenHeight*0.75,
                               reverse: true,
                               padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
                               child: Form(
@@ -215,7 +216,14 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                             text: "Save"
                                         ),
                                         SolidButton(
-                                            text: "Submit for Prizes"
+                                            text: "Submit for Prizes",
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) =>
+                                                    EnterPrizes()),
+                                              );
+                                            },
                                         )
                                       ],
                                     )
