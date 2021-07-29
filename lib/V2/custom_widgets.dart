@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:decorated_icon/decorated_icon.dart';
 import 'login.dart';
+import 'dart:math';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
   return InputDecoration(
       labelText: labelText,
-      enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onSurface),
-          borderRadius: BorderRadius.all(Radius.circular(15.0))
-      ),
-      focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onSurface),
-          borderRadius: BorderRadius.all(Radius.circular(15.0))
-      )
   );
+}
+
+Color darken(Color color, [double amount = .1]) {
+  assert(amount >= 0 && amount <= 1);
+
+  final hsl = HSLColor.fromColor(color);
+  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
+
+  return hslDark.toColor();
 }
 
 class CurvedTop extends CustomPainter {
@@ -259,7 +262,94 @@ class TextLogo extends StatelessWidget {
   }
 }
 
+class FlagPainter extends CustomPainter {
+  Color color;
+
+  FlagPainter({this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = color
+      ..strokeWidth = 15;
+
+    var path = Path();
+
+    path.moveTo(0, 0);
+    path.lineTo(size.width-(size.height/2), 0);
+
+    Rect arcRect = Rect.fromCircle(center: Offset(size.width-(size.height/2), size.height/2), radius: size.height/2);
+    path.arcTo(arcRect, -pi/2, pi, true);
+
+    path.lineTo(0, size.height);
+    path.lineTo(0,0);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class BackFlag extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 80,
+      height: 35,
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            CustomPaint(
+              size: Size(80, 35),
+              painter: FlagPainter(color: Theme.of(context).colorScheme.secondary),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+              child: DecoratedIcon(Icons.arrow_back_ios_rounded,
+                  size: 25,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  shadows: [
+                    BoxShadow(
+                      blurRadius: 6.0,
+                      color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
+                      offset: Offset(3.0, 0),
+                    ),
+                  ],
+              )
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 22, 0),
+              child: DecoratedIcon(Icons.arrow_back_ios_rounded,
+                size: 25,
+                color: Theme.of(context).colorScheme.onSecondary,
+                shadows: [
+                  BoxShadow(
+                    blurRadius: 6.0,
+                    color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
+                    offset: Offset(3.0, 0),
+                  ),
+                ],
+              )
+            )
+          ]
+        )
+      )
+    );
+  }
+}
+
 class TopBar extends StatelessWidget {
+  bool backflag;
+
+  TopBar({this.backflag = false});
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -285,6 +375,14 @@ class TopBar extends StatelessWidget {
                       width: screenWidth*0.75,
                       height: screenHeight*0.10
                   )
+              ),
+              if (backflag)
+              Container(
+                  width: screenWidth*0.75,
+                  height: screenHeight*0.2,
+                  alignment: Alignment.bottomLeft,
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                  child: BackFlag()
               ),
             ]
         ),

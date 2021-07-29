@@ -170,7 +170,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(),
+                    TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(
@@ -196,43 +196,27 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                   key: _formKey,
                                   child: SingleChildScrollView(
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
-                                            GradBox(width: 35, height: 35,
-                                                padding: EdgeInsets.all(0),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (context) =>
-                                                        Home()),
-                                                  );
-                                                },
-                                                child: Icon(Icons.close,
-                                                    color: Theme.of(context).colorScheme.onSurface,
-                                                    size: 25
-                                                ))
-                                          ],
-                                        ),
+                                        Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
+                                        SizedBox(height:8),
                                         _buildName(),
+                                        SizedBox(height:8),
                                         _buildDesc(),
+                                        SizedBox(height:8),
                                         _buildGitHubURL(),
+                                        SizedBox(height:8),
                                         _buildPresURL(),
+                                        SizedBox(height:8),
                                         _buildVidURL(),
+                                        SizedBox(height:8),
                                         _buildPresentingLive(),
-                                        ButtonBar(
-                                          alignment: MainAxisAlignment.center,
-                                          children: [
-                                            SolidButton(
-                                                text: "Save"
-                                            ),
-                                            SolidButton(
-                                                text: "Submit for Prizes"
-                                            )
-                                          ]
+                                        SolidButton(
+                                            text: "Save"
                                         ),
+                                        SolidButton(
+                                            text: "Submit for Prizes"
+                                        )
                                       ],
                                     )
                                   )
