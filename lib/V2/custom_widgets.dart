@@ -263,6 +263,33 @@ class TextLogo extends StatelessWidget {
   }
 }
 
+class MenuButton extends StatelessWidget {
+  Function onTap;
+  MenuButton({this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color1 = Theme.of(context).colorScheme.background;
+    Color color2 = Theme.of(context).colorScheme.surface;
+    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
+
+    return Material(
+        type: MaterialType.button,
+        color: Colors.white,
+        child: GradBox(
+            width: 55,
+            height: 55,
+            padding: EdgeInsets.all(0),
+            child: Icon(Icons.menu,
+                color: Theme.of(context).colorScheme.onSurface,
+                size: 35
+            ),
+            onTap: onTap
+        )
+    );
+  }
+}
+
 class FlagPainter extends CustomPainter {
   Color color;
 
@@ -348,6 +375,7 @@ class BackFlag extends StatelessWidget {
 
 class TopBar extends StatelessWidget {
   bool backflag;
+  OverlayEntry _overlayEntry;
 
   TopBar({this.backflag = false});
 
@@ -391,24 +419,173 @@ class TopBar extends StatelessWidget {
             width: screenWidth/4,
             alignment: Alignment.topCenter,
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-            child: GradBox(
-                width: 55,
-                height: 55,
-                padding: EdgeInsets.all(0),
-                child: Icon(Icons.menu,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    size: 35
-                ),
+            child: MenuButton(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      Login()),
-                );
-              }
+                Overlay.of(context).insert(MenuOverlay(context));
+              },
             )
         )
       ],
+    );
+  }
+}
+
+class WhiteOverlay extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.white60
+      ..strokeWidth = 15;
+
+    var path = Path();
+
+    path.moveTo(0, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0,0);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+OverlayEntry MenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenHeight = mqData.size.height;
+  final screenWidth = mqData.size.width;
+  OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => Positioned(
+        child: Stack(
+          alignment: Alignment.topRight,
+          children:[
+            CustomPaint(
+              size: mqData.size,
+              painter: WhiteOverlay()
+            ),
+            Column(
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children:[
+                      Container(
+                          width: screenWidth/4,
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                          child: MenuButton(
+                              onTap: () {
+                                entry.remove();
+                              }
+                          )
+                      ),
+                    ]
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                        children:[
+                          MenuChoice(
+                              icon: Icons.schedule,
+                              text: "Schedule"
+                          ),
+                          MenuChoice(
+                              icon: Icons.pages,
+                              text: "Project"
+                          ),
+                          MenuChoice(
+                              icon: Icons.home,
+                              text: "Home"
+                          ),
+                          MenuChoice(
+                              icon: Icons.help,
+                              text: "Help"
+                          ),
+                        ]
+                    ),
+                    Column(
+                      children: [
+                        MenuChoice(
+                            icon: Icons.people_alt,
+                            text: "Team"
+                        ),
+                        MenuChoice(
+                            icon: Icons.qr_code_scanner,
+                            text: "Scan"
+                        ),
+                        MenuChoice(
+                            icon: Icons.person,
+                            text: "Profile"
+                        ),
+                        MenuChoice(
+                            icon: Icons.mode_night,
+                            text: "Dark"
+                        ),
+                        MenuChoice(
+                            icon: Icons.logout,
+                            text: "Logout"
+                        ),
+                      ],
+                    )
+                  ]
+                )
+              ]
+            ),
+          ]
+        )
+      )
+  );
+  return entry;
+}
+
+class MenuChoice extends StatelessWidget {
+  IconData icon;
+  String text;
+  Function onTap;
+
+  MenuChoice({this.icon, this.text, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenWidth = mqData.size.width;
+
+    Color color = Theme.of(context).colorScheme.secondary;
+
+    return Container(
+      width: screenWidth/4,
+      alignment: Alignment.center,
+      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+      child: Column(
+        children: [
+          RawMaterialButton(
+            onPressed: onTap,
+            elevation: 2.0,
+            fillColor: color,
+            child: Icon(
+              icon,
+              size: 40.0,
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+            padding: EdgeInsets.all(12),
+            shape: CircleBorder(),
+          ),
+          Text(text,
+            style: TextStyle(
+              color: color,
+              fontSize: 14
+            ),
+          )
+        ]
+      )
     );
   }
 }
