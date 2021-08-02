@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
-import 'login.dart';
 import 'dart:math';
+import 'home.dart';
+import 'login.dart';
+import 'project_submission.dart';
+import 'profile.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -176,6 +179,7 @@ class SolidButton extends StatelessWidget{
           foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
           backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
           shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
           elevation: MaterialStateProperty.all(5)
         ),
         child: Text(text,
@@ -499,11 +503,29 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           ),
                           MenuChoice(
                               icon: Icons.pages,
-                              text: "Project"
+                              text: "Project",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ProjSubmit(),
+                                  )
+                                );
+                              },
                           ),
                           MenuChoice(
                               icon: Icons.home,
-                              text: "Home"
+                              text: "Home",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Home(),
+                                    )
+                                );
+                              },
                           ),
                           MenuChoice(
                               icon: Icons.help,
@@ -523,7 +545,15 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         ),
                         MenuChoice(
                             icon: Icons.person,
-                            text: "Profile"
+                            text: "Profile",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    Profile()),
+                              );
+                            },
                         ),
                         MenuChoice(
                             icon: Icons.mode_night,
@@ -531,7 +561,15 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         ),
                         MenuChoice(
                             icon: Icons.logout,
-                            text: "Logout"
+                            text: "Logout",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    Login()),
+                              );
+                            },
                         ),
                       ],
                     )

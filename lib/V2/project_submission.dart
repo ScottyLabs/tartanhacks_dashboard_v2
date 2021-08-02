@@ -134,7 +134,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
               SizedBox(width: 20,),
               Text('Presenting',
                 textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headline3),
+                style: Theme.of(context).textTheme.headline4),
               Text('Do you wish to present live at the expo? If not, you must submit a video.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText2),
@@ -191,7 +191,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
                             child: GradBox(
                               width: screenWidth*0.9,
                               height: screenHeight*0.75,
-                              reverse: true,
                               padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
                               child: Form(
                                   key: _formKey,

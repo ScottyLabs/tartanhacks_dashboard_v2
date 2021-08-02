@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           headline1: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: text),
           headline2: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: text),
-          headline3: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: text),
+          headline3: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: text),
+          headline4: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: text),
           bodyText1: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: background),
           bodyText2: TextStyle(fontSize: 16.0, color: text),
         ),

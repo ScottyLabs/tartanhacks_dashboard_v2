@@ -5,6 +5,7 @@ import 'custom_widgets.dart';
 import 'package:charcode/charcode.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'project_submission.dart';
+import 'profile.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -71,9 +72,18 @@ class Home extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Text("Hi [Two Line User Name]", style: Theme.of(context).textTheme.headline3),
+                                    Text("Hi [Two Line User Name]", style: Theme.of(context).textTheme.headline4),
                                     Text("Welcome to [Event Name]", style: Theme.of(context).textTheme.bodyText2),
-                                    SolidButton(text: "View Profile", onPressed: null,)
+                                    SolidButton(
+                                      text: "View Profile",
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              Profile()),
+                                        );
+                                      },
+                                    )
                                   ]
                                 )
                             ),
@@ -84,7 +94,7 @@ class Home extends StatelessWidget {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text("Swag Points", style: Theme.of(context).textTheme.headline3),
+                                      Text("Swag Points", style: Theme.of(context).textTheme.headline4),
                                       Text("Points Earned: 0", style: Theme.of(context).textTheme.bodyText2),
                                       SolidButton(text: "Leaderboard", onPressed: null,),
                                       SolidButton(text: "Check In", onPressed: null,)
