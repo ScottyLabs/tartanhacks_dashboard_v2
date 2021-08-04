@@ -6,6 +6,7 @@ import 'package:charcode/charcode.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'project_submission.dart';
 import 'profile.dart';
+import 'leaderboard.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -96,7 +97,16 @@ class Home extends StatelessWidget {
                                     children: [
                                       Text("Swag Points", style: Theme.of(context).textTheme.headline4),
                                       Text("Points Earned: 0", style: Theme.of(context).textTheme.bodyText2),
-                                      SolidButton(text: "Leaderboard", onPressed: null,),
+                                      SolidButton(
+                                        text: "Leaderboard",
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) =>
+                                                Leaderboard()),
+                                          );
+                                        },
+                                      ),
                                       SolidButton(text: "Check In", onPressed: null,)
                                     ]
                                 )

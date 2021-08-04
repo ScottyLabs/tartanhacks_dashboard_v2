@@ -183,7 +183,9 @@ class SolidButton extends StatelessWidget{
           elevation: MaterialStateProperty.all(5)
         ),
         child: Text(text,
-          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary)
+          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
+          overflow: TextOverflow.fade,
+          softWrap: false,
         )
     );
   }

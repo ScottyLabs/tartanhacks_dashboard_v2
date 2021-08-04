@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
-import 'enter_prizes.dart';
 
 class Profile extends StatelessWidget {
 
