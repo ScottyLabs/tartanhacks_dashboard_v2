@@ -425,7 +425,7 @@ class TopBar extends StatelessWidget {
             width: screenWidth/4,
             alignment: Alignment.topCenter,
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-            child: MenuButton(
+            child: backflag ? null : MenuButton(
               onTap: () {
                 Overlay.of(context).insert(MenuOverlay(context));
               },
