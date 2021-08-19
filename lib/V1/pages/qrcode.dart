@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:thdapp/models/json-classes.dart';
+import 'package:thdapp/models/old/json-classes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'checkin-item-create.dart';
 

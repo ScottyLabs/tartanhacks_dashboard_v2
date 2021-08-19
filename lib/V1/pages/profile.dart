@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
-import 'package:thdapp/models/profile.dart';
+import 'package:thdapp/models/old/participant_model.dart';
 
 class ProfileScreen extends StatefulWidget {
 

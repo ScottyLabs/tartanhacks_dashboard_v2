@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
-import 'package:thdapp/models/json-classes.dart';
+import 'package:thdapp/models/old/json-classes.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';

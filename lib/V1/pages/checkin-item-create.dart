@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:thdapp/models/json-classes.dart';
+import 'package:thdapp/models/old/json-classes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

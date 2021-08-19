@@ -1,11 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import '../models/login_model.dart';
+import '../models/old/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/event_model.dart';
-import '../models/prize.dart';
-import '../models/project.dart';
+import '../models/old/event_model.dart';
+import '../models/old/prize.dart';
+import '../models/old/project.dart';
 
 
 SharedPreferences prefs;

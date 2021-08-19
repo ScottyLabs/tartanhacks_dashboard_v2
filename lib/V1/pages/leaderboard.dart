@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:thdapp/models/json-classes.dart';
+import 'package:thdapp/models/old/json-classes.dart';
 
 
 class LeaderboardScreen extends StatefulWidget {

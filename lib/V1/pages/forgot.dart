@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thdapp/models/login_model.dart';
+import 'package:thdapp/models/old/login_model.dart';
 import 'package:thdapp/V1/api.dart';
 import 'dart:async';
 import 'login.dart';

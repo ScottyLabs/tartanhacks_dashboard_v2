@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/V1/api.dart';
-import 'package:thdapp/models/project.dart';
-import 'package:thdapp/models/prize.dart';
+import 'package:thdapp/models/old/project.dart';
+import 'package:thdapp/models/old/prize.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
