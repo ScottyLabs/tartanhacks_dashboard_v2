@@ -3,6 +3,9 @@ import 'dart:async';
 import 'dart:convert';
 
 class Profile {
+  final String user;
+  final Event event;
+  final String email;
   final String firstName;
   final String lastName;
   final int age;
@@ -36,6 +39,9 @@ class Profile {
 
 
   Profile({
+      this.user,
+      this.event,
+      this.email,
       this.firstName,
       this.lastName,
       this.age,
@@ -69,6 +75,9 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
     return new Profile(
+        user: parsedJson['user'],
+        event: Event.fromJson(parsedJson['event']),
+        email: parsedJson['email'],
         firstName: parsedJson['firstName'],
         lastName: parsedJson['lastName'],
         age: parsedJson['age'],
@@ -88,7 +97,7 @@ class Profile {
         workPermission: parsedJson['workPermission'],
         workLocation: parsedJson['workLocation'],
         workStrengths: parsedJson['workStrengths'],
-        sponsorRanking: parsedJson['sponsorRanking'].map<Sponsor> ((json) => Sponsor.fromJson(json)).toList(),
+        sponsorRanking: (parsedJson['sponsorRanking'] as List).map((json) => Sponsor.fromJson(json)).toList(),
         github: parsedJson['github'],
         resume: parsedJson['resume'],
         design: parsedJson['design'],
