@@ -1,187 +1,126 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'login.dart';
-import 'package:thdapp/models/participant_model.dart';
+import 'custom_widgets.dart';
 
-class ProfileScreen extends StatefulWidget {
-
-  final Participant userData;
-
-  ProfileScreen(
-  {Key key, this.userData})
-     : super(key: key);
-  @override
-  _ProfileScreenState createState() => new _ProfileScreenState(userData: userData);
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
-
-  Participant userData;
-
-  _ProfileScreenState({Key key, this.userData});
-
-  @override
-  initState() {
-    super.initState();
-  }
-
-  void _showDialog(String response, String title) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(response),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(
-                "OK",
-                style: new TextStyle(color: Colors.white),
-              ),
-              color: new Color.fromARGB(255, 255, 75, 43),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: PreferredSize(
-          child: new AppBar(
-            title: new Text(
-              'Hacker Profile',
-              textAlign: TextAlign.center,
-              style: new TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            backgroundColor: Color.fromARGB(255, 37, 130, 242),
-          ),
-          preferredSize: Size.fromHeight(60)),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: ListView(
-          children: <Widget>[
-            Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(
-                        'name = '+userData.name,
-                        textAlign: TextAlign.left,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      new Text(
-                        (userData.team_id != null) ?
-                        'team = '+userData.team_id
-                        : 'team = N/A',
-                        textAlign: TextAlign.left,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-            ),
-            Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(
-                        (userData.github_profile_url != null) ?
-                        'github_url = '  + userData.github_profile_url
-                        : 'github_url = N/A',
-                        textAlign: TextAlign.left,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      new Text(
-                        (userData.resume_url != null) ?
-                        'resume_url = '+userData.resume_url
-                        : 'resume_url = N/A',
-                        textAlign: TextAlign.left,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-            ),
-            Padding(
-              padding: EdgeInsets.all(10),
-            ),
-            Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(
-                        (userData.github_profile_url != null) ?
-                        'bio = '+userData.github_profile_url
-                        : 'bio = N/A',
-                        textAlign: TextAlign.left,
-                        style: new TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-            ),
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
 
-          ],
-        ),
-      ),
-       );
+    return Scaffold(
+        body:  Container(
+            child: SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: screenHeight
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TopBar(backflag: true),
+                        Stack(
+                          children: [
+                            Column(
+                                children:[
+                                  SizedBox(height:screenHeight * 0.05),
+                                  CustomPaint(
+                                      size: Size(screenWidth, screenHeight * 0.75),
+                                      painter: CurvedTop(
+                                          color1: Theme.of(context).colorScheme.secondaryVariant,
+                                          color2: Theme.of(context).colorScheme.primary,
+                                          reverse: true)
+                                  ),
+                                ]
+                            ),
+                            Container(
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                child: GradBox(
+                                    width: screenWidth*0.9,
+                                    height: screenHeight*0.75,
+                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("HACKER PROFILE", style: Theme.of(context).textTheme.headline1,),
+                                        Container(
+                                          height: 150,
+                                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child:
+                                                  Image(
+                                                    image: AssetImage("lib/logos/defaultpfp.PNG"),
+                                                  )
+                                              ),
+                                              SizedBox(width:25),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text("FIRSTNAME",
+                                                      style: Theme.of(context).textTheme.headline3
+                                                    ),
+                                                    Text("LASTNAME",
+                                                        style: Theme.of(context).textTheme.headline3
+                                                    ),
+                                                    Text("[TEAM NAME]",
+                                                        style: Theme.of(context).textTheme.bodyText2
+                                                    ),
+                                                  ],
+                                                )
+                                              )
+                                            ],
+                                          )
+                                        ),
+                                        SolidButton(
+                                          text: "  Link to GitHub  ",
+                                        ),
+                                        SolidButton(
+                                          text: "  View Resume  ",
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text("Bio:",
+                                            style: Theme.of(context).textTheme.bodyText2
+                                        ),
+                                        Container(
+                                          height: 100,
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: darken(Theme.of(context).colorScheme.surface, 0.02),
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                                              "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                                              "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
+                                              "laboris nisi ut aliquip ex ea commodo consequat.",
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        SolidButton(
+                                          text: "Edit Information",
+                                        )
+                                      ],
+                                    )
+                                )
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                )
+            )
+        )
+    );
   }
 }

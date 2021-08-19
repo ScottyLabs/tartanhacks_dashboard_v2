@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:thdapp/models/event_model.dart';
-import 'package:thdapp/api.dart';
+import 'package:thdapp/V1/api.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +10,7 @@ import 'home.dart';
 import 'checkin_home.dart';
 import 'events_edit.dart';
 import 'package:thdapp/models/login_model.dart';
-import 'package:thdapp/models/participant_model.dart';
+import 'package:thdapp/models/profile.dart';
 import 'hack.dart';
 
 class EventsHomeScreen extends StatefulWidget {

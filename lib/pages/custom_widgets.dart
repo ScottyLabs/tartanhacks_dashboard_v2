@@ -439,9 +439,20 @@ class TopBar extends StatelessWidget {
 class WhiteOverlay extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    /*
     var paint = Paint()
       ..color = Colors.white60
       ..strokeWidth = 15;
+    */
+    var paint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 15
+      ..shader = LinearGradient(
+      begin: Alignment.topRight,
+      end: Alignment.bottomLeft,
+      colors:[Colors.white60, Colors.white],
+      ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
+
 
     var path = Path();
 

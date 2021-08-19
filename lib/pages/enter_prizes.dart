@@ -1,216 +1,116 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thdapp/api.dart';
-import 'package:thdapp/models/project.dart';
-import 'package:thdapp/models/prize.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'custom_widgets.dart';
 
+class EnterPrizes extends StatelessWidget {
 
-class PrizePage extends StatefulWidget{
-
-  @override
-  _PrizeState createState() => _PrizeState();
-}
-
-class _PrizeState extends State<PrizePage>{
-
-  List<Prize> prizes;
-  String teamID;
-  String token;
-  Project project;
-  SharedPreferences prefs;
-
-  void _showDialog(String response, String title) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(response),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(
-                "OK",
-                style: new TextStyle(color: Colors.white),
-              ),
-              color: new Color.fromARGB(255, 255, 75, 43),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _confirmDialog(String response, String title, Function execute) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(response),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text(
-                "Cancel",
-                style: new TextStyle(color: Colors.white),
-              ),
-              color: Colors.grey[500],
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            new FlatButton(
-              child: new Text(
-                "Confirm",
-                style: new TextStyle(color: Colors.white),
-              ),
-              color: Color.fromARGB(255, 37, 130, 242),
-              onPressed: () {
-                Navigator.of(context).pop();
-                execute();
-                getData();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future getData() async{
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString("token");
-    teamID = prefs.getString("team_id");
-    List<Prize> pzs = await getAllPrizes();
-    Project proj = await getProject(teamID, token, _showDialog);
-    setState(() {
-      prizes = pzs;
-      project = proj;
-    });
-    print(token);
-    print(teamID);
-  }
-
-  @override
-  void initState(){
-    getData();
-    super.initState();
-  }
+  List prizes = [1,2,3,4,5];
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: PreferredSize(
-            child: new AppBar(
-              title: new Text(
-                'Enter Project For Prizes',
-                textAlign: TextAlign.center,
-                style: new TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              backgroundColor: Color.fromARGB(255, 37, 130, 242),
-            ),
-            preferredSize: Size.fromHeight(60)),
-        body:Column(
-            children: <Widget>[
-              (prizes != null) ?
-              Expanded(
-                child: ListView.builder(
-                  itemCount: prizes.length,
-                  itemBuilder: (BuildContext context, int index){
-                    return InfoTile(prizes[index], project, token, _showDialog, _confirmDialog);
-                  },
-                ),
-              )
-              : SizedBox(
-              height: 100,
-              child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                      "Loading...",
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
-                      )
-                  )
-                )
-              )
-            ]
-        )
-    );
-  }
-}
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
 
-
-class InfoTile extends StatelessWidget{
-  final Prize prize;
-  final Project project;
-  final String token;
-  final Function showDialog;
-  final Function confirmDialog;
-
-  InfoTile(this.prize, this.project, this.token, this.showDialog, this.confirmDialog);
-
-  void enter(){
-    enterProject(project.id, prize.id, token, showDialog);
-  }
-
-  @override
-  Widget build(BuildContext context){
-    return Card(
-        margin: const EdgeInsets.all(12),
-        child: Padding(
-            padding: const EdgeInsets.all(24),
+    return Scaffold(
+        body:Container(
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      prize.name,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      )
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                      prize.description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[500],
-                      )
-                  ),
-                  const SizedBox(height: 8),
-                  !(project.prizes.contains(prize.name)) ?
-                  RaisedButton(
-                    color: Color.fromARGB(255, 37, 130, 242),
-                    child: Text(
-                      'Submit',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TopBar(backflag: true),
+                Stack(
+                  children: [
+                    Column(
+                        children:[
+                          SizedBox(height:screenHeight * 0.05),
+                          CustomPaint(
+                              size: Size(screenWidth, screenHeight * 0.75),
+                              painter: CurvedTop(
+                                  color1: Theme.of(context).colorScheme.secondaryVariant,
+                                  color2: Theme.of(context).colorScheme.primary,
+                                  reverse: true)
+                          ),
+                        ]
                     ),
-                    onPressed: () {
-                      confirmDialog("Submit project for ${prize.name}?", "Submission Confirmation", enter);
-                    },
-                  )
-                  : RaisedButton(
-                    child: Text(
-                      'Already Submitted',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                    onPressed: null,
-                  )
-                ]
+                    Column(
+                      children: [
+                        Container(
+                          height: screenHeight*0.15,
+                          width: screenWidth,
+                          padding: EdgeInsets.fromLTRB(25, 10, 0, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("ENTER FOR PRIZE",
+                                style: Theme.of(context).textTheme.headline1,
+                              ),
+                              Text("Scroll to see the full list.",
+                                style: Theme.of(context).textTheme.bodyText2,
+                              )
+                            ],
+                          )
+                        ),
+                        Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxHeight: screenHeight*0.65
+                              ),
+                              child: ListView.builder(
+                                itemCount: prizes.length,
+                                itemBuilder: (BuildContext context, int index){
+                                  return PrizeCard();
+                                },
+                              ),
+                            )
+                        )
+                      ],
+                    )
+                  ],
+                )
+              ],
             )
         )
     );
   }
 }
 
+class PrizeCard extends StatelessWidget{
+
+  @override
+  Widget build(BuildContext context){
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+      child: GradBox(
+        width: 100,
+        height: 200,
+        alignment: Alignment.topLeft,
+        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text("[Prize Name]",
+              style: Theme.of(context).textTheme.headline2,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
+                "laboris nisi ut aliquip ex ea commodo consequat.",
+              style: Theme.of(context).textTheme.bodyText2,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SolidButton(
+              text: "   Submit   ",
+              onPressed: null,
+            )
+          ],
+        )
+      )
+    );
+  }
+}
