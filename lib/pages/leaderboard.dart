@@ -13,7 +13,7 @@ class Leaderboard extends StatelessWidget {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body:  Container(
+        body: Container(
             child: SingleChildScrollView(
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
@@ -22,15 +22,7 @@ class Leaderboard extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            TopBar(backflag: true),
-                            SolidButton(
-                              text: "   View my position   ",
-                            )
-                          ],
-                        ),
+                        TopBar(backflag: true),
                         Stack(
                           children: [
                             Column(
@@ -48,36 +40,60 @@ class Leaderboard extends StatelessWidget {
                             Container(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                child: GradBox(
-                                    width: screenWidth*0.9,
-                                    height: screenHeight*0.75,
-                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                    alignment: Alignment.topLeft,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("LEADERBOARD", style: Theme.of(context).textTheme.headline1),
-                                        Text("Scroll to see the whole board!",
-                                          style: Theme.of(context).textTheme.bodyText2,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: ListView.builder(
-                                              itemCount: people.length,
-                                              itemBuilder: (BuildContext context, int index){
-                                                return LBRow(
-                                                    place: (index+1)*100,
-                                                    name: people[index],
-                                                    points: 5000
-                                                );
-                                              },
-                                            ),
+                                height: screenHeight*0.75,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GradBox(
+                                      width: screenWidth*0.9,
+                                      height: 110,
+                                      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                      alignment: Alignment.topLeft,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
+                                          LBRow(
+                                            place: 123,
+                                            name: "Firstname Lastname",
+                                            points: 5000
                                           )
-                                        )
-                                      ]
+                                        ],
+                                      ),
+                                    ),
+                                    GradBox(
+                                      width: screenWidth*0.9,
+                                      height: screenHeight*0.55,
+                                      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                      alignment: Alignment.topLeft,
+                                      child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text("LEADERBOARD", style: Theme.of(context).textTheme.headline1),
+                                            Text("Scroll to see the whole board!",
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                            Expanded(
+                                                child: Container(
+                                                  alignment: Alignment.center,
+                                                  child: ListView.builder(
+                                                    itemCount: people.length,
+                                                    itemBuilder: (BuildContext context, int index){
+                                                      return LBRow(
+                                                          place: (index+1)*100,
+                                                          name: people[index],
+                                                          points: 5000
+                                                      );
+                                                    },
+                                                  ),
+                                                )
+                                            )
+                                          ]
+                                      )
                                     )
+                                  ],
                                 )
                             )
                           ],
@@ -102,7 +118,7 @@ class LBRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
