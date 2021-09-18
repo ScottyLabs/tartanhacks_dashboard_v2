@@ -448,8 +448,8 @@ class WhiteOverlay extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 15
       ..shader = LinearGradient(
-      begin: Alignment.topRight,
-      end: Alignment.bottomLeft,
+      begin: Alignment.bottomLeft,
+      end: Alignment.topRight,
       colors:[Colors.white60, Colors.white],
       ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
 
