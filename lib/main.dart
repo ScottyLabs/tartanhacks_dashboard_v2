@@ -4,6 +4,7 @@ import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
+import 'pages/sponsors.dart';
 
 void main() => runApp(MyApp());
 
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: Login(),
+      home: Sponsors(),
     );
   }
 }
