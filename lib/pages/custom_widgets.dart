@@ -405,10 +405,10 @@ class TopBar extends StatelessWidget {
                   width: screenWidth*0.75,
                   height: screenHeight*0.2,
                   alignment: Alignment.topLeft,
-                  padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
                   child:TextLogo(
                       color: Theme.of(context).colorScheme.onPrimary,
-                      width: screenWidth*0.75,
+                      width: screenWidth*0.70,
                       height: screenHeight*0.10
                   )
               ),
