@@ -7,6 +7,7 @@ import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
 import 'profile.dart';
+import 'create_team.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -550,7 +551,15 @@ OverlayEntry MenuOverlay(BuildContext context) {
                       children: [
                         MenuChoice(
                             icon: Icons.people_alt,
-                            text: "Team"
+                            text: "Team",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    CreateTeam()),
+                              );
+                            }
                         ),
                         MenuChoice(
                             icon: Icons.qr_code_scanner,
