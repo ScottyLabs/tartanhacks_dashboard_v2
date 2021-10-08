@@ -136,29 +136,48 @@ class _CreateTeamState extends State<CreateTeam> {
                             child: GradBox(
                               width: screenWidth*0.9,
                               height: screenHeight*0.75,
-                              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                              child: Form(
-                                  key: _formKey,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("CREATE NEW TEAM", style: Theme.of(context).textTheme.headline1),
-                                        SizedBox(height:8),
-                                        _buildName(),
-                                        SizedBox(height:8),
-                                        _buildTeamName(),
-                                        SizedBox(height:8),
-                                        _buildTeamDesc(),
-                                        SizedBox(height:8),
-                                        _buildInviteMember(),
-                                        SolidButton(
-                                                text: "Create New Team"
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                      Container(
+                                        height: screenHeight*0.75*0.1,
+                                        child: Text("CREATE NEW TEAM", style: 
+                                        Theme.of(context).textTheme.headline1),
+                                      ),
+                                      Form(
+                                        key: _formKey,
+                                  
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Basic Info", style: 
+                                        Theme.of(context).textTheme.headline4),
+                                              SizedBox(height:screenHeight*0.02),
+                                              _buildName(),
+                                              SizedBox(height:screenHeight*0.02),
+                                              _buildTeamName(),
+                                              SizedBox(height:screenHeight*0.02),
+                                              _buildTeamDesc(),
+                                              SizedBox(height:screenHeight*0.02),
+                                              _buildInviteMember(),
+                                              Container(
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                                height: screenHeight*0.1,
+                                                child: SolidButton(
+                                                        text: "Create New Team"
+                                                )
+                                              )
+                                            ],
+                                          )
                                         )
-                                      ],
                                     )
-                                  )
+                                ]
                               )
                             )
                         )
