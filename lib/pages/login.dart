@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../api.dart';
 import 'custom_widgets.dart';
 import 'home.dart';
 import 'forgot.dart';
@@ -48,12 +49,12 @@ class _LoginState extends State<Login>{
                       Stack(
                           children:[
                             CustomPaint(
-                              size: Size(screenWidth, screenHeight*(1/2)),
+                              size: Size(screenWidth, screenHeight*0.45),
                               painter: CurvedBottom(color1: Theme.of(context).colorScheme.primary,
                                   color2: Theme.of(context).colorScheme.secondaryVariant),
                             ),
                             Container(
-                                height: screenHeight*0.4,
+                                height: screenHeight*0.35,
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -94,7 +95,7 @@ class _LoginState extends State<Login>{
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                       ),
-                      SizedBox(height:10),
+                      SizedBox(height: 10),
                       GradBox(
                           width: 150,
                           height: 45,
@@ -124,7 +125,6 @@ class _LoginState extends State<Login>{
                               )
                           )
                       ),
-                      SizedBox(height:5)
                     ]
                 )
               )
