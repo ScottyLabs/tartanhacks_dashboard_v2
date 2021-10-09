@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -575,14 +576,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    Login()),
-                              );
-                            },
+                            onTap: () {logOut(entry, context);}
                         ),
                       ],
                     )
@@ -595,6 +589,17 @@ OverlayEntry MenuOverlay(BuildContext context) {
       )
   );
   return entry;
+}
+
+void logOut(entry, context) async {
+  var prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  entry.remove();
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (ctxt) => new Login()),
+  );
 }
 
 class MenuChoice extends StatelessWidget {
