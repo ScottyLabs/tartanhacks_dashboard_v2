@@ -645,3 +645,29 @@ class MenuChoice extends StatelessWidget {
     );
   }
 }
+
+void errorDialog(context, String title, String response) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text(title, style: Theme.of(context).textTheme.headline1),
+        content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new TextButton(
+            child: new Text(
+              "OK",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}

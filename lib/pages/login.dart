@@ -45,7 +45,7 @@ class _LoginState extends State<Login>{
       print(logindata);
       print(prefs);
     }else{
-      print("BAD LOGIN");
+      errorDialog(context, "Login Failure", "Your username or password is incorrect.");
     }
   }
 
