@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:thdapp/pages/checkin.dart';
+import 'package:thdapp/pages/leaderboard.dart';
 import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/forgot.dart';
@@ -61,7 +63,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: Login(),
+      home: Checkin(),
     );
   }
 }

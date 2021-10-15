@@ -192,6 +192,33 @@ class SolidButton extends StatelessWidget{
   }
 }
 
+class CheckinItemButton extends StatelessWidget{
+  String text;
+  Function onPressed;
+
+  CheckinItemButton({this.text, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            elevation: MaterialStateProperty.all(5)
+        ),
+        child: Text(text,
+          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
+          overflow: TextOverflow.fade,
+          maxLines: 2,
+          softWrap: false,
+        )
+    );
+  }
+}
+
 class GradText extends StatelessWidget {
   String text;
   Color color1;
