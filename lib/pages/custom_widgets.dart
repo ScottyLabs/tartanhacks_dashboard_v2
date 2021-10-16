@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -128,6 +129,7 @@ class CurvedCorner extends CustomPainter {
 class GradBox extends StatelessWidget{
   double width;
   double height;
+  double curvature;
   Widget child;
   bool reverse;
   EdgeInsets padding;
@@ -135,7 +137,7 @@ class GradBox extends StatelessWidget{
   Alignment alignment;
 
   GradBox({this.width, this.height, this.child, this.reverse=false,
-    this.padding, this.onTap, this.alignment});
+    this.padding, this.onTap, this.alignment, this.curvature=25});
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +157,7 @@ class GradBox extends StatelessWidget{
           end: Alignment.bottomRight,
           colors: !reverse ? [color1, color2] : [color2, color1],
         ),
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(curvature),
         boxShadow: [BoxShadow(
           color: shadow,
           offset: Offset(0.0, 5.0),
@@ -192,11 +194,11 @@ class SolidButton extends StatelessWidget{
   }
 }
 
-class CheckinItemButton extends StatelessWidget{
+class CheckInItemButton extends StatelessWidget{
   String text;
   Function onPressed;
 
-  CheckinItemButton({this.text, this.onPressed});
+  CheckInItemButton({this.text, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -206,14 +208,20 @@ class CheckinItemButton extends StatelessWidget{
             foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
             backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
             shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
             elevation: MaterialStateProperty.all(5)
         ),
-        child: Text(text,
-          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-          overflow: TextOverflow.fade,
-          maxLines: 2,
-          softWrap: false,
+        child: Center(
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize:14.0,
+                fontWeight: FontWeight.w600,
+                color:Theme.of(context).colorScheme.onPrimary,
+            ),
+            maxLines: 2,
+          ),
         )
     );
   }
