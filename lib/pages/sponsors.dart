@@ -1,10 +1,9 @@
+import 'package:charcode/html_entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 
 class Sponsors extends StatelessWidget {
-  List people = ["Anuda Weerasinghe", "Joyce Hong", "Gram Liu", "Elise Chapman",
-    "Catherine Liu", "Susan Ni", "Alice", "Bob", "Carol", "Dave"];
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +14,15 @@ class Sponsors extends StatelessWidget {
     return Scaffold(
         body: Container(
             child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TopBar(),
-                        Stack(
+              child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: screenHeight
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TopBar(),
+                      Stack(
                           children: [
                             Column(
                                 children:[
@@ -35,47 +34,85 @@ class Sponsors extends StatelessWidget {
                                           color2: Theme.of(context).colorScheme.primary,
                                           reverse: true)
                                   ),
-                                ]
+                                ], // children
+                              ),
+                            Column(
+                              children:[
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+                                  child: Text("HI [SPONSOR NAME], WELCOME BACK", style: Theme.of(context).textTheme.headline1),
+                                )
+                              ], // children
                             ),
-                          ],
-                        )
-                      ],
-                    )
-                )
+                            Column(
+                              children: [
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.fromLTRB(screenHeight * 0.032, screenHeight * 0.3, 0, 0),
+                                    child: Text(
+                                      "Search",
+                                      textAlign: TextAlign.left,
+                                      style: Theme.of(context).textTheme.headline3
+                                  )
+                                ),
+                                Container(
+                                    padding: EdgeInsets.fromLTRB(screenHeight * 0.015, 0, screenHeight * 0.015, 0),
+                                      child: TextField(
+                                        decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                        enableSuggestions: false,
+                                      ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(screenWidth * 0.73, screenWidth * 0.01, 0 , 0),
+                                    child: GradBox(
+                                      width: screenWidth*0.2,
+                                      height: screenHeight*0.08,
+                                      child: Text(String.fromCharCode(($crarr)), style: Theme.of(context).textTheme.headline1)
+                                    ),
+                                  ),
+                                ]
+                                ),
+
+                            Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, screenHeight * 0.52, 0, 0),
+                                  alignment: Alignment.bottomCenter,
+                                    child: GradBox(
+                                      width: screenWidth*0.95,
+                                      height: screenHeight*0.15,
+                                      child: Column(
+                                        children: [
+                                        Text(
+                                          "[Student A name]",
+                                          textAlign: TextAlign.left,
+                                          style: Theme.of(context).textTheme.headline1,
+                                        ),
+                                        Text(
+                                          "Team:",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(fontSize: screenHeight * 0.02),
+                                        ),
+                                        Text(
+                                          "[Bio]",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(fontSize: screenHeight * 0.02),
+                                        ),
+                                      ]
+                                      )
+                                    )
+                                )
+                            ] //children
+                      )
+                          ] // children
+                            ),
+                          ]
+                      )
+              )
             )
-        )
-    );
-  }
-}
-
-class LBRow extends StatelessWidget {
-  int place;
-  String name;
-  int points;
-
-
-  LBRow({this.place, this.name, this.points});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              alignment: Alignment.center,
-              child: Text(place.toString(), style: Theme.of(context).textTheme.headline1,),
-            ),
-            Expanded(child: SolidButton(text: name, onPressed: null)),
-            Container(
-                width: 80,
-                alignment: Alignment.center,
-                child: Text("$points pts", style: Theme.of(context).textTheme.bodyText2,)
-            )
-          ],
-        )
+        ),
     );
   }
 }

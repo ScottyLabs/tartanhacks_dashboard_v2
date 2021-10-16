@@ -5,6 +5,10 @@ import 'pages/login.dart';
 import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
 import 'pages/sponsors.dart';
+import 'pages/scan.dart';
+import 'pages/bookmarks.dart';
+import 'pages/sponsor_schedule.dart';
+import 'pages/student_profile_view.dart';
 
 void main() => runApp(MyApp());
 
