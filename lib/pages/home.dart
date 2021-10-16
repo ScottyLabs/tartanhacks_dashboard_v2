@@ -34,6 +34,7 @@ class Home extends StatelessWidget {
                       ]
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
                             alignment: Alignment.topLeft,
@@ -46,18 +47,19 @@ class Home extends StatelessWidget {
                                   CountdownTimer(
                                     endTime: 1641024000000,
                                     textStyle: TextStyle(
-                                        fontSize: 35.0,
+                                        fontSize: 30.0,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.secondary),
                                   ),
                                 ]
                             )
                         ),
+                        SizedBox(height: screenHeight * 0.08),
                         Container(
                           width: screenWidth,
-                          height: screenHeight * 0.2,
+                          height: screenHeight * 0.10,
                           alignment: Alignment.bottomCenter,
-                          padding: EdgeInsets.all(15),
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
                           child: Text("Swipe to see all the places where the\n"
                               + String.fromCharCode($larr) + "hacking is happening" + String.fromCharCode(($rarr)),
                             style: Theme.of(context).textTheme.bodyText1,
@@ -67,8 +69,8 @@ class Home extends StatelessWidget {
                         CarouselSlider(
                           items: [
                             GradBox(
-                                width: 190,
-                                height: 190,
+                                width: screenWidth*0.48,
+                                height: screenWidth*0.48,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -89,8 +91,8 @@ class Home extends StatelessWidget {
                                 )
                             ),
                             GradBox(
-                                width: 190,
-                                height: 190,
+                                width: screenWidth*0.48,
+                                height: screenWidth*0.48,
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,8 +114,8 @@ class Home extends StatelessWidget {
                                 )
                             ),
                             GradBox(
-                                width: 190,
-                                height: 190,
+                                width: screenWidth*0.48,
+                                height: screenWidth*0.48,
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -126,17 +128,17 @@ class Home extends StatelessWidget {
                             ),
                           ],
                           options: CarouselOptions(
-                            height: 175.0,
+                            height: screenWidth*0.50,
                             enlargeCenterPage: false,
                             autoPlayCurve: Curves.fastOutSlowIn,
                             enableInfiniteScroll: true,
                             viewportFraction: 0.5,
                           ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 15),
                         GradBox(
-                          width: 360,
-                          height: 75,
+                          width: screenWidth*0.9,
+                          height: 60,
                           onTap: () {
                             Navigator.push(
                               context,
@@ -146,7 +148,7 @@ class Home extends StatelessWidget {
                           },
                           child: Text(
                             "VIEW YOUR PROJECT",
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.headline2,
                           ),
                         )
                       ],

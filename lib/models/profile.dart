@@ -4,7 +4,7 @@ import 'dart:convert';
 
 class Profile {
   final String user;
-  final Event event;
+  final String event; //objectid
   final String email;
   final String firstName;
   final String lastName;
@@ -25,7 +25,7 @@ class Profile {
   final String workPermission;
   final String workLocation;
   final String workStrengths;
-  final List<Sponsor> sponsorRanking;
+  final List<String> sponsorRanking; //objectid
   final String github;
   final String resume;
   final String design;
@@ -76,7 +76,7 @@ class Profile {
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
     return new Profile(
         user: parsedJson['user'],
-        event: Event.fromJson(parsedJson['event']),
+        event: parsedJson['event'],
         email: parsedJson['email'],
         firstName: parsedJson['firstName'],
         lastName: parsedJson['lastName'],
@@ -97,7 +97,7 @@ class Profile {
         workPermission: parsedJson['workPermission'],
         workLocation: parsedJson['workLocation'],
         workStrengths: parsedJson['workStrengths'],
-        sponsorRanking: (parsedJson['sponsorRanking'] as List).map((json) => Sponsor.fromJson(json)).toList(),
+        sponsorRanking: parsedJson['sponsorRanking'],
         github: parsedJson['github'],
         resume: parsedJson['resume'],
         design: parsedJson['design'],
