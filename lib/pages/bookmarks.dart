@@ -101,22 +101,46 @@ class BookmarkInfo extends StatelessWidget {
       child: GradBox(
         alignment: Alignment.topLeft,
         width: 200,
-        height: 150,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        height: 180,
+        child: Row(
           children: [
-            Text(
-              name,
-              style: Theme.of(context).textTheme.headline4
+            Container(
+              width: 230,
+              padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        name,
+                        style: Theme.of(context).textTheme.headline4
+                    ),
+                    Text(
+                        team,
+                        style: Theme.of(context).textTheme.bodyText2
+                    ),
+                    Text(
+                        bio,
+                        style: Theme.of(context).textTheme.bodyText2
+                    ),
+                    SizedBox(height: 18),
+                    SolidButton(
+                      text: "View More",
+                    )
+                  ]
+              ),
             ),
-            Text(
-                team,
-                style: Theme.of(context).textTheme.bodyText2
+            RawMaterialButton(
+              onPressed: null,
+              elevation: 2.0,
+              fillColor: Theme.of(context).colorScheme.primary,
+              child: Icon(
+                Icons.bookmark,
+                size: 50.0,
+                color: Theme.of(context).colorScheme.background,
+              ),
+              padding: EdgeInsets.all(12),
+              shape: CircleBorder(),
             ),
-            Text(
-                bio,
-                style: Theme.of(context).textTheme.bodyText2
-            )
           ]
         )
       ),
