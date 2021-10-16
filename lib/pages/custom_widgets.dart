@@ -597,6 +597,85 @@ OverlayEntry MenuOverlay(BuildContext context) {
   return entry;
 }
 
+OverlayEntry SponsorMenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenWidth = mqData.size.width;
+  OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => Positioned(
+          child: Stack(
+              alignment: Alignment.topRight,
+              children:[
+                CustomPaint(
+                    size: mqData.size,
+                    painter: WhiteOverlay()
+                ),
+                Column(
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children:[
+                            Container(
+                                width: screenWidth/4,
+                                alignment: Alignment.topCenter,
+                                padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                                child: MenuButton(
+                                    onTap: () {
+                                      entry.remove();
+                                    }
+                                )
+                            ),
+                          ]
+                      ),
+                      SizedBox(height: 10),
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children:[
+                            MenuChoice(
+                                icon: Icons.person,
+                                text: "Home"
+                            ),
+                            MenuChoice(
+                              icon: Icons.schedule,
+                              text: "Schedule",
+                            ),
+                            MenuChoice(
+                              icon: Icons.bookmark_outline,
+                              text: "Bookmarks",
+                            ),
+                            MenuChoice(
+                                icon: Icons.help,
+                                text: "Help"
+                            ),
+                            MenuChoice(
+                                icon: Icons.mode_night,
+                                text: "Dark"
+                            ),
+                            MenuChoice(
+                              icon: Icons.logout,
+                              text: "Logout",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      Login()),
+                                );
+                              },
+                            ),
+                          ]
+                      ),
+                    ]
+                ),
+              ]
+          )
+      )
+  );
+  return entry;
+}
+
 class MenuChoice extends StatelessWidget {
   IconData icon;
   String text;
