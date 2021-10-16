@@ -135,7 +135,7 @@ class InfoTile extends StatelessWidget {
                   shape: CircleBorder(),
                 ),
                 Container(
-                  width: 150,
+                  width: 185,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,17 +158,10 @@ class InfoTile extends StatelessWidget {
                       ]
                   ),
                 ),
-                RawMaterialButton( // bookmark icon
-                  onPressed: null,
-                  elevation: 2.0,
-                  fillColor: Theme.of(context).colorScheme.primary,
-                  child: Icon(
-                    Icons.bookmark,
-                    size: 30.0,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                  padding: EdgeInsets.all(12),
-                  shape: CircleBorder(),
+                Icon(
+                  Icons.bookmark,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 40.0,
                 ),
               ],
             )
