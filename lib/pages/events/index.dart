@@ -25,13 +25,30 @@ class EventHome extends StatelessWidget {
                               CustomPaint(
                                   size: Size(screenWidth, screenHeight * 0.75),
                                   painter: CurvedTop(
-                                      color1: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2:
+                                      color1:
                                           Theme.of(context).colorScheme.primary,
-                                      reverse: true)),
+                                      color2: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryVariant)),
                             ]),
+                            Column(children: [
+                              SizedBox(height: 12),
+                              GradBox(
+                                width: screenWidth * 0.9,
+                                height: 60,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ProjSubmit()),
+                                  );
+                                },
+                                child: Text(
+                                  "CREATE NEW EVENT",
+                                  style: Theme.of(context).textTheme.headline2,
+                                ),
+                              )
+                            ])
                           ],
                         )
                       ],
