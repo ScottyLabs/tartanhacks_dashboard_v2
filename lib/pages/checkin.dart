@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'custom_widgets.dart';
 
@@ -93,12 +94,18 @@ class QRHeader extends StatelessWidget {
               onPressed: () => {},
               style: TextButton.styleFrom(
                   padding: EdgeInsets.only(right: 5), minimumSize: Size(0, 0)),
-              child: Text(
-                "Your QR Code",
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                  fontSize: 16
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => QRPage()));
+                },
+                child: Text(
+                  "Your QR Code",
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    fontSize: 16
+                  ),
                 ),
               )),
         ),
@@ -207,7 +214,17 @@ class CheckInEventList extends StatelessWidget {
         child: ListView.separated(
           itemCount: events.length,
           itemBuilder: (BuildContext context, int index) {
-            return CheckInEventListItem(events[index], false);
+            return CheckInEventListItem(
+              name: events[index],
+              isChecked: false,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EditCheckInItemPage()
+                ));
+              },
+              onCheck: (val) {},
+            );
       },
           separatorBuilder: (context, index) => SizedBox(
             height: 15,
@@ -219,8 +236,15 @@ class CheckInEventList extends StatelessWidget {
 class CheckInEventListItem extends StatelessWidget {
   final String name;
   final bool isChecked;
+  final Function onCheck;
+  final Function onTap;
 
-  CheckInEventListItem(this.name, this.isChecked);
+  CheckInEventListItem({
+    this.name,
+    this.isChecked,
+    this.onTap,
+    this.onCheck
+});
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +285,7 @@ class CheckInEventListItem extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             value: isChecked,
-                            onChanged: (val) => {}),
+                            onChanged: onCheck),
                       ),
                       Text(
                         "Click to check in",
@@ -283,6 +307,7 @@ class CheckInEventListItem extends StatelessWidget {
             flex: 20,
             child: CheckInItemButton(
               text: "Edit Items",
+              onPressed: onTap,
             ),
           )
         ],

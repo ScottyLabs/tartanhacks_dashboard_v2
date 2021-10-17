@@ -171,8 +171,9 @@ class GradBox extends StatelessWidget{
 class SolidButton extends StatelessWidget{
   String text;
   Function onPressed;
+  Widget child;
 
-  SolidButton({this.text, this.onPressed});
+  SolidButton({this.text, this.onPressed, this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +186,7 @@ class SolidButton extends StatelessWidget{
           shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
           elevation: MaterialStateProperty.all(5)
         ),
-        child: Text(text,
+        child: child ?? Text(text,
           style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
           overflow: TextOverflow.fade,
           softWrap: false,
