@@ -136,47 +136,66 @@ class _CreateTeamState extends State<CreateTeam> {
                             child: GradBox(
                               width: screenWidth*0.9,
                               height: screenHeight*0.75,
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 20),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                      Container(
-                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                        child: Text("CREATE NEW TEAM", style: 
-                                        Theme.of(context).textTheme.headline1),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                          child: Text("CREATE NEW TEAM", style: 
+                                          Theme.of(context).textTheme.headline1),
+                                        ),
+                                        Form(
+                                          key: _formKey,
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Basic Info", style: 
+                                          Theme.of(context).textTheme.headline4),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildName(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildTeamName(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildTeamDesc(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildInviteMember(),
+                                                
+                                              ],
+                                            )
+                                          )
+                                        ),
+                                        ]
                                       ),
-                                      Form(
-                                        key: _formKey,
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("Basic Info", style: 
-                                        Theme.of(context).textTheme.headline4),
-                                              SizedBox(height:screenHeight*0.02),
-                                              _buildName(),
-                                              SizedBox(height:screenHeight*0.02),
-                                              _buildTeamName(),
-                                              SizedBox(height:screenHeight*0.02),
-                                              _buildTeamDesc(),
-                                              SizedBox(height:screenHeight*0.02),
-                                              _buildInviteMember(),
-                                              
-                                            ],
+                                      
+                                    Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                                            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                                            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+                                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                            elevation: MaterialStateProperty.all(5),
+                                          ),
+                                          child: Container(
+                                              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                              child: Text("Create New Team",
+                                                style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
+                                              overflow: TextOverflow.fade,
+                                              softWrap: false,
+                                            )
                                           )
                                         )
-                                    ),
-                                    SizedBox(height:screenHeight*0.1),
-                                    Container(
-                                        alignment: Alignment.bottomCenter,
-                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                        height: screenHeight*0.1,
-                                        child: SolidButton(
-                                          text: "Create New Team"
-                                        )
-                                  )
+                                      )
                                 ]
                               )
                             )
