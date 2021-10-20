@@ -42,30 +42,34 @@ class _EditTeamState extends State<EditTeam> {
                           {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"}];
   String _teamName = "My Team";
   String _teamDesc = "my team description";
-  
+  bool read = true;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   
-  Widget _buildTeamHeader() {
+  Widget mailIconSelect(bool read){
+    if (read){
+      return Icon(
+          Icons.email,
+          color: Theme.of(context).colorScheme.secondary,
+          size: 40.0
+      );
+    } else {
+      return Icon(
+          Icons.mark_email_unread,
+          color: Theme.of(context).colorScheme.secondary,
+          size: 40.0
+      );
+    }
+  }
+
+  Widget _buildTeamHeader(bool read) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text("TEAM", style: Theme.of(context).textTheme.headline2),
-        ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-          ///child: Image.assert(image: AssetImage("lib/logos/defaultpfp.PNG", fit: BoxFit.fitHeight))
-            
-            child: Image.asset("lib/logos/defaultpfp.PNG", height: 20))
+        mailIconSelect(read)
       ]
     );
-      /*
-    return Container(
-      Text("Team", style: Theme.of(context).textTheme.headline4),
-      ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child:
-          Image(image: AssetImage("lib/logos/defaultpfp.PNG"),)
-      ),
-    );*/
   }
 
   Widget _buildTeamDesc() {
@@ -180,7 +184,7 @@ class _EditTeamState extends State<EditTeam> {
                                     Container(
                                       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                       //height: screenHeight*0.05,
-                                      child: _buildTeamHeader()
+                                      child: _buildTeamHeader(read)
                                     ),
                                     Container(
                                       padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
@@ -207,12 +211,6 @@ class _EditTeamState extends State<EditTeam> {
                                       )
                                     ),
                                     _leaveTeamBtn()
-                                    /*Container(
-                                        alignment: Alignment.bottomCenter,
-                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                        //height: screenHeight*0.1,
-                                        child: 
-                                    )*/
                                 ]
                               )
                             )
