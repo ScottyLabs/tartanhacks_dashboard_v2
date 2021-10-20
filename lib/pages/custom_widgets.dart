@@ -7,7 +7,7 @@ import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
 import 'profile.dart';
-import 'create_team.dart';
+import 'edit_team.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -557,7 +557,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    CreateTeam()),
+                                    EditTeam()),
                               );
                             }
                         ),
