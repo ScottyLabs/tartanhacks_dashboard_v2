@@ -142,17 +142,15 @@ class _CreateTeamState extends State<CreateTeam> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                       Container(
-                                        height: screenHeight*0.75*0.1,
+                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                         child: Text("CREATE NEW TEAM", style: 
                                         Theme.of(context).textTheme.headline1),
                                       ),
                                       Form(
                                         key: _formKey,
-                                  
                                         child: SingleChildScrollView(
                                           child: Column(
-                                            
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text("Basic Info", style: 
@@ -165,18 +163,20 @@ class _CreateTeamState extends State<CreateTeam> {
                                               _buildTeamDesc(),
                                               SizedBox(height:screenHeight*0.02),
                                               _buildInviteMember(),
-                                              Container(
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                                height: screenHeight*0.1,
-                                                child: SolidButton(
-                                                        text: "Create New Team"
-                                                )
-                                              )
+                                              
                                             ],
                                           )
                                         )
-                                    )
+                                    ),
+                                    SizedBox(height:screenHeight*0.1),
+                                    Container(
+                                        alignment: Alignment.bottomCenter,
+                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                        height: screenHeight*0.1,
+                                        child: SolidButton(
+                                          text: "Create New Team"
+                                        )
+                                  )
                                 ]
                               )
                             )
