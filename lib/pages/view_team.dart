@@ -17,6 +17,7 @@ class _ViewTeamState extends State<ViewTeam> {
   String _teamName = "My Team";
   String _teamDesc = "Team Description";
   int numMembers = 3;
+  bool isMember = true;
 
   Widget _buildTeamHeader() {
     return Row(
@@ -67,7 +68,11 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 
-  Widget _leaveTeamBtn() {
+  Widget _leaveJoinTeamBtn(bool isMember) {
+    String buttonText = "Leave Team";
+    if(!isMember){
+      buttonText = "Join Team";
+    }
     return (
         Container(
             alignment: Alignment.center,
@@ -82,7 +87,7 @@ class _ViewTeamState extends State<ViewTeam> {
                 ),
                 child: Container(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text("Leave Team",
+                    child: Text(buttonText,
                         style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
                         overflow: TextOverflow.fade,
                         softWrap: false
@@ -91,6 +96,40 @@ class _ViewTeamState extends State<ViewTeam> {
             )
         )
     );
+  }
+
+  List<Widget> _infoList(bool isMember){
+    List<Widget> info = List.empty();
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            //height: screenHeight*0.05,
+            child: _buildTeamHeader()
+        )
+    );
+    info.add(
+        Container(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+          //height: screenHeight*0.05,
+          child: _buildTeamHeader()
+        )
+    );
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            //height: screenHeight*0.2,
+            child: _buildTeamDesc()
+        )
+    );
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            //height: screenHeight*0.1,
+            child: _buildTeamMembers(numMembers)
+        )
+    );
+    info.add(_leaveJoinTeamBtn(isMember));
+    return info;
   }
 
   @override
@@ -134,24 +173,7 @@ class _ViewTeamState extends State<ViewTeam> {
                                     child: Column(
                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                              //height: screenHeight*0.05,
-                                              child: _buildTeamHeader()
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                              //height: screenHeight*0.2,
-                                              child: _buildTeamDesc()
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                              //height: screenHeight*0.1,
-                                              child: _buildTeamMembers(numMembers)
-                                          ),
-                                          _leaveTeamBtn()
-                                        ]
+                                        children: _infoList(isMember)
                                     )
                                 )
                             )
