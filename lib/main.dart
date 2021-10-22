@@ -5,6 +5,7 @@ import 'pages/login.dart';
 import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
 import 'pages/edit_team.dart';
+import 'pages/view_team.dart';
 
 void main() => runApp(MyApp());
 
