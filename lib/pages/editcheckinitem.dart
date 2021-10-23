@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:thdapp/models/check_in_item.dart';
 import 'custom_widgets.dart';
 
 class EditCheckInItemPage extends StatelessWidget {
+  final CheckInItem checkInItem;
+
+  EditCheckInItemPage(this.checkInItem);
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,7 @@ class EditCheckInItemPage extends StatelessWidget {
                                 child: GradBox(
                                   curvature: 20,
                                   padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                                  child: CheckInItemForm(),
+                                  child: CheckInItemForm(checkInItem),
                                 ))
                           ],
                         )
@@ -52,6 +56,9 @@ class EditCheckInItemPage extends StatelessWidget {
 }
 
 class CheckInItemForm extends StatefulWidget {
+  final CheckInItem checkInItem;
+
+  CheckInItemForm(this.checkInItem);
 
   @override
   _CheckInItemFormState createState() => _CheckInItemFormState();
@@ -72,6 +79,14 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
   final _pointsController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    _nameController.value = TextEditingValue(text: widget.checkInItem?.name ?? "");
+    _descController.value = TextEditingValue(text: widget.checkInItem?.description ?? "");
+    _pointsController.value = TextEditingValue(text: widget.checkInItem?.points.toString() ?? "");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Form(
@@ -81,7 +96,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "NEW CHECKIN ITEM",
+                  widget.checkInItem == null ? "NEW CHECKIN ITEM" : "EDIT CHECKIN ITEM",
                   style: Theme.of(context).textTheme.headline1,
                 ),
                 SizedBox(height: 20,),
@@ -186,14 +201,12 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 class EditCheckInFormField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
-  final String initial;
   final TextInputType keyboardType;
   final Function onTap;
 
   EditCheckInFormField({
     this.controller,
     this.label,
-    this.initial,
     this.keyboardType = TextInputType.text,
     this.onTap
   });
@@ -225,8 +238,9 @@ class EditCheckInFormField extends StatelessWidget {
 class EditCheckInDropDownFormField extends StatelessWidget {
   final List<DropdownMenuItem> items;
   final String label;
+  final String initial;
 
-  EditCheckInDropDownFormField({this.items, this.label});
+  EditCheckInDropDownFormField({this.items, this.label, this.initial});
 
   @override
   Widget build(BuildContext context) {
@@ -247,7 +261,8 @@ class EditCheckInDropDownFormField extends StatelessWidget {
           flex: 8,
           child: DropdownButtonFormField(
             onChanged: (e){},
-            items: items
+            items: items,
+            value: initial,
           ),
         )
       ],

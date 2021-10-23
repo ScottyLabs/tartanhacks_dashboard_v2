@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:thdapp/pages/qr_scan_config.dart';
 import 'custom_widgets.dart';
 
 class QRPage extends StatelessWidget {
@@ -128,7 +129,10 @@ class QREnlarged extends StatelessWidget {
               child: SizedBox(
                 height: 45,
                 child: SolidButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder:
+                      (context) => ScanConfigPage()));
+                  },
                   child: Icon(
                     Icons.settings,
                     color: Colors.white,

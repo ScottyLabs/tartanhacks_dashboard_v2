@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'models/check_in_item.dart';
 import 'models/profile.dart';
 import 'models/user.dart';
 
@@ -63,3 +64,18 @@ Future<Profile> getProfile(String id, String token) async {
     return null;
   }
 }
+
+// Check In Endpoints
+Future<List<CheckInItem>> getCheckInItems() async {
+  String url = baseUrl + "check-in";
+  Map<String, String> headers = {"Content-type": "application/json"};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    return jsonResponse.map((e) => CheckInItem.fromJson(e)).toList();
+  } else {
+    throw Exception("Failed to fetch Check In data");
+  }
+}
+

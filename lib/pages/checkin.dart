@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:thdapp/api.dart';
+import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'custom_widgets.dart';
@@ -11,6 +13,13 @@ class CheckIn extends StatefulWidget {
 
 class _CheckInState extends State<CheckIn> {
   final List<String> testEvents = ["Opening Ceremony", "Welcome Ceremony", "Hacking", "Lunch", "Free Ice Cream"];
+  Future _checkInItems;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInItems = getCheckInItems();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +58,24 @@ class _CheckInState extends State<CheckIn> {
                                     Expanded(flex: 1, child: Header(150)),
                                     Expanded(
                                         flex: 2,
-                                        child: CheckInEvents(testEvents))
+                                        child: FutureBuilder(
+                                            future: _checkInItems,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData) return CheckInEvents(snapshot.data);
+
+                                              else if (snapshot.hasError) {
+                                                return Center(
+                                                  child: Text(
+                                                    snapshot.error
+                                                  ),
+                                                );
+                                              }
+
+                                              else return Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            }
+                                        ))
                                   ],
                                 ))
                           ],
@@ -90,24 +116,20 @@ class QRHeader extends StatelessWidget {
       children: [
         SizedBox(
           height: 30,
-          child: TextButton(
-              onPressed: () => {},
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.only(right: 5), minimumSize: Size(0, 0)),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => QRPage()));
-                },
-                child: Text(
-                  "Your QR Code",
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                    fontSize: 16
-                  ),
-                ),
-              )),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(context,
+                MaterialPageRoute(builder: (context) => QRPage()));
+            },
+            child: Text(
+              "Your QR Code",
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+                fontSize: 16
+              ),
+            ),
+          ),
         ),
         // TODO: Placeholder for QR Code
         SizedBox(
@@ -159,7 +181,7 @@ class PointsHeader extends StatelessWidget {
 }
 
 class CheckInEvents extends StatelessWidget {
-  final List<String> events;
+  final List<CheckInItem> events;
 
   CheckInEvents(this.events);
 
@@ -191,7 +213,7 @@ class CheckInEvents extends StatelessWidget {
             ),
             onTap: () => {
               Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => EditCheckInItemPage())
+                MaterialPageRoute(builder: (context) => EditCheckInItemPage(null))
               )
             },
             curvature: 12,
@@ -204,7 +226,7 @@ class CheckInEvents extends StatelessWidget {
 
 
 class CheckInEventList extends StatelessWidget {
-  final List<String> events;
+  final List<CheckInItem> events;
 
   CheckInEventList(this.events);
 
@@ -215,12 +237,12 @@ class CheckInEventList extends StatelessWidget {
           itemCount: events.length,
           itemBuilder: (BuildContext context, int index) {
             return CheckInEventListItem(
-              name: events[index],
+              name: events[index].name,
               isChecked: false,
               onTap: () {
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EditCheckInItemPage()
+                    MaterialPageRoute(builder: (context) => EditCheckInItemPage(events[index])
                 ));
               },
               onCheck: (val) {},
@@ -305,8 +327,19 @@ class CheckInEventListItem extends StatelessWidget {
           // Button
           Expanded(
             flex: 20,
-            child: CheckInItemButton(
-              text: "Edit Items",
+            child: SolidButton(
+              child: FittedBox(
+                child: Text(
+                  "Edit\nItem",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize:14.0,
+                    fontWeight: FontWeight.w600,
+                    color:Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  maxLines: 2,
+                ),
+              ),
               onPressed: onTap,
             ),
           )
