@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'models/check_in_item.dart';
+import 'models/profile.dart';
 import 'models/user.dart';
 
 SharedPreferences prefs;
@@ -36,7 +36,6 @@ Future<User> checkCredentials(String email, String password) async {
 }
 
 Future<String> resetPassword(String email) async {
-  print(email);
   String url = baseUrl + "auth/reset";
   Map<String, String> headers = {"Content-type": "application/json"};
   String json1 = '{"email":"' + email + '"}';
@@ -46,5 +45,21 @@ Future<String> resetPassword(String email) async {
     return "Please check your email address to reset your password.";
   } else {
     return "We encountered an error while resetting your password. Please contact ScottyLabs for help";
+  }
+}
+
+Future<Profile> getProfile(String id, String token) async {
+  String url = baseUrl + "user/profile/" + id;
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Profile profile = new Profile.fromJson(data);
+    return profile;
+  } else {
+    print(token);
+    print(response.body.toString());
+    return null;
   }
 }

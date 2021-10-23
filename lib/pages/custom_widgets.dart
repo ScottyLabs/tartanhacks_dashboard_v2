@@ -7,7 +7,7 @@ import 'dart:math';
 import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
-import 'profile.dart';
+import 'profile_page.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -565,7 +565,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    Profile()),
+                                    ProfilePage()),
                               );
                             },
                         ),
