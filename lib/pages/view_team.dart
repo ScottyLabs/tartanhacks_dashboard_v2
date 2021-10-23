@@ -109,13 +109,6 @@ class _ViewTeamState extends State<ViewTeam> {
     );
     info.add(
         Container(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-          //height: screenHeight*0.05,
-          child: _buildTeamHeader()
-        )
-    );
-    info.add(
-        Container(
             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
             //height: screenHeight*0.2,
             child: _buildTeamDesc()
