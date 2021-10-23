@@ -634,6 +634,39 @@ class MenuChoice extends StatelessWidget {
   }
 }
 
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Scaffold(
+        body: Container(
+            height: screenHeight,
+            width: screenWidth,
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                      height: screenHeight*0.35,
+                      width: screenWidth,
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                          color: Theme.of(context).colorScheme.onBackground
+                      )
+                  ),
+                  Text("Loading...",
+                    style: Theme.of(context).textTheme.headline1,
+                  )
+                ]
+            )
+        )
+    );
+  }
+}
+
 void errorDialog(context, String title, String response) {
   // flutter defined function
   showDialog(
