@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
+import 'new.dart';
 
 class EventHome extends StatelessWidget {
   @override
@@ -40,7 +41,7 @@ class EventHome extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ProjSubmit()),
+                                        builder: (context) => createState()),
                                   );
                                 },
                                 child: Text(
