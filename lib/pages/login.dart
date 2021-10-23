@@ -113,7 +113,8 @@ class _LoginState extends State<Login>{
                             labelText: "Email",
                           ),
                           style: Theme.of(context).textTheme.bodyText2,
-                          enableSuggestions: false,
+                          keyboardType: TextInputType.visiblePassword,
+                          textInputAction: TextInputAction.next
                         ),
                       ),
                       Container(
