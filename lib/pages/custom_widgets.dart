@@ -245,25 +245,13 @@ class TextLogo extends StatelessWidget {
                 color: color
             )
           ),
-          RichText(
-            text: TextSpan(
-              text: " Tartanhacks ",
-              style: TextStyle(
-                fontSize: height*0.36,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-              children: [
-                TextSpan(
-                  text: "Scottylabs",
-                  style: TextStyle(
-                    fontSize: height*0.2,
-                    color: color,
-                  ),
-                )
-              ]
+          Text(" Tartanhacks ",
+            style: TextStyle(
+              fontSize: height*0.4,
+              fontWeight: FontWeight.w600,
+              color: color,
             )
-          ),
+          )
         ]
       )
     );

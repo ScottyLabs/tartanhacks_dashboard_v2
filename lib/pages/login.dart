@@ -86,7 +86,7 @@ class _LoginState extends State<Login>{
                                   color2: Theme.of(context).colorScheme.secondaryVariant),
                             ),
                             Container(
-                                height: screenHeight*0.35,
+                                height: screenHeight*0.3,
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
