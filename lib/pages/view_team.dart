@@ -52,7 +52,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMembers(int numMembers) {
-    List<Widget> teamMembers = List.empty();
+    List<Widget> teamMembers = <Widget>[];
     for(int i = 0; i < numMembers; i++){
       teamMembers.add(_buildMember(i));
     }
@@ -99,7 +99,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   List<Widget> _infoList(bool isMember){
-    List<Widget> info = List.empty();
+    List<Widget> info = <Widget>[];
     info.add(
         Container(
             padding: EdgeInsets.fromLTRB(0, 10, 0, 10),

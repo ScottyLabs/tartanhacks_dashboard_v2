@@ -8,7 +8,7 @@ import 'login.dart';
 import 'project_submission.dart';
 import 'profile.dart';
 import 'edit_team.dart';
-
+import 'teams_list.dart';
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
   return InputDecoration(
@@ -557,7 +557,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    EditTeam()),
+                                    TeamsList()),
                               );
                             }
                         ),
