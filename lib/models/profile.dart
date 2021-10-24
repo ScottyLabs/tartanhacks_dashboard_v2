@@ -25,13 +25,13 @@ class Profile {
   final String workPermission;
   final String workLocation;
   final String workStrengths;
-  final List<String> sponsorRanking; //objectid
+  final List sponsorRanking; //objectid
   final String github;
   final String resume;
   final String design;
   final String website;
-  final List<String> essays;
-  final List<String> dietaryRestrictions;
+  final List essays;
+  final List dietaryRestrictions;
   final String shirtSize;
   final bool wantsHardware;
   final String address;

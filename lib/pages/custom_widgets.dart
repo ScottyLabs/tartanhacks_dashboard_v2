@@ -6,8 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
+import 'leaderboard.dart';
 import 'project_submission.dart';
-import 'profile.dart';
+import 'events/index.dart';
+import 'profile_page.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -192,6 +194,28 @@ class SolidButton extends StatelessWidget{
   }
 }
 
+class SolidSquareButton extends StatelessWidget{
+  String image;
+  Function onPressed;
+
+  SolidSquareButton({this.image, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            fixedSize: MaterialStateProperty.all<Size>(Size.square(10)),
+            elevation: MaterialStateProperty.all(5)
+        ),
+    );
+  }
+}
+
 class GradText extends StatelessWidget {
   String text;
   Color color1;
@@ -245,25 +269,13 @@ class TextLogo extends StatelessWidget {
                 color: color
             )
           ),
-          RichText(
-            text: TextSpan(
-              text: " Tartanhacks ",
-              style: TextStyle(
-                fontSize: height*0.36,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-              children: [
-                TextSpan(
-                  text: "Scottylabs",
-                  style: TextStyle(
-                    fontSize: height*0.2,
-                    color: color,
-                  ),
-                )
-              ]
+          Text(" Tartanhacks ",
+            style: TextStyle(
+              fontSize: height*0.4,
+              fontWeight: FontWeight.w600,
+              color: color,
             )
-          ),
+          )
         ]
       )
     );
@@ -513,7 +525,16 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         children:[
                           MenuChoice(
                               icon: Icons.schedule,
-                              text: "Schedule"
+                              text: "Events",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        EventsHomeScreen(),
+                                    )
+                              );
+                            },
                           ),
                           MenuChoice(
                               icon: Icons.pages,
@@ -565,7 +586,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    Profile()),
+                                    ProfilePage()),
                               );
                             },
                         ),
@@ -642,6 +663,39 @@ class MenuChoice extends StatelessWidget {
           )
         ]
       )
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Scaffold(
+        body: Container(
+            height: screenHeight,
+            width: screenWidth,
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                      height: screenHeight*0.35,
+                      width: screenWidth,
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                          color: Theme.of(context).colorScheme.onBackground
+                      )
+                  ),
+                  Text("Loading...",
+                    style: Theme.of(context).textTheme.headline1,
+                  )
+                ]
+            )
+        )
     );
   }
 }
