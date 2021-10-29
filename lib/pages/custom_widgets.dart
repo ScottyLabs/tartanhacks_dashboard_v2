@@ -7,6 +7,9 @@ import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
 import 'profile.dart';
+import 'sponsors.dart';
+import 'bookmarks.dart';
+import 'events.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -246,21 +249,12 @@ class TextLogo extends StatelessWidget {
           ),
           RichText(
             text: TextSpan(
-              text: " Tartanhacks ",
+              text: " Tartanhacks",
               style: TextStyle(
-                fontSize: height*0.36,
+                fontSize: height*0.4,
                 fontWeight: FontWeight.w600,
                 color: color,
               ),
-              children: [
-                TextSpan(
-                  text: "Scottylabs",
-                  style: TextStyle(
-                    fontSize: height*0.2,
-                    color: color,
-                  ),
-                )
-              ]
             )
           ),
         ]
@@ -427,7 +421,7 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(MenuOverlay(context));
+                Overlay.of(context).insert(SponsorMenuOverlay(context));
               },
             )
         )
@@ -615,6 +609,7 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                     children: [
                       Row(
                           mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
                             Container(
                                 width: screenWidth/4,
@@ -629,48 +624,69 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                           ]
                       ),
                       SizedBox(height: 10),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:[
-                            MenuChoice(
-                                icon: Icons.person,
-                                text: "Home"
-                            ),
-                            MenuChoice(
-                              icon: Icons.schedule,
-                              text: "Schedule",
-                            ),
-                            MenuChoice(
-                              icon: Icons.bookmark_outline,
-                              text: "Bookmarks",
-                            ),
-                            MenuChoice(
-                                icon: Icons.help,
-                                text: "Help"
-                            ),
-                            MenuChoice(
-                                icon: Icons.mode_night,
-                                text: "Dark"
-                            ),
-                            MenuChoice(
-                              icon: Icons.logout,
-                              text: "Logout",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      Login()),
-                                );
-                              },
-                            ),
-                          ]
-                      ),
-                    ]
-                ),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:[
+                              MenuChoice(
+                                  icon: Icons.person,
+                                  text: "Home",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                    Sponsors(),
+                                        )
+                                      );
+                                    },
+                              ),
+                              MenuChoice(
+                                icon: Icons.schedule,
+                                text: "Schedule",
+                              ),
+                              MenuChoice(
+                                icon: Icons.bookmark_outline,
+                                text: "Bookmarks",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          Bookmarks(),
+                                      )
+                                  );
+                                },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.help,
+                                  text: "Help"
+                              ),
+                              MenuChoice(
+                                  icon: Icons.mode_night,
+                                  text: "Dark"
+                              ),
+                              MenuChoice(
+                                icon: Icons.logout,
+                                text: "Logout",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Login()),
+                                  );
+                                },
+                              ),
+                            ]
+                        )
+                      )
               ]
           )
+          ]
+      )
       )
   );
   return entry;

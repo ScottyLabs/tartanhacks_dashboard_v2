@@ -2,9 +2,19 @@ import 'package:charcode/html_entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+import '../models/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/api.dart';
 
 class Sponsors extends StatelessWidget {
-  List students = ["Student A", "Student B", "Student C", "Student D"];
+  //List students = ["Student A", "Student B", "Student C", "Student D"];
+
+  SharedPreferences prefs;
+  Profile userData;
+
+  void getData() {
+}
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
