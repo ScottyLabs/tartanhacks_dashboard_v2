@@ -79,7 +79,7 @@ Future<List<Event>> getEvents() async {
   }
 }
 
-Future<bool> addEvents(String name, String unixTime, String description, String gcal, String zoom_link, int access_code, String zoom_id, String zoom_password, String duration) async {
+Future<bool> addEvents(String name, String description, String startTime, String endTime, bool enableCheckin, bool enableProjects, bool enableTeams, bool enableSponsors, String logoUrl, List<String> essayQuestions) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
@@ -89,12 +89,18 @@ Future<bool> addEvents(String name, String unixTime, String description, String 
     "Content-type": "application/json",
     "Token": token
   };
-  String json1 = '{"name":"' + name + '","timestamp":"' + unixTime +
+
+  String essayQuestionsAgg = "";
+  for(int i = 0; i < essayQuestions.length; i++){
+    essayQuestionsAgg += essayQuestions[i] + "\n";
+  }
+  String json1 = '{"name":"' + name +
       '","description":"' + description +
-      '","zoom_access_enabled":true,"gcal_event_url":"' + gcal +
-      '","zoom_link":"' + zoom_link + '","is_in_person":false,"access_code":' +
-      access_code.toString() + ',"zoom_id":"' + zoom_id +
-      '","zoom_password":"' + zoom_password + '","duration":' + duration + '}';
+      '","startTime":"' + startTime +
+      '","endTime":"' + endTime +
+      ', "enableCheckin": true, "enableProjects": true, "enableTeams": true, "enableSponsors": true,' +
+      '","logoUrl":"' + logoUrl +
+      '"essayQuestions":"' + essayQuestionsAgg + '}';
   print(json1);
   final response = await http.post(url, headers: headers, body: json1);
   if (response.statusCode == 200) {
@@ -102,14 +108,15 @@ Future<bool> addEvents(String name, String unixTime, String description, String 
   } else if (response.statusCode == 401) {
     return addEvents(
         name,
-        unixTime,
         description,
-        gcal,
-        zoom_link,
-        access_code,
-        zoom_id,
-        zoom_password,
-        duration);
+        startTime,
+        endTime,
+        enableCheckin,
+        enableProjects,
+        enableTeams,
+        enableSponsors,
+        logoUrl,
+        essayQuestions);
   } else {
     return false;
   }
