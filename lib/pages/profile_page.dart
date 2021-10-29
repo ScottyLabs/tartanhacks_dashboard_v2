@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 
-class Profile extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -10,6 +11,7 @@ import 'profile.dart';
 import 'sponsors.dart';
 import 'bookmarks.dart';
 import 'events.dart';
+import 'profile_page.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -247,16 +249,13 @@ class TextLogo extends StatelessWidget {
                 color: color
             )
           ),
-          RichText(
-            text: TextSpan(
-              text: " Tartanhacks",
-              style: TextStyle(
-                fontSize: height*0.4,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
+          Text(" Tartanhacks ",
+            style: TextStyle(
+              fontSize: height*0.4,
+              fontWeight: FontWeight.w600,
+              color: color,
             )
-          ),
+          )
         ]
       )
     );
@@ -421,7 +420,7 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(SponsorMenuOverlay(context));
+                Overlay.of(context).insert(MenuOverlay(context));
               },
             )
         )
@@ -558,7 +557,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    Profile()),
+                                    ProfilePage()),
                               );
                             },
                         ),
@@ -569,14 +568,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    Login()),
-                              );
-                            },
+                            onTap: () () {logOut(entry, context);}
                         ),
                       ],
                     )
@@ -688,8 +680,30 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
           ]
       )
       )
+                            onTap: () {logOut(entry, context);}
+                        ),
+                      ],
+                    )
+                  ]
+                )
+              ]
+            ),
+          ]
+        )
+      )
   );
   return entry;
+}
+
+void logOut(entry, context) async {
+  var prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  entry.remove();
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (ctxt) => new Login()),
+  );
 }
 
 class MenuChoice extends StatelessWidget {
@@ -734,4 +748,63 @@ class MenuChoice extends StatelessWidget {
       )
     );
   }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Scaffold(
+        body: Container(
+            height: screenHeight,
+            width: screenWidth,
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                      height: screenHeight*0.35,
+                      width: screenWidth,
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                          color: Theme.of(context).colorScheme.onBackground
+                      )
+                  ),
+                  Text("Loading...",
+                    style: Theme.of(context).textTheme.headline1,
+                  )
+                ]
+            )
+        )
+    );
+  }
+}
+
+void errorDialog(context, String title, String response) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text(title, style: Theme.of(context).textTheme.headline1),
+        content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new TextButton(
+            child: new Text(
+              "OK",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

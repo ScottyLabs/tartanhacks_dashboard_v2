@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../api.dart';
+import '../models/user.dart';
 import 'custom_widgets.dart';
 import 'home.dart';
 import 'forgot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Login extends StatefulWidget{
   @override
@@ -13,14 +16,15 @@ class Login extends StatefulWidget{
 
 class _LoginState extends State<Login>{
 
-  var _emailcontroller;
-  var _passwordcontroller;
+  final _emailcontroller = new TextEditingController();
+  final _passwordcontroller = new TextEditingController();
+
+  SharedPreferences prefs;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    _emailcontroller = TextEditingController();
-    _passwordcontroller = TextEditingController();
+    checkLogInStatus();
   }
 
   @override
@@ -28,6 +32,34 @@ class _LoginState extends State<Login>{
     _emailcontroller.dispose();
     _passwordcontroller.dispose();
     super.dispose();
+  }
+
+  void login(String email, String password) async {
+    User logindata = await checkCredentials(email, password);
+
+    if (logindata != null) {
+      Navigator.pushReplacement(
+        context,
+        new MaterialPageRoute(builder: (ctxt) => new Home()),
+      );
+      print(logindata);
+      print(prefs);
+    }else{
+      errorDialog(context, "Login Failure", "Your username or password is incorrect.");
+    }
+  }
+
+  checkLogInStatus() async{
+
+    prefs = await SharedPreferences.getInstance();
+
+    if(prefs.get('email')!=null){
+      Navigator.pushReplacement(
+        context,
+        new MaterialPageRoute(builder: (ctxt) => new Home()),
+      );
+    }
+
   }
 
   @override
@@ -54,7 +86,7 @@ class _LoginState extends State<Login>{
                                   color2: Theme.of(context).colorScheme.secondaryVariant),
                             ),
                             Container(
-                                height: screenHeight*0.35,
+                                height: screenHeight*0.3,
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -81,7 +113,8 @@ class _LoginState extends State<Login>{
                             labelText: "Email",
                           ),
                           style: Theme.of(context).textTheme.bodyText2,
-                          enableSuggestions: false,
+                          keyboardType: TextInputType.visiblePassword,
+                          textInputAction: TextInputAction.next
                         ),
                       ),
                       Container(
@@ -100,11 +133,7 @@ class _LoginState extends State<Login>{
                           width: 150,
                           height: 45,
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  Home()),
-                            );
+                            login(_emailcontroller.text, _passwordcontroller.text);
                           },
                           child: Text("Start Hacking",
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
