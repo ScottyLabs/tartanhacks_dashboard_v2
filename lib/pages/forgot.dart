@@ -45,12 +45,12 @@ class _ForgotState extends State<Forgot>{
                           Stack(
                               children:[
                                 CustomPaint(
-                                  size: Size(screenWidth, screenHeight*(1/2)),
+                                  size: Size(screenWidth, screenHeight*0.45),
                                   painter: CurvedBottom(color1: Theme.of(context).colorScheme.secondary,
                                       color2: Theme.of(context).colorScheme.primaryVariant),
                                 ),
                                 Container(
-                                    height: screenHeight*0.4,
+                                    height: screenHeight*0.3,
                                     width: screenWidth,
                                     alignment: Alignment.topCenter,
                                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),

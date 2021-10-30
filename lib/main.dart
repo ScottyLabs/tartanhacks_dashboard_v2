@@ -6,6 +6,8 @@ import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
 import 'pages/edit_team.dart';
 import 'pages/view_team.dart';
+import 'pages/sponsors.dart';
+import 'pages/bookmarks.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,]);
     return MaterialApp(
       title: 'TartanHacks Dashboard',
       debugShowCheckedModeBanner: false,
@@ -62,7 +65,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: Login(),
+      home: Bookmarks(),
     );
   }
 }

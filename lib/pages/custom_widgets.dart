@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -9,6 +10,11 @@ import 'project_submission.dart';
 import 'profile.dart';
 import 'edit_team.dart';
 import 'teams_list.dart';
+import 'sponsors.dart';
+import 'bookmarks.dart';
+import 'events.dart';
+import 'profile_page.dart';
+
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
   return InputDecoration(
@@ -245,25 +251,13 @@ class TextLogo extends StatelessWidget {
                 color: color
             )
           ),
-          RichText(
-            text: TextSpan(
-              text: " Tartanhacks ",
-              style: TextStyle(
-                fontSize: height*0.36,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-              children: [
-                TextSpan(
-                  text: "Scottylabs",
-                  style: TextStyle(
-                    fontSize: height*0.2,
-                    color: color,
-                  ),
-                )
-              ]
+          Text(" Tartanhacks ",
+            style: TextStyle(
+              fontSize: height*0.4,
+              fontWeight: FontWeight.w600,
+              color: color,
             )
-          ),
+          )
         ]
       )
     );
@@ -406,10 +400,10 @@ class TopBar extends StatelessWidget {
                   width: screenWidth*0.75,
                   height: screenHeight*0.2,
                   alignment: Alignment.topLeft,
-                  padding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
                   child:TextLogo(
                       color: Theme.of(context).colorScheme.onPrimary,
-                      width: screenWidth*0.75,
+                      width: screenWidth*0.70,
                       height: screenHeight*0.10
                   )
               ),
@@ -449,8 +443,8 @@ class WhiteOverlay extends CustomPainter {
       ..color = Colors.white
       ..strokeWidth = 15
       ..shader = LinearGradient(
-      begin: Alignment.topRight,
-      end: Alignment.bottomLeft,
+      begin: Alignment.bottomLeft,
+      end: Alignment.topRight,
       colors:[Colors.white60, Colors.white],
       ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
 
@@ -573,7 +567,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    Profile()),
+                                    ProfilePage()),
                               );
                             },
                         ),
@@ -584,14 +578,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    Login()),
-                              );
-                            },
+                            onTap: () () {logOut(entry, context);}
                         ),
                       ],
                     )
@@ -604,6 +591,129 @@ OverlayEntry MenuOverlay(BuildContext context) {
       )
   );
   return entry;
+}
+
+OverlayEntry SponsorMenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenWidth = mqData.size.width;
+  OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => Positioned(
+          child: Stack(
+              alignment: Alignment.topRight,
+              children:[
+                CustomPaint(
+                    size: mqData.size,
+                    painter: WhiteOverlay()
+                ),
+                Column(
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children:[
+                            Container(
+                                width: screenWidth/4,
+                                alignment: Alignment.topCenter,
+                                padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                                child: MenuButton(
+                                    onTap: () {
+                                      entry.remove();
+                                    }
+                                )
+                            ),
+                          ]
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children:[
+                              MenuChoice(
+                                  icon: Icons.person,
+                                  text: "Home",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                    Sponsors(),
+                                        )
+                                      );
+                                    },
+                              ),
+                              MenuChoice(
+                                icon: Icons.schedule,
+                                text: "Schedule",
+                              ),
+                              MenuChoice(
+                                icon: Icons.bookmark_outline,
+                                text: "Bookmarks",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          Bookmarks(),
+                                      )
+                                  );
+                                },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.help,
+                                  text: "Help"
+                              ),
+                              MenuChoice(
+                                  icon: Icons.mode_night,
+                                  text: "Dark"
+                              ),
+                              MenuChoice(
+                                icon: Icons.logout,
+                                text: "Logout",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Login()),
+                                  );
+                                },
+                              ),
+                            ]
+                        )
+                      )
+              ]
+          )
+          ]
+      )
+      )
+                            onTap: () {logOut(entry, context);}
+                        ),
+                      ],
+                    )
+                  ]
+                )
+              ]
+            ),
+          ]
+        )
+      )
+  );
+  return entry;
+}
+
+void logOut(entry, context) async {
+  var prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+  entry.remove();
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (ctxt) => new Login()),
+  );
 }
 
 class MenuChoice extends StatelessWidget {
@@ -648,4 +758,63 @@ class MenuChoice extends StatelessWidget {
       )
     );
   }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Scaffold(
+        body: Container(
+            height: screenHeight,
+            width: screenWidth,
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                      height: screenHeight*0.35,
+                      width: screenWidth,
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                          color: Theme.of(context).colorScheme.onBackground
+                      )
+                  ),
+                  Text("Loading...",
+                    style: Theme.of(context).textTheme.headline1,
+                  )
+                ]
+            )
+        )
+    );
+  }
+}
+
+void errorDialog(context, String title, String response) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text(title, style: Theme.of(context).textTheme.headline1),
+        content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new TextButton(
+            child: new Text(
+              "OK",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
