@@ -12,12 +12,17 @@ class TeamsList extends StatefulWidget {
 class _TeamsListState extends State<TeamsList> {
 
   bool read = true;
-  int numTeams = 2;
+  int numTeams = 10;
 
-  List<Map> _teamList = [
-    {'teamID': "617385d292fad800160f89b0", 'teamName': "firstteam"},
-    {'teamID': "abcabc", 'teamName': "otherteam"},
-  ];
+  List<Map> _teamList = <Map>[];
+  List<Widget> teamWidgetList = <Widget>[];
+
+  void _populateTeamList(){
+    for(int i = 0; i < 10; i++){
+      String teamName = "Team " + i.toString();
+      _teamList.add({'teamID': "617385d292fad800160f89b0", 'teamName': teamName});
+    }
+  }
 
   Widget _buildTeamHeader() {
     return Row(
@@ -71,7 +76,7 @@ class _TeamsListState extends State<TeamsList> {
 
   Widget _buildTeamJoinBtn(String teamID){
     SolidButton btn = SolidButton(
-      text: "Join",
+      text: " Join ",
       onPressed: () {}
     );
     return btn;
@@ -79,7 +84,7 @@ class _TeamsListState extends State<TeamsList> {
 
   Widget _buildTeamDetailsBtn(String teamID){
     SolidButton btn = SolidButton(
-        text: "View Details",
+        text: " View Details ",
         onPressed: () {
           Navigator.push(
             context,
@@ -91,7 +96,9 @@ class _TeamsListState extends State<TeamsList> {
     return btn;
   }
 
-  Widget _buildTeamEntry(String teamID, String teamName){
+  Widget _buildTeamEntry(int index){
+    String teamID = _teamList[index]['teamID'];
+    String teamName = _teamList[index]['teamName'];
     Row btnRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -99,26 +106,27 @@ class _TeamsListState extends State<TeamsList> {
         _buildTeamDetailsBtn(teamID)
       ],
     );
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(teamName, style: Theme.of(context).textTheme.headline4),
-        btnRow
-      ],
+    return Card(
+        margin: const EdgeInsets.all(12),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(teamName, style: Theme.of(context).textTheme.headline4),
+              const SizedBox(height: 8),
+              btnRow
+            ],
+          )
+      )
     );
   }
 
-  Widget _buildTeamsList(){
-    List<Widget> teamWidgetList = <Widget>[];
+  void _buildTeamsList(){
     for(int i = 0; i < numTeams; i++){
-      teamWidgetList.add(_buildTeamEntry(_teamList[i]['teamID'],_teamList[i]['teamName']));
+      teamWidgetList.add(_buildTeamEntry(i));
     }
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: teamWidgetList
-    );
   }
 
   @override
@@ -127,9 +135,13 @@ class _TeamsListState extends State<TeamsList> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
+    _populateTeamList();
+    _buildTeamsList();
+
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
                 child: ConstrainedBox(
                     constraints: BoxConstraints(
                         maxHeight: screenHeight
@@ -160,7 +172,7 @@ class _TeamsListState extends State<TeamsList> {
                                     height: screenHeight*0.75,
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                     child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Container(
@@ -178,10 +190,13 @@ class _TeamsListState extends State<TeamsList> {
                                               //height: screenHeight*0.2,
                                               child: _buildListHeader()
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                              //height: screenHeight*0.2,
-                                              child: _buildTeamsList()
+                                          Expanded(
+                                            child: ListView.builder(
+                                              itemCount: 10,
+                                              itemBuilder: (BuildContext context, int index){
+                                                return teamWidgetList[index];
+                                              },
+                                            ),
                                           )
                                         ]
                                     )

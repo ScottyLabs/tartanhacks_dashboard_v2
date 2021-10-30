@@ -2,6 +2,20 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
+class Team {
+  String teamID;
+  List<String> members;
+  String event;
+  String desc;
+  String admin;
+  bool visible;
+  Team(String jsonBody){
+    var body = json.decode(jsonBody);
+    this.visible = body["visible"];
+    this.teamID = body["_id"];
+    
+  }
+}
 //right now
 Future<bool> createTeam(String team_name) async {
   const url = "https://tartanhacks-backend.herokuapp.com/teams/";
@@ -42,6 +56,20 @@ Future<bool> inviteTeamMember(String team_id, String user_id, String token) asyn
       showDialog("Successfully invited member", "Success");
     return true;
   }
+  return null;
+}
+
+Future<bool> joinTeam(String team_id, String token) async {
+  const url = "https://tartanhacks-backend.herokuapp.com/teams/invite/" + team_id;
+
+  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
+  var body = json.encode({'team_id' : team_id});
+  final response = await http.post(url, headers: headers, body: body);
+  if (response.statusCode == 200) {
+    showDialog("Successfully invited member", "Success");
+    return true;
+  }
+  showDialog(json.decode(response.body)['message'].toString());
   return null;
 }
 
