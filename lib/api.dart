@@ -27,6 +27,7 @@ Future<User> checkCredentials(String email, String password) async {
     prefs.setString('password', password);
     prefs.setBool('admin', loginData.admin);
     prefs.setString('id', loginData.id);
+    prefs.setString('company', loginData.company);
 
     return loginData;
   } else {
