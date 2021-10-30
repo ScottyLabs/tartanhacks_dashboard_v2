@@ -11,9 +11,12 @@ class Team {
   bool visible;
   Team(String jsonBody){
     var body = json.decode(jsonBody);
-    this.visible = body["visible"];
     this.teamID = body["_id"];
-    
+    this.visible = body["visible"];
+    this.event = body["event"];
+    this.admin = body["admin"];
+    this.members = body["members"];
+    this.desc = body["description"];
   }
 }
 //right now
@@ -66,9 +69,29 @@ Future<bool> joinTeam(String team_id, String token) async {
   var body = json.encode({'team_id' : team_id});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    showDialog("Successfully invited member", "Success");
+    showDialog("Successfully joined team", "Success");
     return true;
   }
+  showDialog(json.decode(response.body)['message'].toString());
+  return null;
+}
+
+Future<List<Team>> getTeams(String token) async {
+  const url = "https://tartanhacks-backend.herokuapp.com/teams/";
+
+  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
+  var body = json.encode({});
+  final response = await http.post(url, headers: headers, body: body);
+  if (response.statusCode == 200) {
+    List<String> teamStrings = List.from(jsonDecode(response.body));
+    List<Team> teamsList = [];
+    for(int i = 0; i < teamStrings.length; i++){
+      teamsList[i] = Team(teamStrings[i]);
+    }
+    showDialog("Successfully retrieved all teams", "Success");
+    return teamsList;
+  }
+
   showDialog(json.decode(response.body)['message'].toString());
   return null;
 }
