@@ -64,3 +64,25 @@ Future<Profile> getProfile(String id, String token) async {
     return null;
   }
 }
+
+Future<List<Profile>> getLeaderboard(String token) async {
+  String url = baseUrl + "check-in/leaderboard";
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    List<Profile> lb = [];
+    var data = json.decode(response.body);
+    var ids = data.map ((json) => json['user']).toList();
+    print(ids);
+    for (String i in ids) {
+      Profile prof = await getProfile(i, token);
+      lb.add(prof);
+    }
+    print(lb);
+    return lb;
+  } else {
+    print(response.body.toString());
+    return null;
+  }
+}
