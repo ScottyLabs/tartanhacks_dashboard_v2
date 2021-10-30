@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
+import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
 class CheckIn extends StatefulWidget {
@@ -58,22 +60,26 @@ class _CheckInState extends State<CheckIn> {
                                     Expanded(flex: 1, child: Header(150)),
                                     Expanded(
                                         flex: 2,
-                                        child: FutureBuilder(
-                                            future: _checkInItems,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData) return CheckInEvents(snapshot.data);
-
-                                              else if (snapshot.hasError) {
+                                        child: Consumer<CheckInItemsModel>(
+                                            builder: (context, checkInItemsModel, child) {
+                                              // Loading State
+                                              var status = checkInItemsModel.checkInItemsStatus;
+                                              var checkInItemsList = checkInItemsModel.checkInItems;
+                                              if (status==Status.NotLoaded ||
+                                                  checkInItemsList==null) {
+                                                checkInItemsModel.fetchCheckInItems();
                                                 return Center(
-                                                  child: Text(
-                                                    snapshot.error
-                                                  ),
+                                                  child: CircularProgressIndicator()
                                                 );
                                               }
-
-                                              else return Center(
-                                                child: CircularProgressIndicator(),
-                                              );
+                                              // Error
+                                              else if (status==Status.Error) {
+                                                return Center(
+                                                  child: Text("Error Loading Data")
+                                                );
+                                              }
+                                              // Display List
+                                              else return CheckInEvents(checkInItemsList);
                                             }
                                         ))
                                   ],
@@ -187,38 +193,41 @@ class CheckInEvents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-              "View All Items",
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                fontWeight: FontWeight.normal,
-                decoration: TextDecoration.underline,
-                fontSize: 15
-            ),
-          ),
-          Expanded(child: CheckInEventList(events)),
-          SizedBox(height: 9,),
-          GradBox(
-            child: Text(
-              "NEW CHECKIN ITEM",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
+    return RefreshIndicator(
+      onRefresh: Provider.of<CheckInItemsModel>(context).fetchCheckInItems,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+                "View All Items",
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                  fontWeight: FontWeight.normal,
+                  decoration: TextDecoration.underline,
+                  fontSize: 15
               ),
             ),
-            onTap: () => {
-              Navigator.push(context, 
-                MaterialPageRoute(builder: (context) => EditCheckInItemPage(null))
-              )
-            },
-            curvature: 12,
-          )
-        ],
+            Expanded(child: CheckInEventList(events)),
+            SizedBox(height: 9,),
+            GradBox(
+              child: Text(
+                "NEW CHECKIN ITEM",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              onTap: () => {
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditCheckInItemPage(null))
+                )
+              },
+              curvature: 12,
+            )
+          ],
+        ),
       ),
     );
   }

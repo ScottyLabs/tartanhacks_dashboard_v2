@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -66,24 +67,38 @@ class CheckInItemForm extends StatefulWidget {
 
 class _CheckInItemFormState extends State<CheckInItemForm> {
   final _formKey = GlobalKey<FormState>();
-  final List<String> accessLevels = ["All users", "Admins only", 
-    "All participants", "On campus participants", "Off-campus participants"];
-  final List<String> activeStatuses = ["Deleted", "Upcoming", "Live", "Complete"];
+  final List<String> accessLevels = ["ALL", "SPONSORS_ONLY",
+    "PARTICIPANTS_ONLY", "ADMINS_ONLY"];
   
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _timeController = TextEditingController();
-  final _unitsController = TextEditingController();
-  final _limitController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _startTimeController = TextEditingController();
+  final _endDateController = TextEditingController();
+  final _endTimeController = TextEditingController();
   final _pointsController = TextEditingController();
+  bool active;
+  String accessLevel;
+
+  DateTime startDate;
+  DateTime endDate;
 
   @override
   void initState() {
     super.initState();
-    _nameController.value = TextEditingValue(text: widget.checkInItem?.name ?? "");
-    _descController.value = TextEditingValue(text: widget.checkInItem?.description ?? "");
-    _pointsController.value = TextEditingValue(text: widget.checkInItem?.points.toString() ?? "");
+    _nameController.value = TextEditingValue(text: widget.checkInItem.name ?? "");
+    _descController.value = TextEditingValue(text: widget.checkInItem.description ?? "");
+    _pointsController.value = TextEditingValue(text: widget.checkInItem.points.toString() ?? "");
+
+    startDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem?.startTime);
+    endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem?.endTime);
+    _startDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+    _startTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+    _endDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+    _endTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+
+    active = widget.checkInItem.active ?? false;
+    accessLevel = widget.checkInItem.accessLevel ?? accessLevels[0];
   }
 
   @override
@@ -111,48 +126,38 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   controller: _descController,
                 ),
                 EditCheckInFormField(
-                  label: "Date",
-                  controller: _dateController,
+                  label: "Start Date",
+                  controller: _startDateController,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     final DateTime picked = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime(2022),
+                      initialDate: startDate ?? DateTime.now(),
+                      firstDate: startDate ?? DateTime.now(),
+                      lastDate: DateTime(2023),
                     );
                     if (picked != null) {
-                      _dateController.value = TextEditingValue(
+                      _startDateController.value = TextEditingValue(
                         text: DateFormat.yMMMd('en_US').format(picked)
                       );
                     }
                   },
                 ),
                 EditCheckInFormField(
-                  label: "Time",
-                  controller: _timeController,
+                  label: "Start Time",
+                  controller: _startTimeController,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
-                        initialTime: TimeOfDay.now()
+                        initialTime: TimeOfDay.fromDateTime(startDate) ?? TimeOfDay.now()
                     );
                     if (picked != null) {
-                      _timeController.value = TextEditingValue(
+                      _startTimeController.value = TextEditingValue(
                           text: picked.format(context)
                       );
                     }
                   }
-                ),
-                EditCheckInFormField(
-                  label: "Units",
-                  controller: _unitsController,
-                  keyboardType: TextInputType.number,
-                ),
-                EditCheckInFormField(
-                  label: "Checkin Limit",
-                  controller: _limitController,
-                  keyboardType: TextInputType.number,
                 ),
                 EditCheckInFormField(
                   label: "Points",
@@ -170,13 +175,35 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   label: "Access levels",
                 ),
                 SizedBox(height: 15,),
-                EditCheckInDropDownFormField(
-                  items: activeStatuses.asMap().map((i, label) =>
-                      MapEntry(i, DropdownMenuItem(
-                        value: i,
-                        child: Text(label),
-                      ))).values.toList(),
-                  label: "Active Status",
+
+                // Active toggle
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "View History",
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          value: active,
+                          onChanged: (val){
+                            setState(() {
+                              active = val;
+                            });
+                          }),
+                    )
+                  ],
                 ),
 
                 // Submit button
