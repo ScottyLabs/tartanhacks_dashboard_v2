@@ -6,7 +6,6 @@ import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
 import 'pages/edit_team.dart';
 import 'pages/view_team.dart';
-import 'pages/sponsors.dart';
 import 'pages/bookmarks.dart';
 
 void main() => runApp(MyApp());

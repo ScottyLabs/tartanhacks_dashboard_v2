@@ -1,24 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-
-class Team {
-  String teamID;
-  List<String> members;
-  String event;
-  String desc;
-  String admin;
-  bool visible;
-  Team(String jsonBody){
-    var body = json.decode(jsonBody);
-    this.teamID = body["_id"];
-    this.visible = body["visible"];
-    this.event = body["event"];
-    this.admin = body["admin"];
-    this.members = body["members"];
-    this.desc = body["description"];
-  }
-}
+import 'custom_widgets.dart';
+import '/models/team.dart';
 //right now
 Future<bool> createTeam(String team_name) async {
   const url = "https://tartanhacks-backend.herokuapp.com/teams/";
@@ -34,7 +19,7 @@ Future<bool> createTeam(String team_name) async {
 
 //ideally
 Future<bool> createTeam2(String creator_name, String team_name, 
-                         String team_description, String team_id, String token) async {
+                         String team_description, String team_id, String token, BuildContext context) async {
   const url = "https://tartanhacks-backend.herokuapp.com/teams/";
 
   Map<String, String> headers = {"Content-type": "application/json", "Token": token};
@@ -43,20 +28,20 @@ Future<bool> createTeam2(String creator_name, String team_name,
   final response = await http.post(url, headers: headers, body: body);
 
   if (response.statusCode == 200) {
-      showDialog("Successfully created team", "Success");
+      errorDialog("Successfully created team", "Success");
     return true;
   }
   return null;
 }
 
-Future<bool> inviteTeamMember(String team_id, String user_id, String token) async {
+Future<bool> inviteTeamMember(String team_id, String user_id, String token, BuildContext context) async {
   const url = "https://tartanhacks-backend.herokuapp.com/teams/invite/" + user_id;
 
   Map<String, String> headers = {"Content-type": "application/json", "Token": token};
   var body = json.encode({'team_id' : team_id, 'user_id' : user_id});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-      showDialog("Successfully invited member", "Success");
+      errorDialog("Successfully invited member", "Success");
     return true;
   }
   return null;
@@ -69,10 +54,10 @@ Future<bool> joinTeam(String team_id, String token) async {
   var body = json.encode({'team_id' : team_id});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    showDialog("Successfully joined team", "Success");
+    errorDialog("Successfully joined team", "Success");
     return true;
   }
-  showDialog(json.decode(response.body)['message'].toString());
+  errorDialog(json.decode(response.body)['message'].toString());
   return null;
 }
 
