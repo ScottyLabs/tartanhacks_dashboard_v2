@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text("Swag Points", style: Theme.of(context).textTheme.headline4),
-                                        Text("Points Earned: 0", style: Theme.of(context).textTheme.bodyText2),
+                                        Text("Points Earned: " + userData.totalPoints.toString(), style: Theme.of(context).textTheme.bodyText2),
                                         SolidButton(
                                           text: "Leaderboard",
                                           onPressed: () {

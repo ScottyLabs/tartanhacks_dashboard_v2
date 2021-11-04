@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 
 class Profile {
+  final int totalPoints;
   final String user;
   final String event; //objectid
   final String email;
@@ -39,6 +40,7 @@ class Profile {
 
 
   Profile({
+      this.totalPoints,
       this.user,
       this.event,
       this.email,
@@ -75,6 +77,7 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
     return new Profile(
+        totalPoints: parsedJson['totalPoints'],
         user: parsedJson['user'],
         event: parsedJson['event'],
         email: parsedJson['email'],
