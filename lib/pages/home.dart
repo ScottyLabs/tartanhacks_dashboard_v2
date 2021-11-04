@@ -10,7 +10,6 @@ import 'project_submission.dart';
 import 'profile_page.dart';
 import 'leaderboard.dart';
 import '../models/profile.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class Home extends StatefulWidget {
   @override

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/check_in_item.dart';
 import 'models/profile.dart';
+import 'models/event.dart';
 import 'models/user.dart';
 
 SharedPreferences prefs;
@@ -67,6 +68,62 @@ Future<Profile> getProfile(String id, String token) async {
   }
 }
 
+<<<<<<< feature/events
+Future<List<Event>> getEvents() async {
+  var url = baseUrl+'events/get';
+  final response = await http.post(url);
+  print(response.statusCode);
+  if (response.statusCode == 200){
+    List<Event> EventsList;
+    var data = json.decode(response.body) as List;
+    EventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
+    return EventsList;
+  }else{
+    return null;
+  }
+}
+
+Future<bool> addEvents(String name, String description, String startTime, String endTime, bool enableCheckin, bool enableProjects, bool enableTeams, bool enableSponsors, String logoUrl, List<String> essayQuestions) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String token = prefs.getString("token");
+
+  String url = baseUrl + "events/new";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "Token": token
+  };
+
+  String essayQuestionsAgg = "";
+  for(int i = 0; i < essayQuestions.length; i++){
+    essayQuestionsAgg += essayQuestions[i] + "\n";
+  }
+  String json1 = '{"name":"' + name +
+      '","description":"' + description +
+      '","startTime":"' + startTime +
+      '","endTime":"' + endTime +
+      ', "enableCheckin": true, "enableProjects": true, "enableTeams": true, "enableSponsors": true,' +
+      '","logoUrl":"' + logoUrl +
+      '"essayQuestions":"' + essayQuestionsAgg + '}';
+  print(json1);
+  final response = await http.post(url, headers: headers, body: json1);
+  if (response.statusCode == 200) {
+    return true;
+  } else if (response.statusCode == 401) {
+    return addEvents(
+        name,
+        description,
+        startTime,
+        endTime,
+        enableCheckin,
+        enableProjects,
+        enableTeams,
+        enableSponsors,
+        logoUrl,
+        essayQuestions);
+  } else {
+    return false;
+=======
 // Check In Endpoints
 Future<List<CheckInItem>> getCheckInItems() async {
   String url = baseUrl + "check-in";
@@ -146,5 +203,6 @@ Future<List<Profile>> getLeaderboard(String token) async {
   } else {
     print(response.body.toString());
     return null;
+>>>>>>> main
   }
 }
