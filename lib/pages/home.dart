@@ -53,30 +53,7 @@ class _HomeState extends State<Home> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     if(userData == null){
-      return Scaffold(
-        body: Container(
-          height: screenHeight,
-          width: screenWidth,
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:[
-              Container(
-                  height: screenHeight*0.35,
-                  width: screenWidth,
-                  alignment: Alignment.topCenter,
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
-                      color: Theme.of(context).colorScheme.onBackground
-                  )
-              ),
-              Text("Loading...",
-                style: Theme.of(context).textTheme.headline1,
-              )
-            ]
-          )
-        )
-      );
+      return LoadingScreen();
     }
     else{
       return Scaffold(
@@ -162,7 +139,7 @@ class _HomeState extends State<Home> {
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text("Swag Points", style: Theme.of(context).textTheme.headline4),
-                                        Text("Points Earned: 0", style: Theme.of(context).textTheme.bodyText2),
+                                        Text("Points Earned: " + userData.totalPoints.toString(), style: Theme.of(context).textTheme.bodyText2),
                                         SolidButton(
                                           text: "Leaderboard",
                                           onPressed: () {

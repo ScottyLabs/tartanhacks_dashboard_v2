@@ -248,25 +248,13 @@ class TextLogo extends StatelessWidget {
                 color: color
             )
           ),
-          RichText(
-            text: TextSpan(
-              text: " Tartanhacks ",
-              style: TextStyle(
-                fontSize: height*0.36,
-                fontWeight: FontWeight.w600,
-                color: color,
-              ),
-              children: [
-                TextSpan(
-                  text: "Scottylabs",
-                  style: TextStyle(
-                    fontSize: height*0.2,
-                    color: color,
-                  ),
-                )
-              ]
+          Text(" Tartanhacks ",
+            style: TextStyle(
+              fontSize: height*0.4,
+              fontWeight: FontWeight.w600,
+              color: color,
             )
-          ),
+          )
         ]
       )
     );
@@ -645,6 +633,39 @@ class MenuChoice extends StatelessWidget {
           )
         ]
       )
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Scaffold(
+        body: Container(
+            height: screenHeight,
+            width: screenWidth,
+            alignment: Alignment.center,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                  Container(
+                      height: screenHeight*0.35,
+                      width: screenWidth,
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
+                          color: Theme.of(context).colorScheme.onBackground
+                      )
+                  ),
+                  Text("Loading...",
+                    style: Theme.of(context).textTheme.headline1,
+                  )
+                ]
+            )
+        )
     );
   }
 }
