@@ -252,7 +252,7 @@ class EditCheckInFormField extends StatelessWidget {
             FilteringTextInputFormatter.digitsOnly
           ] : [],
           decoration: InputDecoration(
-              label: Text(label)
+              labelText: label
           ),
           style: Theme.of(context).textTheme.bodyText2,
         ),

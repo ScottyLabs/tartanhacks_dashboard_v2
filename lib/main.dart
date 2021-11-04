@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: CheckIn(),
+      home: Home(),
     );
   }
 }

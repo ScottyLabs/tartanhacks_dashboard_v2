@@ -9,6 +9,7 @@ import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
 import 'profile_page.dart';
+import 'checkin.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -546,7 +547,15 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         ),
                         MenuChoice(
                             icon: Icons.qr_code_scanner,
-                            text: "Scan"
+                            text: "Scan",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                  CheckIn()),
+                              );
+                            },
                         ),
                         MenuChoice(
                             icon: Icons.person,
