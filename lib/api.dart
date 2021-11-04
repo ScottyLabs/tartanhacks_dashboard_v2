@@ -68,7 +68,7 @@ Future<Profile> getProfile(String id, String token) async {
   }
 }
 
-<<<<<<< feature/events
+
 Future<List<Event>> getEvents() async {
   var url = baseUrl+'events/get';
   final response = await http.post(url);
@@ -95,7 +95,7 @@ Future<bool> addEvents(String name, String description, String startTime, String
   };
 
   String essayQuestionsAgg = "";
-  for(int i = 0; i < essayQuestions.length; i++){
+  for (int i = 0; i < essayQuestions.length; i++) {
     essayQuestionsAgg += essayQuestions[i] + "\n";
   }
   String json1 = '{"name":"' + name +
@@ -123,7 +123,9 @@ Future<bool> addEvents(String name, String description, String startTime, String
         essayQuestions);
   } else {
     return false;
-=======
+  }
+}
+
 // Check In Endpoints
 Future<List<CheckInItem>> getCheckInItems() async {
   String url = baseUrl + "check-in";
@@ -203,6 +205,5 @@ Future<List<Profile>> getLeaderboard(String token) async {
   } else {
     print(response.body.toString());
     return null;
->>>>>>> main
   }
 }

@@ -12,6 +12,7 @@ import 'project_submission.dart';
 import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
+import 'view_team.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -460,93 +461,111 @@ OverlayEntry MenuOverlay(BuildContext context) {
                             ),
                           ]
                       ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                        children:[
-                          MenuChoice(
-                              icon: Icons.schedule,
-                              text: "Events",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        EventsHomeScreen(),
-                                    )
-                              );
-                            },
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                              children:[
+                                MenuChoice(
+                                    icon: Icons.schedule,
+                                    text: "Events",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              EventsHomeScreen(),
+                                          )
+                                    );
+                                  },
+                                ),
+                                MenuChoice(
+                                    icon: Icons.pages,
+                                    text: "Project",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            ProjSubmit(),
+                                        )
+                                      );
+                                    },
+                                ),
+                                MenuChoice(
+                                    icon: Icons.home,
+                                    text: "Home",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              Home(),
+                                          )
+                                      );
+                                    },
+                                ),
+                                MenuChoice(
+                                    icon: Icons.help,
+                                    text: "Help"
+                                ),
+                              ]
                           ),
-                          MenuChoice(
-                              icon: Icons.pages,
-                              text: "Project",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      ProjSubmit(),
-                                  )
-                                );
-                              },
-                          ),
-                          MenuChoice(
-                              icon: Icons.home,
-                              text: "Home",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        Home(),
-                                    )
-                                );
-                              },
-                          ),
-                          MenuChoice(
-                              icon: Icons.help,
-                              text: "Help"
-                          ),
+                          Column(
+                            children: [
+                              MenuChoice(
+                                  icon: Icons.people_alt,
+                                  text: "Team",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          ViewTeam()),
+                                    );
+                                  },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.qr_code_scanner,
+                                  text: "Scan",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          CheckIn()),
+                                    );
+                                  },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.person,
+                                  text: "Profile",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          ProfilePage()),
+                                    );
+                                  },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.mode_night,
+                                  text: "Dark"
+                              ),
+                              MenuChoice(
+                                  icon: Icons.logout,
+                                  text: "Logout",
+                                  onTap: () {logOut(entry, context);}
+                              ),
+                            ],
+                          )
                         ]
-                    ),
-                    Column(
-                      children: [
-                        MenuChoice(
-                            icon: Icons.people_alt,
-                            text: "Team"
-                        ),
-                        MenuChoice(
-                            icon: Icons.qr_code_scanner,
-                            text: "Scan"
-                        ),
-                        MenuChoice(
-                            icon: Icons.person,
-                            text: "Profile",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    ProfilePage()),
-                              );
-                            },
-                        ),
-                        MenuChoice(
-                            icon: Icons.mode_night,
-                            text: "Dark"
-                        ),
-                        MenuChoice(
-                            icon: Icons.logout,
-                            text: "Logout",
-                            onTap: () {logOut(entry, context);}
-                        ),
-                      ],
-                    )
-                  ]
-                )
+                      )
+                    ]
+                ),
               ]
           )
       )
