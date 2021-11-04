@@ -39,7 +39,7 @@ Future<User> checkCredentials(String email, String password) async {
 }
 
 Future<String> resetPassword(String email) async {
-  String url = baseUrl + "auth/reset";
+  String url = baseUrl + "auth/regiset";
   Map<String, String> headers = {"Content-type": "application/json"};
   String json1 = '{"email":"' + email + '"}';
   final response = await http.post(url, headers: headers, body: json1);
