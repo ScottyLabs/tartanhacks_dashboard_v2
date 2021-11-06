@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+import '../api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'team-api.dart';
+import '/models/team.dart';
 
 class ViewTeam extends StatefulWidget {
   @override
@@ -8,6 +12,7 @@ class ViewTeam extends StatefulWidget {
 }
 
 class _ViewTeamState extends State<ViewTeam> {
+  SharedPreferences prefs;
 
   List<Map> _teamMembers = [
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
@@ -18,6 +23,36 @@ class _ViewTeamState extends State<ViewTeam> {
   String _teamDesc = "Team Description";
   int numMembers = 3;
   bool isMember = true;
+  String id;
+  String token;
+
+  Team team;
+
+  void leaveJoin(isMember) async {
+    if (isMember){
+      leaveTeam(token);
+    } else {
+      requestTeam(team.id, token);
+    }
+  }
+
+  void getData() async{
+    checkCredentials('test@example.com', 'string'); //delete later?
+    //test@example.com, test1, test2, test3, team1
+    prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id');
+    token = prefs.getString('token');
+    String teamId = "1";
+    team = getTeamInfo(teamId, token);
+    //once get team, fill all the fields in the text
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
 
   Widget _buildTeamHeader() {
     return Row(
@@ -77,6 +112,9 @@ class _ViewTeamState extends State<ViewTeam> {
         Container(
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            onTap: () {
+              leaveJoin();
+            },
             child: ElevatedButton(
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),

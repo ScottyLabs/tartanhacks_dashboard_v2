@@ -19,6 +19,30 @@ class _CreateTeamState extends State<CreateTeam> {
   TextEditingController inviteMemberController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  String token;
+  SharedPreferences prefs;
+  Team team;
+
+  void getData() async{
+    checkCredentials('test@example.com', 'string');
+    //test@example.com, test1, test2, test3, team1
+    prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id');
+    token = prefs.getString('token');
+    });
+  }
+
+  void create_team() async {
+    createTeam(_teamName, _teamDesc, true, token);
+    //loop through members and invite with inviteTeamMember
+  }
+  
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   void dispose(){
@@ -72,7 +96,6 @@ class _CreateTeamState extends State<CreateTeam> {
         if (value.isEmpty) {
           return 'Team description is required';
         }
-
         return null;
       },
       onSaved: (String value) {
@@ -178,6 +201,9 @@ class _CreateTeamState extends State<CreateTeam> {
                                     Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        onTap: () {
+                                          create_team();
+                                        },
                                         child: ElevatedButton(
                                           style: ButtonStyle(
                                             foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
