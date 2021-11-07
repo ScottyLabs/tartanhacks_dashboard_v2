@@ -146,16 +146,20 @@ class SolidButton extends StatelessWidget{
   String text;
   Function onPressed;
   Widget child;
+  Color color;
 
-  SolidButton({this.text, this.onPressed, this.child});
+  SolidButton({this.text, this.onPressed, this.child, this.color});
 
   @override
   Widget build(BuildContext context) {
+    if (color == null) {
+      color = Theme.of(context).colorScheme.primary;
+    }
     return ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            foregroundColor: MaterialStateProperty.all(color),
+            backgroundColor: MaterialStateProperty.all(color),
             shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
             elevation: MaterialStateProperty.all(5)

@@ -6,6 +6,7 @@ import 'models/check_in_item.dart';
 import 'models/profile.dart';
 import 'models/event.dart';
 import 'models/user.dart';
+import 'models/lb_entry.dart';
 
 SharedPreferences prefs;
 
@@ -186,22 +187,32 @@ Future<void> checkInUser(CheckInItem item, String uid) async {
   }
 }
 
-Future<List<Profile>> getLeaderboard(String token) async {
-  String url = baseUrl + "check-in/leaderboard";
+Future<List<LBEntry>> getLeaderboard() async {
+  String url = baseUrl + "leaderboard";
 
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
-    List<Profile> lb = [];
     var data = json.decode(response.body);
-    var ids = data.map ((json) => json['user']).toList();
-    print(ids);
-    for (String i in ids) {
-      Profile prof = await getProfile(i, token);
-      lb.add(prof);
-    }
+    List<LBEntry> lb = data.map<LBEntry>((json) => LBEntry.fromJson(json)).toList();
     print(lb);
     return lb;
+  } else {
+    print(response.body.toString());
+    return null;
+  }
+}
+
+Future<int> getSelfRank(String token) async {
+  String url = baseUrl + "leaderboard/rank";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    print(data);
+    return data;
   } else {
     print(response.body.toString());
     return null;
