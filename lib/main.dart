@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       title: 'TartanHacks Dashboard',
       debugShowCheckedModeBanner: false,
       theme: theme.getTheme,
-      home: Login(),
+      home: CheckIn(),
     );
   }
 }

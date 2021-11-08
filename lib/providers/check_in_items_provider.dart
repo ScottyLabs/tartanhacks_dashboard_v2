@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thdapp/api.dart';
+import 'package:thdapp/api.dart' as api;
 import 'package:thdapp/models/check_in_item.dart';
 
 enum Status {
@@ -26,28 +26,28 @@ class CheckInItemsModel with ChangeNotifier {
 
   Future<void> fetchCheckInItems() async {
     _status = Status.Fetching;
-    notifyListeners();
     try {
-      _list = await getCheckInItems();
+      _list = await api.getCheckInItems();
       _status = Status.Loaded;
       notifyListeners();
     } on Exception catch (e) {
+      print(e);
       handleException(e);
     }
   }
 
-  Future<void> addCheckInItem(CheckInItem item) async {
-    addCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> addCheckInItem(CheckInItemDTO item) async {
+    await api.addCheckInItem(item);
+    await fetchCheckInItems();
   }
 
-  Future<void> deleteCheckInItem(CheckInItem item) async {
-    deleteCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> deleteCheckInItem(String id) async {
+    await api.deleteCheckInItem(id);
+    await fetchCheckInItems();
   }
 
-  Future<void> editCheckInItem(CheckInItem item) async {
-    editCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> editCheckInItem(CheckInItemDTO item, String id) async {
+    await api.editCheckInItem(item, id);
+    await fetchCheckInItems();
   }
 }

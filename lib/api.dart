@@ -179,10 +179,10 @@ Future<List<Event>> getEvents() async {
   final response = await http.post(url);
   print(response.statusCode);
   if (response.statusCode == 200){
-    List<Event> EventsList;
+    List<Event> eventsList;
     var data = json.decode(response.body) as List;
-    EventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
-    return EventsList;
+    eventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
+    return eventsList;
   }else{
     return null;
   }
@@ -245,7 +245,7 @@ Future<List<CheckInItem>> getCheckInItems() async {
   }
 }
 
-Future<void> addCheckInItem(CheckInItem item) async {
+Future<void> addCheckInItem(CheckInItemDTO item) async {
   String url = baseUrl + "check-in";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
@@ -256,8 +256,8 @@ Future<void> addCheckInItem(CheckInItem item) async {
   }
 }
 
-Future<void> editCheckInItem(CheckInItem item) async {
-  String url = baseUrl + "check-in/${item.id}";
+Future<void> editCheckInItem(CheckInItemDTO item, String id) async {
+  String url = baseUrl + "check-in/$id";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.patch(url, headers: headers, body: itemJson);
@@ -267,8 +267,8 @@ Future<void> editCheckInItem(CheckInItem item) async {
   }
 }
 
-Future<void> deleteCheckInItem(CheckInItem item) async {
-  String url = baseUrl + "check-in/${item.id}";
+Future<void> deleteCheckInItem(String id) async {
+  String url = baseUrl + "check-in/$id";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.patch(url, headers: headers);
 
@@ -277,10 +277,10 @@ Future<void> deleteCheckInItem(CheckInItem item) async {
   }
 }
 
-Future<void> checkInUser(CheckInItem item, String uid) async {
+Future<void> checkInUser(CheckInItemDTO item, String id, String uid) async {
   final queryParams = {
     'userID': uid,
-    'checkInItemID': item.id
+    'checkInItemID': id
   };
   Map<String, String> headers = {"Content-type": "application/json"};
   final uri = Uri.http(baseUrl, "check-in/user", queryParams);

@@ -1,27 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
-import 'package:thdapp/api.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
-class CheckIn extends StatefulWidget {
-  @override
-  _CheckInState createState() => _CheckInState();
-}
-
-class _CheckInState extends State<CheckIn> {
-  final List<String> testEvents = ["Opening Ceremony", "Welcome Ceremony", "Hacking", "Lunch", "Free Ice Cream"];
-  Future _checkInItems;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkInItems = getCheckInItems();
-  }
+class CheckIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
