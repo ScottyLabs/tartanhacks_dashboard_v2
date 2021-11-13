@@ -6,14 +6,57 @@ import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 
-class Sponsors extends StatelessWidget {
-  //List students = ["Student A", "Student B", "Student C", "Student D"];
+class Sponsors extends StatefulWidget {
+  @override
+  _SponsorsState createState() => new _SponsorsState();
+}
+
+class _SponsorsState extends State<Sponsors> {
+  List studentIds;
+  List students;
+  Map bookmarks; // dictionary of participant id : actual bookmark id
 
   SharedPreferences prefs;
-  Profile userData;
+  String token;
 
-  void getData() {
-}
+  void getData() async{
+    prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    List studentData = await getStudents(token);
+    studentIds = studentData[0];
+    students = studentData[1];
+    print('students: ' + students.toString());
+    bookmarks = await getBookmarkIdsList(token);
+    setState(() {
+
+    });
+  }
+
+  void toggleBookmark(String bookmarkId, String participantId) async {
+    prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    print('toggling now!');
+    if (bookmarks.containsKey(bookmarkId)) {
+      print('gonna delete');
+      bookmarks.remove(bookmarkId);
+      print(bookmarks);
+      deleteBookmark(token, bookmarkId);
+    }
+    else {
+      print('gonna add');
+      var newBookmarkId = addBookmark(token, bookmarkId);
+      bookmarks[newBookmarkId] = participantId;
+      print(bookmarks);
+    }
+  }
+
+  // separate functions for adding and deleting bookmarks
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,106 +64,120 @@ class Sponsors extends StatelessWidget {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-      body: Container(
-          child: SingleChildScrollView(
-              child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: screenHeight
-                  ),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TopBar(),
-                        Stack(
-                            children: [
-                              Column(
-                                children:[
-                                  CustomPaint(
-                                      size: Size(screenWidth, screenHeight * 0.8),
-                                      painter: CurvedTop(
-                                          color1: Theme.of(context).colorScheme.secondaryVariant,
-                                          color2: Theme.of(context).colorScheme.primary,
-                                          reverse: true)
-                                  ),
-                                ], // children
-                              ),
-                              Container(
-                                padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                                height: screenHeight *0.8,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
-                                      child: Text("HI [SPONSOR NAME], WELCOME BACK", style: Theme.of(context).textTheme.headline1),
+    if (students == null) {
+      return LoadingScreen();
+    }
+    else {
+      return Scaffold(
+        body: Container(
+            child: SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: screenHeight
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TopBar(),
+                          Stack(
+                              children: [
+                                Column(
+                                  children:[
+                                    CustomPaint(
+                                        size: Size(screenWidth, screenHeight * 0.8),
+                                        painter: CurvedTop(
+                                            color1: Theme.of(context).colorScheme.secondaryVariant,
+                                            color2: Theme.of(context).colorScheme.primary,
+                                            reverse: true)
                                     ),
-                                    SizedBox(height: 10),
-                                    Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                          "Search",
-                                          textAlign: TextAlign.left,
-                                          style: Theme.of(context).textTheme.headline3
-                                      )
-                                    ),
-                                    Container(
-                                      child: TextField(
-                                        decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                        enableSuggestions: false,
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 60,
-                                      alignment: Alignment.centerRight,
-                                      child: GradBox(
-                                        alignment: Alignment.center,
-                                        width: 80,
-                                        height: 40,
-                                        child: Icon(
-                                          Icons.subdirectory_arrow_left,
-                                          size: 30,
-                                          color: Theme.of(context).colorScheme.onSurface
-                                        )
-                                        ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        alignment: Alignment.bottomCenter,
-                                        child: ListView.builder(
-                                          itemCount: 4,
-                                          itemBuilder: (BuildContext context, int index){
-                                            return InfoTile(
-                                              name: students[index],
-                                              team: 'A',
-                                              bio: 'test'
-                                            );
-                                          }
-                                        )
+                                  ], // children
+                                ),
+                                Container(
+                                    padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                                    height: screenHeight *0.8,
+                                    child: Column(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.topLeft,
+                                            //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+                                            child: Text("HI [SPONSOR NAME], WELCOME BACK", style: Theme.of(context).textTheme.headline1),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                  "Search",
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.headline3
+                                              )
+                                          ),
+                                          Container(
+                                            child: TextField(
+                                              decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                              enableSuggestions: false,
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 60,
+                                            alignment: Alignment.centerRight,
+                                            child: GradBox(
+                                                alignment: Alignment.center,
+                                                width: 80,
+                                                height: 40,
+                                                child: Icon(
+                                                    Icons.subdirectory_arrow_left,
+                                                    size: 30,
+                                                    color: Theme.of(context).colorScheme.onSurface
+                                                )
+                                            ),
+                                          ),
+                                          Expanded(
+                                              child: Container(
+                                                  alignment: Alignment.bottomCenter,
+                                                  child: ListView.builder(
+                                                      itemCount: 4,
+                                                      itemBuilder: (BuildContext context, int index){
+                                                        return InfoTile(
+                                                            name: students[index].firstName + " " + students[index].lastName,
+                                                            team: "Cool Team",
+                                                            bio: students[index].college + " c/o " + students[index].graduationYear.toString(),
+                                                            participantId: studentIds[index],
+                                                            bookmarkId: bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]),
+                                                            isBookmark: bookmarks.containsValue(studentIds[index]),
+                                                            toggle: toggleBookmark,
+                                                        );
+                                                      }
+                                                  )
 
+                                              )
+                                          )
+                                        ] //children
                                     )
-                                    )
-                                  ] //children
                                 )
-                              )
-                            ] // children
-                        ),
-                      ]
-                  )
-              )
-          )
-      ),
-    );
+                              ] // children
+                          ),
+                        ]
+                    )
+                )
+            )
+        ),
+      );
+    }
   }
 }
+
 
 class InfoTile extends StatelessWidget {
   String name;
   String team;
   String bio;
+  String participantId;
+  String bookmarkId;
+  bool isBookmark;
+  Function toggle;
 
-  InfoTile({this.name, this.team, this.bio});
+  InfoTile({this.name, this.team, this.bio, this.participantId, this.bookmarkId, this.isBookmark, this.toggle});
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +202,7 @@ class InfoTile extends StatelessWidget {
                   shape: CircleBorder(),
                 ),
                 Container(
-                  width: 185,
+                  width: 180,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,10 +225,13 @@ class InfoTile extends StatelessWidget {
                       ]
                   ),
                 ),
-                Icon(
-                  Icons.bookmark,
+                IconButton(
+                  icon: isBookmark ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
                   color: Theme.of(context).colorScheme.primary,
-                  size: 40.0,
+                  iconSize: 40.0,
+                  onPressed: () {
+                    toggle(bookmarkId, participantId);
+                  }
                 ),
               ],
             )

@@ -31,7 +31,7 @@ class Profile {
   final String design;
   final String website;
   final List essays;
-  final List dietaryRestrictions;
+  final String dietaryRestrictions;
   final String shirtSize;
   final bool wantsHardware;
   final String address;

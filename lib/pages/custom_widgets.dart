@@ -7,7 +7,6 @@ import 'dart:math';
 import 'home.dart';
 import 'login.dart';
 import 'project_submission.dart';
-import 'profile.dart';
 import 'sponsors.dart';
 import 'bookmarks.dart';
 import 'events.dart';
@@ -420,7 +419,7 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(MenuOverlay(context));
+                Overlay.of(context).insert(SponsorMenuOverlay(context));
               },
             )
         )
@@ -568,7 +567,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
-                            onTap: () () {logOut(entry, context);}
+                            //onTap: () () {logOut(entry, context);}
                         ),
                       ],
                     )
@@ -679,17 +678,6 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
           )
           ]
       )
-      )
-                            onTap: () {logOut(entry, context);}
-                        ),
-                      ],
-                    )
-                  ]
-                )
-              ]
-            ),
-          ]
-        )
       )
   );
   return entry;
