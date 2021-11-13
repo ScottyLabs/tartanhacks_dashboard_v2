@@ -210,7 +210,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                                 SizedBox(height:8),
                                                 _buildDate(),
                                                 SolidButton(
-                                                    text: "Save Information"
+                                                    text: "Save Event"
                                                 ),
                                               ],
                                             )
