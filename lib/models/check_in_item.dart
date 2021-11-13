@@ -75,6 +75,6 @@ class CheckInItemDTO {
     'endTime': endTime,
     'points': points,
     'accessLevel': accessLevel,
-    'enableSelfCheckIn': enableSelfCheckIn
+    'enableSelfCheckin': enableSelfCheckIn
   };
 }

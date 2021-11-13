@@ -277,7 +277,7 @@ Future<void> deleteCheckInItem(String id) async {
   }
 }
 
-Future<void> checkInUser(CheckInItemDTO item, String id, String uid) async {
+Future<void> checkInUser(String id, String uid) async {
   final queryParams = {
     'userID': uid,
     'checkInItemID': id
@@ -289,6 +289,12 @@ Future<void> checkInUser(CheckInItemDTO item, String id, String uid) async {
   if (response.statusCode != 200) {
     throw Exception("Failed to add Check In Item");
   }
+}
+
+Future<String> getCurrentUserID() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // return prefs.getString("id");
+  return "60cd74f2bfad613a810a3302";
 }
 
 Future<List<LBEntry>> getLeaderboard() async {

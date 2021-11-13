@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/api.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
@@ -131,6 +134,21 @@ class QRHeader extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
                 borderRadius: BorderRadius.all(Radius.circular(16))),
+            child: FutureBuilder(
+              future: getCurrentUserID(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator(),);
+                else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
+                  return QrImage(
+                    data: snapshot.data,
+                    version: QrVersions.auto,
+                    foregroundColor: Colors.white,
+                  );
+                else return Center(child: Text("Error"),);
+              },
+
+            )
           ),
         )
       ],

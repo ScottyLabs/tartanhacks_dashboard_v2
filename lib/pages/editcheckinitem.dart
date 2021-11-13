@@ -168,8 +168,8 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       _startDateController.value = TextEditingValue(
                         text: DateFormat.yMMMd('en_US').format(picked)
                       );
+                      startDate = picked;
                     }
-                    startDate = picked;
                   },
                 ),
                 EditCheckInFormField(
@@ -215,6 +215,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       _startTimeController.value = TextEditingValue(
                           text: picked.format(context)
                       );
+                      startTime = picked;
                     }
                   }
                 ),
@@ -242,6 +243,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                         _endTimeController.value = TextEditingValue(
                             text: picked.format(context)
                         );
+                        endTime = picked;
                       }
                     }
                 ),
@@ -308,6 +310,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       if (_formKey.currentState.validate()) {
                         DateTime startDateTime = DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute);
                         DateTime endDateTime = DateTime(endDate.year, endDate.month, endDate.day, endTime.hour, endTime.minute);
+                        print(enableSelfCheckIn);
 
                         CheckInItemDTO updatedItem = CheckInItemDTO(
                             name: _nameController.text,

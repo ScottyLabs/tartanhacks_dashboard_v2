@@ -1,6 +1,9 @@
+import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:thdapp/api.dart';
 import 'package:thdapp/pages/qr_scan_config.dart';
 import 'custom_widgets.dart';
 
@@ -11,6 +14,8 @@ class QRPage extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
+    final _eventIDController = TextEditingController();
 
     return Scaffold(
         body: Container(
@@ -43,8 +48,11 @@ class QRPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    IDCheckInHeader(),
-                                    QREnlarged()
+                                    IDCheckInHeader(_eventIDController),
+                                    QREnlarged(onPressed: () async {
+                                      // TODO Handle scanned data somehow
+                                      final String data = await Barras.scan(context);
+                                    },)
                                   ],
                                 ))
                           ],
@@ -55,7 +63,9 @@ class QRPage extends StatelessWidget {
 }
 
 class IDCheckInHeader extends StatelessWidget {
-  final _eventIDController = TextEditingController();
+  final _eventIDController;
+
+  IDCheckInHeader(this._eventIDController);
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +101,9 @@ class IDCheckInHeader extends StatelessWidget {
 }
 
 class QREnlarged extends StatelessWidget {
+  final Function onPressed;
+
+  QREnlarged({this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +119,20 @@ class QREnlarged extends StatelessWidget {
             aspectRatio: 1,
             child: GradBox(
               width: double.infinity,
+              child: FutureBuilder(
+                future: getCurrentUserID(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Center(child: CircularProgressIndicator(),);
+                  else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
+                    return QrImage(
+                      data: snapshot.data,
+                      version: QrVersions.auto,
+                      foregroundColor: Colors.black,
+                    );
+                  else return Center(child: Text("Error"),);
+                },
+              ),
             )
         ),
         SizedBox(height: 15,),
@@ -118,7 +145,7 @@ class QREnlarged extends StatelessWidget {
               child: SizedBox(
                 height: 45,
                 child: SolidButton(
-                  onPressed: () {},
+                  onPressed: onPressed,
                   text: "To Scanner",
                 ),
               ),
