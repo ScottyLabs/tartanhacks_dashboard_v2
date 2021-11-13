@@ -12,8 +12,6 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
-  List people = ["Anuda Weerasinghe", "Joyce Hong", "Gram Liu", "Elise Chapman",
-    "Catherine Liu", "Susan Ni", "Alice", "Bob", "Carol", "Dave"];
   List<LBEntry> lbData;
   int selfRank;
   Profile userData;
@@ -90,7 +88,7 @@ class _LeaderboardState extends State<Leaderboard> {
                                             Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
                                             LBRow(
                                                 place: selfRank,
-                                                name: userData.firstName + " " + userData.lastName,
+                                                name: userData.displayName,
                                                 points: userData.totalPoints
                                             )
                                           ],

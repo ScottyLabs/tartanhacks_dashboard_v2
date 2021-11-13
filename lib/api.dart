@@ -195,7 +195,6 @@ Future<List<LBEntry>> getLeaderboard() async {
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     List<LBEntry> lb = data.map<LBEntry>((json) => LBEntry.fromJson(json)).toList();
-    print(lb);
     return lb;
   } else {
     print(response.body.toString());
@@ -211,7 +210,6 @@ Future<int> getSelfRank(String token) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    print(data);
     return data;
   } else {
     print(response.body.toString());
