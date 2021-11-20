@@ -4,6 +4,7 @@ import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
 import 'package:thdapp/api.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -33,6 +34,24 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
 
     });
+  }
+
+  _launchResume() async {
+    String url = userData.resume;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  _launchGithub() async {
+    String url = "https://github.com/" + userData.github;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -136,6 +155,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                     .textTheme
                                                                     .headline3
                                                             ),
+                                                            Text('"' + userData.displayName + '"',
+                                                                style: Theme
+                                                                    .of(context)
+                                                                    .textTheme
+                                                                    .bodyText2
+                                                            ),
                                                             Text("[TEAM NAME]",
                                                                 style: Theme
                                                                     .of(context)
@@ -173,9 +198,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   children: [
                                                     SolidButton(
                                                       text: " Link to GitHub ",
+                                                      onPressed: () => _launchGithub(),
                                                     ),
                                                     SolidButton(
                                                       text: " View Resume ",
+                                                      onPressed: () => _launchResume(),
                                                     ),
                                                   ],
                                                 ),

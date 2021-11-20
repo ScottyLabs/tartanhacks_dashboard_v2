@@ -9,6 +9,9 @@ import 'pages/login.dart';
 import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
 //import 'pages/view_team.dart'; //debug
+import 'pages/sponsors.dart';
+import 'pages/bookmarks.dart';
+import 'pages/old_bookmarks.dart';
 
 void main() => runApp(
     ChangeNotifierProvider(

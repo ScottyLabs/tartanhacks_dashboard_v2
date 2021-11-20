@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/models/lb_entry.dart';
 import 'custom_widgets.dart';
 import '../models/profile.dart';
 import 'package:thdapp/api.dart';
@@ -11,16 +12,18 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
-  List people = ["Anuda Weerasinghe", "Joyce Hong", "Gram Liu", "Elise Chapman",
-    "Catherine Liu", "Susan Ni", "Alice", "Bob", "Carol", "Dave"];
-  List<Profile> lbData;
+  List<LBEntry> lbData;
+  int selfRank;
+  Profile userData;
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
+    String id = prefs.getString('id');
 
-    lbData = await getLeaderboard(token);
-    print(lbData[0].firstName);
+    lbData = await getLeaderboard();
+    selfRank = await getSelfRank(token);
+    userData = await getProfile(id, token);
     setState(() {
 
     });
@@ -84,9 +87,9 @@ class _LeaderboardState extends State<Leaderboard> {
                                           children: [
                                             Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
                                             LBRow(
-                                                place: 123,
-                                                name: "Firstname Lastname",
-                                                points: 5000
+                                                place: selfRank,
+                                                name: userData.displayName,
+                                                points: userData.totalPoints
                                             )
                                           ],
                                         ),
@@ -111,8 +114,8 @@ class _LeaderboardState extends State<Leaderboard> {
                                                         itemCount: lbData.length,
                                                         itemBuilder: (BuildContext context, int index){
                                                           return LBRow(
-                                                              place: (index+1),
-                                                              name: lbData[index].firstName + " " + lbData[index].lastName,
+                                                              place: lbData[index].rank,
+                                                              name: lbData[index].displayName,
                                                               points: lbData[index].totalPoints
                                                           );
                                                         },

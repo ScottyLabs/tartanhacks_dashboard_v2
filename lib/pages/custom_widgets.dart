@@ -7,9 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
+import 'leaderboard.dart';
 import 'project_submission.dart';
+import 'sponsors.dart';
+import 'bookmarks.dart';
+import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
+import 'view_team.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -143,16 +148,20 @@ class SolidButton extends StatelessWidget{
   String text;
   Function onPressed;
   Widget child;
+  Color color;
 
-  SolidButton({this.text, this.onPressed, this.child});
+  SolidButton({this.text, this.onPressed, this.child, this.color});
 
   @override
   Widget build(BuildContext context) {
+    if (color == null) {
+      color = Theme.of(context).colorScheme.primary;
+    }
     return ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            foregroundColor: MaterialStateProperty.all(color),
+            backgroundColor: MaterialStateProperty.all(color),
             shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
             elevation: MaterialStateProperty.all(5)
@@ -165,6 +174,29 @@ class SolidButton extends StatelessWidget{
     );
   }
 }
+
+class SolidSquareButton extends StatelessWidget{
+  String image;
+  Function onPressed;
+
+  SolidSquareButton({this.image, this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            fixedSize: MaterialStateProperty.all<Size>(Size.square(10)),
+            elevation: MaterialStateProperty.all(5)
+        ),
+    );
+  }
+}
+
 class GradText extends StatelessWidget {
   String text;
   Color color1;
@@ -367,7 +399,7 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(MenuOverlay(context));
+                Overlay.of(context).insert(SponsorMenuOverlay(context));
               },
             )
         )
@@ -409,6 +441,125 @@ OverlayEntry MenuOverlay(BuildContext context) {
   final screenHeight = mqData.size.height;
   final screenWidth = mqData.size.width;
   OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => Positioned(
+        child: Stack(
+          alignment: Alignment.topRight,
+          children:[
+            CustomPaint(
+              size: mqData.size,
+              painter: WhiteOverlay()
+            ),
+            Column(
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children:[
+                      Container(
+                          width: screenWidth/4,
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                          child: MenuButton(
+                              onTap: () {
+                                entry.remove();
+                              }
+                          )
+                      ),
+                    ]
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                        children:[
+                          MenuChoice(
+                              icon: Icons.schedule,
+                              text: "Schedule"
+                          ),
+                          MenuChoice(
+                              icon: Icons.pages,
+                              text: "Project",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ProjSubmit(),
+                                  )
+                                );
+                              },
+                          ),
+                          MenuChoice(
+                              icon: Icons.home,
+                              text: "Home",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Home(),
+                                    )
+                                );
+                              },
+                          ),
+                          MenuChoice(
+                              icon: Icons.help,
+                              text: "Help"
+                          ),
+                        ]
+                    ),
+                    Column(
+                      children: [
+                        MenuChoice(
+                            icon: Icons.people_alt,
+                            text: "Team"
+                        ),
+                        MenuChoice(
+                            icon: Icons.qr_code_scanner,
+                            text: "Scan"
+                        ),
+                        MenuChoice(
+                            icon: Icons.person,
+                            text: "Profile",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    ProfilePage()),
+                              );
+                            },
+                        ),
+                        MenuChoice(
+                            icon: Icons.mode_night,
+                            text: "Dark"
+                        ),
+                        MenuChoice(
+                            icon: Icons.logout,
+                            text: "Logout",
+                            //onTap: () () {logOut(entry, context);}
+                        ),
+                      ],
+                    )
+                  ]
+                )
+              ]
+            ),
+          ]
+        )
+      )
+  );
+  return entry;
+}
+
+OverlayEntry SponsorMenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenWidth = mqData.size.width;
+  OverlayEntry entry;
+
   entry = OverlayEntry(
       builder: (context) => Positioned(
           child: Stack(
@@ -437,29 +588,38 @@ OverlayEntry MenuOverlay(BuildContext context) {
                       ),
                       SizedBox(height: 10),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                                children:[
-                                  MenuChoice(
-                                      icon: Icons.schedule,
-                                      text: "Schedule"
-                                  ),
-                                  MenuChoice(
-                                    icon: Icons.pages,
-                                    text: "Project",
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                              children:[
+                                MenuChoice(
+                                    icon: Icons.schedule,
+                                    text: "Events",
                                     onTap: () {
                                       entry.remove();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) =>
-                                              ProjSubmit(),
+                                              EventsHomeScreen(),
                                           )
+                                    );
+                                  },
+                                ),
+                                MenuChoice(
+                                    icon: Icons.pages,
+                                    text: "Project",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            ProjSubmit(),
+                                        )
                                       );
                                     },
-                                  ),
-                                  MenuChoice(
+                                ),
+                                MenuChoice(
                                     icon: Icons.home,
                                     text: "Home",
                                     onTap: () {
@@ -471,24 +631,40 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                           )
                                       );
                                     },
-                                  ),
-                                  MenuChoice(
-                                      icon: Icons.help,
-                                      text: "Help"
-                                  ),
-                                ]
-                            ),
-                            Column(
-                              children: [
-                                MenuChoice(
-                                    icon: Icons.people_alt,
-                                    text: "Team"
                                 ),
                                 MenuChoice(
-                                    icon: Icons.qr_code_scanner,
-                                    text: "Scan"
+                                    icon: Icons.help,
+                                    text: "Help"
                                 ),
-                                MenuChoice(
+                              ]
+                          ),
+                          Column(
+                            children: [
+                              MenuChoice(
+                                  icon: Icons.people_alt,
+                                  text: "Team",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          ViewTeam()),
+                                    );
+                                  },
+                              ),
+                              MenuChoice(
+                                  icon: Icons.qr_code_scanner,
+                                  text: "Scan",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          CheckIn()),
+                                    );
+                                  },
+                              ),
+                              MenuChoice(
                                   icon: Icons.person,
                                   text: "Profile",
                                   onTap: () {
@@ -499,19 +675,19 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                           ProfilePage()),
                                     );
                                   },
-                                ),
-                                MenuChoice(
-                                    icon: Icons.mode_night,
-                                    text: "Dark"
-                                ),
-                                MenuChoice(
-                                    icon: Icons.logout,
-                                    text: "Logout",
-                                    onTap: () {logOut(entry, context);}
-                                ),
-                              ],
-                            )
-                          ]
+                              ),
+                              MenuChoice(
+                                  icon: Icons.mode_night,
+                                  text: "Dark"
+                              ),
+                              MenuChoice(
+                                  icon: Icons.logout,
+                                  text: "Logout",
+                                  onTap: () {logOut(entry, context);}
+                              ),
+                            ],
+                          )
+                        ]
                       )
                     ]
                 ),
