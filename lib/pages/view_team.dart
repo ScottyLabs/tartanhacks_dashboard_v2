@@ -14,7 +14,6 @@ class ViewTeam extends StatefulWidget {
 class _ViewTeamState extends State<ViewTeam> {
   SharedPreferences prefs;
 
-
   List<Map> _teamMembers = [
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
@@ -38,7 +37,6 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   void getData() async{
-    checkCredentials('test@example.com', 'string'); 
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id');
     token = prefs.getString('token');
@@ -111,7 +109,7 @@ class _ViewTeamState extends State<ViewTeam> {
     return (
         SolidButton(
           text: "Leave Team",
-        ),
+    ),
   }
 
   List<Widget> _infoList(bool isMember){

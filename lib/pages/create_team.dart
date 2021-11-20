@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+import '../../api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'team-api.dart';
+import '/models/team.dart';
 
 class CreateTeam extends StatefulWidget {
   @override
@@ -30,13 +34,11 @@ class _CreateTeamState extends State<CreateTeam> {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id');
     token = prefs.getString('token');
-    });
   }
 
   void create_team() async {
-    createTeam(_teamName, _teamDesc, true, token);
+    await createTeam(_teamName, _teamDesc, true, token);
     //loop through members and invite with inviteTeamMember
-
   }
   
   @override
@@ -196,14 +198,17 @@ class _CreateTeamState extends State<CreateTeam> {
                                             )
                                           )
                                         ),
-                                        SolidButton(
-                                          text: "Create Team",
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          onPressed: create_team()
-                                          ),
                                         ]
                                       ),
-                                     
+                                      
+                                    Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        child: SolidButton(
+                                          text: "Create Team",
+                                          onPressed: create_team()
+                                        )
+                                    )
                                 ]
                               )
                             )
@@ -217,4 +222,3 @@ class _CreateTeamState extends State<CreateTeam> {
         )
     );
   }
-}

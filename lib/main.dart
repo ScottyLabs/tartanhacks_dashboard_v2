@@ -8,7 +8,7 @@ import 'pages/home.dart';
 import 'pages/login.dart';
 import 'pages/forgot.dart';
 import 'pages/project_submission.dart';
-import 'pages/create_team.dart'; //debug
+//import 'pages/view_team.dart'; //debug
 
 void main() => runApp(
     ChangeNotifierProvider(
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
               )
           )
       ),
-      home: CreateTeam(),
+      home: Login(),
     );
   }
 }

@@ -1,47 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
 import 'custom_widgets.dart';
+import '../api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'team-api.dart';
+import '/models/team.dart';
 
-class EditTeam extends StatefulWidget {
+class ViewTeam extends StatefulWidget {
   @override
-  _EditTeamState createState() => _EditTeamState();
+  _ViewTeamState createState() => _ViewTeamState();
 }
 
-/*
-class OrangeButton extends StatelessWidget{
-  String text;
-  Function onPressed;
+class _ViewTeamState extends State<ViewTeam> {
+  SharedPreferences prefs;
 
-  SolidButton({this.text, this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: onPressed,
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-          backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-          shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-          elevation: MaterialStateProperty.all(5)
-        ),
-        child: Text(text,
-          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        )
-    );
-  }
-}*/
-
-class _EditTeamState extends State<EditTeam> {
-
-  List<Map> _teamMembers = [{'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
-                          {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
-                          {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"}];
+  List<Map> _teamMembers = [
+    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
+    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
+    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"}
+    ];
   String _teamName = "My Team";
-  String _teamDesc = "my team description";
+  String _teamDesc = "Team Description";
+  int numMembers = 3;
+  bool isMember = true;
+  String teamId;
+  String token;
+
+  Team team;
   bool read = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -62,6 +47,31 @@ class _EditTeamState extends State<EditTeam> {
     }
   }
 
+  void leaveJoin(isMember) async {
+    if (isMember){
+      leaveTeam(token);
+    } else {
+      requestTeam(team.teamId, token);
+    }
+  }
+
+  void getData() async{
+    //checkCredentials('test@example.com', 'string'); 
+    prefs = await SharedPreferences.getInstance();
+    id = prefs.getString('id');
+    token = prefs.getString('token');
+    teamId = getUserTeam(token);
+    team = getTeamInfo(teamId, token);
+    _teamMembers = team.members;
+    _teamDesc = team.description;
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
+
   Widget _buildTeamHeader(bool read) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -74,69 +84,80 @@ class _EditTeamState extends State<EditTeam> {
 
   Widget _buildTeamDesc() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(_teamName, style: Theme.of(context).textTheme.headline4),
-        Text(_teamDesc, style: Theme.of(context).textTheme.bodyText2)
-      ]
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_teamName, style: Theme.of(context).textTheme.headline4),
+          Text(_teamDesc, style: Theme.of(context).textTheme.bodyText2)
+        ]
     );
   }
 
   Widget _buildMember(int member) {
     String email_str = "(" + _teamMembers[member]['email'] + ")";
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(_teamMembers[member]['name'], style: Theme.of(context).textTheme.bodyText2),
-        Text(email_str, style: Theme.of(context).textTheme.bodyText2)
-      ]
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(_teamMembers[member]['name'], style: Theme.of(context).textTheme.bodyText2),
+          Text(email_str, style: Theme.of(context).textTheme.bodyText2)
+        ]
     );
   }
 
-  Widget _buildTeamMembers() {
+  Widget _buildTeamMembers(int numMembers) {
+    List<Widget> teamMembers = <Widget>[];
+    for(int i = 0; i < numMembers; i++){
+      teamMembers.add(_buildMember(i));
+    }
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Team Members", style: Theme.of(context).textTheme.headline4),
-        Column(
-          children: [
-            _buildMember(0),
-            _buildMember(1),
-            _buildMember(2)
-          ]
-        )
-      ]
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Team Members", style: Theme.of(context).textTheme.headline4),
+          Column(
+              children: teamMembers
+          )
+        ]
     );
   }
-  
 
-  Widget _leaveTeamBtn() {
+  Widget _leaveJoinTeamBtn(bool isMember) {
+    String buttonText = "Leave Team";
+    if(!isMember){
+      buttonText = "Join Team";
+    }
     return (
-      Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-        child: ElevatedButton(
-          style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            elevation: MaterialStateProperty.all(5),
-            ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Text("Leave Team",
-            style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-            overflow: TextOverflow.fade,
-            softWrap: false
-            )
-          )
+        SolidButton(
+          text: "Leave Team",
+        ),
+  }
+
+  List<Widget> _infoList(bool isMember){
+    List<Widget> info = <Widget>[];
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            //height: screenHeight*0.05,
+            child: _buildTeamHeader()
         )
-      )
     );
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            //height: screenHeight*0.2,
+            child: _buildTeamDesc()
+        )
+    );
+    info.add(
+        Container(
+            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+            //height: screenHeight*0.1,
+            child: _buildTeamMembers(numMembers)
+        )
+    );
+    info.add(_leaveJoinTeamBtn(isMember));
+    return info;
   }
 
   @override
