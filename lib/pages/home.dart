@@ -10,6 +10,7 @@ import 'project_submission.dart';
 import 'profile_page.dart';
 import 'leaderboard.dart';
 import '../models/profile.dart';
+import 'checkin.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -149,7 +150,16 @@ class _HomeState extends State<Home> {
                                             );
                                           },
                                         ),
-                                        SolidButton(text: "Check In", onPressed: null,)
+                                        SolidButton(
+                                          text: "Check In",
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) =>
+                                                  CheckIn()),
+                                            );
+                                          },
+                                        )
                                       ]
                                   )
                               ),
