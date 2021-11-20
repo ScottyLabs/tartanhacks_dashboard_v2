@@ -36,6 +36,7 @@ class _CreateTeamState extends State<CreateTeam> {
   void create_team() async {
     createTeam(_teamName, _teamDesc, true, token);
     //loop through members and invite with inviteTeamMember
+
   }
   
   @override
@@ -197,31 +198,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                         ),
                                         ]
                                       ),
-                                      
-                                    Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                        onTap: () {
-                                          create_team();
-                                        },
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-                                            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-                                            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-                                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                            elevation: MaterialStateProperty.all(5),
-                                          ),
-                                          child: Container(
-                                              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                              child: Text("Create New Team",
-                                                style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-                                              overflow: TextOverflow.fade,
-                                              softWrap: false,
-                                            )
-                                          )
-                                        )
-                                      )
+                                     
                                 ]
                               )
                             )

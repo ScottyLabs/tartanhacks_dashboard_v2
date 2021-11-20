@@ -31,8 +31,6 @@ Future<<List>> getTeamInfo(String teamId,
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
-  //var body = json.encode({'name' : team_name, 
-  //'description': team_description, 'visible': team_visible});
   final response = await http.post(url, headers: headers);
 
   if (response.statusCode == 200) {

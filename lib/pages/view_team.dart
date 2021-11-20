@@ -14,6 +14,7 @@ class ViewTeam extends StatefulWidget {
 class _ViewTeamState extends State<ViewTeam> {
   SharedPreferences prefs;
 
+
   List<Map> _teamMembers = [
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
@@ -109,31 +110,9 @@ class _ViewTeamState extends State<ViewTeam> {
       buttonText = "Join Team";
     }
     return (
-        Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            onTap: () {
-              leaveJoin();
-            },
-            child: ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-                  backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-                  shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  elevation: MaterialStateProperty.all(5),
-                ),
-                child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(buttonText,
-                        style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-                        overflow: TextOverflow.fade,
-                        softWrap: false
-                    )
-                )
-            )
-        )
-    );
+        SolidButton(
+          text: "Leave Team",
+        ),
   }
 
   List<Widget> _infoList(bool isMember){
@@ -207,7 +186,10 @@ class _ViewTeamState extends State<ViewTeam> {
                                         children: _infoList(isMember)
                                     )
                                 )
-                            )
+                            ),
+                            SolidButton(
+                              text: "Create Team",
+                            ),
                           ],
                         )
                       ],
