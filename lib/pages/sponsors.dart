@@ -27,6 +27,7 @@ class _SponsorsState extends State<Sponsors> {
     students = studentData[1];
     print('students: ' + students.toString());
     bookmarks = await getBookmarkIdsList(token);
+    print('bookmarks: ' + bookmarks.toString());
     setState(() {
 
     });
@@ -78,7 +79,7 @@ class _SponsorsState extends State<Sponsors> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          TopBar(),
+                          TopBar(isSponsor: true,),
                           Stack(
                               children: [
                                 Column(
@@ -139,12 +140,12 @@ class _SponsorsState extends State<Sponsors> {
                                                       itemCount: 4,
                                                       itemBuilder: (BuildContext context, int index){
                                                         return InfoTile(
-                                                            name: students[index].firstName + " " + students[index].lastName,
+                                                            name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
                                                             team: "Cool Team",
-                                                            bio: students[index].college + " c/o " + students[index].graduationYear.toString(),
+                                                            bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                             participantId: studentIds[index],
-                                                            bookmarkId: bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]),
-                                                            isBookmark: bookmarks.containsValue(studentIds[index]),
+                                                            bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
+                                                            isBookmark: (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false,
                                                             toggle: toggleBookmark,
                                                         );
                                                       }

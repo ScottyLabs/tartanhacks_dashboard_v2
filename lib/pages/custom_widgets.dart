@@ -356,8 +356,9 @@ class BackFlag extends StatelessWidget {
 }
 class TopBar extends StatelessWidget {
   bool backflag;
+  bool isSponsor;
   OverlayEntry _overlayEntry;
-  TopBar({this.backflag = false});
+  TopBar({this.backflag = false, this.isSponsor = false});
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -399,7 +400,11 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(SponsorMenuOverlay(context));
+                if (isSponsor) {
+                  Overlay.of(context).insert(SponsorMenuOverlay(context));
+                } else {
+                  Overlay.of(context).insert(MenuOverlay(context));
+                }
               },
             )
         )
@@ -515,7 +520,15 @@ OverlayEntry MenuOverlay(BuildContext context) {
                       children: [
                         MenuChoice(
                             icon: Icons.people_alt,
-                            text: "Team"
+                            text: "Team",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    ViewTeam()),
+                              );
+                            },
                         ),
                         MenuChoice(
                             icon: Icons.qr_code_scanner,
@@ -540,7 +553,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
-                            //onTap: () () {logOut(entry, context);}
+                            onTap: () {logOut(entry, context);}
                         ),
                       ],
                     )
@@ -573,6 +586,7 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                     children: [
                       Row(
                           mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
                             Container(
                                 width: screenWidth/4,
@@ -587,110 +601,60 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                           ]
                       ),
                       SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
+                      Container(
+                          alignment: Alignment.topRight,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children:[
                                 MenuChoice(
-                                    icon: Icons.schedule,
-                                    text: "Events",
-                                    onTap: () {
-                                      entry.remove();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              EventsHomeScreen(),
-                                          )
+                                  icon: Icons.person,
+                                  text: "Home",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            Sponsors(),
+                                        )
                                     );
                                   },
                                 ),
                                 MenuChoice(
-                                    icon: Icons.pages,
-                                    text: "Project",
-                                    onTap: () {
-                                      entry.remove();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            ProjSubmit(),
-                                        )
-                                      );
-                                    },
+                                  icon: Icons.schedule,
+                                  text: "Schedule",
                                 ),
                                 MenuChoice(
-                                    icon: Icons.home,
-                                    text: "Home",
-                                    onTap: () {
-                                      entry.remove();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) =>
-                                              Home(),
-                                          )
-                                      );
-                                    },
+                                  icon: Icons.bookmark_outline,
+                                  text: "Bookmarks",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            Bookmarks(),
+                                        )
+                                    );
+                                  },
                                 ),
                                 MenuChoice(
                                     icon: Icons.help,
                                     text: "Help"
                                 ),
-                              ]
-                          ),
-                          Column(
-                            children: [
-                              MenuChoice(
-                                  icon: Icons.people_alt,
-                                  text: "Team",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) =>
-                                          ViewTeam()),
-                                    );
-                                  },
-                              ),
-                              MenuChoice(
-                                  icon: Icons.qr_code_scanner,
-                                  text: "Scan",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) =>
-                                          CheckIn()),
-                                    );
-                                  },
-                              ),
-                              MenuChoice(
-                                  icon: Icons.person,
-                                  text: "Profile",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) =>
-                                          ProfilePage()),
-                                    );
-                                  },
-                              ),
-                              MenuChoice(
-                                  icon: Icons.mode_night,
-                                  text: "Dark"
-                              ),
-                              MenuChoice(
+                                MenuChoice(
+                                    icon: Icons.mode_night,
+                                    text: "Dark"
+                                ),
+                                MenuChoice(
                                   icon: Icons.logout,
                                   text: "Logout",
-                                  onTap: () {logOut(entry, context);}
-                              ),
-                            ],
+                                  onTap: () {logOut(entry, context);},
+                                ),
+                              ]
                           )
-                        ]
                       )
                     ]
-                ),
+                )
               ]
           )
       )

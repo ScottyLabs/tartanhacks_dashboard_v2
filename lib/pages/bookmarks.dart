@@ -30,6 +30,12 @@ class _Bookmarks extends State<Bookmarks> {
   }
 
   @override
+  initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
@@ -45,7 +51,7 @@ class _Bookmarks extends State<Bookmarks> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(),
+                        TopBar(isSponsor: true),
                         Stack(
                             children: [
                               Column(
@@ -78,19 +84,25 @@ class _Bookmarks extends State<Bookmarks> {
                                                 child: Text("Scroll to see the full list.", style: TextStyle(fontSize: screenHeight * 0.02)),
                                               ),
                                               Expanded(
-                                                  child: Container(
+                                                  child: (participantBookmarks != null) ?
+                                                  Container(
                                                     padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
                                                     alignment: Alignment.topCenter,
                                                     child: ListView.builder(
-                                                      itemCount: participantBookmarks.length,
-                                                      itemBuilder: (BuildContext context, int index){
-                                                        return BookmarkInfo(
-                                                            name: participantBookmarks[index],
-                                                            team: "ScottyLabs",
-                                                            bio: "[Bio]"
-                                                        );
-                                                      },
-                                                    ),
+                                                        itemCount: participantBookmarks.length,
+                                                        itemBuilder: (BuildContext context, int index){
+                                                          return BookmarkInfo(
+                                                              name: participantBookmarks[index],
+                                                              team: "ScottyLabs",
+                                                              bio: "[Bio]"
+                                                          );
+                                                        },
+                                                      )
+                                                  ) :
+                                                  Container(
+                                                    padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
+                                                    alignment: Alignment.center,
+                                                    child: Text("No bookmarks.", style: Theme.of(context).textTheme.headline3)
                                                   )
                                               )
                                             ]
