@@ -35,78 +35,83 @@ class _Bookmarks extends State<Bookmarks> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: screenHeight
-                  ),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TopBar(),
-                        Stack(
-                            children: [
-                              Column(
-                                  children:[
-                                    SizedBox(height:screenHeight * 0.05),
-                                    CustomPaint(
-                                        size: Size(screenWidth, screenHeight * 0.75),
-                                        painter: CurvedTop(
-                                            color1: Theme.of(context).colorScheme.secondaryVariant,
-                                            color2: Theme.of(context).colorScheme.primary,
-                                            reverse: true)
-                                    ),
-                                  ] // children
-                              ),
-                              Container(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                        height: screenHeight * 0.80,
-                                        child: Column(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                                                child: Text("BOOKMARKS", style: Theme.of(context).textTheme.headline2),
-                                              ),
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                                                child: Text("Scroll to see the full list.", style: TextStyle(fontSize: screenHeight * 0.02)),
-                                              ),
-                                              Expanded(
-                                                  child: Container(
-                                                    padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
-                                                    alignment: Alignment.topCenter,
-                                                    child: ListView.builder(
-                                                      itemCount: participantBookmarks.length,
-                                                      itemBuilder: (BuildContext context, int index){
-                                                        return BookmarkInfo(
-                                                            name: participantBookmarks[index],
-                                                            team: "ScottyLabs",
-                                                            bio: "[Bio]"
-                                                        );
-                                                      },
-                                                    ),
-                                                  )
-                                              )
-                                            ]
-                                        )
-                                    )
-                                  ], // children
+    if (participantBookmarks == null || projectBookmarks == null) {
+      return LoadingScreen();
+    }
+    else {
+      return Scaffold(
+          body: Container(
+              child: SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxHeight: screenHeight
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TopBar(),
+                          Stack(
+                              children: [
+                                Column(
+                                    children:[
+                                      SizedBox(height:screenHeight * 0.05),
+                                      CustomPaint(
+                                          size: Size(screenWidth, screenHeight * 0.75),
+                                          painter: CurvedTop(
+                                              color1: Theme.of(context).colorScheme.secondaryVariant,
+                                              color2: Theme.of(context).colorScheme.primary,
+                                              reverse: true)
+                                      ),
+                                    ] // children
                                 ),
-                              )
-                            ]
-                        ),
-                      ]
-                  ),
-                )
-            )
-        )
-    );
+                                Container(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          height: screenHeight * 0.80,
+                                          child: Column(
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                                                  child: Text("BOOKMARKS", style: Theme.of(context).textTheme.headline2),
+                                                ),
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                                                  child: Text("Scroll to see the full list.", style: TextStyle(fontSize: screenHeight * 0.02)),
+                                                ),
+                                                Expanded(
+                                                    child: Container(
+                                                      padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
+                                                      alignment: Alignment.topCenter,
+                                                      child: ListView.builder(
+                                                        itemCount: participantBookmarks.length,
+                                                        itemBuilder: (BuildContext context, int index){
+                                                          return BookmarkInfo(
+                                                              name: participantBookmarks[index],
+                                                              team: "ScottyLabs",
+                                                              bio: "[Bio]"
+                                                          );
+                                                        },
+                                                      ),
+                                                    )
+                                                )
+                                              ]
+                                          )
+                                      )
+                                    ], // children
+                                  ),
+                                )
+                              ]
+                          ),
+                        ]
+                    ),
+                  )
+              )
+          )
+      );
+    }
   }
 }
 

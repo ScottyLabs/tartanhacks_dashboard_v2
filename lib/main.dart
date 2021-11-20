@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
           )
         )
       ),
-      home: OldBookmarks(),
+      home: Login(),
     );
   }
 }

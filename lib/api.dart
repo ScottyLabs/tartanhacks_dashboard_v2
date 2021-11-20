@@ -158,6 +158,7 @@ Future<String> addBookmark(String token, String participantId) async {
 
   if(response.statusCode != 200) {
     print('Failed to add bookmark with participant ' + participantId);
+    return null;
   }
   else {
     print('Successfully added bookmark');

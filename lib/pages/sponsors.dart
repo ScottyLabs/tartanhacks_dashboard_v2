@@ -32,25 +32,40 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
-  void toggleBookmark(String bookmarkId, String participantId) async {
+  // void toggleBookmark(String bookmarkId, String participantId) async {
+  //   prefs = await SharedPreferences.getInstance();
+  //   token = prefs.getString('token');
+  //   print('toggling now!');
+  //   if (bookmarks.containsKey(bookmarkId)) {
+  //     print('gonna delete');
+  //     bookmarks.remove(bookmarkId);
+  //     print(bookmarks);
+  //     deleteBookmark(token, bookmarkId);
+  //   }
+  //   else {
+  //     print('gonna add');
+  //     var newBookmarkId = addBookmark(token, bookmarkId);
+  //     bookmarks[newBookmarkId] = participantId;
+  //     print(bookmarks);
+  //   }
+  // }
+
+  void newBookmark(String bookmarkId, String participantId) async {
+    print('ADDING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    print('toggling now!');
-    if (bookmarks.containsKey(bookmarkId)) {
-      print('gonna delete');
-      bookmarks.remove(bookmarkId);
-      print(bookmarks);
-      deleteBookmark(token, bookmarkId);
-    }
-    else {
-      print('gonna add');
-      var newBookmarkId = addBookmark(token, bookmarkId);
-      bookmarks[newBookmarkId] = participantId;
-      print(bookmarks);
-    }
+    Future<String> newBookmarkId = addBookmark(token, bookmarkId);
+    bookmarks[newBookmarkId] = participantId;
   }
 
-  // separate functions for adding and deleting bookmarks
+  void deleteBookmark(String bookmarkId, String participantId) async {
+    print('REMOVING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
+    prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    bookmarks.remove(bookmarkId);
+    deleteBookmark(token, bookmarkId);
+  }
+
 
   @override
   initState() {
@@ -138,14 +153,15 @@ class _SponsorsState extends State<Sponsors> {
                                                   child: ListView.builder(
                                                       itemCount: 4,
                                                       itemBuilder: (BuildContext context, int index){
+                                                        bool isBookmark = bookmarks.containsValue(studentIds[index]);
                                                         return InfoTile(
                                                             name: students[index].firstName + " " + students[index].lastName,
                                                             team: "Cool Team",
                                                             bio: students[index].college + " c/o " + students[index].graduationYear.toString(),
                                                             participantId: studentIds[index],
                                                             bookmarkId: bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]),
-                                                            isBookmark: bookmarks.containsValue(studentIds[index]),
-                                                            toggle: toggleBookmark,
+                                                            isBookmark: isBookmark,
+                                                            toggleFn: isBookmark ? deleteBookmark : newBookmark,
                                                         );
                                                       }
                                                   )
@@ -175,9 +191,10 @@ class InfoTile extends StatelessWidget {
   String participantId;
   String bookmarkId;
   bool isBookmark;
-  Function toggle;
+  Function toggleFn;
 
-  InfoTile({this.name, this.team, this.bio, this.participantId, this.bookmarkId, this.isBookmark, this.toggle});
+  InfoTile({this.name, this.team, this.bio, this.participantId,
+    this.bookmarkId, this.isBookmark, this.toggleFn});
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +247,7 @@ class InfoTile extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   iconSize: 40.0,
                   onPressed: () {
-                    toggle(bookmarkId, participantId);
+                    toggleFn(bookmarkId, participantId);
                   }
                 ),
               ],

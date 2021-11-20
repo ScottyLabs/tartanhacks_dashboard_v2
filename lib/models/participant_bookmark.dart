@@ -24,11 +24,33 @@ class ParticipantBookmark {
       bookmarkType: parsedJson['bookmarkType'],
       description: parsedJson['description'],
       createdAt: parsedJson['createdAt'],
-      //participantData = ParticipantBm.fromJson(parsedJson['participant']),
+      //participantData = ParticipantInfo.fromJson(parsedJson['participant']),
     );
   }
 }
 
-// class ParticipantBm jaklfsjklaf
-// id
-//     ParticipantBookmark.ParticipantBm.id -> gives id
+// class ParticipantInfo
+// ParticipantBookmark.participantData.id -> gives id
+
+class ParticipantInfo {
+  final String id;
+  final String email;
+  final String firstName;
+  final String lastName;
+
+  ParticipantInfo({
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
+  });
+
+  factory ParticipantInfo.fromJson(Map<String, dynamic> parsedJson) {
+    return new ParticipantInfo(
+      id: parsedJson['_id'],
+      email: parsedJson['email'],
+      firstName: parsedJson['firstName'],
+      lastName: parsedJson['lastName'],
+    );
+  }
+}
