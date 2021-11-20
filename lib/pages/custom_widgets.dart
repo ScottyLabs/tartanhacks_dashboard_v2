@@ -9,6 +9,8 @@ import 'home.dart';
 import 'login.dart';
 import 'leaderboard.dart';
 import 'project_submission.dart';
+import 'sponsors.dart';
+import 'bookmarks.dart';
 import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
@@ -397,7 +399,7 @@ class TopBar extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : MenuButton(
               onTap: () {
-                Overlay.of(context).insert(MenuOverlay(context));
+                Overlay.of(context).insert(SponsorMenuOverlay(context));
               },
             )
         )
@@ -439,6 +441,125 @@ OverlayEntry MenuOverlay(BuildContext context) {
   final screenHeight = mqData.size.height;
   final screenWidth = mqData.size.width;
   OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => Positioned(
+        child: Stack(
+          alignment: Alignment.topRight,
+          children:[
+            CustomPaint(
+              size: mqData.size,
+              painter: WhiteOverlay()
+            ),
+            Column(
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children:[
+                      Container(
+                          width: screenWidth/4,
+                          alignment: Alignment.topCenter,
+                          padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                          child: MenuButton(
+                              onTap: () {
+                                entry.remove();
+                              }
+                          )
+                      ),
+                    ]
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                        children:[
+                          MenuChoice(
+                              icon: Icons.schedule,
+                              text: "Schedule"
+                          ),
+                          MenuChoice(
+                              icon: Icons.pages,
+                              text: "Project",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ProjSubmit(),
+                                  )
+                                );
+                              },
+                          ),
+                          MenuChoice(
+                              icon: Icons.home,
+                              text: "Home",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Home(),
+                                    )
+                                );
+                              },
+                          ),
+                          MenuChoice(
+                              icon: Icons.help,
+                              text: "Help"
+                          ),
+                        ]
+                    ),
+                    Column(
+                      children: [
+                        MenuChoice(
+                            icon: Icons.people_alt,
+                            text: "Team"
+                        ),
+                        MenuChoice(
+                            icon: Icons.qr_code_scanner,
+                            text: "Scan"
+                        ),
+                        MenuChoice(
+                            icon: Icons.person,
+                            text: "Profile",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) =>
+                                    ProfilePage()),
+                              );
+                            },
+                        ),
+                        MenuChoice(
+                            icon: Icons.mode_night,
+                            text: "Dark"
+                        ),
+                        MenuChoice(
+                            icon: Icons.logout,
+                            text: "Logout",
+                            //onTap: () () {logOut(entry, context);}
+                        ),
+                      ],
+                    )
+                  ]
+                )
+              ]
+            ),
+          ]
+        )
+      )
+  );
+  return entry;
+}
+
+OverlayEntry SponsorMenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenWidth = mqData.size.width;
+  OverlayEntry entry;
+
   entry = OverlayEntry(
       builder: (context) => Positioned(
           child: Stack(
