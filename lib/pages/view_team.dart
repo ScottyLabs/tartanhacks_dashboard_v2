@@ -24,7 +24,7 @@ class _ViewTeamState extends State<ViewTeam> {
   String _teamDesc = "Team Description";
   int numMembers = 3;
   bool isMember = true;
-  String id;
+  String teamId;
   String token;
 
   Team team;
@@ -33,20 +33,19 @@ class _ViewTeamState extends State<ViewTeam> {
     if (isMember){
       leaveTeam(token);
     } else {
-      requestTeam(team.id, token);
+      requestTeam(team.teamId, token);
     }
   }
 
   void getData() async{
-    checkCredentials('test@example.com', 'string'); //delete later?
-    //test@example.com, test1, test2, test3, team1
+    checkCredentials('test@example.com', 'string'); 
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id');
     token = prefs.getString('token');
-    String teamId = "1";
+    teamId = getUserTeam(token);
     team = getTeamInfo(teamId, token);
-    //once get team, fill all the fields in the text
-    });
+    _teamMembers = team.members;
+    _teamDesc = team.description;
   }
 
   @override
@@ -186,9 +185,6 @@ class _ViewTeamState extends State<ViewTeam> {
                                         children: _infoList(isMember)
                                     )
                                 )
-                            ),
-                            SolidButton(
-                              text: "Create Team",
                             ),
                           ],
                         )

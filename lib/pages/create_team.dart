@@ -196,6 +196,11 @@ class _CreateTeamState extends State<CreateTeam> {
                                             )
                                           )
                                         ),
+                                        SolidButton(
+                                          text: "Create Team",
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          onPressed: create_team()
+                                          ),
                                         ]
                                       ),
                                      

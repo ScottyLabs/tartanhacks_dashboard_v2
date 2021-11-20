@@ -25,6 +25,21 @@ Future<bool> createTeam(String team_name,
   return null;
 }
 
+
+Future<String> getUserTeam(String token) async {
+  const url = "https://tartanhacks-backend.herokuapp.com/user/team/";
+
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.post(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    return data;
+  }
+  return null;
+}
+
 Future<<List>> getTeamInfo(String teamId, 
                          String token) async {
   const url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
