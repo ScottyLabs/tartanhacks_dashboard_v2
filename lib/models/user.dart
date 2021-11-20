@@ -13,7 +13,7 @@ class User {
       id: parsedJson['_id'],
       email: parsedJson['email'],
       token: parsedJson['token'],
-      company: parsedJson['company'],
+      company: parsedJson['company']
     );
   }
 }
