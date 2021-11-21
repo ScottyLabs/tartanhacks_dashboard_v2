@@ -482,7 +482,16 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         children:[
                           MenuChoice(
                               icon: Icons.schedule,
-                              text: "Schedule"
+                              text: "Schedule",
+                              onTap: () {
+                                entry.remove();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        EventsHomeScreen(),
+                                    )
+                                );
+                              },
                           ),
                           MenuChoice(
                               icon: Icons.pages,
@@ -532,7 +541,16 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         ),
                         MenuChoice(
                             icon: Icons.qr_code_scanner,
-                            text: "Scan"
+                            text: "Scan",
+                            onTap: () {
+                              entry.remove();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      CheckIn(),
+                                  )
+                              );
+                            },
                         ),
                         MenuChoice(
                             icon: Icons.person,
@@ -623,6 +641,15 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                                 MenuChoice(
                                   icon: Icons.schedule,
                                   text: "Schedule",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            EventsHomeScreen(),
+                                        )
+                                    );
+                                  },
                                 ),
                                 MenuChoice(
                                   icon: Icons.bookmark_outline,
