@@ -107,8 +107,7 @@ class _Bookmarks extends State<Bookmarks> {
                                                               0.02)),
                                                 ),
                                                 Expanded(
-                                                    child: (participantBookmarks !=
-                                                        null) ?
+                                                    child: (participantBookmarks.length != 0) ?
                                                     Container(
                                                         padding: EdgeInsets
                                                             .fromLTRB(

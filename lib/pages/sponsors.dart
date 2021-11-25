@@ -52,19 +52,25 @@ class _SponsorsState extends State<Sponsors> {
   // }
 
   void newBookmark(String bookmarkId, String participantId) async {
-    print('ADDING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
+    print('ADDING A BOOKMARK FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    Future<String> newBookmarkId = addBookmark(token, bookmarkId);
+    Future<String> newBookmarkId = addBookmark(token, participantId);
     bookmarks[newBookmarkId] = participantId;
+    setState(() {
+
+    });
   }
 
-  void deleteBookmark(String bookmarkId, String participantId) async {
+  void removeBookmark(String bookmarkId, String participantId) async {
     print('REMOVING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     bookmarks.remove(bookmarkId);
     deleteBookmark(token, bookmarkId);
+    setState(() {
+
+    });
   }
 
 
@@ -162,7 +168,7 @@ class _SponsorsState extends State<Sponsors> {
                                                             participantId: studentIds[index],
                                                             bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
                                                             isBookmark: isBookmark,
-                                                            toggleFn: isBookmark ? deleteBookmark : newBookmark,
+                                                            toggleFn: isBookmark ? removeBookmark : newBookmark,
                                                         );
                                                       }
                                                   )
@@ -248,6 +254,8 @@ class InfoTile extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   iconSize: 40.0,
                   onPressed: () {
+                    print(bookmarkId);
+                    print(participantId);
                     toggleFn(bookmarkId, participantId);
                   }
                 ),
