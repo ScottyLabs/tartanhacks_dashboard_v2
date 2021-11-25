@@ -25,6 +25,7 @@ class _ViewTeamState extends State<ViewTeam> {
   bool isMember = true;
   String teamId;
   String token;
+  String id;
 
   Team team;
 
@@ -40,10 +41,10 @@ class _ViewTeamState extends State<ViewTeam> {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id');
     token = prefs.getString('token');
-    teamId = getUserTeam(token);
-    team = getTeamInfo(teamId, token);
+    teamId = await getUserTeam(token);
+    team = await getTeamInfo(teamId, token);
     _teamMembers = team.members;
-    _teamDesc = team.description;
+    _teamDesc = team.desc;
   }
 
   @override

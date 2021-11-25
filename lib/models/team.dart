@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class Team {
-  String teamID;
+  String teamId;
   List<String> members;
   String name;
   String event;
@@ -9,12 +9,12 @@ class Team {
   String admin;
   bool visible;
 
-  Team({this.teamID, this.visible, this.event, this.admin, this.members, this.desc,
+  Team({this.teamId, this.visible, this.event, this.admin, this.members, this.desc,
   this.name});
   factory Team.fromJson(String jsonString) {
     Map<String, dynamic> body = json.decode(jsonString);
     return new Team(
-        teamID:  body["_id"],
+        teamId:  body["_id"],
         visible: body["visible"],
         event: body["event"],
         admin: body["admin"],
