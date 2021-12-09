@@ -66,8 +66,8 @@ Future<Profile> getProfile(String id, String token) async {
 }
 
 Future<List<Event>> getEvents() async {
-  var url = baseUrl+'events/get';
-  final response = await http.post(url);
+  var url = baseUrl+'schedule/';
+  final response = await http.get(url);
   print(response.statusCode);
   if (response.statusCode == 200){
     List<Event> EventsList;
@@ -79,7 +79,7 @@ Future<List<Event>> getEvents() async {
   }
 }
 
-Future<bool> addEvents(String name, String description, String startTime, String endTime, bool enableCheckin, bool enableProjects, bool enableTeams, bool enableSponsors, String logoUrl, List<String> essayQuestions) async {
+Future<bool> addEvents(String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
@@ -90,19 +90,18 @@ Future<bool> addEvents(String name, String description, String startTime, String
     "Token": token
   };
 
-  String essayQuestionsAgg = "";
-  for(int i = 0; i < essayQuestions.length; i++){
-    essayQuestionsAgg += essayQuestions[i] + "\n";
-  }
-  String json1 = '{"name":"' + name +
+
+  String bodyJson = '{"name":"' + name +
       '","description":"' + description +
-      '","startTime":"' + startTime +
-      '","endTime":"' + endTime +
-      ', "enableCheckin": true, "enableProjects": true, "enableTeams": true, "enableSponsors": true,' +
-      '","logoUrl":"' + logoUrl +
-      '"essayQuestions":"' + essayQuestionsAgg + '}';
-  print(json1);
-  final response = await http.post(url, headers: headers, body: json1);
+      '","startTime":' + startTime.toString() +
+      ',"endTime":' + endTime.toString() +
+      ',"lat":' + lat.toString() +
+      ',"lng":' + lng.toString() +
+      ',"platform":"' + platform +
+      '"platformUrl":"' + platformUrl + '"}';
+
+  print(bodyJson);
+  final response = await http.post(url, headers: headers, body: bodyJson);
   if (response.statusCode == 200) {
     return true;
   } else if (response.statusCode == 401) {
@@ -111,13 +110,49 @@ Future<bool> addEvents(String name, String description, String startTime, String
         description,
         startTime,
         endTime,
-        enableCheckin,
-        enableProjects,
-        enableTeams,
-        enableSponsors,
-        logoUrl,
-        essayQuestions);
+        lat,
+        lng,
+        platform,
+        platformUrl);
   } else {
+    return false;
+  }
+}
+
+Future<bool> editEvents(String eventId, String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String token = prefs.getString("token");
+
+  String url = baseUrl + "schedule/`${eventId}`";
+  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
+
+  String bodyJson = '{"name":"' + name +
+      '","description":"' + description +
+      '","startTime":' + startTime.toString() +
+      ',"endTime":' + endTime.toString() +
+      ',"lat":' + lat.toString() +
+      ',"lng":' + lng.toString() +
+      ',"platform":"' + platform +
+      '"platformUrl":"' + platformUrl + '"}';
+
+  print(bodyJson);
+
+  final response = await http.patch(url, headers: headers, body: bodyJson);
+  if (response.statusCode == 200) {
+    return true;
+  }else if(response.statusCode == 401){
+    return editEvents(
+        eventId,
+        name,
+        description,
+        startTime,
+        endTime,
+        lat,
+        lng,
+        platform,
+        platformUrl);
+  }else{
     return false;
   }
 }
