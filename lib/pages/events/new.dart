@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
+import 'package:thdapp/api.dart';
 import 'index.dart';
 
 class NewEventScreen extends StatefulWidget {
@@ -14,13 +15,24 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String _eventDesc = "";
   String _eventUrl = "";
   String _duration = "";
+  String _location = "";
+  String _platform = "";
+  double _lat = 0;
+  double _lng = 0;
+  int _startTime = 0;
+  int _endTime = 0;
+
+
   String _date = "";
   bool isPresenting = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController linkController = TextEditingController();
-  TextEditingController durationController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+
+  var dropdownValue = 'In Person';
+  TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -29,9 +41,51 @@ class _NewEventScreenState extends State<NewEventScreen> {
     nameController.dispose();
     descController.dispose();
     linkController.dispose();
-    durationController.dispose();
     dateController.dispose();
     super.dispose();
+  }
+
+  void saveData() async {
+    bool result;
+    result = await addEvent(nameController.text, descController.text, this._startTime, this._endTime, this._lat, this._lng, this._platform, linkController.text);
+
+    if (result == true) {
+      _showDialog('Your event was successfully saved!', 'Success', result);
+    }else{
+      _showDialog('There was an error. Please try again.', 'Error.', result);
+    }
+  }
+
+  void _showDialog(String response, String title, bool result) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(response),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text(
+                "OK",
+                style: new TextStyle(color: Colors.white),
+              ),
+              color: new Color.fromARGB(255, 255, 75, 43),
+              onPressed: () {
+
+                Navigator.of(context).pop();
+                if(result == true){
+                  Navigator.pop(context);
+
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildName() {
@@ -88,24 +142,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-  Widget _buildDuration() {
-    return TextFormField(
-      decoration: FormFieldStyle(context, "Duration"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: durationController,
-      keyboardType: TextInputType.url,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Duration is Required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _duration = value;
-      },
-    );
-  }
-
   Widget _buildDate() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Date"),
@@ -121,36 +157,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
       onSaved: (String value) {
         _date = value;
       },
-    );
-  }
-
-  Widget _buildPresentingLive() {
-    int initialVal = 1;
-    if (isPresenting) initialVal = 0;
-    return Container(
-        padding: new EdgeInsets.fromLTRB(0, 10, 0, 0),
-        child: Column(
-            children: <Widget>[
-              SizedBox(width: 20,),
-              Text('Presenting',
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.headline4),
-              Text('Do you wish to present live at the expo? If not, you must submit a video.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText2),
-              Switch(
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                  activeTrackColor: Theme.of(context).colorScheme.primary,
-                  inactiveTrackColor: Theme.of(context).colorScheme.onSurface,
-                  value: isPresenting,
-                  onChanged: (value) {
-                    setState(() {
-                      isPresenting = value;
-                    });
-                  }
-              )
-            ]
-        )
     );
   }
 
@@ -205,8 +211,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                                 _buildDesc(),
                                                 SizedBox(height:8),
                                                 _buildEventURL(),
-                                                SizedBox(height:8),
-                                                _buildDuration(),
                                                 SizedBox(height:8),
                                                 _buildDate(),
                                                 SolidButton(

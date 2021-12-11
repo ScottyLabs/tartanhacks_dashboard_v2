@@ -79,7 +79,7 @@ Future<List<Event>> getEvents() async {
   }
 }
 
-Future<bool> addEvents(String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
+Future<bool> addEvent(String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
@@ -105,7 +105,7 @@ Future<bool> addEvents(String name, String description, int startTime, int endTi
   if (response.statusCode == 200) {
     return true;
   } else if (response.statusCode == 401) {
-    return addEvents(
+    return addEvent(
         name,
         description,
         startTime,
@@ -119,7 +119,7 @@ Future<bool> addEvents(String name, String description, int startTime, int endTi
   }
 }
 
-Future<bool> editEvents(String eventId, String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
+Future<bool> editEvent(String eventId, String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
@@ -142,7 +142,7 @@ Future<bool> editEvents(String eventId, String name, String description, int sta
   if (response.statusCode == 200) {
     return true;
   }else if(response.statusCode == 401){
-    return editEvents(
+    return editEvent(
         eventId,
         name,
         description,
