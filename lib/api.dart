@@ -9,6 +9,7 @@ import 'models/user.dart';
 import 'models/participant_bookmark.dart';
 import 'models/project_bookmark.dart';
 import 'models/lb_entry.dart';
+import 'models/prize.dart';
 
 SharedPreferences prefs;
 
@@ -314,6 +315,21 @@ Future<int> getSelfRank(String token) async {
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     return data;
+  } else {
+    print(response.body.toString());
+    return null;
+  }
+}
+
+Future<List<Prize>> getPrizes() async {
+  String url = baseUrl + "prizes";
+
+  final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    List<Prize> prizes = data.map<Prize>((json) => Prize.fromJson(json)).toList();
+    return prizes;
   } else {
     print(response.body.toString());
     return null;

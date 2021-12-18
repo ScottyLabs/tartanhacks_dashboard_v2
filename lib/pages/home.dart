@@ -28,8 +28,6 @@ class _HomeState extends State<Home> {
   void getData() async{
     prefs = await SharedPreferences.getInstance();
 
-    String email = prefs.get('email');
-    String password = prefs.get('password');
     isAdmin = prefs.getBool('admin');
     id = prefs.getString('id');
     token = prefs.getString('token');
