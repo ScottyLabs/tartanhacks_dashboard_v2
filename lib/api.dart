@@ -56,7 +56,7 @@ Future<String> resetPassword(String email) async {
 }
 
 Future<Profile> getProfile(String id, String token) async {
-  String url = baseUrl + "user/profile/" + id;
+  String url = baseUrl + "users/" + id + "/profile";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.get(url, headers: headers);
 
