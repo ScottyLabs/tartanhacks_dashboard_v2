@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -15,6 +16,7 @@ import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
 import 'view_team.dart';
+import '../theme_changer.dart';
 
 
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
@@ -121,7 +123,7 @@ class GradBox extends StatelessWidget{
   Widget build(BuildContext context) {
     Color color1 = Theme.of(context).colorScheme.background;
     Color color2 = Theme.of(context).colorScheme.surface;
-    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
+    Color shadow = Theme.of(context).colorScheme.error;
     return Container(
         width: width,
         height: height,
@@ -267,7 +269,7 @@ class MenuButton extends StatelessWidget {
     Color shadow = Theme.of(context).colorScheme.secondaryVariant;
     return Material(
         type: MaterialType.button,
-        color: Colors.white,
+        color: Color(0x00000000),
         child: GradBox(
             width: 55,
             height: 55,
@@ -324,7 +326,7 @@ class BackFlag extends StatelessWidget {
                       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
@@ -338,7 +340,7 @@ class BackFlag extends StatelessWidget {
                       padding: EdgeInsets.fromLTRB(0, 0, 22, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).scaffoldBackgroundColor,
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
@@ -405,7 +407,7 @@ class TopBar extends StatelessWidget {
                 } else {
                   Overlay.of(context).insert(MenuOverlay(context));
                 }
-              },
+              }
             )
         )
       ],
@@ -445,6 +447,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenHeight = mqData.size.height;
   final screenWidth = mqData.size.width;
+  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   OverlayEntry entry;
 
   entry = OverlayEntry(
@@ -564,10 +567,23 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               );
                             },
                         ),
+                        _themeProvider.getTheme==lightTheme ?
                         MenuChoice(
                             icon: Icons.mode_night,
-                            text: "Dark"
-                        ),
+                            text: "Dark",
+                            onTap: () {
+                              _themeProvider.setTheme(darkTheme);
+                              setThemePref("dark", entry, context);
+                            },
+                        ) :
+                            MenuChoice(
+                              icon: Icons.wb_sunny,
+                              text: "Light",
+                              onTap: () {
+                                _themeProvider.setTheme(lightTheme);
+                                setThemePref("light", entry, context);
+                              },
+                            ),
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
@@ -688,6 +704,7 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
   );
   return entry;
 }
+
 void logOut(entry, context) async {
   var prefs = await SharedPreferences.getInstance();
   await prefs.clear();
@@ -697,6 +714,12 @@ void logOut(entry, context) async {
     MaterialPageRoute(builder: (ctxt) => new Login()),
   );
 }
+
+void setThemePref(theme, entry, context) async {
+  var prefs = await SharedPreferences.getInstance();
+  prefs.setString("theme", theme);
+}
+
 class MenuChoice extends StatelessWidget {
   IconData icon;
   String text;
@@ -706,7 +729,7 @@ class MenuChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenWidth = mqData.size.width;
-    Color color = Theme.of(context).colorScheme.secondary;
+    Color color = Theme.of(context).colorScheme.onError;
     return Container(
         width: screenWidth/4,
         alignment: Alignment.center,
@@ -777,6 +800,7 @@ void errorDialog(context, String title, String response) {
     builder: (BuildContext context) {
       // return object of type Dialog
       return AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: new Text(title, style: Theme.of(context).textTheme.headline1),
         content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
         actions: <Widget>[
