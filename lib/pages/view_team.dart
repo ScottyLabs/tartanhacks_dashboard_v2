@@ -20,12 +20,10 @@ class _ViewTeamState extends State<ViewTeam> {
     {'name': "", 'email': ""},
     {'name': "", 'email': ""}
     ];
-  String _teamName = "My Team";
-  String _teamDesc = "Team Description";
-  int numMembers = 3;
+    
+  int teamMembers;
   bool isAdmin = false;
   bool isMember = true;
-  String teamId = "";
   Team team;
 
   void getData() async {
@@ -34,8 +32,7 @@ class _ViewTeamState extends State<ViewTeam> {
     String id = prefs.getString('id');
     isAdmin = prefs.getBool('admin');
     team = await getUserTeam(token);
-    print(team.teamID);
-    print(team.members);
+    teamMembers = team.members.length;
     setState(() {
     });
   }
