@@ -3,14 +3,12 @@ import 'dart:async';
 import 'dart:convert';
 
 class Team {
-  String teamID;
   final String teamID;
   final bool visible;
   final dynamic admin;
   final String name;
   final List<dynamic> members;
   final String description;
-  
 
   Team({
     this.teamID, 
