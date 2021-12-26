@@ -41,9 +41,9 @@ Future<String> getUserTeam(String token) async {
   return null;
 }
 
-Future<<List>> getTeamInfo(String teamId, 
+Future<Team> getTeamInfo(String teamId,
                          String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
+  String url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
@@ -128,7 +128,7 @@ Future<void> leaveTeam(String token) async {
 }
 
 Future<void> requestTeam(String team_id, String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/team/join/" + team_id;
+  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + team_id;
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   var body = json.encode({});

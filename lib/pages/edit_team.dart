@@ -13,6 +13,7 @@ class ViewTeam extends StatefulWidget {
 
 class _ViewTeamState extends State<ViewTeam> {
   SharedPreferences prefs;
+  String id;
 
   List<Map> _teamMembers = [
     {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
@@ -60,10 +61,10 @@ class _ViewTeamState extends State<ViewTeam> {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id');
     token = prefs.getString('token');
-    teamId = getUserTeam(token);
-    team = getTeamInfo(teamId, token);
+    teamId = await getUserTeam(token);
+    team = await getTeamInfo(teamId, token);
     _teamMembers = team.members;
-    _teamDesc = team.description;
+    _teamDesc = team.desc;
   }
 
   @override

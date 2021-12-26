@@ -2,17 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import '../api.dart';
-<<<<<<< Updated upstream
-import 'package:shared_preferences/shared_preferences.dart';
-import 'team-api.dart';
-import '/models/team.dart';
-=======
 import 'team-api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '/models/team.dart';
 import 'dart:convert';
->>>>>>> Stashed changes
 
 class ViewTeam extends StatefulWidget {
   @override
@@ -20,7 +14,6 @@ class ViewTeam extends StatefulWidget {
 }
 
 class _ViewTeamState extends State<ViewTeam> {
-  SharedPreferences prefs;
 
   List<Map> _teamMembers = [
     {'name': "", 'email': ""},
@@ -32,29 +25,6 @@ class _ViewTeamState extends State<ViewTeam> {
   int numMembers = 3;
   bool isAdmin = false;
   bool isMember = true;
-<<<<<<< Updated upstream
-  String teamId;
-  String token;
-
-  Team team;
-
-  void leaveJoin(isMember) async {
-    if (isMember){
-      leaveTeam(token);
-    } else {
-      requestTeam(team.teamId, token);
-    }
-  }
-
-  void getData() async{
-    prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id');
-    token = prefs.getString('token');
-    teamId = getUserTeam(token);
-    team = getTeamInfo(teamId, token);
-    _teamMembers = team.members;
-    _teamDesc = team.description;
-=======
   String teamId = "";
   Team team;
 
@@ -68,7 +38,6 @@ class _ViewTeamState extends State<ViewTeam> {
     print(team.members);
     setState(() {
     });
->>>>>>> Stashed changes
   }
 
   @override
@@ -136,41 +105,7 @@ class _ViewTeamState extends State<ViewTeam> {
     if(!isMember){
       buttonText = "Join Team";
     }
-<<<<<<< Updated upstream
-    return (
-        SolidButton(
-          text: "Leave Team",
-    ),
-  }
-
-  List<Widget> _infoList(bool isMember){
-    List<Widget> info = <Widget>[];
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            //height: screenHeight*0.05,
-            child: _buildTeamHeader()
-        )
-    );
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            //height: screenHeight*0.2,
-            child: _buildTeamDesc()
-        )
-    );
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            //height: screenHeight*0.1,
-            child: _buildTeamMembers(numMembers)
-        )
-    );
-    info.add(_leaveJoinTeamBtn(isMember));
-    return info;
-=======
     return SolidButton(text: buttonText, onPressed: null, color: Theme.of(context).colorScheme.secondary);
->>>>>>> Stashed changes
   }
 
   @override
@@ -246,7 +181,7 @@ class _ViewTeamState extends State<ViewTeam> {
                                         ],
                                     )
                                 )
-                            ),
+                            )
                           ],
                         )
                       ],
