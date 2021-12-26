@@ -36,6 +36,13 @@ Future<Team> getUserTeam(String token) async {
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
+<<<<<<< Updated upstream
+=======
+    print(data);
+    print(data["_id"].runtimeType);
+    print(data["visible"].runtimeType);
+    print(data["members"].runtimeType);
+>>>>>>> Stashed changes
     Team team = new Team.fromJson(data);
     return team;
   }
