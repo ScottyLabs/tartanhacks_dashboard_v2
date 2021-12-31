@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
-import '../../api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../api.dart';
 import 'team-api.dart';
-import '/models/team.dart';
+import 'view_team.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateTeam extends StatefulWidget {
   @override
@@ -25,21 +25,18 @@ class _CreateTeamState extends State<CreateTeam> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String token;
-  String id;
-  SharedPreferences prefs;
-  Team team;
-
   void getData() async {
-    checkCredentials('test@example.com', 'string');
-    //test@example.com, test1, test2, test3, team1
-    prefs = await SharedPreferences.getInstance();
-    id = prefs.getString('id');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    String id = prefs.getString('id');
+    setState(() {
+    });
   }
 
-  void create_team() async {
-    await createTeam(_teamName, _teamDesc, true, token);
-    //loop through members and invite with inviteTeamMember
+  @override
+  initState() {
+    super.initState();
+    getData();
   }
 
   @override
@@ -117,6 +114,44 @@ class _CreateTeamState extends State<CreateTeam> {
     );
   }
 
+
+  Widget _inviteMessage(){
+    TextEditingController inviteController = TextEditingController();
+    String email_invite;
+
+    return AlertDialog(
+                  title: Text('Send Invite'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        decoration: FormFieldStyle(context, "email"),
+                        style: TextStyle(color: Colors.black),
+                        controller: inviteController,
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'An email is required';
+                          }
+                          return null;
+                          },
+                          onSaved: (String value) {
+                            email_invite = value;
+                            },
+                      ),
+                      Container( 
+                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        child: SolidButton(
+                          text: "Send",
+                          onPressed: () async {
+                            await requestTeamMember(email_invite, token);
+                          }
+                        )
+                      )
+                    ]
+                  )
+      );
+  }
+
   Widget _buildInviteMember() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Invite Member"),
@@ -136,6 +171,19 @@ class _CreateTeamState extends State<CreateTeam> {
         _inviteMember = value;
       },
     );
+  }
+
+
+  Widget _inviteMem()  {
+    return SolidButton(
+        text: "INVITE NEW MEMBER", 
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => _inviteMessage()
+          );
+        }, 
+        color: Theme.of(context).colorScheme.primary); 
   }
 
   @override
@@ -195,67 +243,41 @@ class _CreateTeamState extends State<CreateTeam> {
                                               crossAxisAlignment: CrossAxisAlignment
                                                   .start,
                                               children: [
-                                                Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 10, 0, 10),
-                                                  child: Text(
-                                                      "CREATE NEW TEAM", style:
-                                                  Theme
-                                                      .of(context)
-                                                      .textTheme
-                                                      .headline1),
-                                                ),
-                                                Form(
-                                                    key: _formKey,
-                                                    child: SingleChildScrollView(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment
-                                                              .spaceEvenly,
-                                                          crossAxisAlignment: CrossAxisAlignment
-                                                              .start,
-                                                          children: [
-                                                            Text("Basic Info",
-                                                                style:
-                                                                Theme
-                                                                    .of(context)
-                                                                    .textTheme
-                                                                    .headline4),
-                                                            SizedBox(
-                                                                height: screenHeight *
-                                                                    0.02),
-                                                            _buildName(),
-                                                            SizedBox(
-                                                                height: screenHeight *
-                                                                    0.02),
-                                                            _buildTeamName(),
-                                                            SizedBox(
-                                                                height: screenHeight *
-                                                                    0.02),
-                                                            _buildTeamDesc(),
-                                                            SizedBox(
-                                                                height: screenHeight *
-                                                                    0.02),
-                                                            _buildInviteMember(),
-
-                                                          ],
-                                                        )
-                                                    )
-                                                ),
-                                              ]
-                                          ),
-
-                                          Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.fromLTRB(
-                                                  20, 20, 20, 20),
-                                              child: SolidButton(
-                                                  text: "Create Team",
-                                                  onPressed: create_team()
-                                              )
+                                                Text("Basic Info", style: 
+                                          Theme.of(context).textTheme.headline4),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildName(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildTeamName(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _buildTeamDesc(),
+                                                SizedBox(height:screenHeight*0.02),
+                                                _inviteMem()
+                                                //_buildInviteMember(),
+                                              ],
+                                            )
                                           )
+                                        ),
                                         ]
+                                      ),
+                                      
+                                    Container(
+                                        alignment: Alignment.center,
+                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                        child: SolidButton(
+                                          text: "Create Team",
+                                          onPressed: () {
+                                            createTeam(_teamName, _teamDesc, token);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => ViewTeam())
+                                            );
+                                          },
+                                          color: Theme.of(context).colorScheme.primary
+                                        )
                                     )
-                                )
+                                ]
+                              )
                             )
                           ],
                         )

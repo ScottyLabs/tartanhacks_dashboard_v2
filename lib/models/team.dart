@@ -9,10 +9,7 @@ class Team {
   final String name;
   final List<dynamic> members;
   final String description;
-<<<<<<< Updated upstream
-=======
   
->>>>>>> Stashed changes
 
   Team({
     this.teamID, 
