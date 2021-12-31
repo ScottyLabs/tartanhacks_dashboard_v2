@@ -16,7 +16,6 @@ class _CreateTeamState extends State<CreateTeam> {
   String _yourName = "";
   String _teamName = "";
   String _teamDesc = "";
-  String _inviteMember = ""; //what exactly here???
   TextEditingController yourNameController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescController = TextEditingController();
@@ -31,12 +30,6 @@ class _CreateTeamState extends State<CreateTeam> {
     String id = prefs.getString('id');
     setState(() {
     });
-  }
-
-  @override
-  initState() {
-    super.initState();
-    getData();
   }
 
   @override
@@ -255,12 +248,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                                 _inviteMem()
                                                 //_buildInviteMember(),
                                               ],
-                                            )
-                                          )
-                                        ),
-                                        ]
-                                      ),
-                                      
+                                            ),
                                     Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -278,6 +266,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                     )
                                 ]
                               )
+                                )
                             )
                           ],
                         )
