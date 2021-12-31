@@ -28,8 +28,6 @@ class _HomeState extends State<Home> {
   void getData() async{
     prefs = await SharedPreferences.getInstance();
 
-    String email = prefs.get('email');
-    String password = prefs.get('password');
     isAdmin = prefs.getBool('admin');
     id = prefs.getString('id');
     token = prefs.getString('token');
@@ -86,7 +84,7 @@ class _HomeState extends State<Home> {
                                     Text("HACKING TIME LEFT", style: Theme.of(context).textTheme.headline1),
                                     SizedBox(height: 8),
                                     CountdownTimer(
-                                      endTime: 1641024000000,
+                                      endTime: 1644954396000,
                                       textStyle: TextStyle(
                                           fontSize: 30.0,
                                           fontWeight: FontWeight.bold,

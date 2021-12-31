@@ -222,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   color: darken(Theme
                                                       .of(context)
                                                       .colorScheme
-                                                      .surface, 0.02),
+                                                      .surface, 0.04),
                                                   borderRadius: BorderRadius
                                                       .circular(15),
                                                 ),
