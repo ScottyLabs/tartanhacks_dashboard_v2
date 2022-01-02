@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thdapp/api.dart';
 import 'custom_widgets.dart';
 import 'enter_prizes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/project.dart';
 
 class ProjSubmit extends StatefulWidget {
   @override
@@ -23,6 +26,9 @@ class _ProjSubmitState extends State<ProjSubmit> {
   TextEditingController videoController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String id;
+  String token;
 
   @override
   void dispose(){
@@ -154,6 +160,36 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
+  void getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    id = prefs.getString('id');
+    token = prefs.getString('token');
+
+    Project proj = await getProject(id, token);
+    _projName = proj.name;
+    _projDesc = proj.desc;
+    _githubUrl = proj.url;
+    _presUrl = proj.slides;
+    _vidUrl = proj.video;
+
+    nameController.text = _projName;
+    descController.text = _projDesc;
+    slidesController.text = _presUrl;
+    videoController.text = _vidUrl;
+    githubController.text = _githubUrl;
+
+    setState(() {
+
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -212,7 +248,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                         SizedBox(height:8),
                                         _buildPresentingLive(),
                                         SolidButton(
-                                            text: "Save"
+                                            text: "Save",
+                                            onPressed: () {
+
+                                            },
                                         ),
                                         SolidButton(
                                             text: "Submit for Prizes",

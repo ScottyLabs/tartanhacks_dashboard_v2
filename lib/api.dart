@@ -10,6 +10,7 @@ import 'models/participant_bookmark.dart';
 import 'models/project_bookmark.dart';
 import 'models/lb_entry.dart';
 import 'models/prize.dart';
+import 'models/project.dart';
 
 SharedPreferences prefs;
 
@@ -330,6 +331,22 @@ Future<List<Prize>> getPrizes() async {
     var data = json.decode(response.body);
     List<Prize> prizes = data.map<Prize>((json) => Prize.fromJson(json)).toList();
     return prizes;
+  } else {
+    print(response.body.toString());
+    return null;
+  }
+}
+
+Future<Project> getProject(String id, String token) async {
+  String url = baseUrl + "users/" + id + "/project";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Project project = new Project.fromJson(data);
+    return project;
   } else {
     print(response.body.toString());
     return null;
