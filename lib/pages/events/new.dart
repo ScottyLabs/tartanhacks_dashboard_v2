@@ -21,18 +21,19 @@ class _NewEventScreenState extends State<NewEventScreen> {
   double _lng = 0;
   int _startTime = 0;
   int _endTime = 0;
-
-
   String _date = "";
   bool isPresenting = false;
+  
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController linkController = TextEditingController();
+
   TextEditingController dateController = TextEditingController();
 
   var dropdownValue = 'In Person';
   TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -160,6 +161,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -212,9 +214,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                                 SizedBox(height:8),
                                                 _buildEventURL(),
                                                 SizedBox(height:8),
+
                                                 _buildDate(),
                                                 SolidButton(
                                                     text: "Save Event"
+
                                                 ),
                                               ],
                                             )

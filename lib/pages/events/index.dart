@@ -297,6 +297,7 @@ class EventCard extends StatelessWidget{
                     children:[
                       SizedBox(
                           width: screenWidth * 0.265,
+
                           height: 170,
                           child: DecoratedBox(
                               decoration: BoxDecoration(

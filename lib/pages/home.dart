@@ -10,6 +10,8 @@ import 'project_submission.dart';
 import 'profile_page.dart';
 import 'leaderboard.dart';
 import '../models/profile.dart';
+import 'checkin.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -27,8 +29,6 @@ class _HomeState extends State<Home> {
   void getData() async{
     prefs = await SharedPreferences.getInstance();
 
-    String email = prefs.get('email');
-    String password = prefs.get('password');
     isAdmin = prefs.getBool('admin');
     id = prefs.getString('id');
     token = prefs.getString('token');
@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
                                     Text("HACKING TIME LEFT", style: Theme.of(context).textTheme.headline1),
                                     SizedBox(height: 8),
                                     CountdownTimer(
-                                      endTime: 1641024000000,
+                                      endTime: 1644954396000,
                                       textStyle: TextStyle(
                                           fontSize: 30.0,
                                           fontWeight: FontWeight.bold,
@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text("Swag Points", style: Theme.of(context).textTheme.headline4),
-                                        Text("Points Earned: 0", style: Theme.of(context).textTheme.bodyText2),
+                                        Text("Points Earned: " + userData.totalPoints.toString(), style: Theme.of(context).textTheme.bodyText2),
                                         SolidButton(
                                           text: "Leaderboard",
                                           onPressed: () {
@@ -149,7 +149,16 @@ class _HomeState extends State<Home> {
                                             );
                                           },
                                         ),
-                                        SolidButton(text: "Check In", onPressed: null,)
+                                        SolidButton(
+                                          text: "Check In",
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) =>
+                                                  CheckIn()),
+                                            );
+                                          },
+                                        )
                                       ]
                                   )
                               ),
