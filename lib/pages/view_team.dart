@@ -1,6 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+import '../api.dart';
+import 'team-api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import '/models/team.dart';
+import 'dart:convert';
+import 'teams_list.dart';
+import 'dart:async';
 
 class ViewTeam extends StatefulWidget {
   @override
@@ -10,20 +18,162 @@ class ViewTeam extends StatefulWidget {
 class _ViewTeamState extends State<ViewTeam> {
 
   List<Map> _teamMembers = [
-    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
-    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"},
-    {'name': "Joyce Hong", 'email': "joyceh@andrew.cmu.edu"}
+    {'name': "", 'email': ""},
+    {'name': "", 'email': ""},
+    {'name': "", 'email': ""}
     ];
-  String _teamName = "My Team";
-  String _teamDesc = "Team Description";
-  int numMembers = 3;
+
+  bool isAdmin = false;
   bool isMember = true;
+  String teamId = "";
+  Team team;
+  String token;
+
+  bool checkAdmin(String id){
+    return team.admin['_id'] == id; 
+  }
+
+  void getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    String id = prefs.getString('id');
+    isAdmin = prefs.getBool('admin');
+    team = await getUserTeam(token);
+    if (team == null){ //if not on a team, redirects to the teams list page
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+          TeamsList()),
+      );
+    }
+    //isAdmin = checkAdmin(id);
+    setState(() {
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
+
+  Widget _buildEditTeam() {
+    if (isAdmin) {
+      return SolidButton(
+        text: "EDIT TEAM NAME AND INFO", 
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => _editTeamInfo()
+          );
+        },
+        color: Theme.of(context).colorScheme.primary);
+    } else {
+      return Container();
+    }
+  }
+
+   Widget _editTeamInfo(){
+    TextEditingController teamNameController = TextEditingController();
+    TextEditingController teamDescController = TextEditingController();
+    String teamName = team.name;
+    String teamDesc = team.description;
+    bool visible = team.visible;
+    teamNameController.text = teamName;
+    teamDescController.text = teamDesc;
+
+    return AlertDialog(
+                  title: Text('Edit Name & Description'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Team Name',
+                          contentPadding: EdgeInsets.all(20.0),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                        controller: teamNameController,
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'A name is required';
+                          }
+                          return null;
+                          },
+                          onSaved: (String value) {
+                            teamName = value;
+                          },
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: 'Description',
+                          contentPadding: EdgeInsets.all(20.0),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                        controller: teamDescController,
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'A description is required';
+                          }
+                          return null;
+                          },
+                          onSaved: (String value) {
+                            teamDesc = value;
+                          },
+                      ),
+                      CheckboxListTile(
+                            title: Text("Team Visibility"),
+                            activeColor: Theme.of(context).colorScheme.secondary,
+                            value: visible,
+                            onChanged: (value) {
+                              setState(() {
+                                visible = value;
+                              });
+                            },
+                      ),
+                      Container( 
+                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        child: SolidButton(
+                          text: "Save",
+                          onPressed: () async {
+                            await updateTeamInfo(teamName, teamDesc, visible, token);
+                            team = await getUserTeam(token);
+                          }
+                        )
+                      )
+                    ]
+                  )
+      );
+  }
+
+  Widget _buildTeamMail(){
+    if (isAdmin) {
+      return Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.email, size: 30.0),
+              color: Theme.of(context).colorScheme.secondary,
+              onPressed: (){
+                print("opened mail");
+                getUserMail(token);
+              }
+          )
+      );
+    } else {
+      return Container();
+    }
+  }
+
 
   Widget _buildTeamHeader() {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text("TEAM", style: Theme.of(context).textTheme.headline2),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text("TEAM", style: Theme.of(context).textTheme.headline2)
+          ),
+          _buildTeamMail()
         ]
     );
   }
@@ -33,29 +183,88 @@ class _ViewTeamState extends State<ViewTeam> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_teamName, style: Theme.of(context).textTheme.headline4),
-          Text(_teamDesc, style: Theme.of(context).textTheme.bodyText2)
+          Text(team.name, style: Theme.of(context).textTheme.headline4),
+          Text(team.description, style: Theme.of(context).textTheme.bodyText2)
         ]
     );
   }
 
   Widget _buildMember(int member) {
-    String email_str = "(" + _teamMembers[member]['email'] + ")";
-    return Column(
+    dynamic mem = team.members[member];
+    String email_str = "(" + mem['email'] + ")";
+    String name_str = mem['firstName'] + " " + mem['lastName'];
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(_teamMembers[member]['name'], style: Theme.of(context).textTheme.bodyText2),
+          Text(name_str, style: Theme.of(context).textTheme.bodyText2),
           Text(email_str, style: Theme.of(context).textTheme.bodyText2)
         ]
-    );
+    ));
   }
 
-  Widget _buildTeamMembers(int numMembers) {
+  Widget _inviteMessage(){
+    TextEditingController inviteController = TextEditingController();
+    String email_invite;
+
+    return AlertDialog(
+                  title: Text('Send Invite'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextFormField(
+                        decoration: FormFieldStyle(context, "email"),
+                        style: TextStyle(color: Colors.black),
+                        controller: inviteController,
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'An email is required';
+                          }
+                          return null;
+                          },
+                          onSaved: (String value) {
+                            email_invite = value;
+                            },
+                      ),
+                      Container( 
+                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        child: SolidButton(
+                          text: "Send",
+                          onPressed: () async {
+                            await requestTeamMember(email_invite, token);
+                          }
+                        )
+                      )
+                    ]
+                  )
+      );
+  }
+
+  Widget _inviteMembersBtn()  {
+    if (team.members.length < 4 && isAdmin){
+      return SolidButton(
+        text: "INVITE NEW MEMBER", 
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) => _inviteMessage()
+          );
+        }, 
+        color: Theme.of(context).colorScheme.primary); 
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildTeamMembers() {
     List<Widget> teamMembers = <Widget>[];
-    for(int i = 0; i < numMembers; i++){
+    for(int i = 0; i < team.members.length; i++){
+      print(team.members[i]['firstName']);
       teamMembers.add(_buildMember(i));
     }
+
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,59 +279,17 @@ class _ViewTeamState extends State<ViewTeam> {
 
   Widget _leaveJoinTeamBtn(bool isMember) {
     String buttonText = "Leave Team";
-    if(!isMember){
-      buttonText = "Join Team";
-    }
-    return (
-        Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: ElevatedButton(
-                style: ButtonStyle(
-                  foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-                  backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondary),
-                  shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                  elevation: MaterialStateProperty.all(5),
-                ),
-                child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: Text(buttonText,
-                        style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
-                        overflow: TextOverflow.fade,
-                        softWrap: false
-                    )
-                )
-            )
-        )
-    );
-  }
-
-  List<Widget> _infoList(bool isMember){
-    List<Widget> info = <Widget>[];
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-            //height: screenHeight*0.05,
-            child: _buildTeamHeader()
-        )
-    );
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            //height: screenHeight*0.2,
-            child: _buildTeamDesc()
-        )
-    );
-    info.add(
-        Container(
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            //height: screenHeight*0.1,
-            child: _buildTeamMembers(numMembers)
-        )
-    );
-    info.add(_leaveJoinTeamBtn(isMember));
-    return info;
+    return SolidButton(
+      text: buttonText, 
+      onPressed: () {
+        leaveTeam(token);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+          TeamsList()),
+        );
+      },
+      color: Theme.of(context).colorScheme.secondary);
   }
 
   @override
@@ -164,9 +331,40 @@ class _ViewTeamState extends State<ViewTeam> {
                                     height: screenHeight*0.75,
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                     child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: _infoList(isMember)
+                                        children: 
+                                        [
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                child: _buildTeamHeader()
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
+                                                child: _buildTeamDesc()
+                                              ),
+                                              _buildEditTeam(),
+                                              Container(
+                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                child: _buildTeamMembers()
+                                              ),
+                                              _inviteMembersBtn()
+                                            ]
+                                          ),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            
+                                            children: [Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+                                              child: _leaveJoinTeamBtn(isMember))]
+                                          )
+                                        ],
                                     )
                                 )
                             )
@@ -180,3 +378,4 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 }
+
