@@ -161,7 +161,7 @@ class _CreateTeamState extends State<CreateTeam> {
         return null;
       },
       onSaved: (String value) {
-        _inviteMember = value;
+        //_inviteMember = value;
       },
     );
   }

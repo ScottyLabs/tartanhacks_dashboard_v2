@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -11,6 +12,7 @@ import 'models/project_bookmark.dart';
 import 'models/lb_entry.dart';
 import 'models/prize.dart';
 import 'models/project.dart';
+import 'pages/custom_widgets.dart';
 
 SharedPreferences prefs;
 
@@ -349,6 +351,52 @@ Future<Project> getProject(String id, String token) async {
     return project;
   } else {
     print(response.body.toString());
+    return null;
+  }
+}
+
+Future<Project> newProject(context, String name, String desc, String teamId, String slides, String video, String ghurl, String id, String token) async {
+  String url = baseUrl + "projects";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  String body = json.encode({
+    "name": name,
+    "description": desc,
+    "team": teamId,
+    "slides": slides,
+    "video": video,
+    "url": ghurl
+  });
+  print(body);
+  final response = await http.post(url, headers: headers, body: body);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Project project = new Project.fromJson(data);
+    return project;
+  } else {
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return null;
+  }
+}
+
+Future<Project> editProject(context, String name, String desc, String slides, String video, String ghurl, String id, String token) async {
+  String url = baseUrl + "projects/" + id;
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  String body = json.encode({
+    "name": name,
+    "description": desc,
+    "slides": slides,
+    "video": video,
+    "url": ghurl
+  });
+  final response = await http.patch(url, headers: headers, body: body);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Project project = new Project.fromJson(data);
+    return project;
+  } else {
+    errorDialog(context, "Error", json.decode(response.body)['message']);
     return null;
   }
 }

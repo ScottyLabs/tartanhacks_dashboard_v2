@@ -27,8 +27,8 @@ class Project{
       desc: parsedJson['description'],
       event: parsedJson['event'],
       url: parsedJson['url'],
-      slides: parsedJson['slides_url'],
-      video: parsedJson['video_url'],
+      slides: parsedJson['slides'],
+      video: parsedJson['video'],
       team: parsedJson['team'],
       prizes: parsedJson['prizes'],
     );
