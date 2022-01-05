@@ -19,7 +19,7 @@ class Prize{
 
   factory Prize.fromJson(Map<String, dynamic> parsedJson) {
     Prize newPrize = new Prize(
-      id: parsedJson['id'],
+      id: parsedJson['_id'],
       event: parsedJson['event'],
       name: parsedJson['name'],
       description: parsedJson['description'],

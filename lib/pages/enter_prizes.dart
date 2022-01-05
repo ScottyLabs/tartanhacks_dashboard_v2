@@ -4,10 +4,15 @@ import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api.dart';
 import '../models/prize.dart';
+import 'dart:convert';
 
 class EnterPrizes extends StatefulWidget {
+  String projId;
+  List enteredPrizes;
+  EnterPrizes({this.projId, this.enteredPrizes});
+
   @override
-  _EnterPrizesState createState() => new _EnterPrizesState();
+  _EnterPrizesState createState() => new _EnterPrizesState(projId: projId, enteredPrizes: enteredPrizes);
 }
 
 class _EnterPrizesState extends State<EnterPrizes> {
@@ -16,8 +21,12 @@ class _EnterPrizesState extends State<EnterPrizes> {
   bool isAdmin;
   String id;
   String token;
+  String projId;
 
   List<Prize> prizes;
+  List enteredPrizes;
+
+  _EnterPrizesState({this.projId, this.enteredPrizes});
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -31,6 +40,52 @@ class _EnterPrizesState extends State<EnterPrizes> {
     setState(() {
 
     });
+  }
+
+  void prizeDialog(String prizeId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Confirmation", style: Theme.of(context).textTheme.headline1),
+          content: new Text("Are you sure you want to enter for this prize? This action cannot be undone.", style: Theme.of(context).textTheme.bodyText2),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "OK",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                prizeEntry(prizeId);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void prizeEntry(String prizeId) async {
+    bool success = await enterPrize(context, projId, prizeId, token);
+    if (success) {
+      enteredPrizes.add(prizeId);
+      setState(() {
+
+      });
+    }
   }
 
   @override
@@ -99,7 +154,9 @@ class _EnterPrizesState extends State<EnterPrizes> {
                                     return PrizeCard(
                                       id: prizes[index].id,
                                       name: prizes[index].name,
-                                      desc: prizes[index].description
+                                      desc: prizes[index].description,
+                                      entered: enteredPrizes.contains(prizes[index].id),
+                                      entryFn: () => prizeDialog(prizes[index].id,),
                                     );
                                   },
                                 ),
@@ -121,9 +178,10 @@ class PrizeCard extends StatelessWidget{
   String id;
   String name;
   String desc;
+  bool entered;
+  Function entryFn;
 
-
-  PrizeCard({this.id, this.name, this.desc});
+  PrizeCard({this.id, this.name, this.desc, this.entered, this.entryFn});
 
   @override
   Widget build(BuildContext context){
@@ -148,9 +206,15 @@ class PrizeCard extends StatelessWidget{
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
             ),
+            (entered) ?
             SolidButton(
-              text: "   Submit   ",
+              text: "  Submitted  ",
+              color: Colors.grey,
               onPressed: null,
+            )
+            : SolidButton(
+              text: "   Submit   ",
+              onPressed: entryFn,
             )
           ],
         )

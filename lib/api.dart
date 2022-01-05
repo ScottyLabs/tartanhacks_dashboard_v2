@@ -355,7 +355,7 @@ Future<Project> getProject(String id, String token) async {
   }
 }
 
-Future<Project> newProject(context, String name, String desc, String teamId, String slides, String video, String ghurl, String id, String token) async {
+Future<Project> newProject(BuildContext context, String name, String desc, String teamId, String slides, String video, String ghurl, String id, String token) async {
   String url = baseUrl + "projects";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   String body = json.encode({
@@ -379,7 +379,7 @@ Future<Project> newProject(context, String name, String desc, String teamId, Str
   }
 }
 
-Future<Project> editProject(context, String name, String desc, String slides, String video, String ghurl, String id, String token) async {
+Future<Project> editProject(BuildContext context, String name, String desc, String slides, String video, String ghurl, String id, String token) async {
   String url = baseUrl + "projects/" + id;
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   String body = json.encode({
@@ -398,5 +398,20 @@ Future<Project> editProject(context, String name, String desc, String slides, St
   } else {
     errorDialog(context, "Error", json.decode(response.body)['message']);
     return null;
+  }
+}
+
+Future enterPrize(BuildContext context, String projId, String prizeId, String token) async {
+  String url = baseUrl + "projects/prizes/enter/" + projId + "?prizeID=" + prizeId;
+  print(url);
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final response = await http.put(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    errorDialog(context, "Success","Successfully entered for prize.");
+    return true;
+  } else {
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
   }
 }

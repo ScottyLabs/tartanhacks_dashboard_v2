@@ -32,6 +32,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
   String id;
   String token;
   String projId;
+  List prizes = [];
   Team team;
 
   void getData() async {
@@ -50,6 +51,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       _githubUrl = proj.url;
       _presUrl = proj.slides;
       _vidUrl = proj.video;
+      prizes = proj.prizes;
 
       nameController.text = _projName;
       descController.text = _projDesc;
@@ -288,7 +290,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(builder: (context) =>
-                                                    EnterPrizes()),
+                                                    EnterPrizes(projId: projId, enteredPrizes: prizes,)),
                                               );
                                             },
                                         )
