@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/api.dart';
+import 'package:thdapp/models/event.dart';
 import 'new.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,14 +21,11 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   List eventData = [1,2,3,4,5];
   bool isSwitched = false;
   int selectedIndex = 1;
-
-
-
+  List<Event> events;
 
   @override
-  initState() {
+  initState(){
     super.initState();
-    //getData();
   }
 
   Widget eventName(data) {
@@ -217,11 +216,22 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                         constraints: BoxConstraints(
                                             maxHeight: screenHeight*0.65
                                         ),
-                                        child: ListView.builder(
-                                          itemCount: eventData.length,
-                                          itemBuilder: (BuildContext context, int index){
-                                            return EventCard();
-                                          },
+                                        child: FutureBuilder(
+                                          future: getEvents(),
+                                          builder: (context, eventsSnapshot){
+                                            if(eventsSnapshot.data == null || eventsSnapshot.hasData == null){
+                                              return ListView.builder(
+                                                  itemCount: 5,
+                                                  itemBuilder: (BuildContext context, int index){
+                                                    return EventCard();
+                                                  },);
+                                            }
+                                            return ListView.builder(
+                                            itemCount: eventsSnapshot.data.length,
+                                            itemBuilder: (BuildContext context, int index){
+                                              return EventsCard(eventsSnapshot.data[index]);
+                                            },
+                                          );},
                                         ),
                                       )
                                   )
@@ -281,13 +291,13 @@ class EventCard extends StatelessWidget{
                           image: "",
                           onPressed: null,
                         ),
+                        SizedBox(width: 10,),
                         SolidSquareButton(
                           image: "",
                           onPressed: null,
                         )
                       ]
                     )
-
                   ]
                     ),
 
@@ -305,6 +315,86 @@ class EventCard extends StatelessWidget{
                                 borderRadius: BorderRadius.circular(10)
                               )
                       )
+                      )]
+                )
+              ],
+            )
+        )
+    );
+  }
+}
+
+class EventsCard extends StatelessWidget{
+  final Event event;
+
+  EventsCard(this.event);
+
+
+  @override
+  Widget build(BuildContext context){
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+        child: GradBox(
+            width: 100,
+            height: 200,
+            alignment: Alignment.topLeft,
+            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children:[
+                      SizedBox(
+                          width: screenWidth * 0.5,
+                          child:Text(event.name,
+                            style: Theme.of(context).textTheme.headline2,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                      ),
+                      SizedBox(height: screenHeight*0.01),
+                      SizedBox(
+                          width: screenWidth * 0.4,
+                          child:Text(event.description,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                      ),
+                      Row(
+                          children:[
+                            SolidSquareButton(
+                              image: "",
+                              onPressed: null,
+                            ),
+                            SolidSquareButton(
+                              image: "",
+                              onPressed: null,
+                            )
+                          ]
+                      )
+                    ]
+                ),
+
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children:[
+                      SizedBox(
+                          width: screenWidth * 0.265,
+                          height: 170,
+                          child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(10)
+                              )
+                          )
                       )]
                 )
               ],

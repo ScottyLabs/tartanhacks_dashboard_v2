@@ -206,7 +206,7 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
       ',"lat":' + lat.toString() +
       ',"lng":' + lng.toString() +
       ',"platform":"' + platform +
-      '"platformUrl":"' + platformUrl + '"}';
+      '","platformUrl":"' + platformUrl + '"}';
 
   print(bodyJson);
   final response = await http.post(url, headers: headers, body: bodyJson);

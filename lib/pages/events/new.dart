@@ -16,7 +16,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String _eventUrl = "";
   String _duration = "";
   String _location = "";
-  String _platform = "";
+  String _platform = "In Person";
   double _lat = 0;
   double _lng = 0;
   int _startTime = 0;
@@ -29,11 +29,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
   TextEditingController linkController = TextEditingController();
 
   TextEditingController dateController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
 
   var dropdownValue = 'In Person';
+
+  List<String> _dropdownItems = ['In Person', "and", "other"];
+
   TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);
-
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -43,6 +46,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
     descController.dispose();
     linkController.dispose();
     dateController.dispose();
+    durationController.dispose();
     super.dispose();
   }
 
@@ -79,7 +83,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 Navigator.of(context).pop();
                 if(result == true){
                   Navigator.pop(context);
-
                 }
               },
             ),
@@ -161,6 +164,54 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
+  Widget _buildDuration() {
+    return TextFormField(
+      decoration: FormFieldStyle(context, "Duration"),
+      style: Theme.of(context).textTheme.bodyText2,
+      controller: durationController,
+      keyboardType: TextInputType.url,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Duration is Required';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        _date = value;
+      },
+    );
+  }
+
+  Widget _meetingPlatformDropdown(width){
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryVariant,
+            borderRadius: BorderRadius.circular(5)
+        ),
+        padding: EdgeInsets.only(left: 5, right: 5),
+        height: width*0.06,
+        width: width * 0.4,
+        child: DropdownButton<String>(
+          isExpanded: true,
+          iconEnabledColor: Theme.of(context).colorScheme.primary,
+          icon: Icon(Icons.arrow_drop_down),
+          iconSize: 25,
+          onChanged: (String val) {
+            setState(() {
+              _platform = val;
+              dropdownValue = val;
+            });
+          },
+          underline: SizedBox(),
+          value: dropdownValue,
+          items: _dropdownItems.map<DropdownMenuItem<String>>((String val){return DropdownMenuItem<String>(value: val, child: Text(val, style: Theme.of(context).textTheme.bodyText2,));}).toList()
+          ,
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,6 +245,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                 ]
                             ),
                             Container(
+                              //color: Colors.black,
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 child: GradBox(
@@ -204,21 +256,30 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                         key: _formKey,
                                         child: SingleChildScrollView(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text("Create New Event", style: Theme.of(context).textTheme.headline2),
-                                                SizedBox(height:8),
+                                                Text("CREATE NEW EVENT", style: Theme.of(context).textTheme.headline2),
+                                                SizedBox(height:45),
                                                 _buildName(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
                                                 _buildDesc(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
                                                 _buildEventURL(),
-                                                SizedBox(height:8),
-
+                                                SizedBox(height:16),
+                                                Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
+                                                SizedBox(height:5),
+                                                _meetingPlatformDropdown(screenWidth),
+                                                SizedBox(height:16),
+                                                _buildDuration(),
+                                                SizedBox(height:16),
                                                 _buildDate(),
-                                                SolidButton(
-                                                    text: "Save Event"
-
+                                                SizedBox(height:16),
+                                                Center(
+                                                  child: SolidButton(
+                                                    text: "Save information",
+                                                    onPressed: saveData,
+                                                  ),
                                                 ),
                                               ],
                                             )
