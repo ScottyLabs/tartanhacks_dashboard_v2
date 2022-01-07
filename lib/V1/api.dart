@@ -55,8 +55,8 @@ Future<String> resetPassword(String email) async {
 }
 
 Future<List<Event>> getEvents() async {
-  var url = baseUrl+'events/get';
-  final response = await http.post(url);
+  var url = baseUrl+'schedule/';
+  final response = await http.get(url);
   print(response.statusCode);
   if (response.statusCode == 200){
     List<Event> EventsList;
@@ -73,7 +73,7 @@ Future<bool> addEvents(String name, String unixTime, String description, String 
 
   String token = prefs.getString("token");
 
-  String url = baseUrl + "events/new";
+  String url = baseUrl + "schedule";
   Map<String, String> headers = {"Content-type": "application/json", "Token": token};
   String json1 = '{"name":"' + name + '","timestamp":"' + unixTime + '","description":"' + description + '","zoom_access_enabled":true,"gcal_event_url":"' + gcal + '","zoom_link":"' + zoom_link + '","is_in_person":false,"access_code":' + access_code.toString() + ',"zoom_id":"' + zoom_id + '","zoom_password":"' + zoom_password + '","duration":' + duration + '}';
   print(json1);
