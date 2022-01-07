@@ -175,8 +175,8 @@ Future<String> addBookmark(String token, String participantId) async {
 }
 
 Future<List<Event>> getEvents() async {
-  var url = baseUrl+'events/get';
-  final response = await http.post(url);
+  var url = baseUrl+'schedule/';
+  final response = await http.get(url);
   print(response.statusCode);
   if (response.statusCode == 200){
     List<Event> EventsList;
@@ -226,7 +226,6 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
     return false;
   }
 }
-
 
 Future<bool> editEvent(String eventId, String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
