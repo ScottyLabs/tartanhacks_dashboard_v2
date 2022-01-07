@@ -131,6 +131,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
   @override
   Widget build(BuildContext context) {
+    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
@@ -139,7 +140,8 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.checkInItem == null ? "NEW CHECKIN ITEM" : "EDIT CHECKIN ITEM",
+                  widget.checkInItem == null ? "NEW CHECKIN ITEM"
+                      : editable ? "EDIT CHECKIN ITEM" : "EVENT DETAILS",
                   style: Theme.of(context).textTheme.headline1,
                 ),
                 SizedBox(height: 20,),
@@ -255,7 +257,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 ),
 
                 // Dropdown menus
-                EditCheckInDropDownFormField(
+                if (editable) EditCheckInDropDownFormField(
                     items: accessLevels.asMap().map((i, label) =>
                         MapEntry(i, DropdownMenuItem(
                           value: label,
@@ -269,10 +271,10 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       });
                   },
                 ),
-                SizedBox(height: 15,),
+                if (editable) SizedBox(height: 15,),
 
                 // Active toggle
-                Row(
+                if (editable) Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -302,7 +304,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 ),
 
                 // Submit button
-                SizedBox(
+                if (editable) SizedBox(
                   width: double.infinity,
                   child: SolidButton(
                     text: "CONFIRM",
@@ -323,11 +325,19 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                         );
 
                         // TODO maybe add some loading indicator?
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )));
                         if (newItem) {
                           await Provider.of<CheckInItemsModel>(context, listen: false).addCheckInItem(updatedItem);
                         } else {
                           await Provider.of<CheckInItemsModel>(context, listen: false).editCheckInItem(updatedItem, widget.checkInItem.id);
                         }
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       }
                     },
@@ -359,6 +369,7 @@ class EditCheckInFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -366,6 +377,7 @@ class EditCheckInFormField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           onTap: onTap,
+          enabled: editable,
           validator: validator ?? (val) {
             if (val == null || val.isEmpty) {
               return 'Cannot be empty';

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
@@ -14,7 +16,6 @@ import 'models/prize.dart';
 SharedPreferences prefs;
 
 const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGNkNzRmMmJmYWQ2MTNhODEwYTMzMDIiLCJpYXQiOjE2MzU2MDk4MzksImV4cCI6MTYzNzMzNzgzOX0._5K4sqsFhJbF58-skYaBwkqqANYITYCo6_EcxUTTWqY";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -245,7 +246,33 @@ Future<List<CheckInItem>> getCheckInItems() async {
   }
 }
 
-Future<void> addCheckInItem(CheckInItemDTO item) async {
+/*
+0 - (int) user points
+1 - Map<String checkInItem ID, bool hasCheckedIn>
+2 - List<CheckInItem>
+ */
+Future<List> getUserHistory(String userID, String token) async {
+  String url = baseUrl + "check-in/history/$userID";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var jsonHistory = json.decode(response.body);
+    List result = [jsonHistory['totalPoints'], Map<String, bool>() , <CheckInItem>[]];
+
+    jsonHistory['history'].forEach((val) {
+      CheckInItem item = CheckInItem.fromJson(val['checkInItem']);
+      result[2].add(item);
+      result[1][item.id] = val['hasCheckedIn'] as bool;
+    });
+    print(result[1]);
+    return result;
+  } else {
+    throw Exception("Failed to fetch user $userID history");
+  }
+}
+
+Future<void> addCheckInItem(CheckInItemDTO item, String token) async {
   String url = baseUrl + "check-in";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
@@ -256,7 +283,7 @@ Future<void> addCheckInItem(CheckInItemDTO item) async {
   }
 }
 
-Future<void> editCheckInItem(CheckInItemDTO item, String id) async {
+Future<void> editCheckInItem(CheckInItemDTO item, String id, String token) async {
   String url = baseUrl + "check-in/$id";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
@@ -267,7 +294,7 @@ Future<void> editCheckInItem(CheckInItemDTO item, String id) async {
   }
 }
 
-Future<void> deleteCheckInItem(String id) async {
+Future<void> deleteCheckInItem(String id, String token) async {
   String url = baseUrl + "check-in/$id";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.patch(url, headers: headers);
@@ -277,12 +304,12 @@ Future<void> deleteCheckInItem(String id) async {
   }
 }
 
-Future<void> checkInUser(String id, String uid) async {
+Future<void> checkInUser(String id, String uid, token) async {
   final queryParams = {
     'userID': uid,
     'checkInItemID': id
   };
-  Map<String, String> headers = {"Content-type": "application/json"};
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final uri = Uri.http(baseUrl, "check-in/user", queryParams);
   final response = await http.get(uri, headers: headers);
 
@@ -293,8 +320,7 @@ Future<void> checkInUser(String id, String uid) async {
 
 Future<String> getCurrentUserID() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // return prefs.getString("id");
-  return "60cd74f2bfad613a810a3302";
+  return prefs.getString("id");
 }
 
 Future<List<LBEntry>> getLeaderboard() async {
