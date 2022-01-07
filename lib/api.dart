@@ -46,16 +46,17 @@ Future<User> checkCredentials(String email, String password) async {
   }
 }
 
-Future<String> resetPassword(String email) async {
-  String url = baseUrl + "auth/regiset";
+Future<String> resetPassword(BuildContext context, String email) async {
+  String url = baseUrl + "auth/request-reset";
   Map<String, String> headers = {"Content-type": "application/json"};
   String json1 = '{"email":"' + email + '"}';
   final response = await http.post(url, headers: headers, body: json1);
 
   if (response.statusCode == 200) {
-    return "Please check your email address to reset your password.";
+    errorDialog(context, "Success", "Please check your email address to reset your password.");
   } else {
-    return "We encountered an error while resetting your password. Please contact ScottyLabs for help";
+    print(response.body.toString());
+    errorDialog(context, "Error", "We encountered an error while resetting your password. Please contact ScottyLabs for help.");
   }
 }
 

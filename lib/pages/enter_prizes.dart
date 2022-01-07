@@ -4,7 +4,6 @@ import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api.dart';
 import '../models/prize.dart';
-import 'dart:convert';
 
 class EnterPrizes extends StatefulWidget {
   String projId;

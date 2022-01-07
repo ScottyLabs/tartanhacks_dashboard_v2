@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_widgets.dart';
 import 'home.dart';
 import 'login.dart';
+import '../api.dart';
 
 class Forgot extends StatefulWidget{
   @override
@@ -85,11 +86,7 @@ class _ForgotState extends State<Forgot>{
                               width: 200,
                               height: 45,
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      Home()),
-                                );
+                                resetPassword(context, _emailcontroller.text);
                               },
                               child: Text("Recover Password",
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
