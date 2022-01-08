@@ -37,6 +37,7 @@ class CheckInItemsModel with ChangeNotifier {
     isAdmin = prefs.getBool("admin");
     _token = prefs.getString("token");
     _status = Status.Fetching;
+
     try {
       if (isAdmin) {
         _list = await api.getCheckInItems();
@@ -74,6 +75,12 @@ class CheckInItemsModel with ChangeNotifier {
 
   Future<void> checkInUser(String id, String uid) async {
     await api.checkInUser(id, uid, _token);
-    if (!isAdmin) await fetchCheckInItems();
+  }
+
+  Future<void> selfCheckIn(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String uid = prefs.getString("id");
+    await api.checkInUser(id, uid, _token);
+    await fetchCheckInItems();
   }
 }

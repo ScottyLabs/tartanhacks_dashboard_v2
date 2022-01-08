@@ -272,13 +272,14 @@ class CheckInEventList extends StatelessWidget {
             return CheckInEventListItem(
               name: events[index].name,
               isChecked: editable ? false : hasCheckedIn[events[index].id],
+              enabled: events[index].enableSelfCheckIn,
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => EditCheckInItemPage(events[index])
                 ));
               },
-              onCheck: (val) async {
+              onCheck: () async {
                 // Open camera to scan users if isAdmin
                 if (editable) {
                   final String uid = await Barras.scan(context);
@@ -294,9 +295,53 @@ class CheckInEventList extends StatelessWidget {
                     Navigator.pop(context);
                   }
                 }
-                // Else checkInBox
+                // Else user self-check in
                 else {
-
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (dialogContext) {
+                      bool isLoading = false;
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return isLoading ? Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ) : AlertDialog(
+                            title: Text("Confirm Check In"),
+                            content: RichText(
+                              text: TextSpan(
+                                  text: "You are checking in to ",
+                                  style: DefaultTextStyle.of(context).style.copyWith(color: Colors.black),
+                                  children: [
+                                    TextSpan(
+                                        text: "${events[index].name}. \n\n",
+                                        style: TextStyle(fontWeight: FontWeight.bold)
+                                    ),
+                                    TextSpan(text: "Ensure that you have selected the correct event before confirming you attendance.")
+                                  ]
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () => Navigator.pop(dialogContext),
+                              ),
+                              TextButton(
+                                  child: Text("Confirm"),
+                                  onPressed: () async {
+                                    setState(() {isLoading = true;});
+                                    await model.selfCheckIn(events[index].id);
+                                    Navigator.pop(dialogContext);
+                                  }
+                              )
+                            ],
+                          );
+                        }
+                      );
+                    }
+                  );
                 }
               },
             );
@@ -311,12 +356,14 @@ class CheckInEventList extends StatelessWidget {
 class CheckInEventListItem extends StatelessWidget {
   final String name;
   final bool isChecked;
+  final bool enabled;
   final Function onCheck;
   final Function onTap;
 
   CheckInEventListItem({
     this.name,
     this.isChecked,
+    this.enabled,
     this.onTap,
     this.onCheck,
 });
@@ -348,35 +395,40 @@ class CheckInEventListItem extends StatelessWidget {
                         ?.copyWith(fontSize: 23),
                   ),
                   InkWell(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        editable ? Padding(
-                            padding: EdgeInsets.all(9),
-                          child: Icon(
-                            Icons.linked_camera,
-                            color: Theme.of(context).colorScheme.primary,
+                    onTap: () {if (!isChecked && enabled) onCheck();},
+                    child: IgnorePointer(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          editable ? Padding(
+                              padding: EdgeInsets.all(9),
+                            child: Icon(
+                              Icons.linked_camera,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          )
+                          : Transform.scale(
+                            scale: 1.4,
+                            child: Checkbox(
+                                side: BorderSide(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    width: 2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                value: isChecked,
+                              onChanged: null,
+                            ),
                           ),
-                        )
-                        : Transform.scale(
-                          scale: 1.4,
-                          child: Checkbox(
-                              side: BorderSide(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  width: 2),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              value: isChecked),
-                        ),
-                        Text(
-                          isChecked ? "You are checked in" : "Click to scan in",
-                          style: Theme.of(context).textTheme.bodyText2,
-                        )
-                      ],
+                          Text(
+                            isChecked ? "You are checked in"
+                                : enabled ? "Click to scan in" : "Check in at venue",
+                            style: Theme.of(context).textTheme.bodyText2,
+                          )
+                        ],
+                      ),
                     ),
-                      onTap: () => onCheck(null),
                   )
                 ],
               ),

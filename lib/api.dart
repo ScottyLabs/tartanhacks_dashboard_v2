@@ -290,7 +290,7 @@ Future<void> editCheckInItem(CheckInItemDTO item, String id, String token) async
   final response = await http.patch(url, headers: headers, body: itemJson);
 
   if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
+    throw Exception("Failed to edit Check In Item");
   }
 }
 
@@ -300,22 +300,24 @@ Future<void> deleteCheckInItem(String id, String token) async {
   final response = await http.patch(url, headers: headers);
 
   if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
+    throw Exception("Failed to delete Check In Item");
   }
 }
 
 Future<void> checkInUser(String id, String uid, token) async {
+  String base = baseUrl.replaceAll("https://", "").replaceAll("/", "");
   final queryParams = {
     'userID': uid,
     'checkInItemID': id
   };
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
-  final uri = Uri.http(baseUrl, "check-in/user", queryParams);
-  final response = await http.get(uri, headers: headers);
+  final uri = Uri.http(base, "/check-in/user", queryParams);
+  final response = await http.put(uri, headers: headers);
 
-  if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
-  }
+  // TODO Error with backend, throws a 400 despite successful update
+  // if (response.statusCode != 200) {
+  //   throw Exception(response.body.toString());
+  // }
 }
 
 Future<String> getCurrentUserID() async {
