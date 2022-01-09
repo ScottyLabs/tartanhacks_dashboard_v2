@@ -119,10 +119,10 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    ParticipantBookmark temp = new ParticipantBookmark.fromJson(data);
-    participantBookmarks.add(temp);
-    return participantBookmarks;
+    List data = json.decode(response.body);
+    data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
+    print(data);
+    return data;
   }
   else {
     print('error getting participant bookmarks');
@@ -130,16 +130,14 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
 }
 
 Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
-  List projectBookmarks = [];
   String url = baseUrl + "bookmarks/project";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    ProjectBookmark temp = new ProjectBookmark.fromJson(data);
-    projectBookmarks.add(temp);
-    return projectBookmarks;
+    List data = json.decode(response.body);
+    data = data.map((bm) => ProjectBookmark.fromJson(bm)).toList();
+    return data;
   }
   else {
     print('error getting project bookmarks');
@@ -152,6 +150,7 @@ Future<void> deleteBookmark(String token, String id) async {
   final response = await http.delete(url, headers:headers);
 
   if(response.statusCode != 200) {
+    print(response.body);
     print('Failed to delete bookmark ' + id + ' with code ' + response.statusCode.toString());
   }
   else {
@@ -162,17 +161,21 @@ Future<void> deleteBookmark(String token, String id) async {
 Future<String> addBookmark(String token, String participantId) async {
   String url = baseUrl + "bookmark";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
-  String jsonInput = '{"bookmarkType": "PARTICIPANT", "participant":"' + participantId + ', "project":"sample project", "description": "sample description""}';
+  String jsonInput = '{"bookmarkType": "PARTICIPANT", "participant":"' + participantId.toString() + '", "project":null, "description": "sample description"}';
+  print(jsonInput);
   final response = await http.post(url, headers: headers, body: jsonInput);
 
   if(response.statusCode != 200) {
-    print('Failed to add bookmark with participant ' + participantId);
+    print('Failed to add bookmark with participant ' + participantId.toString());
+    print(response.body);
+    return null;
   }
   else {
     print('Successfully added bookmark');
-    var data = json.decode(response.body);
-    var bookmarkId = data.map((json) => json['_id']).toString();
-    print(bookmarkId);
+    Map<String, dynamic> data = new Map<String, dynamic>.from(json.decode(response.body));
+    print(data);
+    var bookmarkId = data["_id"];
+    print('bookmarkId is ' + bookmarkId);
     return bookmarkId;
   }
 }

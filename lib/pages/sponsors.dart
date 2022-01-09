@@ -12,12 +12,17 @@ class Sponsors extends StatefulWidget {
 }
 
 class _SponsorsState extends State<Sponsors> {
+  String myName;
   List studentIds;
-  List students;
+  List students; // bunch of Profiles
   Map bookmarks; // dictionary of participant id : actual bookmark id
+  int searchResultCount;
+  bool searchPressed;
 
   SharedPreferences prefs;
   String token;
+
+  final myController = new TextEditingController();
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -33,25 +38,48 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
-  void toggleBookmark(String bookmarkId, String participantId) async {
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    print('toggling now!');
-    if (bookmarks.containsKey(bookmarkId)) {
-      print('gonna delete');
-      bookmarks.remove(bookmarkId);
-      print(bookmarks);
-      deleteBookmark(token, bookmarkId);
+  void searchResultCounting(String keyword) {
+    searchPressed = true;
+    print(keyword);
+    int counter = 0;
+    for (var i = 0; i < students.length; i++) {
+      if (students[i] != null) {
+        var name = students[i].firstName + students[i].lastName;
+        if (name.contains(keyword)) {
+          counter++;
+        }
+      }
     }
-    else {
-      print('gonna add');
-      var newBookmarkId = addBookmark(token, bookmarkId);
-      bookmarks[newBookmarkId] = participantId;
-      print(bookmarks);
-    }
+    print(counter);
+    print(searchPressed);
+    searchResultCount = counter;
+    setState(() {
+
+    });
   }
 
-  // separate functions for adding and deleting bookmarks
+  void newBookmark(String bookmarkId, String participantId) async {
+    print('ADDING A BOOKMARK FOR ' + participantId);
+    prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    String newBookmarkId = await addBookmark(token, participantId);
+    bookmarks[newBookmarkId] = participantId;
+    setState(() {
+
+    });
+  }
+
+  void removeBookmark(String bookmarkId, String participantId) async {
+    print('REMOVING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
+    prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    bookmarks.remove(bookmarkId);
+    deleteBookmark(token, bookmarkId);
+    setState(() {
+
+    });
+  }
+
 
   @override
   initState() {
@@ -101,7 +129,7 @@ class _SponsorsState extends State<Sponsors> {
                                           Container(
                                             alignment: Alignment.topLeft,
                                             //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
-                                            child: Text("HI [SPONSOR NAME], WELCOME BACK", style: Theme.of(context).textTheme.headline1),
+                                            child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
                                           ),
                                           SizedBox(height: 10),
                                           Container(
@@ -117,7 +145,18 @@ class _SponsorsState extends State<Sponsors> {
                                               decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
                                               style: Theme.of(context).textTheme.bodyText2,
                                               enableSuggestions: false,
+                                              controller: myController,
                                             ),
+                                          ),
+                                          Container(
+                                              child: Visibility(
+                                                visible: searchPressed == null ? false : true,
+                                                child: Text(
+                                                  '$searchResultCount matching results are in the list.',
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.headline4,
+                                                )
+                                              )
                                           ),
                                           Container(
                                             height: 60,
@@ -126,6 +165,9 @@ class _SponsorsState extends State<Sponsors> {
                                                 alignment: Alignment.center,
                                                 width: 80,
                                                 height: 40,
+                                                onTap: () {
+                                                  searchResultCounting(myController.text);
+                                                },
                                                 child: Icon(
                                                     Icons.subdirectory_arrow_left,
                                                     size: 30,
@@ -139,14 +181,15 @@ class _SponsorsState extends State<Sponsors> {
                                                   child: ListView.builder(
                                                       itemCount: 4,
                                                       itemBuilder: (BuildContext context, int index){
+                                                        bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
                                                         return InfoTile(
                                                             name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
                                                             team: "Cool Team",
                                                             bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                             participantId: studentIds[index],
                                                             bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
-                                                            isBookmark: (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false,
-                                                            toggle: toggleBookmark,
+                                                            isBookmark: isBookmark,
+                                                            toggleFn: isBookmark ? removeBookmark : newBookmark,
                                                         );
                                                       }
                                                   )
@@ -176,9 +219,10 @@ class InfoTile extends StatelessWidget {
   String participantId;
   String bookmarkId;
   bool isBookmark;
-  Function toggle;
+  Function toggleFn;
 
-  InfoTile({this.name, this.team, this.bio, this.participantId, this.bookmarkId, this.isBookmark, this.toggle});
+  InfoTile({this.name, this.team, this.bio, this.participantId,
+    this.bookmarkId, this.isBookmark, this.toggleFn});
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +275,9 @@ class InfoTile extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   iconSize: 40.0,
                   onPressed: () {
-                    toggle(bookmarkId, participantId);
+                    print(bookmarkId);
+                    print(participantId);
+                    toggleFn(bookmarkId, participantId);
                   }
                 ),
               ],

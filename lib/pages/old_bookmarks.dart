@@ -142,7 +142,9 @@ class BookmarkInfo extends StatelessWidget {
                     SizedBox(height: 18),
                     SolidButton(
                       text: "View More",
-                      onPressed: () {},
+                      onPressed: () {
+                        viewMorePopup(context, 'View More', 'hello');
+                      },
                     )
                   ]
               ),
@@ -164,4 +166,29 @@ class BookmarkInfo extends StatelessWidget {
       ),
     );
   }
+}
+
+void viewMorePopup(context, String title, String response) {
+  // flutter defined function
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      // return object of type Dialog
+      return AlertDialog(
+        title: new Text(title, style: Theme.of(context).textTheme.headline1),
+        content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
+        actions: <Widget>[
+          // usually buttons at the bottom of the dialog
+          new TextButton(
+            child: new Text("Close",
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
