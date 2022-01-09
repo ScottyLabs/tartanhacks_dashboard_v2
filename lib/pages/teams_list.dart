@@ -102,7 +102,17 @@ class _TeamsListState extends State<TeamsList> {
   Widget _buildTeamJoinBtn(String teamID){
     SolidButton btn = SolidButton(
       text: " Join ",
-      onPressed: () {}
+        onPressed: () {
+          requestTeam(teamID, token);
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(builder: (context) =>
+          //         ViewTeam(),
+          //         settings: RouteSettings(
+          //           arguments: teamID,
+          //         )
+          //     ));
+        }
     );
     return btn;
   }

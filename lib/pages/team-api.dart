@@ -78,11 +78,12 @@ Future<void> leaveTeam(String token) async {
   print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
-Future<void> requestTeam(String team_id, String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + team_id;
+Future<void> requestTeam(String teamID, String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + teamID;
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   var body = json.encode({});
+  print("Team request attempt");
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully request");

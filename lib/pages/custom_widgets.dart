@@ -540,7 +540,10 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    TeamsList()),
+                                    ViewTeam(),
+                                    settings: RouteSettings(
+                                      arguments: "",
+                                    )),
                               );
                             },
                         ),
