@@ -117,6 +117,7 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
   if (response.statusCode == 200) {
     List data = json.decode(response.body);
     data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
+    print(data);
     return data;
   }
   else {
@@ -167,10 +168,10 @@ Future<String> addBookmark(String token, String participantId) async {
   }
   else {
     print('Successfully added bookmark');
-    var data = json.decode(response.body);
+    Map<String, dynamic> data = new Map<String, dynamic>.from(json.decode(response.body));
     print(data);
-    var bookmarkId = data.map((json) => json['_id']).toString();
-    print(bookmarkId);
+    var bookmarkId = data["_id"];
+    print('bookmarkId is ' + bookmarkId);
     return bookmarkId;
   }
 }

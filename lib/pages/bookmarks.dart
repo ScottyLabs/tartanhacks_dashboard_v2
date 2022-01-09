@@ -19,10 +19,10 @@ class _Bookmarks extends State<Bookmarks> {
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     participantBookmarks = await getParticipantBookmarks(token);
-    projectBookmarks = await getProjectBookmarks(token);
-    print('helloooooo participants');
+    print('Participant Bookmarks:');
     print(participantBookmarks);
-    print('NOW ITS THE PROJECTS');
+    projectBookmarks = await getProjectBookmarks(token);
+    print('Project Bookmarks:');
     print(projectBookmarks);
     setState(() {
 

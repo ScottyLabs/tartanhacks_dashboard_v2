@@ -12,12 +12,16 @@ class Sponsors extends StatefulWidget {
 }
 
 class _SponsorsState extends State<Sponsors> {
+  String myName;
   List studentIds;
   List students;
+  List displayedStudents;
   Map bookmarks; // dictionary of participant id : actual bookmark id
 
   SharedPreferences prefs;
   String token;
+
+  final myController = new TextEditingController();
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -33,29 +37,15 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
-  // void toggleBookmark(String bookmarkId, String participantId) async {
-  //   prefs = await SharedPreferences.getInstance();
-  //   token = prefs.getString('token');
-  //   print('toggling now!');
-  //   if (bookmarks.containsKey(bookmarkId)) {
-  //     print('gonna delete');
-  //     bookmarks.remove(bookmarkId);
-  //     print(bookmarks);
-  //     deleteBookmark(token, bookmarkId);
-  //   }
-  //   else {
-  //     print('gonna add');
-  //     var newBookmarkId = addBookmark(token, bookmarkId);
-  //     bookmarks[newBookmarkId] = participantId;
-  //     print(bookmarks);
-  //   }
-  // }
+  void updateDisplayedStudents(String keyword) {
+    print(keyword);
+  }
 
   void newBookmark(String bookmarkId, String participantId) async {
     print('ADDING A BOOKMARK FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    Future<String> newBookmarkId = addBookmark(token, participantId);
+    String newBookmarkId = await addBookmark(token, participantId);
     bookmarks[newBookmarkId] = participantId;
     setState(() {
 
@@ -122,7 +112,7 @@ class _SponsorsState extends State<Sponsors> {
                                           Container(
                                             alignment: Alignment.topLeft,
                                             //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
-                                            child: Text("HI [SPONSOR NAME], WELCOME BACK", style: Theme.of(context).textTheme.headline1),
+                                            child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
                                           ),
                                           SizedBox(height: 10),
                                           Container(
@@ -138,6 +128,7 @@ class _SponsorsState extends State<Sponsors> {
                                               decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
                                               style: Theme.of(context).textTheme.bodyText2,
                                               enableSuggestions: false,
+                                              controller: myController,
                                             ),
                                           ),
                                           Container(
@@ -147,6 +138,9 @@ class _SponsorsState extends State<Sponsors> {
                                                 alignment: Alignment.center,
                                                 width: 80,
                                                 height: 40,
+                                                onTap: () {
+                                                  updateDisplayedStudents(myController.text);
+                                                },
                                                 child: Icon(
                                                     Icons.subdirectory_arrow_left,
                                                     size: 30,
