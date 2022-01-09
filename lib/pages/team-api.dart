@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'custom_widgets.dart';
 import '/models/team.dart';
+import '/models/member.dart';
+import 'dart:developer';
 
 Future<bool> createTeam(String name, String description, String token) async  {
   String url = "https://tartanhacks-backend.herokuapp.com/team/";
@@ -29,11 +31,10 @@ Future<Team> getUserTeam(String token) async {
   "x-access-token": token};
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
     if (response.body.contains("You are not in a team!")){
       return null;
     }
-    Team team = new Team.fromJson(data);
+    Team team = new Team.fromJson(response.body);
     return team;
   }
   return null;
@@ -126,8 +127,8 @@ Future<Team> getTeamInfo(String teamId,
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
-    String data = jsonDecode(response.body);
-    Team team = new Team.fromJson(data);
+    var data = jsonDecode(response.body);
+    Team team = new Team.fromJson(response.body);
     print("Successfully created get team");
     return team;
   }
@@ -141,17 +142,19 @@ Future<List<Team>> getTeams(String token) async {
   "x-access-token": token};
   var body = json.encode({});
   final response = await http.post(url, headers: headers, body: body);
+  print("Arrived");
+  print(response.statusCode);
   if (response.statusCode == 200) {
-    List<String> teamStrings = List.from(jsonDecode(response.body));
+    print("Response body: ");
+    print(response.body);
+    List<dynamic> teamStrings = List.from(jsonDecode(response.body));
     List<Team> teamsList = [];
     for(int i = 0; i < teamStrings.length; i++){
-      teamsList.add(Team.fromJson(teamStrings[i]));
+      teamsList.add(Team.fromJson(teamStrings[i].toString()));
     }
     print("Successfully retrieved all teams");
     return teamsList;
   }
-
-  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
   return null;
 }
 

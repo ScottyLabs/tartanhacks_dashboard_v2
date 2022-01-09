@@ -47,6 +47,7 @@ class _ViewTeamState extends State<ViewTeam> {
           TeamsList()),
       );
     }
+    print(team.toString());
     //isAdmin = checkAdmin(id);
     setState(() {
     });
@@ -191,9 +192,9 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildMember(int member) {
-    dynamic mem = team.members[member];
-    String email_str = "(" + mem['email'] + ")";
-    String name_str = mem['firstName'] + " " + mem['lastName'];
+    Member mem = team.members[member];
+    String email_str = "(" + mem.email + ")";
+    String name_str = mem.name;
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
       child: Column(

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'team-api.dart';
 import '/models/member.dart';
+import 'dart:async';
 
 class TeamsList extends StatefulWidget {
   @override
@@ -20,6 +21,12 @@ class _TeamsListState extends State<TeamsList> {
   int numTeams;
   List<Map> _teamList = <Map>[];
   List<Widget> teamWidgetList = <Widget>[];
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
