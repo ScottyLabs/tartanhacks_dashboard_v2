@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import '/models/member.dart';
 
 class Team {
   final String teamID;
   final bool visible;
-  final dynamic admin;
+  final Member admin;
   final String name;
-  final List<dynamic> members;
+  final List<Member> members;
   final String description;
   
 
@@ -20,12 +21,22 @@ class Team {
     this.description});
 
   factory Team.fromJson(Map<String, dynamic> parsedJson) {
+    // var parsedJson = jsonDecode(parseString);
+    String adminID = parsedJson["admin"]["_id"];
+    Member currAdmin;
+    List<Member> memberList = [];
+    List<dynamic> memberStrings = List.from(parsedJson["members"]);
+    for(int i = 0; i < memberStrings.length; i++){
+      Member newMem = Member.fromJson(memberStrings[i], adminID);
+      if(newMem.isAdmin) currAdmin = newMem;
+      memberList.add(newMem);
+    }
     return new Team(
         teamID:  parsedJson["_id"],
         visible: parsedJson["visible"],
-        admin: parsedJson["admin"],
+        admin: currAdmin,
         name: parsedJson["name"],
-        members: parsedJson["members"],
+        members: memberList,
         description: parsedJson["description"]
     );
   }

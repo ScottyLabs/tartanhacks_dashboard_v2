@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'custom_widgets.dart';
 import '/models/team.dart';
+import '/models/member.dart';
+import 'dart:developer';
 
 Future<bool> createTeam(String name, String description, String token) async  {
   String url = "https://tartanhacks-backend.herokuapp.com/team/";
@@ -29,13 +31,13 @@ Future<Team> getUserTeam(String token) async {
   "x-access-token": token};
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
+    var parsedJson = jsonDecode(response.body);
     if (response.body.contains("You are not in a team!")){
       return null;
     }
-    Team team = new Team.fromJson(data);
+    Team team = new Team.fromJson(parsedJson);
     return team;
-  } 
+  }
   return null;
 }
 
@@ -76,11 +78,12 @@ Future<void> leaveTeam(String token) async {
   print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
-Future<void> requestTeam(String team_id, String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + team_id;
+Future<void> requestTeam(String teamID, String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + teamID;
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   var body = json.encode({});
+  print("Team request attempt");
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully request");
@@ -106,9 +109,9 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   var body = json.encode({
-  "name": name,
-  "description": description,
-  "visible": visible
+    "name": name,
+    "description": description,
+    "visible": visible
   });
   final response = await http.patch(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
@@ -116,44 +119,43 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
   }
   print("error");
 }
-/*
 
 Future<Team> getTeamInfo(String teamId,
                          String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team" + teamId;
+  String url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    print(response.body);
-    //Team team = new Team.fromJson(data);
-    //print("Successfully created get team");
-    //return team;
+    var data = jsonDecode(response.body);
+    Team team = new Team.fromJson(data);
+    print("Successfully created get team");
+    return team;
   }
   return null;
 }
 
 Future<List<Team>> getTeams(String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/teams";
+  String url = "https://tartanhacks-backend.herokuapp.com/teams";
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
-  var body = json.encode({});
-  final response = await http.post(url, headers: headers, body: body);
+  final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
-    List<String> teamStrings = List.from(jsonDecode(response.body));
+    print("Response body: ");
+    print(response.body);
+    List<dynamic> teamStrings = List.from(jsonDecode(response.body));
+    print("Parsed 1 success");
     List<Team> teamsList = [];
     for(int i = 0; i < teamStrings.length; i++){
-      teamsList[i] = Team.fromJson(teamStrings[i]);
+      teamsList.add(Team.fromJson(teamStrings[i]));
+      print("Added team");
     }
-    print("Successfully retrieved all team Success");
+    print("Successfully retrieved all teams");
     return teamsList;
   }
-
-  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
   return null;
 }
-*/
+

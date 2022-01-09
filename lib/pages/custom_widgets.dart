@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'package:thdapp/pages/teams_list.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -15,6 +16,7 @@ import 'bookmarks.dart';
 import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
+import 'teams_list.dart';
 import 'view_team.dart';
 import '../theme_changer.dart';
 
@@ -551,7 +553,10 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    ViewTeam()),
+                                    ViewTeam(),
+                                    settings: RouteSettings(
+                                      arguments: "",
+                                    )),
                               );
                             },
                         ),

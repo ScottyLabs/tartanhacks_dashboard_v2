@@ -6,6 +6,7 @@ import 'team-api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '/models/team.dart';
+import '/models/member.dart';
 import 'dart:convert';
 import 'teams_list.dart';
 import 'dart:async';
@@ -17,36 +18,40 @@ class ViewTeam extends StatefulWidget {
 
 class _ViewTeamState extends State<ViewTeam> {
 
-  List<Map> _teamMembers = [
-    {'name': "", 'email': ""},
-    {'name': "", 'email': ""},
-    {'name': "", 'email': ""}
-    ];
-
   bool isAdmin = false;
-  bool isMember = true;
-  String teamId = "";
+  bool isMember = false;
+  String teamID = "";
   Team team;
   String token;
+  String memberID;
 
   bool checkAdmin(String id){
-    return team.admin['_id'] == id; 
+    return team.admin.id == id;
   }
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    String id = prefs.getString('id');
+    memberID = prefs.getString('id');
     isAdmin = prefs.getBool('admin');
-    team = await getUserTeam(token);
+    print("Getting Data");
+    print(teamID);
+    if(teamID == ""){
+      team = await getUserTeam(token);
+    }
+    else{
+      team = await getTeamInfo(teamID, token);
+    }
     if (team == null){ //if not on a team, redirects to the teams list page
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) =>
-          TeamsList()),
+          TeamsList())
       );
     }
-    //isAdmin = checkAdmin(id);
+    for(int i = 0; i < team.members.length; i++){
+      if(team.members[i].id == memberID) isMember = true;
+    }
     setState(() {
     });
   }
@@ -54,11 +59,10 @@ class _ViewTeamState extends State<ViewTeam> {
   @override
   initState() {
     super.initState();
-    getData();
   }
 
   Widget _buildEditTeam() {
-    if (isAdmin) {
+    if (isAdmin && isMember) {
       return SolidButton(
         text: "EDIT TEAM NAME AND INFO", 
         onPressed: () {
@@ -74,6 +78,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
    Widget _editTeamInfo(){
+    if(!isAdmin || !isMember) return Container();
     TextEditingController teamNameController = TextEditingController();
     TextEditingController teamDescController = TextEditingController();
     String teamName = team.name;
@@ -147,7 +152,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMail(){
-    if (isAdmin) {
+    if (isAdmin && isMember) {
       return Align(
             alignment: Alignment.centerRight,
             child: IconButton(
@@ -190,9 +195,9 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildMember(int member) {
-    dynamic mem = team.members[member];
-    String email_str = "(" + mem['email'] + ")";
-    String name_str = mem['firstName'] + " " + mem['lastName'];
+    Member mem = team.members[member];
+    String email_str = "(" + mem.email + ")";
+    String name_str = mem.name;
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
       child: Column(
@@ -243,7 +248,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _inviteMembersBtn()  {
-    if (team.members.length < 4 && isAdmin){
+    if (team.members.length < 4 && isAdmin && isMember){
       return SolidButton(
         text: "INVITE NEW MEMBER", 
         onPressed: () {
@@ -261,7 +266,7 @@ class _ViewTeamState extends State<ViewTeam> {
   Widget _buildTeamMembers() {
     List<Widget> teamMembers = <Widget>[];
     for(int i = 0; i < team.members.length; i++){
-      print(team.members[i]['firstName']);
+      print(team.members[i].name);
       teamMembers.add(_buildMember(i));
     }
 
@@ -277,7 +282,8 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 
-  Widget _leaveJoinTeamBtn(bool isMember) {
+  Widget _leaveJoinTeamBtn() {
+    if(!isMember) return Container();
     String buttonText = "Leave Team";
     return SolidButton(
       text: buttonText, 
@@ -297,7 +303,13 @@ class _ViewTeamState extends State<ViewTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-
+    if(ModalRoute.of(context) != null){
+      teamID = ModalRoute.of(context).settings.arguments as String;
+    }
+    else{
+      teamID = "";
+    }
+    getData();
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(
@@ -362,7 +374,7 @@ class _ViewTeamState extends State<ViewTeam> {
                                             children: [Container(
                                               alignment: Alignment.center,
                                               padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-                                              child: _leaveJoinTeamBtn(isMember))]
+                                              child: _leaveJoinTeamBtn())]
                                           )
                                         ],
                                     )
