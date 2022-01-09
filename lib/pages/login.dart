@@ -7,6 +7,7 @@ import 'custom_widgets.dart';
 import 'home.dart';
 import 'forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'sponsors.dart';
 
 
 class Login extends StatefulWidget{
@@ -36,12 +37,18 @@ class _LoginState extends State<Login>{
 
   void login(String email, String password) async {
     User logindata = await checkCredentials(email, password);
-
     if (logindata != null) {
-      Navigator.pushReplacement(
-        context,
-        new MaterialPageRoute(builder: (ctxt) => new Home()),
-      );
+      if (logindata.company != null) {
+        Navigator.pushReplacement(
+          context,
+          new MaterialPageRoute(builder: (ctxt) => new Sponsors()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          new MaterialPageRoute(builder: (ctxt) => new Home()),
+        );
+      }
       print(logindata);
       print(prefs);
     }else{
@@ -52,14 +59,19 @@ class _LoginState extends State<Login>{
   checkLogInStatus() async{
 
     prefs = await SharedPreferences.getInstance();
-
     if(prefs.get('email')!=null){
-      Navigator.pushReplacement(
-        context,
-        new MaterialPageRoute(builder: (ctxt) => new Home()),
-      );
+      if (prefs.get('company') != null) {
+        Navigator.pushReplacement(
+          context,
+          new MaterialPageRoute(builder: (ctxt) => new Sponsors()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          new MaterialPageRoute(builder: (ctxt) => new Home()),
+        );
+      }
     }
-
   }
 
   @override
@@ -86,7 +98,7 @@ class _LoginState extends State<Login>{
                                   color2: Theme.of(context).colorScheme.secondaryVariant),
                             ),
                             Container(
-                                height: screenHeight*0.35,
+                                height: screenHeight*0.3,
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -113,7 +125,8 @@ class _LoginState extends State<Login>{
                             labelText: "Email",
                           ),
                           style: Theme.of(context).textTheme.bodyText2,
-                          enableSuggestions: false,
+                          keyboardType: TextInputType.visiblePassword,
+                          textInputAction: TextInputAction.next
                         ),
                       ),
                       Container(
