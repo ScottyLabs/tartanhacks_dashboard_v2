@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:thdapp/pages/checkin.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/login.dart';

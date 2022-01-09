@@ -17,7 +17,6 @@ import 'pages/custom_widgets.dart';
 SharedPreferences prefs;
 
 const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGNkNzRmMmJmYWQ2MTNhODEwYTMzMDIiLCJpYXQiOjE2MzU2MDk4MzksImV4cCI6MTYzNzMzNzgzOX0._5K4sqsFhJbF58-skYaBwkqqANYITYCo6_EcxUTTWqY";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -183,10 +182,10 @@ Future<List<Event>> getEvents() async {
   final response = await http.post(url);
   print(response.statusCode);
   if (response.statusCode == 200){
-    List<Event> EventsList;
+    List<Event> eventsList;
     var data = json.decode(response.body) as List;
-    EventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
-    return EventsList;
+    eventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
+    return eventsList;
   }else{
     return null;
   }
@@ -249,7 +248,33 @@ Future<List<CheckInItem>> getCheckInItems() async {
   }
 }
 
-Future<void> addCheckInItem(CheckInItem item) async {
+/*
+0 - (int) user points
+1 - Map<String checkInItem ID, bool hasCheckedIn>
+2 - List<CheckInItem>
+ */
+Future<List> getUserHistory(String userID, String token) async {
+  String url = baseUrl + "check-in/history/$userID";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var jsonHistory = json.decode(response.body);
+    List result = [jsonHistory['totalPoints'], Map<String, bool>() , <CheckInItem>[]];
+
+    jsonHistory['history'].forEach((val) {
+      CheckInItem item = CheckInItem.fromJson(val['checkInItem']);
+      result[2].add(item);
+      result[1][item.id] = val['hasCheckedIn'] as bool;
+    });
+    print(result[1]);
+    return result;
+  } else {
+    throw Exception("Failed to fetch user $userID history");
+  }
+}
+
+Future<void> addCheckInItem(CheckInItemDTO item, String token) async {
   String url = baseUrl + "check-in";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
@@ -260,39 +285,46 @@ Future<void> addCheckInItem(CheckInItem item) async {
   }
 }
 
-Future<void> editCheckInItem(CheckInItem item) async {
-  String url = baseUrl + "check-in/${item.id}";
+Future<void> editCheckInItem(CheckInItemDTO item, String id, String token) async {
+  String url = baseUrl + "check-in/$id";
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.patch(url, headers: headers, body: itemJson);
 
   if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
+    throw Exception("Failed to edit Check In Item");
   }
 }
 
-Future<void> deleteCheckInItem(CheckInItem item) async {
-  String url = baseUrl + "check-in/${item.id}";
+Future<void> deleteCheckInItem(String id, String token) async {
+  String url = baseUrl + "check-in/$id";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.patch(url, headers: headers);
 
   if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
+    throw Exception("Failed to delete Check In Item");
   }
 }
 
-Future<void> checkInUser(CheckInItem item, String uid) async {
+Future<void> checkInUser(String id, String uid, token) async {
+  String base = baseUrl.replaceAll("https://", "").replaceAll("/", "");
   final queryParams = {
     'userID': uid,
-    'checkInItemID': item.id
+    'checkInItemID': id
   };
-  Map<String, String> headers = {"Content-type": "application/json"};
-  final uri = Uri.http(baseUrl, "check-in/user", queryParams);
-  final response = await http.get(uri, headers: headers);
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final uri = Uri.http(base, "/check-in/user", queryParams);
+  final response = await http.put(uri, headers: headers);
 
-  if (response.statusCode != 200) {
-    throw Exception("Failed to add Check In Item");
-  }
+  // TODO Error with backend, throws a 400 despite successful update
+  // if (response.statusCode != 200) {
+  //   throw Exception(response.body.toString());
+  // }
+}
+
+Future<String> getCurrentUserID() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString("id");
 }
 
 Future<List<LBEntry>> getLeaderboard() async {

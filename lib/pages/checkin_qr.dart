@@ -1,7 +1,10 @@
+import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/services.dart';
-import 'package:thdapp/pages/qr_scan_config.dart';
+import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:thdapp/api.dart';
+import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
 class QRPage extends StatelessWidget {
@@ -11,6 +14,8 @@ class QRPage extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
+    final _eventIDController = TextEditingController();
 
     return Scaffold(
         body: Container(
@@ -43,8 +48,11 @@ class QRPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    IDCheckInHeader(),
-                                    QREnlarged()
+                                    IDCheckInHeader(_eventIDController),
+                                    QREnlarged(onPressed: () async {
+                                      final String id = await Barras.scan(context);
+                                      _eventIDController.value = TextEditingValue(text: id);
+                                    },)
                                   ],
                                 ))
                           ],
@@ -55,7 +63,9 @@ class QRPage extends StatelessWidget {
 }
 
 class IDCheckInHeader extends StatelessWidget {
-  final _eventIDController = TextEditingController();
+  final _eventIDController;
+
+  IDCheckInHeader(this._eventIDController);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +88,30 @@ class IDCheckInHeader extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
-            onPressed: () {},
+            onPressed: () async {
+              String id = _eventIDController.text;
+              if (id != null && id != "") {
+                showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        )));
+                try {
+                  // TODO Error handling doesn't actually work due to the backend endpoint bad request issue
+                  await Provider.of<CheckInItemsModel>(context, listen: false).selfCheckIn(id);
+                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //   content: Text("Checked in!"),
+                  // ));
+                } on Exception catch (e) {
+                  print(e);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Error checking in"),
+                  ));
+                } finally {Navigator.pop(context);}
+              }
+            },
             child: Icon(
               Icons.keyboard_return_rounded,
               color: Colors.white,
@@ -91,6 +124,9 @@ class IDCheckInHeader extends StatelessWidget {
 }
 
 class QREnlarged extends StatelessWidget {
+  final Function onPressed;
+
+  QREnlarged({this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +142,20 @@ class QREnlarged extends StatelessWidget {
             aspectRatio: 1,
             child: GradBox(
               width: double.infinity,
+              child: FutureBuilder(
+                future: getCurrentUserID(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Center(child: CircularProgressIndicator(),);
+                  else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
+                    return QrImage(
+                      data: snapshot.data,
+                      version: QrVersions.auto,
+                      foregroundColor: Colors.black,
+                    );
+                  else return Center(child: Text("Error"),);
+                },
+              ),
             )
         ),
         SizedBox(height: 15,),
@@ -118,28 +168,11 @@ class QREnlarged extends StatelessWidget {
               child: SizedBox(
                 height: 45,
                 child: SolidButton(
-                  onPressed: () {},
-                  text: "To Scanner",
+                  onPressed: onPressed,
+                  text: "Scan Event ID",
                 ),
               ),
             ),
-            SizedBox(width: 50,),
-            Expanded(
-              flex: 2,
-              child: SizedBox(
-                height: 45,
-                child: SolidButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder:
-                      (context) => ScanConfigPage()));
-                  },
-                  child: Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            )
           ],
         )
       ],
