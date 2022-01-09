@@ -137,26 +137,24 @@ class QREnlarged extends StatelessWidget {
           "YOUR QR CODE",
           style: Theme.of(context).textTheme.headline1,
         ),
-        SizedBox(height: 10,),
-        AspectRatio(
-            aspectRatio: 1,
-            child: GradBox(
-              width: double.infinity,
-              child: FutureBuilder(
-                future: getCurrentUserID(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting)
-                    return Center(child: CircularProgressIndicator(),);
-                  else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
-                    return QrImage(
-                      data: snapshot.data,
-                      version: QrVersions.auto,
-                      foregroundColor: Colors.black,
-                    );
-                  else return Center(child: Text("Error"),);
-                },
-              ),
-            )
+        SizedBox(height: 8,),
+        GradBox(
+          height: 250,
+          width: 250,
+          child: FutureBuilder(
+            future: getCurrentUserID(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting)
+                return Center(child: CircularProgressIndicator(),);
+              else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
+                return QrImage(
+                  data: snapshot.data,
+                  version: QrVersions.auto,
+                  foregroundColor: Colors.black,
+                );
+              else return Center(child: Text("Error"),);
+            },
+          ),
         ),
         SizedBox(height: 15,),
         Row(

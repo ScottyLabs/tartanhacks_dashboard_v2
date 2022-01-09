@@ -128,8 +128,8 @@ class QRHeader extends StatelessWidget {
           ),
           // TODO: Placeholder for QR Code
           SizedBox(
-            height: 150,
-            width: 150,
+            height: 130,
+            width: 130,
             child: DecoratedBox(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
