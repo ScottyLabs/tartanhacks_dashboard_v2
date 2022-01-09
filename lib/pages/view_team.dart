@@ -6,6 +6,7 @@ import 'team-api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '/models/team.dart';
+import '/models/member.dart';
 import 'dart:convert';
 import 'teams_list.dart';
 import 'dart:async';
@@ -30,7 +31,7 @@ class _ViewTeamState extends State<ViewTeam> {
   String token;
 
   bool checkAdmin(String id){
-    return team.admin['_id'] == id; 
+    return team.admin.id == id;
   }
 
   void getData() async {
@@ -261,7 +262,7 @@ class _ViewTeamState extends State<ViewTeam> {
   Widget _buildTeamMembers() {
     List<Widget> teamMembers = <Widget>[];
     for(int i = 0; i < team.members.length; i++){
-      print(team.members[i]['firstName']);
+      print(team.members[i].name);
       teamMembers.add(_buildMember(i));
     }
 

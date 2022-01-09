@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import '/models/member.dart';
 
 class Team {
   final String teamID;
@@ -19,13 +20,23 @@ class Team {
     this.members, 
     this.description});
 
-  factory Team.fromJson(Map<String, dynamic> parsedJson) {
+  factory Team.fromJson(String parseString) {
+    var parsedJson = jsonDecode(parseString);
+    String adminID = parsedJson["admin"]["_id"];
+    Member currAdmin;
+    List<Member> memberList = [];
+    List<String> memberStrings = List.from(parsedJson["members"]);
+    for(int i = 0; i < memberStrings.length; i++){
+      Member newMem = Member.fromJson(memberStrings[i], adminID);
+      if(newMem.isAdmin) currAdmin = newMem;
+      memberList.add(newMem);
+    }
     return new Team(
         teamID:  parsedJson["_id"],
         visible: parsedJson["visible"],
-        admin: parsedJson["admin"],
+        admin: currAdmin,
         name: parsedJson["name"],
-        members: parsedJson["members"],
+        members: memberList,
         description: parsedJson["description"]
     );
   }

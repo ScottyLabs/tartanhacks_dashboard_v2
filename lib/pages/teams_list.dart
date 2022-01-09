@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'create_team.dart';
 import 'view_team.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '/models/team.dart';
+import 'team-api.dart';
+import '/models/member.dart';
 
 class TeamsList extends StatefulWidget {
   @override
@@ -11,16 +15,30 @@ class TeamsList extends StatefulWidget {
 
 class _TeamsListState extends State<TeamsList> {
 
-  bool read = true;
-  int numTeams = 10;
-
+  String token;
+  List<Team> teamInfos;
+  int numTeams;
   List<Map> _teamList = <Map>[];
   List<Widget> teamWidgetList = <Widget>[];
 
+  void getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    teamInfos = await getTeams(token);
+    numTeams = teamInfos.length;
+    _populateTeamList();
+    _buildTeamsList();
+    setState(() {
+      });
+  }
+  bool read = true;
+
+
   void _populateTeamList(){
-    for(int i = 0; i < 10; i++){
-      String teamName = "Team " + i.toString();
-      _teamList.add({'teamID': "617385d292fad800160f89b0", 'teamName': teamName});
+    for(int i = 0; i < teamInfos.length; i++){
+      if(teamInfos[i].visible){
+        _teamList.add({'teamID': teamInfos[i].teamID, 'teamName': teamInfos[i].name});
+      }
     }
   }
 
@@ -134,9 +152,6 @@ class _TeamsListState extends State<TeamsList> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-
-    _populateTeamList();
-    _buildTeamsList();
 
     return Scaffold(
         body:  Container(

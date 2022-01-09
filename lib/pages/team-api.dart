@@ -126,11 +126,10 @@ Future<Team> getTeamInfo(String teamId,
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    print(response.body);
-    //Team team = new Team.fromJson(data);
-    //print("Successfully created get team");
-    //return team;
+    String data = jsonDecode(response.body);
+    Team team = new Team.fromJson(data);
+    print("Successfully created get team");
+    return team;
   }
   return null;
 }
@@ -146,9 +145,9 @@ Future<List<Team>> getTeams(String token) async {
     List<String> teamStrings = List.from(jsonDecode(response.body));
     List<Team> teamsList = [];
     for(int i = 0; i < teamStrings.length; i++){
-      teamsList[i] = Team.fromJson(teamStrings[i]);
+      teamsList.add(Team.fromJson(teamStrings[i]));
     }
-    print("Successfully retrieved all team Success");
+    print("Successfully retrieved all teams");
     return teamsList;
   }
 
