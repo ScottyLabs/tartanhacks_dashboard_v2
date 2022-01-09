@@ -30,11 +30,11 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 }
 
 ThemeData genLightTheme (){
-  var primary = Color(0xFFF6C744);
-  var primarytrans = Color(0x87F6C744);
-  var secondary = Color(0xFFF68F44);
-  var secondarytrans = Color(0x87F68F44);
-  var accent = Color(0xFFAA5418);
+  var primary = Color(0xFFFFC738);
+  var primarytrans = Color(0x87FFC738);
+  var secondary = Color(0xFFDB4D20);
+  var secondarytrans = Color(0x87DB4D20);
+  var accent = Color(0xFF07054C);
   var surface = Color(0xFFFFE3E3);
   var background = Color(0xFFFFFFFF);
 
@@ -61,13 +61,13 @@ ThemeData genLightTheme (){
 }
 
 ThemeData genDarkTheme (){
-  var primary = Color(0xFFF6C744);
-  var primarytrans = Color(0x87F6C744);
-  var secondary = Color(0xFFF68F44);
-  var secondarytrans = Color(0x87F68F44);
+  var primary = Color(0xFFFFC738);
+  var primarytrans = Color(0x87FFC738);
+  var secondary = Color(0xFFDB4D20);
+  var secondarytrans = Color(0x87DB4D20);
   var accent = Color(0xFF78524a);
-  var surface = Color(0xFF626262);
-  var background = Color(0xFF000000);
+  var surface = Color(0xFF07054C);
+  var background = Color(0xFF07054C);
   var text = Color(0xFFFFFFFF);
   var shadow = Color(0x87473F3C);
 
@@ -83,7 +83,7 @@ ThemeData genDarkTheme (){
       onSecondary: text,
       onSurface: text,
       onBackground: secondary,
-      onError: accent, //menu buttons
+      onError: surface, //menu buttons
       brightness: Brightness.dark
   );
   return baseTheme(
