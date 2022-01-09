@@ -58,6 +58,7 @@ class _ViewTeamState extends State<ViewTeam> {
 
   @override
   initState() {
+    getData();
     super.initState();
   }
 
@@ -309,7 +310,6 @@ class _ViewTeamState extends State<ViewTeam> {
     else{
       teamID = "";
     }
-    getData();
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(
@@ -352,16 +352,16 @@ class _ViewTeamState extends State<ViewTeam> {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Container(
-                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
                                                 child: _buildTeamHeader()
                                               ),
                                               Container(
-                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 20),
+                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                                                 child: _buildTeamDesc()
                                               ),
                                               _buildEditTeam(),
                                               Container(
-                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                                                 child: _buildTeamMembers()
                                               ),
                                               _inviteMembersBtn()
