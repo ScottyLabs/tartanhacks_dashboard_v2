@@ -15,8 +15,8 @@ class Member {
     this.email,
   });
 
-  factory Member.fromJson(String parsedString, String adminID) {
-    var parsedJson = jsonDecode(parsedString);
+  factory Member.fromJson(Map<String, dynamic> parsedJson, String adminID) {
+    // var parsedJson = jsonDecode(parsedString);
     bool isAdminBool = false;
     String currID = parsedJson["_id"];
     if(currID == adminID) isAdminBool = true;

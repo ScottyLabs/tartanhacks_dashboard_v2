@@ -17,6 +17,7 @@ import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
 import 'teams_list.dart';
+import 'view_team.dart';
 import '../theme_changer.dart';
 
 

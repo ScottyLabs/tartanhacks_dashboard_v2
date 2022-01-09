@@ -31,10 +31,11 @@ Future<Team> getUserTeam(String token) async {
   "x-access-token": token};
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
+    var parsedJson = jsonDecode(response.body);
     if (response.body.contains("You are not in a team!")){
       return null;
     }
-    Team team = new Team.fromJson(response.body);
+    Team team = new Team.fromJson(parsedJson);
     return team;
   }
   return null;
@@ -120,7 +121,7 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
 
 Future<Team> getTeamInfo(String teamId,
                          String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team" + teamId;
+  String url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
@@ -128,7 +129,7 @@ Future<Team> getTeamInfo(String teamId,
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
-    Team team = new Team.fromJson(response.body);
+    Team team = new Team.fromJson(data);
     print("Successfully created get team");
     return team;
   }
@@ -136,21 +137,20 @@ Future<Team> getTeamInfo(String teamId,
 }
 
 Future<List<Team>> getTeams(String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/teams";
+  String url = "https://tartanhacks-backend.herokuapp.com/teams";
 
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
-  var body = json.encode({});
-  final response = await http.post(url, headers: headers, body: body);
-  print("Arrived");
-  print(response.statusCode);
+  final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     print("Response body: ");
     print(response.body);
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
+    print("Parsed 1 success");
     List<Team> teamsList = [];
     for(int i = 0; i < teamStrings.length; i++){
-      teamsList.add(Team.fromJson(teamStrings[i].toString()));
+      teamsList.add(Team.fromJson(teamStrings[i]));
+      print("Added team");
     }
     print("Successfully retrieved all teams");
     return teamsList;

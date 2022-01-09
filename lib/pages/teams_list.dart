@@ -114,8 +114,11 @@ class _TeamsListState extends State<TeamsList> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
-                ViewTeam()),
-          );
+                ViewTeam(),
+                settings: RouteSettings(
+                  arguments: teamID,
+                )
+          ));
         }
     );
     return btn;
@@ -214,7 +217,7 @@ class _TeamsListState extends State<TeamsList> {
                                           ),
                                           Expanded(
                                             child: ListView.builder(
-                                              itemCount: 10,
+                                              itemCount: numTeams,
                                               itemBuilder: (BuildContext context, int index){
                                                 return teamWidgetList[index];
                                               },

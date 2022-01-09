@@ -17,7 +17,6 @@ class ViewTeam extends StatefulWidget {
 }
 
 class _ViewTeamState extends State<ViewTeam> {
-
   List<Map> _teamMembers = [
     {'name': "", 'email': ""},
     {'name': "", 'email': ""},
@@ -26,7 +25,7 @@ class _ViewTeamState extends State<ViewTeam> {
 
   bool isAdmin = false;
   bool isMember = true;
-  String teamId = "";
+  String teamID = "";
   Team team;
   String token;
 
@@ -37,18 +36,23 @@ class _ViewTeamState extends State<ViewTeam> {
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    String id = prefs.getString('id');
     isAdmin = prefs.getBool('admin');
-    team = await getUserTeam(token);
+    print("Getting Data");
+    print(teamID);
+    if(teamID == ""){
+      team = await getUserTeam(token);
+    }
+    else{
+      team = await getTeamInfo(teamID, token);
+    }
     if (team == null){ //if not on a team, redirects to the teams list page
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) =>
-          TeamsList()),
+          TeamsList())
       );
     }
     print(team.toString());
-    //isAdmin = checkAdmin(id);
     setState(() {
     });
   }
@@ -56,7 +60,6 @@ class _ViewTeamState extends State<ViewTeam> {
   @override
   initState() {
     super.initState();
-    getData();
   }
 
   Widget _buildEditTeam() {
@@ -299,7 +302,13 @@ class _ViewTeamState extends State<ViewTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-
+    if(ModalRoute.of(context) != null){
+      teamID = ModalRoute.of(context).settings.arguments as String;
+    }
+    else{
+      teamID = "";
+    }
+    getData();
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(
