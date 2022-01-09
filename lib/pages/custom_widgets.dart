@@ -522,9 +522,22 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                 );
                               },
                           ),
+                          _themeProvider.getTheme==lightTheme ?
                           MenuChoice(
-                              icon: Icons.help,
-                              text: "Help"
+                            icon: Icons.mode_night,
+                            text: "Dark",
+                            onTap: () {
+                              _themeProvider.setTheme(darkTheme);
+                              setThemePref("dark", entry, context);
+                            },
+                          ) :
+                          MenuChoice(
+                            icon: Icons.wb_sunny,
+                            text: "Light",
+                            onTap: () {
+                              _themeProvider.setTheme(lightTheme);
+                              setThemePref("light", entry, context);
+                            },
                           ),
                         ]
                     ),
@@ -567,23 +580,6 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               );
                             },
                         ),
-                        _themeProvider.getTheme==lightTheme ?
-                        MenuChoice(
-                            icon: Icons.mode_night,
-                            text: "Dark",
-                            onTap: () {
-                              _themeProvider.setTheme(darkTheme);
-                              setThemePref("dark", entry, context);
-                            },
-                        ) :
-                            MenuChoice(
-                              icon: Icons.wb_sunny,
-                              text: "Light",
-                              onTap: () {
-                                _themeProvider.setTheme(lightTheme);
-                                setThemePref("light", entry, context);
-                              },
-                            ),
                         MenuChoice(
                             icon: Icons.logout,
                             text: "Logout",
@@ -679,10 +675,6 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                                         )
                                     );
                                   },
-                                ),
-                                MenuChoice(
-                                    icon: Icons.help,
-                                    text: "Help"
                                 ),
                                 MenuChoice(
                                     icon: Icons.mode_night,
