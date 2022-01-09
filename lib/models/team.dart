@@ -5,9 +5,9 @@ import 'dart:convert';
 class Team {
   final String teamID;
   final bool visible;
-  final dynamic admin;
+  final Member admin;
   final String name;
-  final List<dynamic> members;
+  final List<Member> members;
   final String description;
   
 

@@ -35,7 +35,7 @@ Future<Team> getUserTeam(String token) async {
     }
     Team team = new Team.fromJson(data);
     return team;
-  } 
+  }
   return null;
 }
 
@@ -106,9 +106,9 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   var body = json.encode({
-  "name": name,
-  "description": description,
-  "visible": visible
+    "name": name,
+    "description": description,
+    "visible": visible
   });
   final response = await http.patch(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
@@ -116,7 +116,6 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
   }
   print("error");
 }
-/*
 
 Future<Team> getTeamInfo(String teamId,
                          String token) async {
@@ -156,4 +155,4 @@ Future<List<Team>> getTeams(String token) async {
   print(json.decode(response.body)['message'].toString() + "Unsuccessful");
   return null;
 }
-*/
+
