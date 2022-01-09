@@ -17,17 +17,13 @@ class ViewTeam extends StatefulWidget {
 }
 
 class _ViewTeamState extends State<ViewTeam> {
-  List<Map> _teamMembers = [
-    {'name': "", 'email': ""},
-    {'name': "", 'email': ""},
-    {'name': "", 'email': ""}
-    ];
 
   bool isAdmin = false;
-  bool isMember = true;
+  bool isMember = false;
   String teamID = "";
   Team team;
   String token;
+  String memberID;
 
   bool checkAdmin(String id){
     return team.admin.id == id;
@@ -36,6 +32,7 @@ class _ViewTeamState extends State<ViewTeam> {
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    memberID = prefs.getString('id');
     isAdmin = prefs.getBool('admin');
     print("Getting Data");
     print(teamID);
@@ -52,7 +49,9 @@ class _ViewTeamState extends State<ViewTeam> {
           TeamsList())
       );
     }
-    print(team.toString());
+    for(int i = 0; i < team.members.length; i++){
+      if(team.members[i].id == memberID) isMember = true;
+    }
     setState(() {
     });
   }
@@ -63,7 +62,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildEditTeam() {
-    if (isAdmin) {
+    if (isAdmin && isMember) {
       return SolidButton(
         text: "EDIT TEAM NAME AND INFO", 
         onPressed: () {
@@ -79,6 +78,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
    Widget _editTeamInfo(){
+    if(!isAdmin || !isMember) return Container();
     TextEditingController teamNameController = TextEditingController();
     TextEditingController teamDescController = TextEditingController();
     String teamName = team.name;
@@ -152,7 +152,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMail(){
-    if (isAdmin) {
+    if (isAdmin && isMember) {
       return Align(
             alignment: Alignment.centerRight,
             child: IconButton(
@@ -248,7 +248,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _inviteMembersBtn()  {
-    if (team.members.length < 4 && isAdmin){
+    if (team.members.length < 4 && isAdmin && isMember){
       return SolidButton(
         text: "INVITE NEW MEMBER", 
         onPressed: () {
@@ -282,7 +282,8 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 
-  Widget _leaveJoinTeamBtn(bool isMember) {
+  Widget _leaveJoinTeamBtn() {
+    if(!isMember) return Container();
     String buttonText = "Leave Team";
     return SolidButton(
       text: buttonText, 
@@ -373,7 +374,7 @@ class _ViewTeamState extends State<ViewTeam> {
                                             children: [Container(
                                               alignment: Alignment.center,
                                               padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-                                              child: _leaveJoinTeamBtn(isMember))]
+                                              child: _leaveJoinTeamBtn())]
                                           )
                                         ],
                                     )
