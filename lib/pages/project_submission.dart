@@ -15,6 +15,7 @@ class ProjSubmit extends StatefulWidget {
 
 class _ProjSubmitState extends State<ProjSubmit> {
 
+  bool hasProj = false;
   String _projName = "";
   String _projDesc = "";
   String _githubUrl = "";
@@ -45,6 +46,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
     Project proj = await getProject(id, token);
     if (proj != null) {
+      hasProj = true;
       projId = proj.id;
       _projName = proj.name;
       _projDesc = proj.desc;
@@ -287,11 +289,15 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                         SolidButton(
                                             text: "Submit for Prizes",
                                             onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) =>
-                                                    EnterPrizes(projId: projId, enteredPrizes: prizes,)),
-                                              );
+                                              if (hasProj) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) =>
+                                                      EnterPrizes(projId: projId, enteredPrizes: prizes,)),
+                                                );
+                                              } else {
+                                                errorDialog(context, "Error", "You do not have a project to enter!");
+                                              }
                                             },
                                         )
                                       ],

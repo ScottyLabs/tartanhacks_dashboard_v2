@@ -436,7 +436,6 @@ Future<Project> editProject(BuildContext context, String name, String desc, Stri
 
 Future enterPrize(BuildContext context, String projId, String prizeId, String token) async {
   String url = baseUrl + "projects/prizes/enter/" + projId + "?prizeID=" + prizeId;
-  print(url);
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.put(url, headers: headers);
 
