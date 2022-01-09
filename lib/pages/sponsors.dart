@@ -14,9 +14,10 @@ class Sponsors extends StatefulWidget {
 class _SponsorsState extends State<Sponsors> {
   String myName;
   List studentIds;
-  List students;
-  List displayedStudents;
+  List students; // bunch of Profiles
   Map bookmarks; // dictionary of participant id : actual bookmark id
+  int searchResultCount;
+  bool searchPressed;
 
   SharedPreferences prefs;
   String token;
@@ -37,8 +38,24 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
-  void updateDisplayedStudents(String keyword) {
+  void searchResultCounting(String keyword) {
+    searchPressed = true;
     print(keyword);
+    int counter = 0;
+    for (var i = 0; i < students.length; i++) {
+      if (students[i] != null) {
+        var name = students[i].firstName + students[i].lastName;
+        if (name.contains(keyword)) {
+          counter++;
+        }
+      }
+    }
+    print(counter);
+    print(searchPressed);
+    searchResultCount = counter;
+    setState(() {
+
+    });
   }
 
   void newBookmark(String bookmarkId, String participantId) async {
@@ -132,6 +149,16 @@ class _SponsorsState extends State<Sponsors> {
                                             ),
                                           ),
                                           Container(
+                                              child: Visibility(
+                                                visible: searchPressed == null ? false : true,
+                                                child: Text(
+                                                  '$searchResultCount matching results are in the list.',
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.headline4,
+                                                )
+                                              )
+                                          ),
+                                          Container(
                                             height: 60,
                                             alignment: Alignment.centerRight,
                                             child: GradBox(
@@ -139,7 +166,7 @@ class _SponsorsState extends State<Sponsors> {
                                                 width: 80,
                                                 height: 40,
                                                 onTap: () {
-                                                  updateDisplayedStudents(myController.text);
+                                                  searchResultCounting(myController.text);
                                                 },
                                                 child: Icon(
                                                     Icons.subdirectory_arrow_left,
