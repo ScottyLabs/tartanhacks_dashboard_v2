@@ -329,6 +329,21 @@ class EventsCard extends StatelessWidget{
 
   EventsCard(this.event);
 
+  String formatDate(String unixDate) {
+    var date =
+    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    date = date.toLocal();
+    String formattedDate = DateFormat('EEE dd MMM').format(date);
+    return formattedDate.toUpperCase();
+  }
+
+  String getTime(String unixDate) {
+    var date =
+    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    date = date.toLocal();
+    String formattedDate = DateFormat('hh:mm a').format(date);
+    return formattedDate;
+  }
 
   @override
   Widget build(BuildContext context){
@@ -348,7 +363,7 @@ class EventsCard extends StatelessWidget{
               children: [
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children:[
                       SizedBox(
                           width: screenWidth * 0.5,
@@ -368,15 +383,12 @@ class EventsCard extends StatelessWidget{
                           )
                       ),
                       Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
                             SolidSquareButton(
                               image: "",
                               onPressed: null,
                             ),
-                            SolidSquareButton(
-                              image: "",
-                              onPressed: null,
-                            )
                           ]
                       )
                     ]
@@ -391,9 +403,12 @@ class EventsCard extends StatelessWidget{
                           height: 170,
                           child: DecoratedBox(
                               decoration: BoxDecoration(
-                                  color: Colors.red,
+                                  color: Color.fromRGBO(247,195,81, 1),
                                   borderRadius: BorderRadius.circular(10)
-                              )
+                              ),
+                            child: Text(this.getTime((event.startTime).toString()) + "\n"  + this.formatDate((event.startTime).toString()),
+                                style: Theme.of(context).textTheme.headline2,
+                                textAlign: TextAlign.center)
                           )
                       )]
                 )

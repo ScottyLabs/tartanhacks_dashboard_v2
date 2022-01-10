@@ -16,7 +16,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String _eventUrl = "";
   String _duration = "";
   String _location = "";
-  String _platform = "In Person";
+  String _platform = "IN_PERSON";
   double _lat = 0;
   double _lng = 0;
   int _startTime = 0;
@@ -31,9 +31,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
   TextEditingController dateController = TextEditingController();
   TextEditingController durationController = TextEditingController();
 
-  var dropdownValue = 'In Person';
+  var dropdownValue = 'IN_PERSON';
 
-  List<String> _dropdownItems = ['In Person', "and", "other"];
+  List<String> _dropdownItems = ['IN_PERSON', "ZOOM", "DISCORD", "HOPIN"];
 
   TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);
@@ -94,7 +94,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildName() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Even Name"),
+      decoration: FormFieldStyle(context, "Event Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
       validator: (String value) {
