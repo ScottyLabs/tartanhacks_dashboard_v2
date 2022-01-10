@@ -25,6 +25,7 @@ class _ViewTeamState extends State<ViewTeam> {
   Team team;
   String token;
   String memberID;
+  bool noTeam = false;
 
   bool checkAdmin(String id){
     return team.admin.id == id;
@@ -44,14 +45,16 @@ class _ViewTeamState extends State<ViewTeam> {
       team = await getTeamInfo(teamID, token);
     }
     if (team == null){ //if not on a team, redirects to the teams list page
+      noTeam = true;
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) =>
           TeamsList())
       );
-    }
-    for(int i = 0; i < team.members.length; i++){
-      if(team.members[i].id == memberID) isMember = true;
+    } else {
+      for (int i = 0; i < team.members.length; i++) {
+        if (team.members[i].id == memberID) isMember = true;
+      }
     }
     setState(() {
     });
@@ -349,52 +352,58 @@ class _ViewTeamState extends State<ViewTeam> {
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                     child: Column(
 
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: 
-                                        [
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
-                                                child: _buildTeamHeader()
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                                child: _buildTeamDesc()
-                                              ),
-                                              _buildEditTeam(),
-                                              Container(
-                                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                                child: _buildTeamMembers()
-                                              ),
-                                              _inviteMembersBtn()
-                                            ]
-                                          ),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            
-                                            children: [Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
-                                              child: _leaveJoinTeamBtn())]
-                                          )
-                                        ],
-                                    )
-                                )
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                )
-            )
-        )
-    );
-  }
+                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                         crossAxisAlignment: CrossAxisAlignment.start,
+                                         children:
+                                         [
+                                           Column(
+                                               mainAxisAlignment: MainAxisAlignment.start,
+                                               crossAxisAlignment: CrossAxisAlignment.start,
+                                               children: [
+                                                 Container(
+                                                     padding: EdgeInsets.fromLTRB(0, 20, 0, 5),
+                                                     child: _buildTeamHeader()
+                                                 ),
+                                                 if (team != null)
+                                                   Column(
+                                                     children: [
+                                                       Container(
+                                                           padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                                           child: _buildTeamDesc()
+                                                       ),
+                                                       _buildEditTeam(),
+                                                       Container(
+                                                           padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                                           child: _buildTeamMembers()
+                                                       ),
+                                                       _inviteMembersBtn()
+                                                     ],
+                                                   )
+                                                 else if (noTeam) Text("You are not in a team", style: Theme.of(context).textTheme.bodyText2,)
+                                                 else Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface))
+                                               ]
+                                           ),
+                                           Column(
+                                               mainAxisAlignment: MainAxisAlignment.end,
+                                               crossAxisAlignment: CrossAxisAlignment.center,
 
-}
+                                               children: [Container(
+                                                   alignment: Alignment.center,
+                                                   padding: EdgeInsets.fromLTRB(0, 0, 0, 40),
+                                                   child: _leaveJoinTeamBtn())]
+                                           )
+                                         ],
+                                       )
+                                   )
+                               )
+                             ],
+                           )
+                         ],
+                       )
+                   )
+               )
+           )
+       );
+     }
+  }
 

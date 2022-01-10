@@ -229,6 +229,7 @@ class _TeamsListState extends State<TeamsList> {
                                               //height: screenHeight*0.2,
                                               child: _buildListHeader()
                                           ),
+                                          if (teamInfos != null)
                                           Expanded(
                                             child: ListView.builder(
 
@@ -238,6 +239,7 @@ class _TeamsListState extends State<TeamsList> {
                                               },
                                             ),
                                           )
+                                          else Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface))
                                         ]
                                     )
                                 )

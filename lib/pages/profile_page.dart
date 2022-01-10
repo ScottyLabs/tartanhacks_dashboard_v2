@@ -37,7 +37,11 @@ class _ProfilePageState extends State<ProfilePage> {
     userData = await getProfile(id, token);
 
     Team userTeam = await getUserTeam(token);
-    teamName = userTeam.name;
+    if (userTeam != null) {
+      teamName = userTeam.name;
+    } else {
+      teamName = "No team";
+    }
 
     setState(() {
 

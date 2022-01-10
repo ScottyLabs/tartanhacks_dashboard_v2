@@ -213,10 +213,10 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
   };
 
 
-  String essayQuestionsAgg = "";
-  for (int i = 0; i < essayQuestions.length; i++) {
-    essayQuestionsAgg += essayQuestions[i] + "\n";
-  }
+  // String essayQuestionsAgg = "";
+  // for (int i = 0; i < essayQuestions.length; i++) {
+  //   essayQuestionsAgg += essayQuestions[i] + "\n";
+  // }
   String bodyJson = '{"name":"' + name +
       '","description":"' + description +
       '","startTime":' + startTime.toString() +
