@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
+
 import '../models/team.dart';
 import 'package:thdapp/api.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,6 +22,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String token;
 
   Profile userData;
+
   String teamName;
 
   void getData() async{
@@ -33,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
     token = prefs.getString('token');
 
     userData = await getProfile(id, token);
+
     Team userTeam = await getUserTeam(token);
     teamName = userTeam.name;
 
@@ -46,6 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
+
       errorDialog(context, "Error", 'Could not launch $url');
     }
   }
@@ -55,6 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
+
       errorDialog(context, "Error", 'Could not launch $url');
     }
   }
@@ -166,6 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                     .textTheme
                                                                     .bodyText2
                                                             ),
+
                                                             Text(teamName,
                                                                 style: Theme
                                                                     .of(context)
@@ -178,6 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   ],
                                                 )
                                             ),
+
                                             SolidButton(
                                               text: "Edit Nickname",
                                             ),

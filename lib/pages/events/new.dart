@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
+import 'package:thdapp/api.dart';
 import 'index.dart';
 
 class NewEventScreen extends StatefulWidget {
@@ -14,13 +15,28 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String _eventDesc = "";
   String _eventUrl = "";
   String _duration = "";
+  String _location = "";
+  String _platform = "IN_PERSON";
+  double _lat = 0;
+  double _lng = 0;
+  int _startTime = 0;
+  int _endTime = 0;
   String _date = "";
   bool isPresenting = false;
+  
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController linkController = TextEditingController();
-  TextEditingController durationController = TextEditingController();
+
   TextEditingController dateController = TextEditingController();
+  TextEditingController durationController = TextEditingController();
+
+  var dropdownValue = 'IN_PERSON';
+
+  List<String> _dropdownItems = ['IN_PERSON', "ZOOM", "DISCORD", "HOPIN"];
+
+  TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -29,14 +45,56 @@ class _NewEventScreenState extends State<NewEventScreen> {
     nameController.dispose();
     descController.dispose();
     linkController.dispose();
-    durationController.dispose();
     dateController.dispose();
+    durationController.dispose();
     super.dispose();
+  }
+
+  void saveData() async {
+    bool result;
+    result = await addEvent(nameController.text, descController.text, this._startTime, this._endTime, this._lat, this._lng, this._platform, linkController.text);
+
+    if (result == true) {
+      _showDialog('Your event was successfully saved!', 'Success', result);
+    }else{
+      _showDialog('There was an error. Please try again.', 'Error.', result);
+    }
+  }
+
+  void _showDialog(String response, String title, bool result) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(response),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text(
+                "OK",
+                style: new TextStyle(color: Colors.white),
+              ),
+              color: new Color.fromARGB(255, 255, 75, 43),
+              onPressed: () {
+
+                Navigator.of(context).pop();
+                if(result == true){
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildName() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Even Name"),
+      decoration: FormFieldStyle(context, "Event Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
       validator: (String value) {
@@ -88,24 +146,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-  Widget _buildDuration() {
-    return TextFormField(
-      decoration: FormFieldStyle(context, "Duration"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: durationController,
-      keyboardType: TextInputType.url,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Duration is Required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _duration = value;
-      },
-    );
-  }
-
   Widget _buildDate() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Date"),
@@ -124,35 +164,54 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-  Widget _buildPresentingLive() {
-    int initialVal = 1;
-    if (isPresenting) initialVal = 0;
-    return Container(
-        padding: new EdgeInsets.fromLTRB(0, 10, 0, 0),
-        child: Column(
-            children: <Widget>[
-              SizedBox(width: 20,),
-              Text('Presenting',
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.headline4),
-              Text('Do you wish to present live at the expo? If not, you must submit a video.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText2),
-              Switch(
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                  activeTrackColor: Theme.of(context).colorScheme.primary,
-                  inactiveTrackColor: Theme.of(context).colorScheme.onSurface,
-                  value: isPresenting,
-                  onChanged: (value) {
-                    setState(() {
-                      isPresenting = value;
-                    });
-                  }
-              )
-            ]
-        )
+  Widget _buildDuration() {
+    return TextFormField(
+      decoration: FormFieldStyle(context, "Duration"),
+      style: Theme.of(context).textTheme.bodyText2,
+      controller: durationController,
+      keyboardType: TextInputType.url,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Duration is Required';
+        }
+        return null;
+      },
+      onSaved: (String value) {
+        _date = value;
+      },
     );
   }
+
+  Widget _meetingPlatformDropdown(width){
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryVariant,
+            borderRadius: BorderRadius.circular(5)
+        ),
+        padding: EdgeInsets.only(left: 5, right: 5),
+        height: width*0.06,
+        width: width * 0.4,
+        child: DropdownButton<String>(
+          isExpanded: true,
+          iconEnabledColor: Theme.of(context).colorScheme.primary,
+          icon: Icon(Icons.arrow_drop_down),
+          iconSize: 25,
+          onChanged: (String val) {
+            setState(() {
+              _platform = val;
+              dropdownValue = val;
+            });
+          },
+          underline: SizedBox(),
+          value: dropdownValue,
+          items: _dropdownItems.map<DropdownMenuItem<String>>((String val){return DropdownMenuItem<String>(value: val, child: Text(val, style: Theme.of(context).textTheme.bodyText2,));}).toList()
+          ,
+        ),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +245,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                 ]
                             ),
                             Container(
+                              //color: Colors.black,
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 child: GradBox(
@@ -196,21 +256,30 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                         key: _formKey,
                                         child: SingleChildScrollView(
                                             child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Text("Create New Event", style: Theme.of(context).textTheme.headline2),
-                                                SizedBox(height:8),
+                                                Text("CREATE NEW EVENT", style: Theme.of(context).textTheme.headline2),
+                                                SizedBox(height:45),
                                                 _buildName(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
                                                 _buildDesc(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
                                                 _buildEventURL(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
+                                                Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
+                                                SizedBox(height:5),
+                                                _meetingPlatformDropdown(screenWidth),
+                                                SizedBox(height:16),
                                                 _buildDuration(),
-                                                SizedBox(height:8),
+                                                SizedBox(height:16),
                                                 _buildDate(),
-                                                SolidButton(
-                                                    text: "Save Information"
+                                                SizedBox(height:16),
+                                                Center(
+                                                  child: SolidButton(
+                                                    text: "Save information",
+                                                    onPressed: saveData,
+                                                  ),
                                                 ),
                                               ],
                                             )

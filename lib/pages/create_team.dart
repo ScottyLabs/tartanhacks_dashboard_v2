@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+
 import '../api.dart';
 import 'team-api.dart';
 import 'view_team.dart';
@@ -16,6 +17,7 @@ class _CreateTeamState extends State<CreateTeam> {
   String _yourName = "";
   String _teamName = "";
   String _teamDesc = "";
+
   TextEditingController yourNameController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescController = TextEditingController();
@@ -50,6 +52,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildName() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Your Name"),
+
       style: Theme
           .of(context)
           .textTheme
@@ -70,6 +73,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildTeamName() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Team Name"),
+
       style: Theme
           .of(context)
           .textTheme
@@ -90,6 +94,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildTeamDesc() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Team Description"),
+
       style: Theme
           .of(context)
           .textTheme
@@ -99,6 +104,7 @@ class _CreateTeamState extends State<CreateTeam> {
         if (value.isEmpty) {
           return 'Team description is required';
         }
+
         return null;
       },
       onSaved: (String value) {
@@ -161,6 +167,7 @@ class _CreateTeamState extends State<CreateTeam> {
         return null;
       },
       onSaved: (String value) {
+
         // _inviteMember = value;
       },
     );
@@ -186,6 +193,7 @@ class _CreateTeamState extends State<CreateTeam> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
+
         body: Container(
             child: SingleChildScrollView(
                 child: ConstrainedBox(
@@ -245,6 +253,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                                 SizedBox(height:screenHeight*0.02),
                                                 _buildTeamDesc(),
                                                 SizedBox(height:screenHeight*0.02),
+
                                                 _inviteMem()
                                                 //_buildInviteMember(),
                                               ],

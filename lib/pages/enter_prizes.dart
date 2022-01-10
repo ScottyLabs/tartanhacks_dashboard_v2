@@ -6,6 +6,7 @@ import '../api.dart';
 import '../models/prize.dart';
 
 class EnterPrizes extends StatefulWidget {
+
   String projId;
   List enteredPrizes;
   EnterPrizes({this.projId, this.enteredPrizes});
@@ -40,6 +41,7 @@ class _EnterPrizesState extends State<EnterPrizes> {
 
     });
   }
+
 
   void prizeDialog(String prizeId) {
     showDialog(
@@ -153,6 +155,7 @@ class _EnterPrizesState extends State<EnterPrizes> {
                                     return PrizeCard(
                                       id: prizes[index].id,
                                       name: prizes[index].name,
+
                                       desc: prizes[index].description,
                                       entered: enteredPrizes.contains(prizes[index].id),
                                       entryFn: () => prizeDialog(prizes[index].id,),
@@ -177,6 +180,7 @@ class PrizeCard extends StatelessWidget{
   String id;
   String name;
   String desc;
+
   bool entered;
   Function entryFn;
 

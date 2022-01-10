@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
 ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
   return ThemeData(
       fontFamily: 'Poppins',
@@ -30,6 +31,7 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 }
 
 ThemeData genLightTheme (){
+
   var primary = Color(0xFFFFC738);
   var primarytrans = Color(0x87FFC738);
   var secondary = Color(0xFFDB4D20);
@@ -43,6 +45,7 @@ ThemeData genLightTheme (){
       primaryVariant: primarytrans,
       secondary: secondary,
       secondaryVariant: secondarytrans,
+
       surface: surface, //box gradient 2
       background: background, //box gradient 1
       error: secondarytrans, //shadows
@@ -61,6 +64,7 @@ ThemeData genLightTheme (){
 }
 
 ThemeData genDarkTheme (){
+
   var primary = Color(0xFFFFC738);
   var primarytrans = Color(0x87FFC738);
   var secondary = Color(0xFFDB4D20);
@@ -76,6 +80,7 @@ ThemeData genDarkTheme (){
       primaryVariant: primarytrans,
       secondary: secondary,
       secondaryVariant: secondarytrans,
+
       surface: accent, //box gradient 2
       background: surface, //box gradient 1
       error: shadow, //shadows
@@ -83,6 +88,7 @@ ThemeData genDarkTheme (){
       onSecondary: text,
       onSurface: text,
       onBackground: secondary,
+
       onError: surface, //menu buttons
       brightness: Brightness.dark
   );

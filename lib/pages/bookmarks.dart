@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+
 import '../models/participant_bookmark.dart';
+
 
 class Bookmarks extends StatefulWidget {
   @override
@@ -15,6 +17,7 @@ class _Bookmarks extends State<Bookmarks> {
   List projectBookmarks;
   SharedPreferences prefs;
   String token;
+
 
   void getData() async {
     prefs = await SharedPreferences.getInstance();
@@ -168,6 +171,7 @@ class _Bookmarks extends State<Bookmarks> {
 }
 
 class BookmarkInfo extends StatelessWidget {
+
   ParticipantInfo data;
   String team;
   String bio;
@@ -191,6 +195,7 @@ class BookmarkInfo extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
+
                             data.firstName + " " + data.lastName,
                             style: Theme.of(context).textTheme.headline4
                         ),

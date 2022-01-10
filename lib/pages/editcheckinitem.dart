@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import 'package:provider/provider.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/models/check_in_item.dart';
@@ -90,18 +91,21 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
   final _endDateController = TextEditingController();
   final _endTimeController = TextEditingController();
   final _pointsController = TextEditingController();
+
   bool enableSelfCheckIn;
   bool newItem;
   String accessLevel;
 
   DateTime startDate;
   DateTime endDate;
+
   TimeOfDay startTime;
   TimeOfDay endTime;
 
   @override
   void initState() {
     super.initState();
+
     CheckInItem item = widget.checkInItem;
     if (item!=null) {
       _nameController.value = TextEditingValue(text: widget.checkInItem.name);
@@ -131,6 +135,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
   @override
   Widget build(BuildContext context) {
+
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return SingleChildScrollView(
       child: Form(
@@ -140,6 +145,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
+
                   widget.checkInItem == null ? "NEW CHECKIN ITEM"
                       : editable ? "EDIT CHECKIN ITEM" : "EVENT DETAILS",
                   style: Theme.of(context).textTheme.headline1,
@@ -170,11 +176,13 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       _startDateController.value = TextEditingValue(
                         text: DateFormat.yMMMd('en_US').format(picked)
                       );
+
                       startDate = picked;
                     }
                   },
                 ),
                 EditCheckInFormField(
+
                   label: "End Date",
                   controller: _endDateController,
                   validator: (val) {
@@ -211,17 +219,20 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
+
                         initialTime: startTime ?? TimeOfDay.now()
                     );
                     if (picked != null) {
                       _startTimeController.value = TextEditingValue(
                           text: picked.format(context)
                       );
+
                       startTime = picked;
                     }
                   }
                 ),
                 EditCheckInFormField(
+
                     label: "End Time",
                     controller: _endTimeController,
                     validator: (val) {
@@ -257,6 +268,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 ),
 
                 // Dropdown menus
+
                 if (editable) EditCheckInDropDownFormField(
                     items: accessLevels.asMap().map((i, label) =>
                         MapEntry(i, DropdownMenuItem(
@@ -293,6 +305,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
+
                           value: enableSelfCheckIn,
                           onChanged: (val){
                             setState(() {
@@ -304,6 +317,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 ),
 
                 // Submit button
+
                 if (editable) SizedBox(
                   width: double.infinity,
                   child: SolidButton(
@@ -357,18 +371,21 @@ class EditCheckInFormField extends StatelessWidget {
   final String label;
   final TextInputType keyboardType;
   final Function onTap;
+
   final Function validator;
 
   EditCheckInFormField({
     this.controller,
     this.label,
     this.keyboardType = TextInputType.text,
+
     this.onTap,
     this.validator
   });
 
   @override
   Widget build(BuildContext context) {
+
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -377,6 +394,7 @@ class EditCheckInFormField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           onTap: onTap,
+
           enabled: editable,
           validator: validator ?? (val) {
             if (val == null || val.isEmpty) {
@@ -403,6 +421,7 @@ class EditCheckInDropDownFormField extends StatelessWidget {
   final List<DropdownMenuItem> items;
   final String label;
   final String initial;
+
   final Function onChange;
 
   EditCheckInDropDownFormField({this.items, this.label, this.initial, this.onChange});
@@ -425,6 +444,7 @@ class EditCheckInDropDownFormField extends StatelessWidget {
         Expanded(
           flex: 8,
           child: DropdownButtonFormField(
+
             onChanged: onChange,
             items: items,
             value: initial,

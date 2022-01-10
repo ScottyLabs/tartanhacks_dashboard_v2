@@ -1,3 +1,4 @@
+
 import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -14,6 +15,7 @@ class QRPage extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
 
     final _eventIDController = TextEditingController();
 
@@ -48,6 +50,7 @@ class QRPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
+
                                     IDCheckInHeader(_eventIDController),
                                     QREnlarged(onPressed: () async {
                                       final String id = await Barras.scan(context);
@@ -63,6 +66,7 @@ class QRPage extends StatelessWidget {
 }
 
 class IDCheckInHeader extends StatelessWidget {
+
   final _eventIDController;
 
   IDCheckInHeader(this._eventIDController);
@@ -88,6 +92,7 @@ class IDCheckInHeader extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
+
             onPressed: () async {
               String id = _eventIDController.text;
               if (id != null && id != "") {
@@ -124,6 +129,7 @@ class IDCheckInHeader extends StatelessWidget {
 }
 
 class QREnlarged extends StatelessWidget {
+
   final Function onPressed;
 
   QREnlarged({this.onPressed});
@@ -137,6 +143,7 @@ class QREnlarged extends StatelessWidget {
           "YOUR QR CODE",
           style: Theme.of(context).textTheme.headline1,
         ),
+
         SizedBox(height: 8,),
         GradBox(
           height: 250,
@@ -166,6 +173,7 @@ class QREnlarged extends StatelessWidget {
               child: SizedBox(
                 height: 45,
                 child: SolidButton(
+
                   onPressed: onPressed,
                   text: "Scan Event ID",
                 ),

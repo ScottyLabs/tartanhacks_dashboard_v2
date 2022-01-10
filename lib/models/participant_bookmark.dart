@@ -1,6 +1,7 @@
 class ParticipantBookmark {
   final String bookmarkId;
   final String bookmarkType;
+
   final String description;
   final String createdAt;
   final ParticipantInfo participantData;
@@ -8,6 +9,7 @@ class ParticipantBookmark {
   ParticipantBookmark({
     this.bookmarkId,
     this.bookmarkType,
+
     this.description,
     this.createdAt,
     this.participantData, // json data format
@@ -21,10 +23,12 @@ class ParticipantBookmark {
       bookmarkType: parsedJson['bookmarkType'],
       description: parsedJson['description'],
       createdAt: parsedJson['createdAt'],
+
       participantData: ParticipantInfo.fromJson(parsedJson['participant']),
     );
   }
 }
+
 
 // ParticipantBookmark.participantData.id -> gives id
 

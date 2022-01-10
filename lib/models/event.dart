@@ -3,52 +3,47 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-enum EventType{
-  ALL,
-  SPONSORS_ONLY,
-  PARTICIPANTS_ONLY,
-  ADMINS_ONLY
-}
-
 class Event {
-
+  final String id;
+  final String platform;
+  final bool active;
   final String name;
   final String description;
-  final DateTime startTime;
-  final DateTime endTime;
-  final bool enableCheckin;
-  final bool enableProjects;
-  final bool enableTeams;
-  final bool enableSponsors;
-  final String logoUrl;
-  final List<String> essayQuestions;
+  //time is unix
+  final int startTime;
+  final int endTime;
+  final String location;
+  final int lat;
+  final int lng;
+  final String platformUrl;
 
-
-
-  Event({this.name,
+  Event({
+    this.id,
+    this.platform,
+    this.active,
+    this.name,
     this.description,
     this.startTime,
     this.endTime,
-    this.enableCheckin,
-    this.enableProjects,
-    this.enableTeams,
-    this.enableSponsors,
-    this.logoUrl,
-    this.essayQuestions,
+    this.location,
+    this.lat,
+    this.lng,
+    this.platformUrl
   });
 
   factory Event.fromJson(Map<String, dynamic> parsedJson) {
     return new Event(
+      id: parsedJson['_id'],
+      platform: parsedJson['platform'],
+      active: true,
+      name: parsedJson['name'],
       description: parsedJson['description'],
       startTime: parsedJson['startTime'],
       endTime: parsedJson['endTime'],
-      name: parsedJson['name'],
-      enableCheckin: parsedJson['enableCheckin'],
-      enableProjects: parsedJson['enableProjects'],
-      enableTeams: parsedJson['enableTeams'],
-      enableSponsors: parsedJson['enableSponsors'],
-      logoUrl: parsedJson['logoUrl'],
-      essayQuestions: parsedJson['essayQuestions'],
+      location: parsedJson['location'],
+      lat: parsedJson['lat'],
+      lng: parsedJson['lng'],
+      platformUrl: parsedJson['platformUrl'],
     );
   }
 }

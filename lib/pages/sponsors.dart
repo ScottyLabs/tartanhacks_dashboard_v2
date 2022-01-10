@@ -12,6 +12,7 @@ class Sponsors extends StatefulWidget {
 }
 
 class _SponsorsState extends State<Sponsors> {
+
   String myName;
   List studentIds;
   List students; // bunch of Profiles
@@ -21,6 +22,7 @@ class _SponsorsState extends State<Sponsors> {
 
   SharedPreferences prefs;
   String token;
+
 
   final myController = new TextEditingController();
 
@@ -37,6 +39,7 @@ class _SponsorsState extends State<Sponsors> {
 
     });
   }
+
 
   void searchResultCounting(String keyword) {
     searchPressed = true;
@@ -129,6 +132,7 @@ class _SponsorsState extends State<Sponsors> {
                                           Container(
                                             alignment: Alignment.topLeft,
                                             //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+
                                             child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
                                           ),
                                           SizedBox(height: 10),
@@ -145,6 +149,7 @@ class _SponsorsState extends State<Sponsors> {
                                               decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
                                               style: Theme.of(context).textTheme.bodyText2,
                                               enableSuggestions: false,
+
                                               controller: myController,
                                             ),
                                           ),
@@ -165,6 +170,7 @@ class _SponsorsState extends State<Sponsors> {
                                                 alignment: Alignment.center,
                                                 width: 80,
                                                 height: 40,
+
                                                 onTap: () {
                                                   searchResultCounting(myController.text);
                                                 },
@@ -181,6 +187,7 @@ class _SponsorsState extends State<Sponsors> {
                                                   child: ListView.builder(
                                                       itemCount: 4,
                                                       itemBuilder: (BuildContext context, int index){
+
                                                         bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
                                                         return InfoTile(
                                                             name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
@@ -188,6 +195,7 @@ class _SponsorsState extends State<Sponsors> {
                                                             bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                             participantId: studentIds[index],
                                                             bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
+
                                                             isBookmark: isBookmark,
                                                             toggleFn: isBookmark ? removeBookmark : newBookmark,
                                                         );
@@ -219,6 +227,7 @@ class InfoTile extends StatelessWidget {
   String participantId;
   String bookmarkId;
   bool isBookmark;
+
   Function toggleFn;
 
   InfoTile({this.name, this.team, this.bio, this.participantId,
@@ -275,6 +284,7 @@ class InfoTile extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   iconSize: 40.0,
                   onPressed: () {
+
                     print(bookmarkId);
                     print(participantId);
                     toggleFn(bookmarkId, participantId);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'create_team.dart';
 import 'view_team.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'team-api.dart';
@@ -15,6 +16,7 @@ class TeamsList extends StatefulWidget {
 }
 
 class _TeamsListState extends State<TeamsList> {
+
 
   String token;
   List<Team> teamInfos;
@@ -102,6 +104,7 @@ class _TeamsListState extends State<TeamsList> {
   Widget _buildTeamJoinBtn(String teamID){
     SolidButton btn = SolidButton(
       text: " Join ",
+
         onPressed: () {
           requestTeam(teamID, token);
           // Navigator.push(
@@ -124,6 +127,7 @@ class _TeamsListState extends State<TeamsList> {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
+
                 ViewTeam(),
                 settings: RouteSettings(
                   arguments: teamID,
@@ -227,6 +231,7 @@ class _TeamsListState extends State<TeamsList> {
                                           ),
                                           Expanded(
                                             child: ListView.builder(
+
                                               itemCount: numTeams,
                                               itemBuilder: (BuildContext context, int index){
                                                 return teamWidgetList[index];

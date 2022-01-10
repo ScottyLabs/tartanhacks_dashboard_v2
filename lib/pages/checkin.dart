@@ -1,3 +1,4 @@
+
 import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -9,6 +10,7 @@ import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
+
 
 class CheckIn extends StatelessWidget {
 
@@ -41,6 +43,7 @@ class CheckIn extends StatelessWidget {
                                           Theme.of(context).colorScheme.primary,
                                       reverse: true)),
                             ]),
+
                             Consumer<CheckInItemsModel>(
                               builder: (context, checkInItemsModel, child) {
                                 var status = checkInItemsModel.checkInItemsStatus;
@@ -93,6 +96,7 @@ class Header extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
         children: isAdmin ? [AdminHeader()] : [PointsHeader(points: points), QRHeader()],
       ),
     );
@@ -106,6 +110,7 @@ class QRHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return InkWell(
       onTap: () {
         Navigator.push(context,
@@ -126,6 +131,7 @@ class QRHeader extends StatelessWidget {
               ),
             ),
           ),
+
           // TODO: Placeholder for QR Code
           SizedBox(
             height: 130,
@@ -191,6 +197,7 @@ class PointsHeader extends StatelessWidget {
   }
 }
 
+
 class AdminHeader extends StatelessWidget {
 
   @override
@@ -229,6 +236,7 @@ class CheckInEvents extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
+
             Expanded(child: CheckInEventList(checkInItemsList)),
             SizedBox(height: 9,),
             if (editable) GradBox(
@@ -242,6 +250,7 @@ class CheckInEvents extends StatelessWidget {
               ),
               onTap: () => {
                 Navigator.push(context,
+
                     MaterialPageRoute(builder: (context) => EditCheckInItemPage(null))
                 )
               },
@@ -262,6 +271,7 @@ class CheckInEventList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     var model = Provider.of<CheckInItemsModel>(context);
     var editable = model.isAdmin;
     var hasCheckedIn = model.hasCheckedIn;
@@ -271,6 +281,7 @@ class CheckInEventList extends StatelessWidget {
           itemBuilder: (BuildContext context, int index) {
             return CheckInEventListItem(
               name: events[index].name,
+
               isChecked: editable ? false : hasCheckedIn[events[index].id],
               enabled: events[index].enableSelfCheckIn,
               onTap: () {
@@ -356,6 +367,7 @@ class CheckInEventList extends StatelessWidget {
 class CheckInEventListItem extends StatelessWidget {
   final String name;
   final bool isChecked;
+
   final bool enabled;
   final Function onCheck;
   final Function onTap;
@@ -363,6 +375,7 @@ class CheckInEventListItem extends StatelessWidget {
   CheckInEventListItem({
     this.name,
     this.isChecked,
+
     this.enabled,
     this.onTap,
     this.onCheck,
@@ -370,6 +383,7 @@ class CheckInEventListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return IntrinsicHeight(
       child: Row(
@@ -394,6 +408,7 @@ class CheckInEventListItem extends StatelessWidget {
                         .headline1
                         ?.copyWith(fontSize: 23),
                   ),
+
                   InkWell(
                     onTap: () {if (!isChecked && enabled) onCheck();},
                     child: IgnorePointer(
@@ -434,6 +449,7 @@ class CheckInEventListItem extends StatelessWidget {
               ),
             ),
           ),
+
           SizedBox(
             width: 15,
           ),
@@ -443,6 +459,7 @@ class CheckInEventListItem extends StatelessWidget {
             child: SolidButton(
               child: FittedBox(
                 child: Text(
+
                   editable ? "Edit\nItem" : "View\nItem",
                   textAlign: TextAlign.center,
                   style: TextStyle(

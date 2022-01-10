@@ -142,6 +142,7 @@ class BookmarkInfo extends StatelessWidget {
                     SizedBox(height: 18),
                     SolidButton(
                       text: "View More",
+
                       onPressed: () {
                         viewMorePopup(context, 'View More', 'hello');
                       },
@@ -166,6 +167,7 @@ class BookmarkInfo extends StatelessWidget {
       ),
     );
   }
+
 }
 
 void viewMorePopup(context, String title, String response) {

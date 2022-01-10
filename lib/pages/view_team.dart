@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+
 import '../api.dart';
 import 'team-api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -189,6 +190,7 @@ class _ViewTeamState extends State<ViewTeam> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+
           Text(team.name, style: Theme.of(context).textTheme.headline4),
           Text(team.description, style: Theme.of(context).textTheme.bodyText2)
         ]
@@ -196,6 +198,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildMember(int member) {
+
     Member mem = team.members[member];
     String email_str = "(" + mem.email + ")";
     String name_str = mem.name;
@@ -283,6 +286,7 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 
+
   Widget _leaveJoinTeamBtn() {
     if(!isMember) return Container();
     String buttonText = "Leave Team";
@@ -304,6 +308,7 @@ class _ViewTeamState extends State<ViewTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
     if(ModalRoute.of(context) != null){
       teamID = ModalRoute.of(context).settings.arguments as String;
     }
@@ -343,6 +348,7 @@ class _ViewTeamState extends State<ViewTeam> {
                                     height: screenHeight*0.75,
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                     child: Column(
+
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: 
@@ -389,5 +395,6 @@ class _ViewTeamState extends State<ViewTeam> {
         )
     );
   }
+
 }
 

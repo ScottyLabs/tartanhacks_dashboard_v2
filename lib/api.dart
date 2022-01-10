@@ -14,9 +14,11 @@ import 'models/prize.dart';
 import 'models/project.dart';
 import 'pages/custom_widgets.dart';
 
+
 SharedPreferences prefs;
 
 const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGNkNzRmMmJmYWQ2MTNhODEwYTMzMDIiLCJpYXQiOjE2MzU2MDk4MzksImV4cCI6MTYzNzMzNzgzOX0._5K4sqsFhJbF58-skYaBwkqqANYITYCo6_EcxUTTWqY";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -44,6 +46,7 @@ Future<User> checkCredentials(String email, String password) async {
     return null;
   }
 }
+
 
 Future<String> resetPassword(BuildContext context, String email) async {
   String url = baseUrl + "auth/request-reset";
@@ -119,6 +122,7 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
+
     List data = json.decode(response.body);
     data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
     print(data);
@@ -138,6 +142,7 @@ Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
     List data = json.decode(response.body);
     data = data.map((bm) => ProjectBookmark.fromJson(bm)).toList();
     return data;
+
   }
   else {
     print('error getting project bookmarks');
@@ -150,7 +155,7 @@ Future<void> deleteBookmark(String token, String id) async {
   final response = await http.delete(url, headers:headers);
 
   if(response.statusCode != 200) {
-    print(response.body);
+
     print('Failed to delete bookmark ' + id + ' with code ' + response.statusCode.toString());
   }
   else {
@@ -161,6 +166,7 @@ Future<void> deleteBookmark(String token, String id) async {
 Future<String> addBookmark(String token, String participantId) async {
   String url = baseUrl + "bookmark";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+
   String jsonInput = '{"bookmarkType": "PARTICIPANT", "participant":"' + participantId.toString() + '", "project":null, "description": "sample description"}';
   print(jsonInput);
   final response = await http.post(url, headers: headers, body: jsonInput);
@@ -176,13 +182,14 @@ Future<String> addBookmark(String token, String participantId) async {
     print(data);
     var bookmarkId = data["_id"];
     print('bookmarkId is ' + bookmarkId);
+
     return bookmarkId;
   }
 }
 
 Future<List<Event>> getEvents() async {
-  var url = baseUrl+'events/get';
-  final response = await http.post(url);
+  var url = baseUrl+'schedule/';
+  final response = await http.get(url);
   print(response.statusCode);
   if (response.statusCode == 200){
     List<Event> eventsList;
@@ -194,45 +201,85 @@ Future<List<Event>> getEvents() async {
   }
 }
 
-Future<bool> addEvents(String name, String description, String startTime, String endTime, bool enableCheckin, bool enableProjects, bool enableTeams, bool enableSponsors, String logoUrl, List<String> essayQuestions) async {
+Future<bool> addEvent(String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
 
-  String url = baseUrl + "events/new";
+  String url = baseUrl + "schedule/";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "Token": token
   };
 
+
   String essayQuestionsAgg = "";
   for (int i = 0; i < essayQuestions.length; i++) {
     essayQuestionsAgg += essayQuestions[i] + "\n";
   }
-  String json1 = '{"name":"' + name +
+  String bodyJson = '{"name":"' + name +
       '","description":"' + description +
-      '","startTime":"' + startTime +
-      '","endTime":"' + endTime +
-      ', "enableCheckin": true, "enableProjects": true, "enableTeams": true, "enableSponsors": true,' +
-      '","logoUrl":"' + logoUrl +
-      '"essayQuestions":"' + essayQuestionsAgg + '}';
-  print(json1);
-  final response = await http.post(url, headers: headers, body: json1);
+      '","startTime":' + startTime.toString() +
+      ',"endTime":' + endTime.toString() +
+      ',"lat":' + lat.toString() +
+      ',"lng":' + lng.toString() +
+      ',"platform":"' + platform +
+      '","platformUrl":"' + platformUrl + '"}';
+
+  print(bodyJson);
+  final response = await http.post(url, headers: headers, body: bodyJson);
   if (response.statusCode == 200) {
     return true;
   } else if (response.statusCode == 401) {
-    return addEvents(
+    return addEvent(
         name,
         description,
         startTime,
         endTime,
-        enableCheckin,
-        enableProjects,
-        enableTeams,
-        enableSponsors,
-        logoUrl,
-        essayQuestions);
+        lat,
+        lng,
+        platform,
+        platformUrl);
   } else {
+    return false;
+  }
+}
+
+
+Future<bool> editEvent(String eventId, String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  String token = prefs.getString("token");
+
+  String url = baseUrl + "schedule/`${eventId}`";
+  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
+
+  String bodyJson = '{"name":"' + name +
+      '","description":"' + description +
+      '","startTime":' + startTime.toString() +
+      ',"endTime":' + endTime.toString() +
+      ',"lat":' + lat.toString() +
+      ',"lng":' + lng.toString() +
+      ',"platform":"' + platform +
+      '"platformUrl":"' + platformUrl + '"}';
+
+  print(bodyJson);
+
+  final response = await http.patch(url, headers: headers, body: bodyJson);
+  if (response.statusCode == 200) {
+    return true;
+  }else if(response.statusCode == 401){
+    return editEvent(
+        eventId,
+        name,
+        description,
+        startTime,
+        endTime,
+        lat,
+        lng,
+        platform,
+        platformUrl);
+  }else{
     return false;
   }
 }
@@ -250,6 +297,7 @@ Future<List<CheckInItem>> getCheckInItems() async {
     throw Exception("Failed to fetch Check In data");
   }
 }
+
 
 /*
 0 - (int) user points
@@ -287,6 +335,7 @@ Future<void> addCheckInItem(CheckInItemDTO item, String token) async {
     throw Exception("Failed to add Check In Item");
   }
 }
+
 
 Future<void> editCheckInItem(CheckInItemDTO item, String id, String token) async {
   String url = baseUrl + "check-in/$id";
@@ -374,6 +423,7 @@ Future<List<Prize>> getPrizes() async {
     return null;
   }
 }
+
 
 Future<Project> getProject(String id, String token) async {
   String url = baseUrl + "users/" + id + "/project";

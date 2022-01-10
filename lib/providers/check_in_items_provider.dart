@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart' as api;
 import 'package:thdapp/models/check_in_item.dart';
@@ -13,6 +14,7 @@ enum Status {
 
 class CheckInItemsModel with ChangeNotifier {
   Status _status = Status.NotLoaded;
+
   String _token = "";
 
   List<CheckInItem> _list;
@@ -32,6 +34,7 @@ class CheckInItemsModel with ChangeNotifier {
   }
 
   Future<void> fetchCheckInItems() async {
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     isAdmin = prefs.getBool("admin");
