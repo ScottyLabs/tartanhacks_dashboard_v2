@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
+
+import '../models/team.dart';
 import 'package:thdapp/api.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'team-api.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -20,6 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Profile userData;
 
+  String teamName;
+
   void getData() async{
     prefs = await SharedPreferences.getInstance();
 
@@ -31,6 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     userData = await getProfile(id, token);
 
+    Team userTeam = await getUserTeam(token);
+    teamName = userTeam.name;
+
     setState(() {
 
     });
@@ -41,7 +49,8 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+
+      errorDialog(context, "Error", 'Could not launch $url');
     }
   }
 
@@ -50,7 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not launch $url';
+
+      errorDialog(context, "Error", 'Could not launch $url');
     }
   }
 
@@ -161,7 +171,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                     .textTheme
                                                                     .bodyText2
                                                             ),
-                                                            Text("[TEAM NAME]",
+
+                                                            Text(teamName,
                                                                 style: Theme
                                                                     .of(context)
                                                                     .textTheme
@@ -172,6 +183,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     )
                                                   ],
                                                 )
+                                            ),
+
+                                            SolidButton(
+                                              text: "Edit Nickname",
                                             ),
                                             SizedBox(height: 10),
                                             Text(userData.school,
@@ -240,9 +255,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 )
                                             ),
                                             SizedBox(height: 8),
-                                            SolidButton(
-                                              text: "Edit Information",
-                                            )
                                           ],
                                         ),
                                       )

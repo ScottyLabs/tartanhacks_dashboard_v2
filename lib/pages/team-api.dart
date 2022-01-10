@@ -4,102 +4,158 @@ import 'dart:async';
 import 'dart:convert';
 import 'custom_widgets.dart';
 import '/models/team.dart';
-//right now
-Future<bool> createTeam(String team_name, BuildContext context) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/teams/";
-  String json1 = '{"name":"' + team_name + '"}';
-  final response = await http.post(url, body: json1);
+import '/models/member.dart';
+import 'dart:developer';
 
+Future<bool> createTeam(String name, String description, String token) async  {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  var body = json.encode({
+  "name": name,
+  "description": description,
+  "visible": true
+  });
+  final response = await http.post(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
-      errorDialog(context, "Successfully created team", "Success");
-    return true;
+    print("Successfully updated info");
+  }
+  print("error");
+}
+
+
+Future<Team> getUserTeam(String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/user/team";
+
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) {
+    var parsedJson = jsonDecode(response.body);
+    if (response.body.contains("You are not in a team!")){
+      return null;
+    }
+    Team team = new Team.fromJson(parsedJson);
+    return team;
   }
   return null;
 }
 
-//ideally
-Future<bool> createTeam2(String creator_name, String team_name, 
-                         String team_description, String team_id, String token, BuildContext context) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/teams/";
+Future<void> getUserMail(String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/requests/team";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    print("received requests for current team");
+    print(data);
+  }
+}
 
-  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
-  var body = json.encode({'creator_name' : creator_name, 
-  'team_name' : team_name, 'desc' : team_description, 'team_id': team_id});
+Future<void> inviteTeamMember(String user_email, String token) async {
+  const url = "https://tartanhacks-backend.herokuapp.com/team/invite";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  var body = json.encode({'email': user_email});
   final response = await http.post(url, headers: headers, body: body);
-
   if (response.statusCode == 200) {
-      errorDialog(context, "Successfully created team", "Success");
-    return true;
+    print("Successfully invited");
   }
-  return null;
+  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
-Future<bool> inviteTeamMember(String team_id, String user_id, String token, BuildContext context) async {
-  var url = "https://tartanhacks-backend.herokuapp.com/teams/invite/" + user_id;
-
-  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
-  var body = json.encode({'team_id' : team_id, 'user_id' : user_id});
-  final response = await http.post(url, headers: headers, body: body);
-  if (response.statusCode == 200) {
-      errorDialog(context, "Successfully invited member", "Success");
-    return true;
-  }
-  return null;
-}
-
-Future<bool> joinTeam(String team_id, String token, BuildContext context) async {
-  var url = "https://tartanhacks-backend.herokuapp.com/teams/invite/" + team_id;
-
-  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
-  var body = json.encode({'team_id' : team_id});
-  final response = await http.post(url, headers: headers, body: body);
-  if (response.statusCode == 200) {
-    errorDialog(context, "Successfully joined team", "Success");
-    return true;
-  }
-  errorDialog(context, json.decode(response.body)['message'].toString(), "Unsuccessful");
-  return null;
-}
-
-Future<List<Team>> getTeams(String token, BuildContext context) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/teams/";
-
-  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
+Future<void> leaveTeam(String token) async {
+  const url = "https://tartanhacks-backend.herokuapp.com/team/leave";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
   var body = json.encode({});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    List<String> teamStrings = List.from(jsonDecode(response.body));
-    List<Team> teamsList = [];
-    for(int i = 0; i < teamStrings.length; i++){
-      teamsList[i] = Team.fromJson(teamStrings[i]);
-    }
-    errorDialog(context, "Successfully retrieved all teams", "Success");
-    return teamsList;
+    print("Successfully left");
   }
 
-  errorDialog(context, json.decode(response.body)['message'].toString(), "Unsuccessful");
+  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
+}
+
+Future<void> requestTeam(String teamID, String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + teamID;
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  var body = json.encode({});
+  print("Team request attempt");
+  final response = await http.post(url, headers: headers, body: body);
+  if (response.statusCode == 200) {
+    print("Successfully request");
+  }
+  print("Error");
+}
+
+Future<bool> requestTeamMember(String email, String token) async { 
+  String url = "https://tartanhacks-backend.herokuapp.com/team/invite";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  var body = json.encode({'email': email});
+  final response = await http.post(url, headers: headers, body: body);
+  if (response.statusCode == 200) {
+    print("Successfully request member");
+    return true;
+  }
+  return false;
+}
+
+Future<void> updateTeamInfo(String name, String description, bool visible, String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  var body = json.encode({
+    "name": name,
+    "description": description,
+    "visible": visible
+  });
+  final response = await http.patch(url, headers: headers, body: body); //patch?
+  if (response.statusCode == 200) {
+    print("Successfully updated info");
+  }
+  print("error");
+}
+
+Future<Team> getTeamInfo(String teamId,
+                         String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
+
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = jsonDecode(response.body);
+    Team team = new Team.fromJson(data);
+    print("Successfully created get team");
+    return team;
+  }
   return null;
 }
 
-/*
-list of modules to interact with 
-- request team
-- request user
-- request accept
-- request decline
-- request cancel
-- invite a team member
-    - need something to say you've reached member limit
-- leave a team
-- create a team
+Future<List<Team>> getTeams(String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/teams";
 
-NEEDED:
-- fields: team ids, team descriptions, tokens???
-- moduels: get list of team members, edit team description
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) {
+    print("Response body: ");
+    print(response.body);
+    List<dynamic> teamStrings = List.from(jsonDecode(response.body));
+    print("Parsed 1 success");
+    List<Team> teamsList = [];
+    for(int i = 0; i < teamStrings.length; i++){
+      teamsList.add(Team.fromJson(teamStrings[i]));
+      print("Added team");
+    }
+    print("Successfully retrieved all teams");
+    return teamsList;
+  }
+  return null;
+}
 
-QUESTIONS/TO DO:
-- how do you actually connect to the api
-- brainstorm more fields and modules that we need
-- how to connect buttons to the output
-- how to display error messages
-*/

@@ -102,9 +102,7 @@ class _LoginState extends State<Login>{
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
-                                    color: Theme.of(context).colorScheme.onPrimary
-                                )
+                                child: SvgPicture.asset("lib/logos/thColorLogo.svg")
                             )
                           ]
                       ),
@@ -113,7 +111,7 @@ class _LoginState extends State<Login>{
                         child: GradText(
                           text: "Welcome",
                           size: 40,
-                          color1: Theme.of(context).colorScheme.onBackground,
+                          color1: Theme.of(context).colorScheme.secondary,
                           color2: Theme.of(context).colorScheme.primary
                           )
                       ),

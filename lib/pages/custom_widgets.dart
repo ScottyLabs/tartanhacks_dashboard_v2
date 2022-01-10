@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+
+import 'package:thdapp/pages/teams_list.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -15,6 +17,9 @@ import 'bookmarks.dart';
 import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
+
+import 'teams_list.dart';
+
 import 'view_team.dart';
 import '../theme_changer.dart';
 
@@ -22,7 +27,6 @@ import '../theme_changer.dart';
 InputDecoration FormFieldStyle(BuildContext context, String labelText) {
   return InputDecoration(
     labelText: labelText,
-
   );
 }
 Color darken(Color color, [double amount = .1]) {
@@ -487,7 +491,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           MenuChoice(
                               icon: Icons.schedule,
 
-                              text: "Events",
+                              text: "Schedule",
 
                               onTap: () {
                                 entry.remove();
@@ -496,8 +500,8 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                     MaterialPageRoute(builder: (context) =>
                                         EventsHomeScreen(),
                                     )
-                              );
-                            },
+                                );
+                              },
                           ),
                           MenuChoice(
                               icon: Icons.pages,
@@ -525,9 +529,22 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                 );
                               },
                           ),
+                          _themeProvider.getTheme==lightTheme ?
                           MenuChoice(
-                              icon: Icons.help,
-                              text: "Help"
+                            icon: Icons.mode_night,
+                            text: "Dark",
+                            onTap: () {
+                              _themeProvider.setTheme(darkTheme);
+                              setThemePref("dark", entry, context);
+                            },
+                          ) :
+                          MenuChoice(
+                            icon: Icons.wb_sunny,
+                            text: "Light",
+                            onTap: () {
+                              _themeProvider.setTheme(lightTheme);
+                              setThemePref("light", entry, context);
+                            },
                           ),
                         ]
                     ),
@@ -541,7 +558,12 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) =>
-                                    ViewTeam()),
+
+                                    ViewTeam(),
+                                    settings: RouteSettings(
+                                      arguments: "",
+                                    )),
+
                               );
                             },
                         ),
@@ -588,6 +610,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               },
                             ),
                         MenuChoice(
+
                             icon: Icons.logout,
                             text: "Logout",
                             onTap: () {logOut(entry, context);}
@@ -608,6 +631,8 @@ OverlayEntry MenuOverlay(BuildContext context) {
 OverlayEntry SponsorMenuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
+
+  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   OverlayEntry entry;
 
   entry = OverlayEntry(
@@ -683,13 +708,23 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                                     );
                                   },
                                 ),
+
+                                _themeProvider.getTheme==lightTheme ?
                                 MenuChoice(
-                                    icon: Icons.help,
-                                    text: "Help"
-                                ),
+                                  icon: Icons.mode_night,
+                                  text: "Dark",
+                                  onTap: () {
+                                    _themeProvider.setTheme(darkTheme);
+                                    setThemePref("dark", entry, context);
+                                  },
+                                ) :
                                 MenuChoice(
-                                    icon: Icons.mode_night,
-                                    text: "Dark"
+                                  icon: Icons.wb_sunny,
+                                  text: "Light",
+                                  onTap: () {
+                                    _themeProvider.setTheme(lightTheme);
+                                    setThemePref("light", entry, context);
+                                  },
                                 ),
                                 MenuChoice(
                                   icon: Icons.logout,

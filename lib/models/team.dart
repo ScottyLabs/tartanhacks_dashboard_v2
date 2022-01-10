@@ -1,23 +1,44 @@
+
+import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
+import '/models/member.dart';
 
 class Team {
-  String teamID;
-  List<String> members;
-  String event;
-  String desc;
-  String admin;
-  bool visible;
+  final String teamID;
+  final bool visible;
+  final Member admin;
+  final String name;
+  final List<Member> members;
+  final String description;
+  
 
-  Team({this.teamID, this.visible, this.event, this.admin, this.members, this.desc});
-  factory Team.fromJson(String jsonString) {
-    Map<String, dynamic> body = json.decode(jsonString);
+  Team({
+    this.teamID, 
+    this.visible, 
+    this.admin, 
+    this.name, 
+    this.members, 
+    this.description});
+
+  factory Team.fromJson(Map<String, dynamic> parsedJson) {
+    // var parsedJson = jsonDecode(parseString);
+    String adminID = parsedJson["admin"]["_id"];
+    Member currAdmin;
+    List<Member> memberList = [];
+    List<dynamic> memberStrings = List.from(parsedJson["members"]);
+    for(int i = 0; i < memberStrings.length; i++){
+      Member newMem = Member.fromJson(memberStrings[i], adminID);
+      if(newMem.isAdmin) currAdmin = newMem;
+      memberList.add(newMem);
+    }
     return new Team(
-        teamID:  body["_id"],
-        visible: body["visible"],
-        event: body["event"],
-        admin: body["admin"],
-        members: body["members"],
-        desc: body["description"]
+        teamID:  parsedJson["_id"],
+        visible: parsedJson["visible"],
+        admin: currAdmin,
+        name: parsedJson["name"],
+        members: memberList,
+        description: parsedJson["description"]
     );
   }
 }

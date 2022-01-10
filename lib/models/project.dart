@@ -7,7 +7,7 @@ class Project{
   final String slides;
   final String video;
   final String team; //objectid
-  final List<String> prizes; //objectid
+  final List prizes; //objectid
 
   Project(
       {this.id,
@@ -27,8 +27,8 @@ class Project{
       desc: parsedJson['description'],
       event: parsedJson['event'],
       url: parsedJson['url'],
-      slides: parsedJson['slides_url'],
-      video: parsedJson['video_url'],
+      slides: parsedJson['slides'],
+      video: parsedJson['video'],
       team: parsedJson['team'],
       prizes: parsedJson['prizes'],
     );

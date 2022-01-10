@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thdapp/api.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/api.dart' as api;
 import 'package:thdapp/models/check_in_item.dart';
 
 enum Status {
@@ -12,10 +14,17 @@ enum Status {
 
 class CheckInItemsModel with ChangeNotifier {
   Status _status = Status.NotLoaded;
+
+  String _token = "";
+
   List<CheckInItem> _list;
+  Map<String, bool> hasCheckedIn;
+
+  bool isAdmin;
+  int points;
 
   Status get checkInItemsStatus => _status;
-  List get checkInItems=> _list;
+  List get checkInItems => _list;
 
   void handleException(e) {
     print(e);
@@ -25,29 +34,56 @@ class CheckInItemsModel with ChangeNotifier {
   }
 
   Future<void> fetchCheckInItems() async {
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    isAdmin = prefs.getBool("admin");
+    _token = prefs.getString("token");
     _status = Status.Fetching;
-    notifyListeners();
+
     try {
-      _list = await getCheckInItems();
+      if (isAdmin) {
+        _list = await api.getCheckInItems();
+        hasCheckedIn = null;
+        points = 0;
+      } else {
+        List history = await api.getUserHistory(prefs.getString("id"), _token);
+        points = history[0];
+        hasCheckedIn = history[1];
+        _list = history[2];
+      }
       _status = Status.Loaded;
       notifyListeners();
+
     } on Exception catch (e) {
+      print(e);
       handleException(e);
     }
   }
 
-  Future<void> addCheckInItem(CheckInItem item) async {
-    addCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> addCheckInItem(CheckInItemDTO item) async {
+    await api.addCheckInItem(item, _token);
+    await fetchCheckInItems();
   }
 
-  Future<void> deleteCheckInItem(CheckInItem item) async {
-    deleteCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> deleteCheckInItem(String id) async {
+    await api.deleteCheckInItem(id, _token);
+    await fetchCheckInItems();
   }
 
-  Future<void> editCheckInItem(CheckInItem item) async {
-    editCheckInItem(item);
-    fetchCheckInItems();
+  Future<void> editCheckInItem(CheckInItemDTO item, String id) async {
+    await api.editCheckInItem(item, id, _token);
+    await fetchCheckInItems();
+  }
+
+  Future<void> checkInUser(String id, String uid) async {
+    await api.checkInUser(id, uid, _token);
+  }
+
+  Future<void> selfCheckIn(String id) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String uid = prefs.getString("id");
+    await api.checkInUser(id, uid, _token);
+    await fetchCheckInItems();
   }
 }

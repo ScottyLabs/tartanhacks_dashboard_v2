@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thdapp/api.dart';
 import 'custom_widgets.dart';
 import 'enter_prizes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/project.dart';
+import '../models/team.dart';
+import 'team-api.dart';
 
 class ProjSubmit extends StatefulWidget {
   @override
@@ -10,6 +15,7 @@ class ProjSubmit extends StatefulWidget {
 
 class _ProjSubmitState extends State<ProjSubmit> {
 
+  bool hasProj = false;
   String _projName = "";
   String _projDesc = "";
   String _githubUrl = "";
@@ -23,6 +29,49 @@ class _ProjSubmitState extends State<ProjSubmit> {
   TextEditingController videoController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  String id;
+  String token;
+  String projId;
+  List prizes = [];
+  Team team;
+
+  void getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    id = prefs.getString('id');
+    token = prefs.getString('token');
+
+    team = await getUserTeam(token);
+
+    Project proj = await getProject(id, token);
+    if (proj != null) {
+      hasProj = true;
+      projId = proj.id;
+      _projName = proj.name;
+      _projDesc = proj.desc;
+      _githubUrl = proj.url;
+      _presUrl = proj.slides;
+      _vidUrl = proj.video;
+      prizes = proj.prizes;
+
+      nameController.text = _projName;
+      descController.text = _projDesc;
+      slidesController.text = _presUrl;
+      videoController.text = _vidUrl;
+      githubController.text = _githubUrl;
+    }
+
+    setState(() {
+
+    });
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
 
   @override
   void dispose(){
@@ -39,6 +88,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
+      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project name is required';
@@ -57,6 +107,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
+      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project description is required';
@@ -76,6 +127,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: githubController,
+      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -94,6 +146,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       controller: slidesController,
       keyboardType: TextInputType.url,
+      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -154,6 +207,16 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
+  void submitProj(BuildContext context) {
+    if(team == null){
+      errorDialog(context, "Error", "You are not in a team!");
+    } else if (projId != null){
+      editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, projId, token);
+    } else {
+      newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, projId, token);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -212,16 +275,29 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                         SizedBox(height:8),
                                         _buildPresentingLive(),
                                         SolidButton(
-                                            text: "Save"
+                                            text: "Save",
+                                            onPressed: () {
+                                              if (!_formKey.currentState.validate()) {
+                                                return;
+                                              }
+
+                                              _formKey.currentState.save();
+
+                                              submitProj(context);
+                                            },
                                         ),
                                         SolidButton(
                                             text: "Submit for Prizes",
                                             onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) =>
-                                                    EnterPrizes()),
-                                              );
+                                              if (hasProj) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) =>
+                                                      EnterPrizes(projId: projId, enteredPrizes: prizes,)),
+                                                );
+                                              } else {
+                                                errorDialog(context, "Error", "You do not have a project to enter!");
+                                              }
                                             },
                                         )
                                       ],

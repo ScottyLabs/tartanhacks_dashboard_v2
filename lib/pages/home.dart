@@ -12,7 +12,6 @@ import 'leaderboard.dart';
 import '../models/profile.dart';
 import 'checkin.dart';
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => new _HomeState();

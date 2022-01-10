@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'custom_widgets.dart';
 import 'home.dart';
 import 'login.dart';
+import '../api.dart';
 
 class Forgot extends StatefulWidget{
   @override
@@ -54,9 +55,7 @@ class _ForgotState extends State<Forgot>{
                                     width: screenWidth,
                                     alignment: Alignment.topCenter,
                                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                    child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
-                                        color: Theme.of(context).colorScheme.onPrimary
-                                    )
+                                    child: SvgPicture.asset("lib/logos/thColorLogo.svg")
                                 )
                               ]
                           ),
@@ -66,7 +65,7 @@ class _ForgotState extends State<Forgot>{
                                   text: "Let's Reset",
                                   size: 40,
                                   color1: Theme.of(context).colorScheme.primary,
-                                  color2: Theme.of(context).colorScheme.onBackground
+                                  color2: Theme.of(context).colorScheme.secondary
                               )
                           ),
                           Container(
@@ -85,11 +84,7 @@ class _ForgotState extends State<Forgot>{
                               width: 200,
                               height: 45,
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      Home()),
-                                );
+                                resetPassword(context, _emailcontroller.text);
                               },
                               child: Text("Recover Password",
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
