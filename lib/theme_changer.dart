@@ -25,7 +25,15 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text),
               borderRadius: BorderRadius.all(Radius.circular(15.0))
-          )
+          ),
+          disabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2.0, color: text.withAlpha(87)),
+              borderRadius: BorderRadius.all(Radius.circular(15.0))
+          ),
+          errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 2.0, color: text),
+              borderRadius: BorderRadius.all(Radius.circular(15.0))
+          ),
       )
   );
 }

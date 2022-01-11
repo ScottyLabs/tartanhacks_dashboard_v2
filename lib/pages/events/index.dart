@@ -26,6 +26,15 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   @override
   initState(){
     super.initState();
+    getData();
+  }
+
+  getData() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    isAdmin = prefs.getBool("admin");
+    setState(() {
+
+    });
   }
 
   Widget eventName(data) {
@@ -167,7 +176,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        TopBar(backflag: true),
+                        TopBar(),
                         Stack(
                           children: [
                             Column(
@@ -194,6 +203,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                       ],
                                     )
                                 ),
+                                  if (isAdmin)
                                   GradBox(
                                     width: screenWidth * 0.9,
                                     height: 60,
@@ -226,12 +236,17 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                                     return EventCard();
                                                   },);
                                             }
+                                            print(eventsSnapshot.data.length);
+                                            for (int i=0; i<eventsSnapshot.data.length; i++){
+                                              print(eventsSnapshot.data[i]);
+                                            }
                                             return ListView.builder(
-                                            itemCount: eventsSnapshot.data.length,
-                                            itemBuilder: (BuildContext context, int index){
-                                              return EventsCard(eventsSnapshot.data[index]);
-                                            },
-                                          );},
+                                              itemCount: eventsSnapshot.data.length,
+                                              itemBuilder: (BuildContext context, int index){
+                                                return EventsCard(eventsSnapshot.data[index]);
+                                              },
+                                            );
+                                          },
                                         ),
                                       )
                                   )
@@ -382,7 +397,7 @@ class EventsCard extends StatelessWidget{
                             overflow: TextOverflow.ellipsis,
                           )
                       ),
-                      Row(
+                      /*Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
                             SolidSquareButton(
@@ -390,7 +405,7 @@ class EventsCard extends StatelessWidget{
                               onPressed: null,
                             ),
                           ]
-                      )
+                      )*/
                     ]
                 ),
 

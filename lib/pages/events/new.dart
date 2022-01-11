@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../custom_widgets.dart';
 import 'package:thdapp/api.dart';
 import 'index.dart';
+import 'package:intl/intl.dart';
 
 class NewEventScreen extends StatefulWidget {
   @override
@@ -14,20 +15,20 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String _eventName = "";
   String _eventDesc = "";
   String _eventUrl = "";
-  String _duration = "";
+  int _duration = 0;
   String _location = "";
   String _platform = "IN_PERSON";
   double _lat = 0;
   double _lng = 0;
   int _startTime = 0;
   int _endTime = 0;
-  String _date = "";
-  bool isPresenting = false;
+  DateTime pickedDate = DateTime.now();
+  TimeOfDay pickedTime = TimeOfDay.now();
   
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController linkController = TextEditingController();
-
+  TextEditingController timeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController durationController = TextEditingController();
 
@@ -46,19 +47,67 @@ class _NewEventScreenState extends State<NewEventScreen> {
     descController.dispose();
     linkController.dispose();
     dateController.dispose();
+    timeController.dispose();
     durationController.dispose();
     super.dispose();
   }
 
   void saveData() async {
     bool result;
-    result = await addEvent(nameController.text, descController.text, this._startTime, this._endTime, this._lat, this._lng, this._platform, linkController.text);
-
+    if (_platform == "IN_PERSON") {
+      result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, _location, 0, 0, _platform, "N/A");
+    } else {
+      result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, "N/A", 0, 0, _platform, _eventUrl);
+    }
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
     }else{
       _showDialog('There was an error. Please try again.', 'Error.', result);
     }
+  }
+
+  void updateDate(){
+    DateTime combined = new DateTime(pickedDate.year, pickedDate.month,
+        pickedDate.day, pickedTime.hour, pickedTime.minute);
+    setState(() {
+      _startTime = (combined.millisecondsSinceEpoch/1000).round();
+      _endTime = (combined.add(Duration(minutes: _duration)).millisecondsSinceEpoch/1000).round();
+    });
+  }
+
+  bool dateInRange(DateTime d, DateTime start, DateTime end){
+    return start.isBefore(d) && end.isAfter(d);
+  }
+
+  Future pickDate(BuildContext context) async {
+    DateTime sDate = DateTime(DateTime.now().year-5);
+    DateTime eDate = DateTime(DateTime.now().year+5);
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: dateInRange(pickedDate, sDate, eDate) ? pickedDate
+          : DateTime.now(),
+      firstDate: sDate,
+      lastDate: eDate,
+    );
+    if (picked != null && picked != pickedDate)
+      setState(() {
+        pickedDate = picked;
+        dateController.text = DateFormat.yMMMd().format(pickedDate);
+        updateDate();
+      });
+  }
+
+  Future pickTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: pickedTime,
+    );
+    if (picked != null && picked != pickedTime)
+      setState(() {
+        pickedTime = picked;
+        timeController.text = pickedTime.format(context);
+        updateDate();
+      });
   }
 
   void _showDialog(String response, String title, bool result) {
@@ -82,7 +131,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
                 Navigator.of(context).pop();
                 if(result == true){
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventsHomeScreen()),
+                  );
                 }
               },
             ),
@@ -103,7 +156,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
         }
         return null;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
         _eventName = value;
       },
     );
@@ -122,7 +175,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
         return null;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
         _eventDesc = value;
       },
     );
@@ -130,18 +183,22 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildEventURL() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Event Link"),
+      decoration: FormFieldStyle(context, (_platform == "IN_PERSON") ? "Location" : "Event Link"),
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: linkController,
       validator: (String value) {
         if (value.isEmpty) {
-          return 'URL is Required';
+          return (_platform == "IN_PERSON") ? "Location is required" : "URL is required";
         }
         return null;
       },
-      onSaved: (String value) {
-        _eventUrl = value;
+      onChanged: (String value) {
+        if (_platform == "IN_PERSON") {
+          _location = value;
+        } else {
+          _eventUrl = value;
+        }
       },
     );
   }
@@ -151,33 +208,50 @@ class _NewEventScreenState extends State<NewEventScreen> {
       decoration: FormFieldStyle(context, "Date"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: dateController,
-      keyboardType: TextInputType.url,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Date is Required';
         }
         return null;
       },
-      onSaved: (String value) {
-        _date = value;
+      onTap: () {
+        pickDate(context);
+      }
+    );
+  }
+
+  Widget _buildTime() {
+    return TextFormField(
+      decoration: FormFieldStyle(context, "Time"),
+      style: Theme.of(context).textTheme.bodyText2,
+      controller: timeController,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Time is Required';
+        }
+        return null;
       },
+      onTap: () {
+        pickTime(context);
+      }
     );
   }
 
   Widget _buildDuration() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Duration"),
+      decoration: FormFieldStyle(context, "Duration (min)"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: durationController,
-      keyboardType: TextInputType.url,
+      keyboardType: TextInputType.number,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Duration is Required';
         }
         return null;
       },
-      onSaved: (String value) {
-        _date = value;
+      onChanged: (String value) {
+        _duration = int.parse(value);
+        updateDate();
       },
     );
   }
@@ -265,15 +339,17 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                                 SizedBox(height:16),
                                                 _buildDesc(),
                                                 SizedBox(height:16),
-                                                _buildEventURL(),
-                                                SizedBox(height:16),
                                                 Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
                                                 SizedBox(height:5),
                                                 _meetingPlatformDropdown(screenWidth),
                                                 SizedBox(height:16),
-                                                _buildDuration(),
+                                                _buildEventURL(),
                                                 SizedBox(height:16),
                                                 _buildDate(),
+                                                SizedBox(height:16),
+                                                _buildTime(),
+                                                SizedBox(height:16),
+                                                _buildDuration(),
                                                 SizedBox(height:16),
                                                 Center(
                                                   child: SolidButton(

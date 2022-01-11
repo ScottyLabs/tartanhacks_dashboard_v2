@@ -195,13 +195,14 @@ Future<List<Event>> getEvents() async {
     List<Event> eventsList;
     var data = json.decode(response.body) as List;
     eventsList = data.map<Event> ((json) => Event.fromJson(json)).toList();
+    print(response.body);
     return eventsList;
   }else{
     return null;
   }
 }
 
-Future<bool> addEvent(String name, String description, int startTime, int endTime, double lat, double lng, String platform, String platformUrl) async {
+Future<bool> addEvent(String name, String description, int startTime, int endTime, String location, double lat, double lng, String platform, String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   String token = prefs.getString("token");
@@ -209,9 +210,9 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
   String url = baseUrl + "schedule/";
   Map<String, String> headers = {
     "Content-type": "application/json",
-    "Token": token
+    "x-access-token": token
   };
-
+  print("TOKEN:" + token);
 
   // String essayQuestionsAgg = "";
   // for (int i = 0; i < essayQuestions.length; i++) {
@@ -221,7 +222,8 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
       '","description":"' + description +
       '","startTime":' + startTime.toString() +
       ',"endTime":' + endTime.toString() +
-      ',"lat":' + lat.toString() +
+      ',"location":"'+ location +
+      '","lat":' + lat.toString() +
       ',"lng":' + lng.toString() +
       ',"platform":"' + platform +
       '","platformUrl":"' + platformUrl + '"}';
@@ -236,11 +238,13 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
         description,
         startTime,
         endTime,
+        location,
         lat,
         lng,
         platform,
         platformUrl);
   } else {
+    print(response.body);
     return false;
   }
 }
