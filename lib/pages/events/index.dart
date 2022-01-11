@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/models/event.dart';
+import 'package:thdapp/pages/events/edit.dart';
 import 'new.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,7 +19,6 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   SharedPreferences prefs;
 
   bool isAdmin = false;
-  List eventData = [1,2,3,4,5];
   bool isSwitched = false;
   int selectedIndex = 1;
   List<Event> events;
@@ -211,7 +211,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => NewEventScreen()),
+                                            builder: (context) => EditEventPage(null)),
                                       );
                                     },
                                     child: Text(
@@ -243,7 +243,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                             return ListView.builder(
                                               itemCount: eventsSnapshot.data.length,
                                               itemBuilder: (BuildContext context, int index){
-                                                return EventsCard(eventsSnapshot.data[index]);
+                                                return EventsCard(eventsSnapshot.data[index], isAdmin);
                                               },
                                             );
                                           },
@@ -341,8 +341,9 @@ class EventCard extends StatelessWidget{
 
 class EventsCard extends StatelessWidget{
   final Event event;
+  final bool isAdmin;
 
-  EventsCard(this.event);
+  EventsCard(this.event, this.isAdmin);
 
   String formatDate(String unixDate) {
     var date =
@@ -397,15 +398,21 @@ class EventsCard extends StatelessWidget{
                             overflow: TextOverflow.ellipsis,
                           )
                       ),
-                      /*Row(
+                      Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
-                            SolidSquareButton(
-                              image: "",
-                              onPressed: null,
+                            SolidButton(
+                              child: Text("Edit", ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditEventPage(this.event)),
+                                );
+                              },
                             ),
                           ]
-                      )*/
+                      )
                     ]
                 ),
 
