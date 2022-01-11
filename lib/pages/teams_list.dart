@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'team-api.dart';
 import '/models/member.dart';
+import 'see-invites.dart';
 import 'dart:async';
 
 class TeamsList extends StatefulWidget {
@@ -42,7 +43,7 @@ class _TeamsListState extends State<TeamsList> {
   }
   bool read = true;
 
-
+  
   void _populateTeamList(){
     for(int i = 0; i < teamInfos.length; i++){
       if(teamInfos[i].visible){
@@ -56,7 +57,18 @@ class _TeamsListState extends State<TeamsList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("TEAM", style: Theme.of(context).textTheme.headline2),
-          mailIconSelect(true)
+          IconButton(
+              icon: Icon(Icons.email, size: 30.0),
+              color: Theme.of(context).colorScheme.secondary,
+              onPressed: (){
+                print("opened mail");
+                Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+                  viewInvites()),
+                );
+              }
+          )
         ]
     );
   }
