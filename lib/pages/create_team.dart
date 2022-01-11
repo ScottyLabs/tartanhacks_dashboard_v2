@@ -87,7 +87,7 @@ class _CreateTeamState extends State<CreateTeam> {
       style: Theme
           .of(context)
           .textTheme
-          .bodyText1,
+          .bodyText2,
       controller: teamNameController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -107,7 +107,7 @@ class _CreateTeamState extends State<CreateTeam> {
       style: Theme
           .of(context)
           .textTheme
-          .bodyText1,
+          .bodyText2,
       controller: teamDescController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -259,10 +259,13 @@ class _CreateTeamState extends State<CreateTeam> {
                                               crossAxisAlignment: CrossAxisAlignment
                                                   .start,
                                               children: [
-                                                Text("Basic Info", style: 
-                                          Theme.of(context).textTheme.headline4),
+                                                Text("NEW TEAM", style:
+                                                Theme.of(context).textTheme.headline1),
                                                 SizedBox(height:screenHeight*0.02),
-                                                _buildName(),
+                                                Text("Basic Info", style: 
+                                                Theme.of(context).textTheme.headline4),
+                                                // SizedBox(height:screenHeight*0.02),
+                                                // _buildName(),
                                                 SizedBox(height:screenHeight*0.02),
                                                 _buildTeamName(),
                                                 SizedBox(height:screenHeight*0.02),
@@ -295,7 +298,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                               MaterialPageRoute(builder: (context) => ViewTeam())
                                             );
                                           },
-                                          color: Theme.of(context).colorScheme.primary
+                                          color: Theme.of(context).colorScheme.secondary
                                         )
                                     )
                                 ]

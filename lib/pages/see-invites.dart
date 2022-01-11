@@ -10,6 +10,7 @@ import '/models/member.dart';
 import 'dart:convert';
 import 'teams_list.dart';
 import 'dart:async';
+import 'view_team.dart';
 
 class viewInvites extends StatefulWidget {
   @override
@@ -67,60 +68,81 @@ class _viewInvitesState extends State<viewInvites> {
 
 
 void _buildInvitesList(){
-    for(int i = 0; i < numRequests; i++){
-      requestWidgetList.add(_buildRequests(i));
-    }
+  requestWidgetList = [];
+  for(int i = 0; i < requestsList.length; i++){
+    requestWidgetList.add(_buildRequests(i));
   }
+}
+
+void _remRequest(String requestID) {
+    for (var r in requestsList) {
+      if (r['_id'] == requestID) {
+        requestsList.remove(r);
+        numRequests -= 1;
+        return;
+      }
+    }
+}
 
 Widget _buildInviteHeader() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("INVITES", style: Theme.of(context).textTheme.headline2)
+          Text("INVITES", style: Theme.of(context).textTheme.headline1)
         ]
     );
   }
 
- Widget _requestRespones(String requestType, String requestID, String inviteInfo){
-     String textContent;
-     if (team == null){
-         textContent = inviteInfo;
-     } else {
-         textContent = inviteInfo;
-     }
+ Widget _requestResponses(String requestType, String requestID){
      print("worked here");
      if ((team == null && requestType == "INVITE") || 
      (team != null && requestType == "JOIN")) {
          return Row (
-             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             mainAxisAlignment: MainAxisAlignment.end,
              children: [
-                 Text(textContent),
+                SizedBox(width: 20),
                  SolidButton(
                           text: "Accept",
                           onPressed: () async {
                             await acceptRequest(token, requestID);
+                            _remRequest(requestID);
                             _buildInvitesList();
+                            setState(() {
+
+                            });
+                            if (requestType == 'INVITE') {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => ViewTeam()));
+                            }
                           }
                 ),
+                SizedBox(width: 20),
                 SolidButton(
                     text: "Decline",
                     onPressed: () async {
                         await declineRequest(token, requestID);
+                        _remRequest(requestID);
                         _buildInvitesList();
+                        setState(() {
+
+                        });
                     }
                 )
              ]
          );
     } else {
          return Row (
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-                Text(textContent),
                  SolidButton(
                           text: "Cancel",
                           onPressed: () async {
                             await cancelRequest(token, requestID);
+                            _remRequest(requestID);
                             _buildInvitesList();
+                            setState(() {
+
+                            });
                           }
                     )
             ]
@@ -136,7 +158,7 @@ Widget _buildInviteHeader() {
         inviteInfo = requestsList[index]['team']['name'];
     }
     String requestID = requestsList[index]['_id'];
-    Row btnRow = _requestRespones(requestType, requestID, inviteInfo);
+    Row btnRow = _requestResponses(requestType, requestID);
     print('building request');
     return Card(
         margin: const EdgeInsets.all(12),
@@ -146,7 +168,9 @@ Widget _buildInviteHeader() {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(requestType, style: Theme.of(context).textTheme.headline4),
+              Text(requestType, style: Theme.of(context).textTheme.headline3),
+              SizedBox(height: 10),
+              Text(inviteInfo, style: Theme.of(context).textTheme.bodyText2),
               const SizedBox(height: 8),
               btnRow
             ],
@@ -160,9 +184,6 @@ Widget _buildInviteHeader() {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    if(prefs == null){
-      return LoadingScreen();
-    } else {
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(
@@ -204,6 +225,11 @@ Widget _buildInviteHeader() {
                                               padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                               child: _buildInviteHeader()
                                           ),
+                                          if (prefs == null)
+                                            Center(child: CircularProgressIndicator())
+                                          else if (requestsList.length == 0)
+                                            Text("No invites.", style: Theme.of(context).textTheme.bodyText2,)
+                                          else
                                           Expanded(
                                             child: ListView.builder(
                                               itemCount: numRequests,
@@ -225,7 +251,6 @@ Widget _buildInviteHeader() {
             )
         )
     );
-  }
   }
 }
 

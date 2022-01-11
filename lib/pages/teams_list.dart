@@ -200,7 +200,7 @@ class _TeamsListState extends State<TeamsList> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(backflag: true),
+                        TopBar(),
                         Stack(
                           children: [
                             Column(

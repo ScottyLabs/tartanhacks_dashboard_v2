@@ -32,7 +32,7 @@ class _ViewTeamState extends State<ViewTeam> {
   List<Widget> teamMembers = <Widget>[];
   int memLength;
   bool visible;
-  bool noTeam = false;
+  bool flag = false;
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,7 +43,6 @@ class _ViewTeamState extends State<ViewTeam> {
     getTeams(token);
     if (teamID == '' &&
         team == null) { //if not on a team, redirects to the teams list page
-      noTeam = true;
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) =>
@@ -52,6 +51,7 @@ class _ViewTeamState extends State<ViewTeam> {
     } else {
       if (team == null) {
         team = await getTeamInfo(teamID, token);
+        flag = true;
       }
       print(team);
       teamName = team.name;
@@ -195,7 +195,7 @@ class _ViewTeamState extends State<ViewTeam> {
                   }
                   return null;
                 },
-                onSaved: (String value) {
+                onChanged: (String value) {
                   email_invite = value;
                 },
               ),
@@ -310,7 +310,7 @@ class _ViewTeamState extends State<ViewTeam> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(backflag: true),
+                        TopBar(backflag: flag),
                         Stack(
                           children: [
                             Column(
@@ -372,18 +372,11 @@ class _ViewTeamState extends State<ViewTeam> {
                                                       ],
                                                     )
                                                   else
-                                                    if (noTeam) Text(
-                                                      "You are not in a team",
-                                                      style: Theme
-                                                          .of(context)
-                                                          .textTheme
-                                                          .bodyText2,)
-                                                    else
-                                                      Center(child: CircularProgressIndicator(
-                                                          color: Theme
-                                                              .of(context)
-                                                              .colorScheme
-                                                              .onSurface))
+                                                    Center(child: CircularProgressIndicator(
+                                                        color: Theme
+                                                            .of(context)
+                                                            .colorScheme
+                                                            .onSurface))
                                                 ]
                                             )
                                         )
