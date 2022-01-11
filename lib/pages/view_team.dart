@@ -7,9 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '/models/team.dart';
 import '/models/member.dart';
+import 'see-invites.dart';
 import 'dart:convert';
 import 'teams_list.dart';
 import 'dart:async';
+import 'create_team.dart';
 
 class ViewTeam extends StatefulWidget {
   @override
@@ -24,33 +26,38 @@ class _ViewTeamState extends State<ViewTeam> {
   Team team;
   String token;
   String memberID;
-
-  bool checkAdmin(String id){
-    return team.admin.id == id;
-  }
+  String teamName;
+  String teamDesc;
+  List<Widget> teamMembers = <Widget>[];
+  int memLength;
+  bool visible;
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     memberID = prefs.getString('id');
     isAdmin = prefs.getBool('admin');
-    print("Getting Data");
-    print(teamID);
-    if(teamID == ""){
-      team = await getUserTeam(token);
-    }
-    else{
-      team = await getTeamInfo(teamID, token);
-    }
-    if (team == null){ //if not on a team, redirects to the teams list page
+    team = await getUserTeam(token);
+    getTeams(token);
+    if (teamID == '' && team == null){ //if not on a team, redirects to the teams list page
       Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>
-          TeamsList())
+            context,
+            MaterialPageRoute(builder: (context) =>
+            TeamsList())
       );
-    }
-    for(int i = 0; i < team.members.length; i++){
-      if(team.members[i].id == memberID) isMember = true;
+    } else {
+      if (team == null){
+        team = await getTeamInfo(teamID, token);
+      }
+      print(team);
+      teamName = team.name;
+      teamDesc = team.description;
+      memLength = team.members.length;
+      visible = team.visible;
+      isAdmin = team.admin.id == memberID;
+      for(int i = 0; i < team.members.length; i++){
+        if(team.members[i].id == memberID) isMember = true;
+      }
     }
     setState(() {
     });
@@ -59,96 +66,24 @@ class _ViewTeamState extends State<ViewTeam> {
   @override
   initState() {
     super.initState();
+    getData();
   }
 
   Widget _buildEditTeam() {
     if (isAdmin && isMember) {
       return SolidButton(
         text: "EDIT TEAM NAME AND INFO", 
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => _editTeamInfo()
-          );
-        },
+        onPressed: (){
+                Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+                  CreateTeam()),
+                );
+              },
         color: Theme.of(context).colorScheme.primary);
     } else {
       return Container();
     }
-  }
-
-   Widget _editTeamInfo(){
-    if(!isAdmin || !isMember) return Container();
-    TextEditingController teamNameController = TextEditingController();
-    TextEditingController teamDescController = TextEditingController();
-    String teamName = team.name;
-    String teamDesc = team.description;
-    bool visible = team.visible;
-    teamNameController.text = teamName;
-    teamDescController.text = teamDesc;
-
-    return AlertDialog(
-                  title: Text('Edit Name & Description'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Team Name',
-                          contentPadding: EdgeInsets.all(20.0),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                        controller: teamNameController,
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return 'A name is required';
-                          }
-                          return null;
-                          },
-                          onSaved: (String value) {
-                            teamName = value;
-                          },
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Description',
-                          contentPadding: EdgeInsets.all(20.0),
-                        ),
-                        style: TextStyle(color: Colors.black),
-                        controller: teamDescController,
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return 'A description is required';
-                          }
-                          return null;
-                          },
-                          onSaved: (String value) {
-                            teamDesc = value;
-                          },
-                      ),
-                      CheckboxListTile(
-                            title: Text("Team Visibility"),
-                            activeColor: Theme.of(context).colorScheme.secondary,
-                            value: visible,
-                            onChanged: (value) {
-                              setState(() {
-                                visible = value;
-                              });
-                            },
-                      ),
-                      Container( 
-                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: SolidButton(
-                          text: "Save",
-                          onPressed: () async {
-                            await updateTeamInfo(teamName, teamDesc, visible, token);
-                            team = await getUserTeam(token);
-                          }
-                        )
-                      )
-                    ]
-                  )
-      );
   }
 
   Widget _buildTeamMail(){
@@ -160,7 +95,11 @@ class _ViewTeamState extends State<ViewTeam> {
               color: Theme.of(context).colorScheme.secondary,
               onPressed: (){
                 print("opened mail");
-                getUserMail(token);
+                Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+                  viewInvites()),
+                );
               }
           )
       );
@@ -172,7 +111,7 @@ class _ViewTeamState extends State<ViewTeam> {
 
   Widget _buildTeamHeader() {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Align(
             alignment: Alignment.centerLeft,
@@ -188,8 +127,8 @@ class _ViewTeamState extends State<ViewTeam> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(team.name, style: Theme.of(context).textTheme.headline4),
-          Text(team.description, style: Theme.of(context).textTheme.bodyText2)
+          Text(teamName ?? "", style: Theme.of(context).textTheme.headline4),
+          Text(teamDesc ?? "", style: Theme.of(context).textTheme.bodyText2)
         ]
     );
   }
@@ -235,12 +174,23 @@ class _ViewTeamState extends State<ViewTeam> {
                       ),
                       Container( 
                         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: SolidButton(
-                          text: "Send",
-                          onPressed: () async {
-                            await requestTeamMember(email_invite, token);
-                          }
-                        )
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SolidButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              text: "Cancel"
+                            ),
+                            SolidButton(
+                            text: "Send",
+                            onPressed: () async {
+                              print("sent request");
+                              print(email_invite);
+                              await requestTeamMember(email_invite, token);
+                            }
+                          )
+                        ]
+                      )
                       )
                     ]
                   )
@@ -248,7 +198,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _inviteMembersBtn()  {
-    if (team.members.length < 4 && isAdmin && isMember){
+    if (memLength < 4 && isAdmin && isMember){
       return SolidButton(
         text: "INVITE NEW MEMBER", 
         onPressed: () {
@@ -264,9 +214,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMembers() {
-    List<Widget> teamMembers = <Widget>[];
-    for(int i = 0; i < team.members.length; i++){
-      print(team.members[i].name);
+    for(int i = 0; i < memLength; i++){
       teamMembers.add(_buildMember(i));
     }
 
@@ -309,7 +257,6 @@ class _ViewTeamState extends State<ViewTeam> {
     else{
       teamID = "";
     }
-    getData();
     return Scaffold(
         body:  Container(
             child: SingleChildScrollView(

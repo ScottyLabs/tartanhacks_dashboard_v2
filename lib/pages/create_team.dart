@@ -5,7 +5,7 @@ import '../api.dart';
 import 'team-api.dart';
 import 'view_team.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../models/team.dart';
 class CreateTeam extends StatefulWidget {
   @override
   _CreateTeamState createState() => _CreateTeamState();
@@ -20,14 +20,26 @@ class _CreateTeamState extends State<CreateTeam> {
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescController = TextEditingController();
   TextEditingController inviteMemberController = TextEditingController();
+  bool visibility = true;
+  String buttonText = "Create Team";
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String token;
+  SharedPreferences prefs;
+  Team team;
+  String id;
+  bool noTeam = true;
   void getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    String id = prefs.getString('id');
+    id = prefs.getString('id');
+    team = await getUserTeam(token);
+    print(team);
+    if (team != null){ //if not on a team, redirects to the teams list page
+      buttonText = "Edit Team";
+      noTeam = false;
+    }
     setState(() {
     });
   }
@@ -50,10 +62,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildName() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Your Name"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText1,
+      style: TextStyle(color: Colors.black),
       controller: yourNameController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -61,7 +70,7 @@ class _CreateTeamState extends State<CreateTeam> {
         }
         return null;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
         _yourName = value;
       },
     );
@@ -70,10 +79,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildTeamName() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Team Name"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText1,
+      style: TextStyle(color: Colors.black),
       controller: teamNameController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -81,7 +87,7 @@ class _CreateTeamState extends State<CreateTeam> {
         }
         return null;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
         _teamName = value;
       },
     );
@@ -90,10 +96,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _buildTeamDesc() {
     return TextFormField(
       decoration: FormFieldStyle(context, "Team Description"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText1,
+      style: TextStyle(color: Colors.black),
       controller: teamDescController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -101,12 +104,28 @@ class _CreateTeamState extends State<CreateTeam> {
         }
         return null;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
         _teamDesc = value;
       },
     );
   }
 
+  Widget _visible(){
+    return Row(
+      children: [
+        Text("Team Visibility"), 
+        Checkbox(
+          activeColor: Theme.of(context).colorScheme.secondary,
+          value: visibility,
+          onChanged: (bool newValue) {
+            setState(() {
+                  visibility = newValue; 
+            }); 
+          },
+        ),
+      ]
+    );
+  }
 
   Widget _inviteMessage(){
     TextEditingController inviteController = TextEditingController();
@@ -133,39 +152,28 @@ class _CreateTeamState extends State<CreateTeam> {
                       ),
                       Container( 
                         padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: SolidButton(
-                          text: "Send",
-                          onPressed: () async {
-                            await requestTeamMember(email_invite, token);
-                          }
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SolidButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                text: "Cancel"
+                              ),
+                              SolidButton(
+                              text: "Send",
+                              onPressed: () async {
+                                print("sent request");
+                                print(email_invite);
+                                await requestTeamMember(email_invite, token);
+                              }
+                            )
+                          ]
                         )
                       )
                     ]
                   )
       );
   }
-
-  Widget _buildInviteMember() {
-    return TextFormField(
-      decoration: FormFieldStyle(context, "Invite Member"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText1,
-      keyboardType: TextInputType.url,
-      controller: inviteMemberController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'You need to invite a member';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        // _inviteMember = value;
-      },
-    );
-  }
-
 
   Widget _inviteMem()  {
     return SolidButton(
@@ -184,7 +192,9 @@ class _CreateTeamState extends State<CreateTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-
+    if(prefs == null){
+      return LoadingScreen();
+    } else {
     return Scaffold(
         body: Container(
             child: SingleChildScrollView(
@@ -245,17 +255,28 @@ class _CreateTeamState extends State<CreateTeam> {
                                                 SizedBox(height:screenHeight*0.02),
                                                 _buildTeamDesc(),
                                                 SizedBox(height:screenHeight*0.02),
+                                                _visible(),
+                                                SizedBox(height:screenHeight*0.02),
                                                 _inviteMem()
-                                                //_buildInviteMember(),
                                               ],
                                             ),
                                     Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
                                         child: SolidButton(
-                                          text: "Create Team",
-                                          onPressed: () {
-                                            createTeam(_teamName, _teamDesc, token);
+                                          text: buttonText,
+                                          onPressed: () async {
+                                            print("try to create");
+                                            print(_teamName);
+                                            print(_teamDesc);
+                                            print(visibility);
+                                            print("reading");
+                                            if (noTeam) {
+                                              await createTeam(_teamName, _teamDesc, visibility, token);
+                                            } else {
+                                              await editTeam(_teamName, _teamDesc, visibility, token);
+                                            };
+                                            await promoteToAdmin(id, token);
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(builder: (context) => ViewTeam())
@@ -276,5 +297,6 @@ class _CreateTeamState extends State<CreateTeam> {
             )
         )
     );
+  }
   }
 }

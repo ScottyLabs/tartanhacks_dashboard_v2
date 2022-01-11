@@ -7,22 +7,56 @@ import '/models/team.dart';
 import '/models/member.dart';
 import 'dart:developer';
 
-Future<bool> createTeam(String name, String description, String token) async  {
+Future<bool> createTeam(String teamName, String description, bool visibility, String token) async  {
   String url = "https://tartanhacks-backend.herokuapp.com/team/";
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
-  var body = json.encode({
-  "name": name,
-  "description": description,
-  "visible": true
-  });
+  print("try to create");
+  String body = '{"name": "' + teamName + '","description": "' + description + 
+  '","visible": ' + visibility.toString() + '}';
+  print(body);
   final response = await http.post(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
     print("Successfully updated info");
+  } else {
+    print("error");
   }
-  print("error");
+  print("response text");
+  var decoded = utf8.decode(response.bodyBytes);
+  print(decoded);
 }
 
+Future<bool> editTeam(String teamName, String description, bool visibility, String token) async  {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  print("try to create");
+  String body = '{"name": "' + teamName + '","description": "' + description + 
+  '","visible": ' + visibility.toString() + '}';
+  print(body);
+  final response = await http.patch(url, headers: headers, body: body); //patch?
+  if (response.statusCode == 200) {
+    print("Successfully updated info");
+  } else {
+    print("error");
+  }
+  print("response text");
+  var decoded = utf8.decode(response.bodyBytes);
+  print(decoded);
+}
+
+Future<void> promoteToAdmin(String userID, String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/team/promote/" + userID;
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.post(url, headers: headers);
+  if (response.statusCode == 200) {
+    print("Successfully promoted member");
+  } else {
+    print("did not work");
+  }
+  print(response);
+}
 
 Future<Team> getUserTeam(String token) async {
   String url = "https://tartanhacks-backend.herokuapp.com/user/team";
@@ -41,8 +75,52 @@ Future<Team> getUserTeam(String token) async {
   return null;
 }
 
-Future<void> getUserMail(String token) async {
+Future<List<dynamic>> getTeamMail(String token) async {
   String url = "https://tartanhacks-backend.herokuapp.com/requests/team";
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    print(data);
+    return data;
+  }
+}
+
+Future<void> acceptRequest(String token, String requestID) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/requests/accept/" + requestID;
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.post(url, headers: headers);
+  if (response.statusCode == 200) {
+    print("success");
+  }
+}
+
+Future<void> cancelRequest(String token, String requestID) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/requests/cancel/" + requestID;
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.post(url, headers: headers);
+  if (response.statusCode == 200) {
+    print("success");
+  }
+}
+
+
+Future<void> declineRequest(String token, String requestID) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/requests/cancel/" + requestID;
+  Map<String, String> headers = {"Content-type": "application/json", 
+  "x-access-token": token};
+  final response = await http.post(url, headers: headers);
+  if (response.statusCode == 200) {
+    print("success");
+  }
+}
+
+
+Future<List<dynamic>> getUserMail(String token) async {
+  String url = "https://tartanhacks-backend.herokuapp.com/requests/user";
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
   final response = await http.get(url, headers: headers);
@@ -50,8 +128,10 @@ Future<void> getUserMail(String token) async {
     var data = json.decode(response.body);
     print("received requests for current team");
     print(data);
+    return data;
   }
 }
+
 
 Future<void> inviteTeamMember(String user_email, String token) async {
   const url = "https://tartanhacks-backend.herokuapp.com/team/invite";
@@ -61,8 +141,9 @@ Future<void> inviteTeamMember(String user_email, String token) async {
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully invited");
+  } else {
+    print("not successful");
   }
-  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
 Future<void> leaveTeam(String token) async {
@@ -95,12 +176,14 @@ Future<bool> requestTeamMember(String email, String token) async {
   String url = "https://tartanhacks-backend.herokuapp.com/team/invite";
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
-  var body = json.encode({'email': email});
+  String body = '{"email":"' + email + '"}';
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully request member");
     return true;
   }
+  print("did not work");
+  print(response);
   return false;
 }
 
@@ -131,7 +214,6 @@ Future<Team> getTeamInfo(String teamId,
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     Team team = new Team.fromJson(data);
-    print("Successfully created get team");
     return team;
   }
   return null;
@@ -154,6 +236,7 @@ Future<List<Team>> getTeams(String token) async {
       print("Added team");
     }
     print("Successfully retrieved all teams");
+    print(teamsList);
     return teamsList;
   }
   return null;
