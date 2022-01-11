@@ -120,35 +120,37 @@ class _ViewTeamState extends State<ViewTeam> {
 
 
   Widget _buildTeamHeader() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text("TEAM", style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline2)
-          ),
-          _buildTeamMail()
-        ]
+    return Container(
+      height: 50,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("TEAM", style: Theme
+                .of(context)
+                .textTheme
+                .headline1),
+            _buildTeamMail()
+          ]
+      )
     );
   }
 
   Widget _buildTeamDesc() {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(teamName ?? "", style: Theme
-              .of(context)
-              .textTheme
-              .headline4),
-          Text(teamDesc ?? "", style: Theme
-              .of(context)
-              .textTheme
-              .bodyText2)
-        ]
+    return Container(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(teamName ?? "", style: Theme
+                .of(context)
+                .textTheme
+                .headline4),
+            Text(teamDesc ?? "", style: Theme
+                .of(context)
+                .textTheme
+                .bodyText2)
+          ]
+      )
     );
   }
 
@@ -242,6 +244,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMembers() {
+    teamMembers = [];
     for (int i = 0; i < memLength; i++) {
       teamMembers.add(_buildMember(i));
     }
@@ -255,6 +258,7 @@ class _ViewTeamState extends State<ViewTeam> {
               .textTheme
               .headline4),
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
               children: teamMembers
           )
         ]
@@ -334,75 +338,55 @@ class _ViewTeamState extends State<ViewTeam> {
                                 child: GradBox(
                                     width: screenWidth * 0.9,
                                     height: screenHeight * 0.75,
-                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                    child: Column(
-
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children:
-                                      [
-                                        Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
-                                            children: [
-                                              Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 20, 0, 5),
-                                                  child: _buildTeamHeader()
-                                              ),
-                                              if (team != null)
-                                                Column(
-                                                  children: [
-                                                    Container(
-                                                        padding: EdgeInsets
-                                                            .fromLTRB(
-                                                            0, 5, 0, 5),
-                                                        child: _buildTeamDesc()
-                                                    ),
-                                                    _buildEditTeam(),
-                                                    Container(
-                                                        padding: EdgeInsets
-                                                            .fromLTRB(
-                                                            0, 5, 0, 5),
-                                                        child: _buildTeamMembers()
-                                                    ),
-                                                    _inviteMembersBtn()
-                                                  ],
-                                                )
-                                              else
-                                                if (noTeam) Text(
-                                                  "You are not in a team",
-                                                  style: Theme
-                                                      .of(context)
-                                                      .textTheme
-                                                      .bodyText2,)
-                                                else
-                                                  Center(
-                                                      child: CircularProgressIndicator(
+                                    padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                    alignment: Alignment.topLeft,
+                                    child: SingleChildScrollView(
+                                        child: Container(
+                                           child: Column(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .start,
+                                                crossAxisAlignment: CrossAxisAlignment
+                                                    .start,
+                                                children: [
+                                                  _buildTeamHeader(),
+                                                  if (team != null)
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Container(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(
+                                                                0, 5, 0, 5),
+                                                            child: _buildTeamDesc()
+                                                        ),
+                                                        _buildEditTeam(),
+                                                        Container(
+                                                            padding: EdgeInsets
+                                                                .fromLTRB(
+                                                                0, 5, 0, 5),
+                                                            child: _buildTeamMembers()
+                                                        ),
+                                                        _inviteMembersBtn(),
+                                                        SizedBox(height: 10),
+                                                        _leaveJoinTeamBtn()
+                                                      ],
+                                                    )
+                                                  else
+                                                    if (noTeam) Text(
+                                                      "You are not in a team",
+                                                      style: Theme
+                                                          .of(context)
+                                                          .textTheme
+                                                          .bodyText2,)
+                                                    else
+                                                      Center(child: CircularProgressIndicator(
                                                           color: Theme
                                                               .of(context)
                                                               .colorScheme
                                                               .onSurface))
-                                            ]
-                                        ),
-                                        Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .end,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .center,
-
-                                            children: [Container(
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 40),
-                                                child: _leaveJoinTeamBtn())
-                                            ]
+                                                ]
+                                            )
                                         )
-                                      ],
                                     )
                                 )
                             )

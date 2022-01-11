@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
                           ),
                         ]
                     ),
-                    if (id == null)
+                    if (userData == null)
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
