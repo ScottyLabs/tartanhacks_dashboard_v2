@@ -5,6 +5,8 @@ import 'custom_widgets.dart';
 import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:barras/barras.dart';
+import 'profile_page.dart';
 
 class Sponsors extends StatefulWidget {
   @override
@@ -96,126 +98,161 @@ class _SponsorsState extends State<Sponsors> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    if (students == null) {
-      return LoadingScreen();
-    }
-    else {
-      return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TopBar(isSponsor: true,),
-                          Stack(
-                              children: [
-                                Column(
-                                  children:[
-                                    CustomPaint(
-                                        size: Size(screenWidth, screenHeight * 0.8),
-                                        painter: CurvedTop(
-                                            color1: Theme.of(context).colorScheme.secondaryVariant,
-                                            color2: Theme.of(context).colorScheme.primary,
-                                            reverse: true)
-                                    ),
-                                  ], // children
-                                ),
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                                    height: screenHeight *0.8,
-                                    child: Column(
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+    return Scaffold(
+      body: Container(
+          child: SingleChildScrollView(
+              child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: screenHeight
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TopBar(isSponsor: true,),
+                        Stack(
+                            children: [
+                              Column(
+                                children:[
+                                  CustomPaint(
+                                      size: Size(screenWidth, screenHeight * 0.8),
+                                      painter: CurvedTop(
+                                          color1: Theme.of(context).colorScheme.secondaryVariant,
+                                          color2: Theme.of(context).colorScheme.primary,
+                                          reverse: true)
+                                  ),
+                                ], // children
+                              ),
+                              Container(
+                                  padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                                  height: screenHeight *0.8,
+                                  child: Column(
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.topLeft,
+                                          //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
 
-                                            child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
+                                          child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
+                                        ),
+                                        SizedBox(height: 10),
+                                        /*Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                "Search",
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context).textTheme.headline3
+                                            )
+                                        ),
+                                        Container(
+                                          child: TextField(
+                                            decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            enableSuggestions: false,
+
+                                            controller: myController,
                                           ),
-                                          SizedBox(height: 10),
-                                          Container(
-                                              alignment: Alignment.centerLeft,
+                                        ),
+                                        Container(
+                                            child: Visibility(
+                                              visible: searchPressed == null ? false : true,
                                               child: Text(
-                                                  "Search",
-                                                  textAlign: TextAlign.left,
-                                                  style: Theme.of(context).textTheme.headline3
+                                                '$searchResultCount matching results are in the list.',
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context).textTheme.headline4,
+                                              )
+                                            )
+                                        ),
+                                        Container(
+                                          height: 60,
+                                          alignment: Alignment.centerRight,
+                                          child: GradBox(
+                                              alignment: Alignment.center,
+                                              width: 80,
+                                              height: 40,
+
+                                              onTap: () {
+                                                searchResultCounting(myController.text);
+                                              },
+                                              child: Icon(
+                                                  Icons.subdirectory_arrow_left,
+                                                  size: 30,
+                                                  color: Theme.of(context).colorScheme.onSurface
                                               )
                                           ),
-                                          Container(
-                                            child: TextField(
-                                              decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
-                                              style: Theme.of(context).textTheme.bodyText2,
-                                              enableSuggestions: false,
-
-                                              controller: myController,
+                                        ),*/
+                                        ButtonBar(
+                                          alignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            SolidButton(
+                                              color: Theme.of(context).colorScheme.secondary,
+                                              child: Text("  Scan  ",
+                                                style: Theme.of(context).textTheme.headline2
+                                                    .copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                              ),
+                                              onPressed: () async {
+                                                String id = await Barras.scan(context);
+                                                id = id.substring(7);
+                                                print(id);
+                                                Profile isValid = await getProfile(id, token);
+                                                if (isValid != null) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProfilePage(bookmarks: bookmarks,),
+                                                        settings: RouteSettings(
+                                                          arguments: id,
+                                                        )),
+                                                  );
+                                                } else {
+                                                  errorDialog(context, "Error", "Invalid user ID.");
+                                                }
+                                              },
                                             ),
-                                          ),
-                                          Container(
-                                              child: Visibility(
-                                                visible: searchPressed == null ? false : true,
-                                                child: Text(
-                                                  '$searchResultCount matching results are in the list.',
-                                                  textAlign: TextAlign.left,
-                                                  style: Theme.of(context).textTheme.headline4,
-                                                )
-                                              )
-                                          ),
-                                          Container(
-                                            height: 60,
-                                            alignment: Alignment.centerRight,
-                                            child: GradBox(
-                                                alignment: Alignment.center,
-                                                width: 80,
-                                                height: 40,
-
-                                                onTap: () {
-                                                  searchResultCounting(myController.text);
-                                                },
-                                                child: Icon(
-                                                    Icons.subdirectory_arrow_left,
-                                                    size: 30,
-                                                    color: Theme.of(context).colorScheme.onSurface
+                                            SolidButton(
+                                                color: Theme.of(context).colorScheme.secondary,
+                                                child: Text(" Search ",
+                                                  style: Theme.of(context).textTheme.headline2
+                                                      .copyWith(color: Theme.of(context).colorScheme.onSecondary),
                                                 )
                                             ),
-                                          ),
-                                          Expanded(
-                                              child: Container(
-                                                  alignment: Alignment.bottomCenter,
-                                                  child: ListView.builder(
-                                                      itemCount: 4,
-                                                      itemBuilder: (BuildContext context, int index){
+                                          ]
+                                        ),
+                                        if (students != null)
+                                        Expanded(
+                                            child: Container(
+                                                alignment: Alignment.bottomCenter,
+                                                child: ListView.builder(
+                                                    itemCount: 4,
+                                                    itemBuilder: (BuildContext context, int index){
 
-                                                        bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
-                                                        return InfoTile(
-                                                            name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
-                                                            team: "Cool Team",
-                                                            bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
-                                                            participantId: studentIds[index],
-                                                            bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
-
-                                                            isBookmark: isBookmark,
-                                                            toggleFn: isBookmark ? removeBookmark : newBookmark,
-                                                        );
-                                                      }
-                                                  )
-
-                                              )
-                                          )
-                                        ] //children
-                                    )
-                                )
-                              ] // children
-                          ),
-                        ]
-                    )
-                )
-            )
-        ),
-      );
-    }
+                                                      bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
+                                                      return InfoTile(
+                                                          name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
+                                                          team: "Cool Team",
+                                                          bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
+                                                          participantId: studentIds[index],
+                                                          bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
+                                                          isBookmark: isBookmark,
+                                                          toggleFn: isBookmark ? removeBookmark : newBookmark,
+                                                          bmMap: bookmarks
+                                                      );
+                                                    }
+                                                )
+                                            )
+                                        )
+                                        else
+                                          Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onBackground,))
+                                      ] //children
+                                  )
+                              )
+                            ] // children
+                        ),
+                      ]
+                  )
+              )
+          )
+      ),
+    );
   }
 }
 
@@ -227,11 +264,12 @@ class InfoTile extends StatelessWidget {
   String participantId;
   String bookmarkId;
   bool isBookmark;
+  Map bmMap;
 
   Function toggleFn;
 
   InfoTile({this.name, this.team, this.bio, this.participantId,
-    this.bookmarkId, this.isBookmark, this.toggleFn});
+    this.bookmarkId, this.isBookmark, this.toggleFn, this.bmMap});
 
   @override
   Widget build(BuildContext context) {
@@ -244,7 +282,17 @@ class InfoTile extends StatelessWidget {
             child: Row(
               children: [
                 RawMaterialButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(bookmarks: bmMap),
+                          settings: RouteSettings(
+                            arguments: participantId,
+                          )),
+                    );
+                  },
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
                   child: Icon(

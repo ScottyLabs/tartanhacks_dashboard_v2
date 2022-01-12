@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
-
+import 'profile_page.dart';
 import '../models/participant_bookmark.dart';
 
 
@@ -15,6 +15,7 @@ class Bookmarks extends StatefulWidget {
 class _Bookmarks extends State<Bookmarks> {
   List participantBookmarks;
   List projectBookmarks;
+  Map bookmarksMap;
   SharedPreferences prefs;
   String token;
 
@@ -28,9 +29,55 @@ class _Bookmarks extends State<Bookmarks> {
     projectBookmarks = await getProjectBookmarks(token);
     print('Project Bookmarks:');
     print(projectBookmarks);
+    bookmarksMap = await getBookmarkIdsList(token);
     setState(() {
 
     });
+  }
+
+  void removeBookmark(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Confirm", style: Theme.of(context).textTheme.headline1),
+          content: new Text("Are you sure you want to delete this bookmark?", style: Theme.of(context).textTheme.bodyText2),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "Yes",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                deleteBookmark(token, id);
+                for (var bm in participantBookmarks) {
+                  if (bm.bookmarkId == id) {
+                    participantBookmarks.remove(bm);
+                    break;
+                  }
+                }
+                setState(() {
+
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -45,138 +92,146 @@ class _Bookmarks extends State<Bookmarks> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    if (participantBookmarks == null || projectBookmarks == null) {
-      return LoadingScreen();
-    }
-    else {
-      return Scaffold(
-          body: Container(
-              child: SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TopBar(isSponsor: true),
-                          Stack(
-                              children: [
-                                Column(
-                                    children: [
-                                      SizedBox(height: screenHeight * 0.05),
-                                      CustomPaint(
-                                          size: Size(
-                                              screenWidth, screenHeight * 0.75),
-                                          painter: CurvedTop(
-                                              color1: Theme
-                                                  .of(context)
-                                                  .colorScheme
-                                                  .secondaryVariant,
-                                              color2: Theme
-                                                  .of(context)
-                                                  .colorScheme
-                                                  .primary,
-                                              reverse: true)
-                                      ),
-                                    ] // children
-                                ),
-                                Container(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          height: screenHeight * 0.80,
-                                          child: Column(
-                                              children: [
+    return Scaffold(
+        body: Container(
+            child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: screenHeight
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TopBar(isSponsor: true),
+                        Stack(
+                            children: [
+                              Column(
+                                  children: [
+                                    SizedBox(height: screenHeight * 0.05),
+                                    CustomPaint(
+                                        size: Size(
+                                            screenWidth, screenHeight * 0.75),
+                                        painter: CurvedTop(
+                                            color1: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .secondaryVariant,
+                                            color2: Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .primary,
+                                            reverse: true)
+                                    ),
+                                  ] // children
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    Container(
+                                        height: screenHeight * 0.80,
+                                        child: Column(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.topLeft,
+                                                padding: EdgeInsets.fromLTRB(
+                                                    screenWidth * 0.08, 0,
+                                                    screenWidth * 0.08, 0),
+                                                child: Text(
+                                                    "BOOKMARKS", style: Theme
+                                                    .of(context)
+                                                    .textTheme
+                                                    .headline2),
+                                              ),
+                                              Container(
+                                                alignment: Alignment.topLeft,
+                                                padding: EdgeInsets.fromLTRB(
+                                                    screenWidth * 0.08, 0,
+                                                    screenWidth * 0.08, 0),
+                                                child: Text(
+                                                    "Scroll to see the full list.",
+                                                    style: TextStyle(
+                                                        fontSize: screenHeight *
+                                                            0.02)),
+                                              ),
+                                              if(participantBookmarks!=null)
+                                              Expanded(
+                                                  child: (participantBookmarks.length != 0) ?
+                                                  Container(
+                                                      padding: EdgeInsets
+                                                          .fromLTRB(
+                                                          screenWidth * 0.05,
+                                                          0,
+                                                          screenWidth * 0.05,
+                                                          0),
+                                                      alignment: Alignment
+                                                          .topCenter,
+                                                      child: ListView.builder(
+                                                        itemCount: participantBookmarks
+                                                            .length,
+                                                        itemBuilder: (
+                                                            BuildContext context,
+                                                            int index) {
+                                                          return BookmarkInfo(
+                                                              bmID: participantBookmarks[index].bookmarkId,
+                                                              data: participantBookmarks[index].participantData,
+                                                              team: "ScottyLabs",
+                                                              bio: "[Bio]",
+                                                              remove: removeBookmark,
+                                                              bmMap: bookmarksMap,
+                                                          );
+                                                        },
+                                                      )
+                                                  ) :
+                                                  Container(
+                                                      padding: EdgeInsets
+                                                          .fromLTRB(
+                                                          screenWidth * 0.05,
+                                                          0,
+                                                          screenWidth * 0.05,
+                                                          0),
+                                                      alignment: Alignment
+                                                          .center,
+                                                      child: Text(
+                                                          "No bookmarks.",
+                                                          style: Theme
+                                                              .of(context)
+                                                              .textTheme
+                                                              .headline3)
+                                                  )
+                                              )
+                                              else
                                                 Container(
-                                                  alignment: Alignment.topLeft,
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      screenWidth * 0.08, 0,
-                                                      screenWidth * 0.08, 0),
-                                                  child: Text(
-                                                      "BOOKMARKS", style: Theme
-                                                      .of(context)
-                                                      .textTheme
-                                                      .headline2),
-                                                ),
-                                                Container(
-                                                  alignment: Alignment.topLeft,
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      screenWidth * 0.08, 0,
-                                                      screenWidth * 0.08, 0),
-                                                  child: Text(
-                                                      "Scroll to see the full list.",
-                                                      style: TextStyle(
-                                                          fontSize: screenHeight *
-                                                              0.02)),
-                                                ),
-                                                Expanded(
-                                                    child: (participantBookmarks.length != 0) ?
-                                                    Container(
-                                                        padding: EdgeInsets
-                                                            .fromLTRB(
-                                                            screenWidth * 0.05,
-                                                            0,
-                                                            screenWidth * 0.05,
-                                                            0),
-                                                        alignment: Alignment
-                                                            .topCenter,
-                                                        child: ListView.builder(
-                                                          itemCount: participantBookmarks
-                                                              .length,
-                                                          itemBuilder: (
-                                                              BuildContext context,
-                                                              int index) {
-                                                            return BookmarkInfo(
-                                                                data: participantBookmarks[index].participantData,
-                                                                team: "ScottyLabs",
-                                                                bio: "[Bio]"
-                                                            );
-                                                          },
-                                                        )
-                                                    ) :
-                                                    Container(
-                                                        padding: EdgeInsets
-                                                            .fromLTRB(
-                                                            screenWidth * 0.05,
-                                                            0,
-                                                            screenWidth * 0.05,
-                                                            0),
-                                                        alignment: Alignment
-                                                            .center,
-                                                        child: Text(
-                                                            "No bookmarks.",
-                                                            style: Theme
-                                                                .of(context)
-                                                                .textTheme
-                                                                .headline3)
-                                                    )
+                                                    alignment: Alignment.center,
+                                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                                    child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onBackground,)
                                                 )
-                                              ]
-                                          )
-                                      )
-                                    ], // children
-                                  ),
-                                )
-                              ]
-                          ),
-                        ]
-                    ),
-                  )
-              )
-          )
-      );
-    }
+                                            ]
+                                        )
+                                    )
+                                  ], // children
+                                ),
+                              )
+                            ]
+                        ),
+                      ]
+                  ),
+                )
+            )
+        )
+    );
   }
 }
 
 class BookmarkInfo extends StatelessWidget {
 
   ParticipantInfo data;
+  String bmID;
   String team;
   String bio;
+  Function remove;
+  Map bmMap;
 
-  BookmarkInfo({this.data, this.team, this.bio});
+  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap});
 
   @override
   Widget build(BuildContext context) {
@@ -203,19 +258,30 @@ class BookmarkInfo extends StatelessWidget {
                             team,
                             style: Theme.of(context).textTheme.bodyText2
                         ),
-                        Text(
+                        /*Text(
                             bio,
                             style: Theme.of(context).textTheme.bodyText2
-                        ),
+                        ),*/
                         SizedBox(height: 18),
                         SolidButton(
                           text: "View More",
+                          onPressed: () {
+                            print(bmMap.keys);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  ProfilePage(bookmarks: bmMap,),
+                                  settings: RouteSettings(
+                                    arguments: data.id,
+                                  )),
+                            );
+                          },
                         )
                       ]
                   ),
                 ),
                 RawMaterialButton(
-                  onPressed: null,
+                  onPressed: () {remove(bmID);},
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
                   child: Icon(

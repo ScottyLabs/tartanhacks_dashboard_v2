@@ -50,28 +50,33 @@ class _HomeState extends State<Home> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    if(userData == null){
-      return LoadingScreen();
-    }
-    else{
-      return Scaffold(
-        body: Container(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget> [
-                  TopBar(),
-                  Stack(
-                    children: [
+    return Scaffold(
+      body: Container(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget> [
+                TopBar(),
+                Stack(
+                  children: [
+                    Column(
+                        children:[
+                          SizedBox(height:screenHeight * 0.05),
+                          CustomPaint(
+                              size: Size(screenWidth, screenHeight * 0.75),
+                              painter: CurvedTop(color1: Theme.of(context).colorScheme.primary,
+                                  color2: Theme.of(context).colorScheme.secondaryVariant)
+                          ),
+                        ]
+                    ),
+                    if (userData == null)
                       Column(
-                          children:[
-                            SizedBox(height:screenHeight * 0.05),
-                            CustomPaint(
-                                size: Size(screenWidth, screenHeight * 0.75),
-                                painter: CurvedTop(color1: Theme.of(context).colorScheme.primary,
-                                    color2: Theme.of(context).colorScheme.secondaryVariant)
-                            ),
-                          ]
-                      ),
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(height:30),
+                          Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary))
+                        ],
+                      )
+                    else
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -201,12 +206,11 @@ class _HomeState extends State<Home> {
                           )
                         ],
                       )
-                    ],
-                  ),
-                ]
-            )
-        ),
-      );
-    }
+                  ],
+                ),
+              ]
+          )
+      ),
+    );
   }
 }
