@@ -231,14 +231,10 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                           builder: (context, eventsSnapshot){
                                             if(eventsSnapshot.data == null || eventsSnapshot.hasData == null){
                                               return ListView.builder(
-                                                  itemCount: 5,
+                                                  itemCount: 1,
                                                   itemBuilder: (BuildContext context, int index){
-                                                    return EventCard();
+                                                    return PlaceHolder();
                                                   },);
-                                            }
-                                            print(eventsSnapshot.data.length);
-                                            for (int i=0; i<eventsSnapshot.data.length; i++){
-                                              print(eventsSnapshot.data[i]);
                                             }
                                             return ListView.builder(
                                               itemCount: eventsSnapshot.data.length,
@@ -258,7 +254,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   }
 }
 
-class EventCard extends StatelessWidget{
+class PlaceHolder extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
@@ -282,56 +278,16 @@ class EventCard extends StatelessWidget{
                   children:[
                     SizedBox(
                       width: screenWidth * 0.5,
-                      child:Text("[Event Name]",
+                      child:Text("Loading",
                       style: Theme.of(context).textTheme.headline2,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       )
                     ),
-                    SizedBox(height: screenHeight*0.01),
-                    SizedBox(
-                        width: screenWidth * 0.4,
-                        child:Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
-                            "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                            "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
-                            "laboris nisi ut aliquip ex ea commodo consequat.",
-                          style: Theme.of(context).textTheme.bodyText2,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                    ),
-                    Row(
-                      children:[
-                        SolidSquareButton(
-                          image: "",
-                          onPressed: null,
-                        ),
-                        SizedBox(width: 10,),
-                        SolidSquareButton(
-                          image: "",
-                          onPressed: null,
-                        )
-                      ]
-                    )
+
                   ]
                     ),
 
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children:[
-                      SizedBox(
-                          width: screenWidth * 0.265,
-
-                          height: 170,
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                borderRadius: BorderRadius.circular(10)
-                              )
-                      )
-                      )]
-                )
               ],
             )
         )
@@ -402,7 +358,7 @@ class EventsCard extends StatelessWidget{
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
                             SolidButton(
-                              child: Text("Edit", ),
+                              text:"Edit",
                               onPressed: () {
                                 Navigator.push(
                                   context,
