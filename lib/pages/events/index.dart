@@ -18,6 +18,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   SharedPreferences prefs;
 
   bool isAdmin = false;
+  bool isSponsor = false;
   List eventData = [1,2,3,4,5];
   bool isSwitched = false;
   int selectedIndex = 1;
@@ -32,6 +33,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   getData() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isAdmin = prefs.getBool("admin");
+    isSponsor = prefs.getString("company") != null;
     setState(() {
 
     });
@@ -176,7 +178,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                        TopBar(),
+                        TopBar(isSponsor: isSponsor,),
                         Stack(
                           children: [
                             Column(
