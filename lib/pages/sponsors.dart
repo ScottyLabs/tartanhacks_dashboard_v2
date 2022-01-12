@@ -5,6 +5,7 @@ import 'custom_widgets.dart';
 import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:barras/barras.dart';
 
 class Sponsors extends StatefulWidget {
   @override
@@ -132,7 +133,7 @@ class _SponsorsState extends State<Sponsors> {
                                           child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
                                         ),
                                         SizedBox(height: 10),
-                                        Container(
+                                        /*Container(
                                             alignment: Alignment.centerLeft,
                                             child: Text(
                                                 "Search",
@@ -176,6 +177,29 @@ class _SponsorsState extends State<Sponsors> {
                                                   color: Theme.of(context).colorScheme.onSurface
                                               )
                                           ),
+                                        ),*/
+                                        ButtonBar(
+                                          alignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            SolidButton(
+                                              color: Theme.of(context).colorScheme.secondary,
+                                              child: Text("  Scan  ",
+                                                style: Theme.of(context).textTheme.headline2
+                                                    .copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                              ),
+                                              onPressed: () async {
+                                                String id = await Barras.scan(context);
+                                                print("USER ID: " + id);
+                                              },
+                                            ),
+                                            SolidButton(
+                                                color: Theme.of(context).colorScheme.secondary,
+                                                child: Text(" Search ",
+                                                  style: Theme.of(context).textTheme.headline2
+                                                      .copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                                )
+                                            ),
+                                          ]
                                         ),
                                         if (students != null)
                                         Expanded(
