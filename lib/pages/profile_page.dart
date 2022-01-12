@@ -10,6 +10,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'team-api.dart';
 
 class ProfilePage extends StatefulWidget {
+  Map bookmarks;
+
+  ProfilePage({this.bookmarks});
+
   @override
   _ProfilePageState createState() => new _ProfilePageState();
 }
@@ -22,8 +26,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String token;
 
   Profile userData;
-
   String teamName;
+  bool isSelf = false;
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -31,8 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
     String email = prefs.get('email');
     String password = prefs.get('password');
     isAdmin = prefs.getBool('admin');
-    id = prefs.getString('id');
     token = prefs.getString('token');
+
+    if (id == null) {
+      id = prefs.getString('id');
+      isSelf = true;
+    }
 
     userData = await getProfile(id, token);
 
@@ -79,6 +87,13 @@ class _ProfilePageState extends State<ProfilePage> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
+    if (ModalRoute.of(context) != null) {
+      id = ModalRoute
+          .of(context)
+          .settings
+          .arguments as String;
+    }
 
     return Scaffold(
         body: Container(
@@ -130,10 +145,38 @@ class _ProfilePageState extends State<ProfilePage> {
                                         crossAxisAlignment: CrossAxisAlignment
                                             .start,
                                         children: [
-                                          Text("HACKER PROFILE", style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .headline1,),
+                                          Row(
+                                            children:[
+                                              Text("HACKER PROFILE", style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .headline1,),
+                                              if (!isSelf && id != null)
+                                                Expanded(
+                                                  child: Container(
+                                                    child: IconButton(
+                                                        icon: widget.bookmarks.containsValue(id) ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
+                                                        color: Theme.of(context).colorScheme.primary,
+                                                        iconSize: 40.0,
+                                                        onPressed: () async {
+                                                          if (widget.bookmarks.containsValue(id)) {
+                                                            String bmId = widget.bookmarks.keys.firstWhere(
+                                                                    (k) => widget.bookmarks[k] == id, orElse: () => null);
+                                                            deleteBookmark(token, bmId);
+                                                            widget.bookmarks.remove(bmId);
+                                                          } else {
+                                                            String bmId = await addBookmark(token, id);
+                                                            widget.bookmarks[bmId] = id;
+                                                          }
+                                                          setState(() {
+
+                                                          });
+                                                        }
+                                                    ),
+                                                  )
+                                                )
+                                            ]
+                                          ),
                                           if (userData == null)
                                             Center(child: CircularProgressIndicator())
                                           else
@@ -197,7 +240,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         ],
                                                       )
                                                   ),
-
+                                                  if (isSelf)
                                                   SolidButton(
                                                     text: "Edit Nickname",
                                                   ),

@@ -6,6 +6,7 @@ import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:barras/barras.dart';
+import 'profile_page.dart';
 
 class Sponsors extends StatefulWidget {
   @override
@@ -189,7 +190,22 @@ class _SponsorsState extends State<Sponsors> {
                                               ),
                                               onPressed: () async {
                                                 String id = await Barras.scan(context);
-                                                print("USER ID: " + id);
+                                                id = id.substring(7);
+                                                print(id);
+                                                Profile isValid = await getProfile(id, token);
+                                                if (isValid != null) {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProfilePage(bookmarks: bookmarks,),
+                                                        settings: RouteSettings(
+                                                          arguments: id,
+                                                        )),
+                                                  );
+                                                } else {
+                                                  errorDialog(context, "Error", "Invalid user ID.");
+                                                }
                                               },
                                             ),
                                             SolidButton(
@@ -216,9 +232,9 @@ class _SponsorsState extends State<Sponsors> {
                                                           bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                           participantId: studentIds[index],
                                                           bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
-
                                                           isBookmark: isBookmark,
                                                           toggleFn: isBookmark ? removeBookmark : newBookmark,
+                                                          bmMap: bookmarks
                                                       );
                                                     }
                                                 )
@@ -248,11 +264,12 @@ class InfoTile extends StatelessWidget {
   String participantId;
   String bookmarkId;
   bool isBookmark;
+  Map bmMap;
 
   Function toggleFn;
 
   InfoTile({this.name, this.team, this.bio, this.participantId,
-    this.bookmarkId, this.isBookmark, this.toggleFn});
+    this.bookmarkId, this.isBookmark, this.toggleFn, this.bmMap});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +282,17 @@ class InfoTile extends StatelessWidget {
             child: Row(
               children: [
                 RawMaterialButton(
-                  onPressed: null,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(bookmarks: bmMap),
+                          settings: RouteSettings(
+                            arguments: participantId,
+                          )),
+                    );
+                  },
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
                   child: Icon(

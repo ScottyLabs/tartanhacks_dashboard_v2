@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
-
+import 'profile_page.dart';
 import '../models/participant_bookmark.dart';
 
 
@@ -15,6 +15,7 @@ class Bookmarks extends StatefulWidget {
 class _Bookmarks extends State<Bookmarks> {
   List participantBookmarks;
   List projectBookmarks;
+  Map bookmarksMap;
   SharedPreferences prefs;
   String token;
 
@@ -28,6 +29,7 @@ class _Bookmarks extends State<Bookmarks> {
     projectBookmarks = await getProjectBookmarks(token);
     print('Project Bookmarks:');
     print(projectBookmarks);
+    bookmarksMap = await getBookmarkIdsList(token);
     setState(() {
 
     });
@@ -174,7 +176,8 @@ class _Bookmarks extends State<Bookmarks> {
                                                               data: participantBookmarks[index].participantData,
                                                               team: "ScottyLabs",
                                                               bio: "[Bio]",
-                                                              remove: removeBookmark
+                                                              remove: removeBookmark,
+                                                              bmMap: bookmarksMap,
                                                           );
                                                         },
                                                       )
@@ -226,8 +229,9 @@ class BookmarkInfo extends StatelessWidget {
   String team;
   String bio;
   Function remove;
+  Map bmMap;
 
-  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove});
+  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap});
 
   @override
   Widget build(BuildContext context) {
@@ -254,13 +258,24 @@ class BookmarkInfo extends StatelessWidget {
                             team,
                             style: Theme.of(context).textTheme.bodyText2
                         ),
-                        Text(
+                        /*Text(
                             bio,
                             style: Theme.of(context).textTheme.bodyText2
-                        ),
+                        ),*/
                         SizedBox(height: 18),
                         SolidButton(
                           text: "View More",
+                          onPressed: () {
+                            print(bmMap.keys);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  ProfilePage(bookmarks: bmMap,),
+                                  settings: RouteSettings(
+                                    arguments: data.id,
+                                  )),
+                            );
+                          },
                         )
                       ]
                   ),
