@@ -226,7 +226,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                   ),
                                   Container(
                                       alignment: Alignment.center,
-                                      padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
                                       child: ConstrainedBox(
                                         constraints: BoxConstraints(
                                             maxHeight: screenHeight*0.65

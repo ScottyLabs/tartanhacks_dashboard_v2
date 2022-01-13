@@ -34,7 +34,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   var dropdownValue = 'IN_PERSON';
 
-  List<String> _dropdownItems = ['IN_PERSON', "ZOOM", "DISCORD", "HOPIN"];
+  List<String> _dropdownItems = ['IN_PERSON', "ZOOM", "DISCORD", "HOPIN", "OTHER"];
 
   TimeOfDay selectedStartTime = TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = TimeOfDay(hour: 00, minute: 00);

@@ -147,7 +147,7 @@ class _EventFormState extends State<EventItemForm> {
 
   final _formKey = GlobalKey<FormState>();
   final List<String> platforms = ["IN_PERSON", "ZOOM",
-    "HOPIN", "DISCORD"];
+    "HOPIN", "DISCORD", "OTHER"];
 
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
@@ -199,7 +199,7 @@ class _EventFormState extends State<EventItemForm> {
 
   @override
   Widget build(BuildContext context) {
-
+    print(platform);
     var editable = true;
     return SingleChildScrollView(
       child: Form(
