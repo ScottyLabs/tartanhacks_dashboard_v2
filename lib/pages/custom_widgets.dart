@@ -76,8 +76,8 @@ class CurvedBottom extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors:[color1, blend],
-      ).createShader(Rect.fromLTRB(size.width, size.height, 0, 0));
+        colors:[color1, color2],
+      ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
     var path = Path();
     double curveOffset = size.height * (3/5);
     double curveHeight = size.height - curveOffset;
@@ -126,8 +126,8 @@ class GradBox extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    Color color1 = Theme.of(context).colorScheme.background;
-    Color color2 = Theme.of(context).colorScheme.surface;
+    Color color1 = Theme.of(context).colorScheme.surface;
+    Color color2 = Theme.of(context).colorScheme.primaryVariant;
     Color shadow = Theme.of(context).colorScheme.error;
     return Container(
         width: width,
@@ -156,6 +156,7 @@ class SolidButton extends StatelessWidget{
   Function onPressed;
   Widget child;
   Color color;
+  Color textColor;
 
   SolidButton({this.text, this.onPressed, this.child, this.color});
 
@@ -163,6 +164,9 @@ class SolidButton extends StatelessWidget{
   Widget build(BuildContext context) {
     if (color == null) {
       color = Theme.of(context).colorScheme.primary;
+    } else if (color == Theme.of(context).colorScheme.secondary) {
+      textColor = Theme.of(context).colorScheme.onSecondary;
+      print("SET COLOR");
     }
     return ElevatedButton(
         onPressed: onPressed,
@@ -174,7 +178,11 @@ class SolidButton extends StatelessWidget{
             elevation: MaterialStateProperty.all(5)
         ),
         child: child ?? Text(text,
-          style: TextStyle(fontSize:16.0, fontWeight: FontWeight.w600,color:Theme.of(context).colorScheme.onPrimary),
+          style: TextStyle(
+              fontSize:16.0,
+              fontWeight: FontWeight.w600,
+              color: textColor ?? Theme.of(context).colorScheme.onPrimary
+          ),
           overflow: TextOverflow.fade,
           softWrap: false,
         )
@@ -248,9 +256,7 @@ class TextLogo extends StatelessWidget {
               Container(
                   height: height,
                   width: width*0.15,
-                  child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
-                      color: color
-                  )
+                  child: Image.asset("lib/logos/thLogoLight.png")
               ),
               Text(" Tartanhacks ",
                   style: TextStyle(
@@ -325,7 +331,7 @@ class BackFlag extends StatelessWidget {
                 children: [
                   CustomPaint(
                     size: Size(80, 35),
-                    painter: FlagPainter(color: Theme.of(context).colorScheme.secondary),
+                    painter: FlagPainter(color: Theme.of(context).colorScheme.primary),
                   ),
                   Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
@@ -381,16 +387,26 @@ class TopBar extends StatelessWidget {
                 size: Size(screenWidth*0.75, screenHeight*0.2),
                 painter: CurvedCorner(color: Theme.of(context).colorScheme.primary),
               ),
-              Container(
-                  width: screenWidth*0.75,
-                  height: screenHeight*0.2,
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                  child:TextLogo(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      width: screenWidth*0.70,
-                      height: screenHeight*0.10
-                  )
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          Home(),
+                      )
+                  );
+                },
+                child: Container(
+                    width: screenWidth*0.75,
+                    height: screenHeight*0.2,
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                    child:TextLogo(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        width: screenWidth*0.70,
+                        height: screenHeight*0.10
+                    )
+                ),
               ),
               if (backflag)
                 Container(

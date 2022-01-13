@@ -40,28 +40,28 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 
 ThemeData genLightTheme (){
 
-  var primary = Color(0xFFFFC738);
-  var primarytrans = Color(0x87FFC738);
+  var primary = Color(0xFF07054C);
+  var primarytrans = Color(0xB31156BD);
   var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0x87DB4D20);
+  var secondarytrans = Color(0xFF697EAF);
   var accent = Color(0xFF07054C);
-  var surface = Color(0xFFFFE3E3);
-  var background = Color(0xFFFFFFFF);
+  var surface = Color(0xFFFFFFFF);
+  var background = Color(0xFFFFC738);
 
   ColorScheme cScheme = ColorScheme(
       primary: primary,
-      primaryVariant: primarytrans,
+      primaryVariant: secondarytrans,
       secondary: secondary,
-      secondaryVariant: secondarytrans,
+      secondaryVariant: primarytrans,
 
-      surface: surface, //box gradient 2
-      background: background, //box gradient 1
-      error: secondarytrans, //shadows
+      surface: surface, //box gradient 1
+      background: secondarytrans, //box gradient 2
+      error: primarytrans, //shadows
       onPrimary: background,
-      onSecondary: background,
-      onSurface: accent,
-      onBackground: accent,
-      onError: secondary, //menu buttons
+      onSecondary: surface,
+      onSurface: primary,
+      onBackground: primary,
+      onError: primary, //menu buttons
       brightness: Brightness.light
   );
   return baseTheme(

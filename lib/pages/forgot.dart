@@ -47,15 +47,15 @@ class _ForgotState extends State<Forgot>{
                               children:[
                                 CustomPaint(
                                   size: Size(screenWidth, screenHeight*0.45),
-                                  painter: CurvedBottom(color1: Theme.of(context).colorScheme.secondary,
-                                      color2: Theme.of(context).colorScheme.primaryVariant),
+                                  painter: CurvedBottom(color1: Theme.of(context).colorScheme.primary,
+                                      color2: Theme.of(context).colorScheme.secondaryVariant),
                                 ),
                                 Container(
                                     height: screenHeight*0.3,
                                     width: screenWidth,
                                     alignment: Alignment.topCenter,
                                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                    child: SvgPicture.asset("lib/logos/thColorLogo.svg")
+                                    child: Image.asset("lib/logos/thLogoLight.png")
                                 )
                               ]
                           ),
@@ -97,7 +97,7 @@ class _ForgotState extends State<Forgot>{
                               Text("Already have an account?",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Color(0xFF5AA4D4)
+                                    color: Theme.of(context).colorScheme.onBackground
                                   )
                               ),
                               TextButton(
@@ -111,7 +111,7 @@ class _ForgotState extends State<Forgot>{
                                   child: Text("Try Logging In",
                                       style: TextStyle(
                                         fontSize: 14,
-                                        color: Color(0xFFED6200)
+                                        color: Theme.of(context).colorScheme.secondary
                                       )
                                   )
                               ),

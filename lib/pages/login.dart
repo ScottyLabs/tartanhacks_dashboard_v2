@@ -102,7 +102,7 @@ class _LoginState extends State<Login>{
                                 width: screenWidth,
                                 alignment: Alignment.topCenter,
                                 padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                child: SvgPicture.asset("lib/logos/thColorLogo.svg")
+                                child: Image.asset("lib/logos/thLogoLight.png")
                             )
                           ]
                       ),
@@ -111,8 +111,8 @@ class _LoginState extends State<Login>{
                         child: GradText(
                           text: "Welcome",
                           size: 40,
-                          color1: Theme.of(context).colorScheme.secondary,
-                          color2: Theme.of(context).colorScheme.primary
+                          color1: Theme.of(context).colorScheme.primary,
+                          color2: Theme.of(context).colorScheme.secondaryVariant
                           )
                       ),
                       Container(
@@ -160,7 +160,7 @@ class _LoginState extends State<Login>{
                           },
                           child: Text("Forgot Password",
                               style: TextStyle(
-                                  color: Color(0xFF5AA4D4)
+                                  color: Theme.of(context).colorScheme.onBackground
                               )
                           )
                       ),
