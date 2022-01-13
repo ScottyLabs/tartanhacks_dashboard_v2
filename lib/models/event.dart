@@ -1,8 +1,3 @@
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
-import 'dart:convert';
-
 class Event {
   final String id;
   final String platform;
@@ -46,4 +41,44 @@ class Event {
       platformUrl: parsedJson['platformUrl'],
     );
   }
+}
+
+class EventDTO {
+  final String platform;
+  final String name;
+  final String description;
+  //time is unix
+  final int startTime;
+  final int endTime;
+  final String location;
+  final String platformUrl;
+
+  EventDTO(
+      {this.name,
+        this.description,
+        this.startTime,
+        this.endTime,
+        this.platform,
+        this.platformUrl,
+        this.location});
+
+  EventDTO.fromEventItem(Event item):
+        name = item.name,
+        description = item.description,
+        startTime = item.startTime,
+        endTime = item.endTime,
+        location = item.location,
+        platform = item.platform,
+        platformUrl = item.platformUrl;
+
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'description': description,
+    'startTime': startTime,
+    'endTime': endTime,
+    'location': location,
+    'platform': platform,
+    'platformUrl': platformUrl
+  };
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/models/event.dart';
+import 'package:thdapp/pages/events/edit.dart';
 import 'new.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,8 +19,10 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   SharedPreferences prefs;
 
   bool isAdmin = false;
+
   bool isSponsor = false;
   List eventData = [1,2,3,4,5];
+
   bool isSwitched = false;
   int selectedIndex = 1;
   List<Event> events;
@@ -213,7 +216,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => NewEventScreen()),
+                                            builder: (context) => EditEventPage(null)),
                                       );
                                     },
                                     child: Text(
@@ -233,19 +236,15 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                           builder: (context, eventsSnapshot){
                                             if(eventsSnapshot.data == null || eventsSnapshot.hasData == null){
                                               return ListView.builder(
-                                                  itemCount: 5,
+                                                  itemCount: 1,
                                                   itemBuilder: (BuildContext context, int index){
-                                                    return EventCard();
+                                                    return PlaceHolder();
                                                   },);
-                                            }
-                                            print(eventsSnapshot.data.length);
-                                            for (int i=0; i<eventsSnapshot.data.length; i++){
-                                              print(eventsSnapshot.data[i]);
                                             }
                                             return ListView.builder(
                                               itemCount: eventsSnapshot.data.length,
                                               itemBuilder: (BuildContext context, int index){
-                                                return EventsCard(eventsSnapshot.data[index]);
+                                                return EventsCard(eventsSnapshot.data[index], isAdmin);
                                               },
                                             );
                                           },
@@ -260,7 +259,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   }
 }
 
-class EventCard extends StatelessWidget{
+class PlaceHolder extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
@@ -284,56 +283,16 @@ class EventCard extends StatelessWidget{
                   children:[
                     SizedBox(
                       width: screenWidth * 0.5,
-                      child:Text("[Event Name]",
+                      child:Text("Loading",
                       style: Theme.of(context).textTheme.headline2,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       )
                     ),
-                    SizedBox(height: screenHeight*0.01),
-                    SizedBox(
-                        width: screenWidth * 0.4,
-                        child:Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
-                            "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                            "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
-                            "laboris nisi ut aliquip ex ea commodo consequat.",
-                          style: Theme.of(context).textTheme.bodyText2,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                    ),
-                    Row(
-                      children:[
-                        SolidSquareButton(
-                          image: "",
-                          onPressed: null,
-                        ),
-                        SizedBox(width: 10,),
-                        SolidSquareButton(
-                          image: "",
-                          onPressed: null,
-                        )
-                      ]
-                    )
+
                   ]
                     ),
 
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children:[
-                      SizedBox(
-                          width: screenWidth * 0.265,
-
-                          height: 170,
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color: Colors.red,
-                                borderRadius: BorderRadius.circular(10)
-                              )
-                      )
-                      )]
-                )
               ],
             )
         )
@@ -343,8 +302,9 @@ class EventCard extends StatelessWidget{
 
 class EventsCard extends StatelessWidget{
   final Event event;
+  final bool isAdmin;
 
-  EventsCard(this.event);
+  EventsCard(this.event, this.isAdmin);
 
   String formatDate(String unixDate) {
     var date =
@@ -399,15 +359,21 @@ class EventsCard extends StatelessWidget{
                             overflow: TextOverflow.ellipsis,
                           )
                       ),
-                      /*Row(
+                      Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
-                            SolidSquareButton(
-                              image: "",
-                              onPressed: null,
+                            SolidButton(
+                              text:"Edit",
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditEventPage(this.event)),
+                                );
+                              },
                             ),
                           ]
-                      )*/
+                      )
                     ]
                 ),
 

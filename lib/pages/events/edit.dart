@@ -1,0 +1,497 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
+import 'package:provider/provider.dart';
+import 'package:thdapp/api.dart';
+import 'package:thdapp/models/check_in_item.dart';
+import 'package:thdapp/models/event.dart';
+import 'package:thdapp/pages/events/index.dart';
+import 'package:thdapp/providers/check_in_items_provider.dart';
+import '../custom_widgets.dart';
+
+// HELPER FUNCTIONS
+int daysBetween(DateTime from, DateTime to) {
+  from = DateTime(from.year, from.month, from.day);
+  to = DateTime(to.year, to.month, to.day);
+  return (to.difference(from).inHours / 24).round();
+}
+
+double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+
+// MAIN WIDGET
+class EditEventPage extends StatelessWidget {
+  final Event event;
+
+  EditEventPage(this.event);
+
+  @override
+  Widget build(BuildContext context) {
+    final mqData = MediaQuery.of(context);
+    final screenHeight = mqData.size.height;
+    final screenWidth = mqData.size.width;
+
+    return Scaffold(
+        body: Container(
+            child: SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: screenHeight),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TopBar(backflag: true),
+                        Stack(
+                          children: [
+                            Column(children: [
+                              SizedBox(height: screenHeight * 0.05),
+                              CustomPaint(
+                                  size: Size(screenWidth, screenHeight * 0.75),
+                                  painter: CurvedTop(
+                                      color1: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryVariant,
+                                      color2:
+                                      Theme.of(context).colorScheme.primary,
+                                      reverse: true)),
+                            ]),
+                            Container(
+                                alignment: Alignment.center,
+                                height: screenHeight * 0.78,
+                                padding: EdgeInsets.fromLTRB(15, 20, 15, 0),
+                                child: GradBox(
+                                  curvature: 20,
+                                  padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
+                                  child: EventItemForm(event),
+                                ))
+                          ],
+                        )
+                      ],
+                    )))));
+  }
+}
+
+class EventItemForm extends StatefulWidget {
+  final Event event;
+
+  EventItemForm(this.event);
+
+  @override
+  _EventFormState createState() => _EventFormState();
+}
+
+class _EventFormState extends State<EventItemForm> {
+
+  void _showDialog(String response, String title, bool result) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text(title),
+          content: new Text(response),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text(
+                "OK",
+                style: new TextStyle(color: Colors.white),
+              ),
+              color: new Color.fromARGB(255, 255, 75, 43),
+              onPressed: () {
+
+                Navigator.of(context).pop();
+                if(result == true){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EventsHomeScreen()),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void addData(Map<String, Object> newEvent) async {
+    bool result;
+    if (newEvent["platform"] == "IN_PERSON") {
+      result = await addEvent(newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], newEvent["location"], 0, 0, newEvent["platform"], "N/A");
+    } else {
+      result = await addEvent(newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], "N/A", 0, 0, newEvent["platform"], newEvent["platformUrl"]);
+    }
+    if (result == true) {
+      _showDialog('Your event was successfully saved!', 'Success', result);
+    }else{
+      _showDialog('There was an error. Please try again.', 'Error.', result);
+    }
+  }
+
+  void editData(Map<String, Object> newEvent) async {
+    bool result;
+    if (newEvent["platform"] == "IN_PERSON") {
+      result = await editEvent(newEvent["id"], newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], 0, 0, newEvent["platform"], "N/A");
+    } else {
+      result = await editEvent(newEvent["id"], newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], 0, 0, newEvent["platform"], newEvent["platformUrl"]);
+    }
+    if (result == true) {
+      _showDialog('Your event was successfully saved!', 'Success', result);
+    }else{
+      _showDialog('There was an error. Please try again.', 'Error.', result);
+    }
+  }
+
+  final _formKey = GlobalKey<FormState>();
+  final List<String> platforms = ["IN_PERSON", "ZOOM",
+    "HOPIN", "DISCORD"];
+
+  final _nameController = TextEditingController();
+  final _descController = TextEditingController();
+  final _linkController = TextEditingController();
+  final _startDateController = TextEditingController();
+  final _startTimeController = TextEditingController();
+  final _locController = TextEditingController();
+  final _endDateController = TextEditingController();
+  final _endTimeController = TextEditingController();
+
+  bool newItem;
+  String platform;
+
+  DateTime startDate;
+  DateTime endDate;
+
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Event item = widget.event;
+    if (item!=null) {
+      _nameController.value = TextEditingValue(text: widget.event.name);
+      _descController.value = TextEditingValue(text: widget.event.description);
+      _linkController.value = TextEditingValue(text: widget.event.platformUrl);
+      _locController.value = TextEditingValue(text: widget.event.location);
+
+      startDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.startTime);
+      endDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.endTime);
+      startTime = TimeOfDay.fromDateTime(startDate);
+      endTime = TimeOfDay.fromDateTime(endDate);
+
+      _startDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+      _startTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+      _endDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+      _endTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+
+      newItem = false;
+      platform = item.platform;
+    }
+    else {
+      newItem = true;
+      platform = platforms[0];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    var editable = true;
+    return SingleChildScrollView(
+      child: Form(
+          key: _formKey,
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+
+                  widget.event == null ? "NEW EVENT"
+                      : editable ? "EDIT EVENT" : "EVENT DETAILS",
+                  style: Theme.of(context).textTheme.headline1,
+                ),
+                SizedBox(height: 20,),
+
+                // Form Fields
+                EditEventFormField(
+                  label: "Name",
+                  controller: _nameController,
+                ),
+                EditEventFormField(
+                  label: "Description",
+                  controller: _descController,
+                ),
+                if (editable) EditEventDropDownFormField(
+                  items: platforms.asMap().map((i, label) =>
+                      MapEntry(i, DropdownMenuItem(
+                        value: label,
+                        child: Text(label),
+                      ))).values.toList(),
+                  label: "Platform",
+                  initial: platform,
+                  onChange: (val) {
+                    setState(() {
+                      platform = val;
+                    });
+                  },
+                ),
+                SizedBox(height: 20,),
+                EditEventFormField(
+                  label: "Location",
+                  controller: _locController,
+                ),
+                EditEventFormField(
+                  label: "Start Date",
+                  controller: _startDateController,
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    final DateTime picked = await showDatePicker(
+                      context: context,
+                      initialDate: startDate ?? DateTime.now(),
+                      firstDate: startDate ?? DateTime.now(),
+                      lastDate: DateTime(2023),
+                    );
+                    if (picked != null) {
+                      _startDateController.value = TextEditingValue(
+                          text: DateFormat.yMMMd('en_US').format(picked)
+                      );
+
+                      startDate = picked;
+                    }
+                  },
+                ),
+                EditEventFormField(
+
+                  label: "End Date",
+                  controller: _endDateController,
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'Cannot be empty';
+                    }
+                    if (startDate!=null) {
+                      if (daysBetween(startDate, endDate)<0)
+                        return 'End date must be after start date';
+                    }
+                    return null;
+                  },
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    final DateTime picked = await showDatePicker(
+                      context: context,
+                      initialDate: endDate ?? DateTime.now(),
+                      firstDate: endDate ?? DateTime.now(),
+                      lastDate: DateTime(2023),
+                    );
+                    if (picked != null) {
+                      _endDateController.value = TextEditingValue(
+                          text: DateFormat.yMMMd('en_US').format(picked)
+                      );
+                      endDate = picked;
+                    }
+                  },
+                ),
+
+                EditEventFormField(
+                    label: "Start Time",
+                    controller: _startTimeController,
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                      TimeOfDay picked = await showTimePicker(
+                          context: context,
+
+                          initialTime: startTime ?? TimeOfDay.now()
+                      );
+                      if (picked != null) {
+                        _startTimeController.value = TextEditingValue(
+                            text: picked.format(context)
+                        );
+
+                        startTime = picked;
+                      }
+                    }
+                ),
+                EditEventFormField(
+
+                    label: "End Time",
+                    controller: _endTimeController,
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'Cannot be empty';
+                      }
+                      if (startDate!=null) {
+                        if (daysBetween(startDate, endDate)==0)
+                          if (toDouble(startTime)>toDouble(endTime))
+                            return 'End time must be after start time';
+                      }
+                      return null;
+                    },
+                    onTap: () async {
+                      FocusScope.of(context).requestFocus(new FocusNode());
+                      TimeOfDay picked = await showTimePicker(
+                          context: context,
+                          initialTime: endTime ?? TimeOfDay.now()
+                      );
+                      if (picked != null) {
+                        _endTimeController.value = TextEditingValue(
+                            text: picked.format(context)
+                        );
+                        endTime = picked;
+                      }
+                    }
+                ),
+
+                // Dropdown menus
+
+
+                if (editable) SizedBox(height: 15,),
+
+                // Submit button
+
+                if (editable) SizedBox(
+                  width: double.infinity,
+                  child: SolidButton(
+                    text: "CONFIRM",
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        DateTime startDateTime = DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute);
+                        DateTime endDateTime = DateTime(endDate.year, endDate.month, endDate.day, endTime.hour, endTime.minute);
+
+
+                        // TODO maybe add some loading indicator?
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )));
+                        if (newItem) {
+                          addData({"name": _nameController.text,
+                            "description": _descController.text,
+                            "startTime": startDateTime.toUtc().microsecondsSinceEpoch,
+                            "endTime": endDateTime.toUtc().microsecondsSinceEpoch,
+                            "platform": platform,
+                            "platformUrl": _linkController.text,
+                            "location": _locController.text});
+                        } else {
+                          editData({
+                            "id": widget.event.id,
+                            "name": _nameController.text,
+                            "description": _descController.text,
+                            "startTime": startDateTime.toUtc().microsecondsSinceEpoch,
+                            "endTime": endDateTime.toUtc().microsecondsSinceEpoch,
+                            "platform": platform,
+                            "platformUrl": _linkController.text,
+                            "location": _locController.text});
+                        }
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: 15,)
+
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+class EditEventFormField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final TextInputType keyboardType;
+  final Function onTap;
+
+  final Function validator;
+
+  EditEventFormField({
+    this.controller,
+    this.label,
+    this.keyboardType = TextInputType.text,
+
+    this.onTap,
+    this.validator
+  });
+
+  @override
+  Widget build(BuildContext context) {
+
+    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          onTap: onTap,
+
+          enabled: editable,
+          validator: validator ?? (val) {
+            if (val == null || val.isEmpty) {
+              return 'Cannot be empty';
+            }
+            return null;
+          },
+          enableSuggestions: false,
+          inputFormatters: keyboardType == TextInputType.number ? [
+            FilteringTextInputFormatter.digitsOnly
+          ] : [],
+          decoration: InputDecoration(
+              labelText: label
+          ),
+          style: Theme.of(context).textTheme.bodyText2,
+        ),
+        SizedBox(height: 15,)
+      ],
+    );
+  }
+}
+
+class EditEventDropDownFormField extends StatelessWidget {
+  final List<DropdownMenuItem> items;
+  final String label;
+  final String initial;
+
+  final Function onChange;
+
+  EditEventDropDownFormField({this.items, this.label, this.initial, this.onChange});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          flex: 5,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+        SizedBox(width: 10,),
+        Expanded(
+          flex: 8,
+          child: DropdownButtonFormField(
+
+            onChanged: onChange,
+            items: items,
+            value: initial,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+
+
+
+
