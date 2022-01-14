@@ -89,9 +89,9 @@ class _LoginState extends State<Login>{
     final screenWidth = mqData.size.width;
     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
-    if (prefs != null)
-      return LoadingScreen();
-    else
+    // if (prefs != null)
+    //   return LoadingScreen();
+    // else
       return Scaffold(
           body: Container(
               child: SingleChildScrollView(
