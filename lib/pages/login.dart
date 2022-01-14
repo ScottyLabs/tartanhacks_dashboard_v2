@@ -8,6 +8,8 @@ import 'home.dart';
 import 'forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'sponsors.dart';
+import 'package:provider/provider.dart';
+import '../theme_changer.dart';
 
 
 class Login extends StatefulWidget{
@@ -59,7 +61,13 @@ class _LoginState extends State<Login>{
   checkLogInStatus() async{
 
     prefs = await SharedPreferences.getInstance();
-    if(prefs.get('email')!=null){
+
+    if (prefs.getString('theme') == "dark") {
+      var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+      _themeProvider.setTheme(darkTheme);
+    }
+
+    if (prefs.get('email') != null) {
       if (prefs.get('company') != null) {
         Navigator.pushReplacement(
           context,
@@ -79,96 +87,101 @@ class _LoginState extends State<Login>{
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
-    return Scaffold(
-      body: Container(
-          child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: screenHeight
-                ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Stack(
-                          children:[
-                            CustomPaint(
-                              size: Size(screenWidth, screenHeight*0.45),
-                              painter: CurvedBottom(color1: Theme.of(context).colorScheme.primary,
-                                  color2: Theme.of(context).colorScheme.secondaryVariant),
+    if (prefs != null)
+      return LoadingScreen();
+    else
+      return Scaffold(
+          body: Container(
+              child: SingleChildScrollView(
+                  child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxHeight: screenHeight
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Stack(
+                                children:[
+                                  CustomPaint(
+                                    size: Size(screenWidth, screenHeight*0.45),
+                                    painter: CurvedBottom(color1: Theme.of(context).colorScheme.primary,
+                                        color2: Theme.of(context).colorScheme.secondaryVariant),
+                                  ),
+                                  Container(
+                                      height: screenHeight*0.3,
+                                      width: screenWidth,
+                                      alignment: Alignment.topCenter,
+                                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
+                                          : Image.asset("lib/logos/thLogoDark.png")
+                                  )
+                                ]
                             ),
                             Container(
-                                height: screenHeight*0.3,
-                                width: screenWidth,
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                child: Image.asset("lib/logos/thLogoLight.png")
-                            )
+                                alignment: Alignment.center,
+                                child: GradText(
+                                    text: "Welcome",
+                                    size: 40,
+                                    color1: Theme.of(context).colorScheme.primary,
+                                    color2: Theme.of(context).colorScheme.secondaryVariant
+                                )
+                            ),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: TextField(
+                                  controller: _emailcontroller,
+                                  decoration: InputDecoration(
+                                    labelText: "Email",
+                                  ),
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  textInputAction: TextInputAction.next
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: TextField(
+                                controller: _passwordcontroller,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: "Password",
+                                ),
+                                style: Theme.of(context).textTheme.bodyText2,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            GradBox(
+                                width: 150,
+                                height: 45,
+                                onTap: () {
+                                  login(_emailcontroller.text, _passwordcontroller.text);
+                                },
+                                child: Text("Start Hacking",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                )
+                            ),
+                            SizedBox(height: 8),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        Forgot()),
+                                  );
+                                },
+                                child: Text("Forgot Password",
+                                    style: TextStyle(
+                                        color: Theme.of(context).colorScheme.primary
+                                    )
+                                )
+                            ),
                           ]
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        child: GradText(
-                          text: "Welcome",
-                          size: 40,
-                          color1: Theme.of(context).colorScheme.primary,
-                          color2: Theme.of(context).colorScheme.secondaryVariant
-                          )
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                          controller: _emailcontroller,
-                          decoration: InputDecoration(
-                            labelText: "Email",
-                          ),
-                          style: Theme.of(context).textTheme.bodyText2,
-                          keyboardType: TextInputType.visiblePassword,
-                          textInputAction: TextInputAction.next
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                          controller: _passwordcontroller,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                          ),
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      GradBox(
-                          width: 150,
-                          height: 45,
-                          onTap: () {
-                            login(_emailcontroller.text, _passwordcontroller.text);
-                          },
-                          child: Text("Start Hacking",
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          )
-                      ),
-                      SizedBox(height: 8),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) =>
-                                  Forgot()),
-                            );
-                          },
-                          child: Text("Forgot Password",
-                              style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onBackground
-                              )
-                          )
-                      ),
-                    ]
-                )
+                      )
+                  )
               )
           )
-      )
-    );
+      );
   }
 }

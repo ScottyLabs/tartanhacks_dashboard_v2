@@ -60,6 +60,10 @@ flutter:
     - family: Poppins
       fonts :
         - asset: lib/fonts/Poppins/Poppins-Regular.ttf
+    - family: Aktiv Grotesk
+      fonts:
+        - asset: lib/fonts/AktivGrotesk/AktivGroteskCorp-Regular.ttf
+
   # To add assets to your application, add an assets section, like this:
   assets:
     - lib/logos/

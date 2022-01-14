@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 
 ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
   return ThemeData(
-      fontFamily: 'Poppins',
+      fontFamily: 'Aktiv Grotesk',
       colorScheme: cScheme,
       scaffoldBackgroundColor: background,
       textTheme: TextTheme(
@@ -41,9 +41,9 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 ThemeData genLightTheme (){
 
   var primary = Color(0xFF07054C);
-  var primarytrans = Color(0xB31156BD);
+  var primarytrans = Color(0xB31156BD); // background curves gradient
   var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0xFF697EAF);
+  var secondarytrans = Color(0xFF697EAF); // box gradient 2
   var accent = Color(0xFF07054C);
   var surface = Color(0xFFFFFFFF);
   var background = Color(0xFFFFC738);
@@ -52,16 +52,16 @@ ThemeData genLightTheme (){
       primary: primary,
       primaryVariant: secondarytrans,
       secondary: secondary,
-      secondaryVariant: primarytrans,
+      secondaryVariant: primarytrans, // background curves gradient
 
       surface: surface, //box gradient 1
       background: secondarytrans, //box gradient 2
-      error: primarytrans, //shadows
+      error: primary, //menu buttons
       onPrimary: background,
       onSecondary: surface,
       onSurface: primary,
-      onBackground: primary,
-      onError: primary, //menu buttons
+      onBackground: primarytrans, //shadows
+      onError: background,
       brightness: Brightness.light
   );
   return baseTheme(
@@ -74,9 +74,9 @@ ThemeData genLightTheme (){
 ThemeData genDarkTheme (){
 
   var primary = Color(0xFFFFC738);
-  var primarytrans = Color(0x87FFC738);
+  var primarytrans = Color(0xFF7B6368); // box gradient 2
   var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0x87DB4D20);
+  var secondarytrans = Color(0x87DB4D20); // background curves gradient
   var accent = Color(0xFF78524a);
   var surface = Color(0xFF07054C);
   var background = Color(0xFF07054C);
@@ -87,17 +87,16 @@ ThemeData genDarkTheme (){
       primary: primary,
       primaryVariant: primarytrans,
       secondary: secondary,
-      secondaryVariant: secondarytrans,
+      secondaryVariant: secondarytrans, // background curves gradient
 
-      surface: accent, //box gradient 2
-      background: surface, //box gradient 1
-      error: shadow, //shadows
+      surface: surface, //box gradient 1
+      background: primarytrans, //box gradient 2
+      error: surface, // menu buttons
       onPrimary: background,
       onSecondary: text,
-      onSurface: text,
-      onBackground: secondary,
-
-      onError: surface, //menu buttons
+      onSurface: primary,
+      onBackground: shadow, //shadows
+      onError: primary,
       brightness: Brightness.dark
   );
   return baseTheme(

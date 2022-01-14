@@ -128,7 +128,7 @@ class GradBox extends StatelessWidget{
   Widget build(BuildContext context) {
     Color color1 = Theme.of(context).colorScheme.surface;
     Color color2 = Theme.of(context).colorScheme.primaryVariant;
-    Color shadow = Theme.of(context).colorScheme.error;
+    Color shadow = Theme.of(context).colorScheme.onBackground;
     return Container(
         width: width,
         height: height,
@@ -242,10 +242,13 @@ class TextLogo extends StatelessWidget {
   Color color;
   double width;
   double height;
+
   TextLogo({this.color, this.width, this.height});
+
   @override
   Widget build(BuildContext context) {
     print(height);
+    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
     return Container(
         width: width,
         height: height,
@@ -256,7 +259,8 @@ class TextLogo extends StatelessWidget {
               Container(
                   height: height,
                   width: width*0.15,
-                  child: Image.asset("lib/logos/thLogoLight.png")
+                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
+                      : Image.asset("lib/logos/thLogoDark.png")
               ),
               Text(" Tartanhacks ",
                   style: TextStyle(
@@ -765,7 +769,7 @@ class MenuChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenWidth = mqData.size.width;
-    Color color = Theme.of(context).colorScheme.onError;
+    Color color = Theme.of(context).colorScheme.error;
     return Container(
         width: screenWidth/4,
         alignment: Alignment.center,
@@ -779,7 +783,7 @@ class MenuChoice extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 40.0,
-                  color: Theme.of(context).colorScheme.onSecondary,
+                  color: Theme.of(context).colorScheme.onError,
                 ),
                 padding: EdgeInsets.all(12),
                 shape: CircleBorder(),
@@ -814,14 +818,18 @@ class LoadingScreen extends StatelessWidget {
                       height: screenHeight*0.35,
                       width: screenWidth,
                       alignment: Alignment.topCenter,
-                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                      child: SvgPicture.asset("lib/logos/scottylabsLogo.svg",
-                          color: Theme.of(context).colorScheme.onBackground
+                      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      child: Image.asset("lib/logos/thLogoDark.png",
                       )
                   ),
-                  Text("Loading...",
+                  Text("Tartanhacks",
                     style: Theme.of(context).textTheme.headline1,
-                  )
+                  ),
+                  Text("by Scottylabs",
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  SizedBox(height: 25),
+                  CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,)
                 ]
             )
         )

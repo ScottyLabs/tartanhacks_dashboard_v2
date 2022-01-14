@@ -5,6 +5,9 @@ import 'custom_widgets.dart';
 import 'home.dart';
 import 'login.dart';
 import '../api.dart';
+import 'package:provider/provider.dart';
+import '../theme_changer.dart';
+
 
 class Forgot extends StatefulWidget{
   @override
@@ -32,6 +35,7 @@ class _ForgotState extends State<Forgot>{
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: Container(
@@ -55,7 +59,8 @@ class _ForgotState extends State<Forgot>{
                                     width: screenWidth,
                                     alignment: Alignment.topCenter,
                                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                                    child: Image.asset("lib/logos/thLogoLight.png")
+                                    child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
+                                        : Image.asset("lib/logos/thLogoDark.png")
                                 )
                               ]
                           ),
@@ -97,7 +102,7 @@ class _ForgotState extends State<Forgot>{
                               Text("Already have an account?",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Theme.of(context).colorScheme.onBackground
+                                    color: Theme.of(context).colorScheme.primary
                                   )
                               ),
                               TextButton(
