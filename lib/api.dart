@@ -17,7 +17,7 @@ import 'pages/custom_widgets.dart';
 
 SharedPreferences prefs;
 
-const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
+const baseUrl = "https://stg-backend.tartanhacks.com/";
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGNkNzRmMmJmYWQ2MTNhODEwYTMzMDIiLCJpYXQiOjE2MzU2MDk4MzksImV4cCI6MTYzNzMzNzgzOX0._5K4sqsFhJbF58-skYaBwkqqANYITYCo6_EcxUTTWqY";
 
 Future<User> checkCredentials(String email, String password) async {
