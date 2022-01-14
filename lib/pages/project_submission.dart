@@ -233,7 +233,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    TopBar(),
                     Stack(
                       children: [
                         Column(
@@ -254,7 +254,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                             child: GradBox(
                               width: screenWidth*0.9,
                               height: screenHeight*0.75,
-                              padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
                               child: Form(
                                   key: _formKey,
                                   child: SingleChildScrollView(

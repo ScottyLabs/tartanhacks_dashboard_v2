@@ -386,11 +386,12 @@ class EventsCard extends StatelessWidget{
                           height: 170,
                           child: DecoratedBox(
                               decoration: BoxDecoration(
-                                  color: Color.fromRGBO(247,195,81, 1),
+                                  color: Theme.of(context).colorScheme.primary,
                                   borderRadius: BorderRadius.circular(10)
                               ),
                             child: Text(this.getTime((event.startTime).toString()) + "\n"  + this.formatDate((event.startTime).toString()),
-                                style: Theme.of(context).textTheme.headline2,
+                                style: Theme.of(context).textTheme.headline2
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                                 textAlign: TextAlign.center)
                           )
                       )]

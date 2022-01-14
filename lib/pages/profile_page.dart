@@ -105,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(backflag: true),
+                        TopBar(backflag: userData != null && !isSelf),
                         Stack(
                           children: [
                             Column(
@@ -178,7 +178,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ]
                                           ),
                                           if (userData == null)
-                                            Center(child: CircularProgressIndicator())
+                                            Container(
+                                              height: 100,
+                                              child: Center(child: CircularProgressIndicator())
+                                            )
                                           else
                                             Column(
                                                 mainAxisAlignment: MainAxisAlignment

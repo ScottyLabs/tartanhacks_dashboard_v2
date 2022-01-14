@@ -28,7 +28,7 @@ class CheckIn extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(backflag: true),
+                        TopBar(),
                         Stack(
                           children: [
                             Column(children: [
