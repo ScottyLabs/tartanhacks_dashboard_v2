@@ -23,6 +23,7 @@ class _LoginState extends State<Login>{
   final _passwordcontroller = new TextEditingController();
 
   SharedPreferences prefs;
+  bool prefsLoaded = false;
 
   @override
   initState() {
@@ -80,6 +81,8 @@ class _LoginState extends State<Login>{
         );
       }
     }
+
+    prefsLoaded = true;
   }
 
   @override
@@ -89,7 +92,7 @@ class _LoginState extends State<Login>{
     final screenWidth = mqData.size.width;
     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
-    if (prefs != null)
+    if (!prefsLoaded)
       return LoadingScreen();
     else
       return Scaffold(
