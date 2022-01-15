@@ -92,7 +92,7 @@ class _LoginState extends State<Login>{
     final screenWidth = mqData.size.width;
     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
-    if (!prefsLoaded)
+    if(false) //if (!prefsLoaded)
       return LoadingScreen();
     else
       return Scaffold(
