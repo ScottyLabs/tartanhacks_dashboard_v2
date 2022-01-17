@@ -17,7 +17,7 @@ import 'pages/custom_widgets.dart';
 
 SharedPreferences prefs;
 
-const baseUrl = "https://stg-backend.tartanhacks.com/";
+const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -243,7 +243,6 @@ Future<bool> addEvent(String name, String description, int startTime, int endTim
         platform,
         platformUrl);
   } else {
-    print(response.body);
     return false;
   }
 }
@@ -254,17 +253,18 @@ Future<bool> editEvent(String eventId, String name, String description, int star
 
   String token = prefs.getString("token");
 
-  String url = baseUrl + "schedule/`${eventId}`";
-  Map<String, String> headers = {"Content-type": "application/json", "Token": token};
-
-  String bodyJson = '{"name":"' + name +
-      '","description":"' + description +
-      '","startTime":' + startTime.toString() +
-      ',"endTime":' + endTime.toString() +
-      ',"lat":' + lat.toString() +
-      ',"lng":' + lng.toString() +
-      ',"platform":"' + platform +
-      '"platformUrl":"' + platformUrl + '"}';
+  String url = baseUrl + "schedule/" + eventId;
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  String bodyJson = json.encode({
+    "name": name,
+    "description": description,
+    "startTime": startTime.toString(),
+    "endTime": endTime.toString(),
+    "lat": lat.toString(),
+    "lng": lng.toString(),
+    "platform": platform,
+    "platformUrl": platformUrl
+  });
 
   print(bodyJson);
 
@@ -283,6 +283,22 @@ Future<bool> editEvent(String eventId, String name, String description, int star
         platform,
         platformUrl);
   }else{
+    print(response.body);
+    return false;
+  }
+}
+
+Future<bool> deleteEvent(String eventId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString("token");
+
+  String url = baseUrl + "schedule/" + eventId;
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+
+  final response = await http.delete(url, headers: headers);
+  if (response.statusCode == 200) {
+    return true;
+  } else {
     return false;
   }
 }

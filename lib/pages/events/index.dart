@@ -322,6 +322,48 @@ class EventsCard extends StatelessWidget{
     return formattedDate;
   }
 
+  void confirmDialog(BuildContext context) {
+    bool confirmed = false;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Confirmation", style: Theme.of(context).textTheme.headline1),
+          content: new Text("Are you sure you want to delete this event?", style: Theme.of(context).textTheme.bodyText2),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "OK",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                confirmed = true;
+                deleteEvent(event.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EventsHomeScreen()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context){
     final mqData = MediaQuery.of(context);
@@ -359,6 +401,7 @@ class EventsCard extends StatelessWidget{
                             overflow: TextOverflow.ellipsis,
                           )
                       ),
+                      if (isAdmin)
                       Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children:[
@@ -371,6 +414,12 @@ class EventsCard extends StatelessWidget{
                                       builder: (context) => EditEventPage(this.event)),
                                 );
                               },
+                            ),
+                            SizedBox(width: 10,),
+                            SolidButton(
+                              text: "Delete",
+                              color: Theme.of(context).colorScheme.secondary,
+                              onPressed: () => confirmDialog(context),
                             ),
                           ]
                       )
