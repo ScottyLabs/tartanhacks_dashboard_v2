@@ -337,7 +337,6 @@ Future<List> getUserHistory(String userID, String token) async {
       result[2].add(item);
       result[1][item.id] = val['hasCheckedIn'] as bool;
     });
-    print(result[1]);
     return result;
   } else {
     throw Exception("Failed to fetch user $userID history");

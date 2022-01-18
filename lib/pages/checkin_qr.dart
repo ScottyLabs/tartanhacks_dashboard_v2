@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:thdapp/api.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
@@ -92,7 +91,6 @@ class IDCheckInHeader extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
-
             onPressed: () async {
               String id = _eventIDController.text;
               if (id != null && id != "") {
@@ -136,6 +134,7 @@ class QREnlarged extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String id = Provider.of<CheckInItemsModel>(context).userID;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -146,21 +145,10 @@ class QREnlarged extends StatelessWidget {
 
         SizedBox(height: 8,),
         GradBox(
-          height: 250,
-          width: 250,
-          child: FutureBuilder(
-            future: getCurrentUserID(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting)
-                return Center(child: CircularProgressIndicator(),);
-              else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
-                return QrImage(
-                  data: snapshot.data,
-                  version: QrVersions.auto,
-                  foregroundColor: Colors.black,
-                );
-              else return Center(child: Text("Error"),);
-            },
+          child: QrImage(
+            data: id,
+            version: QrVersions.auto,
+            foregroundColor: Colors.black,
           ),
         ),
         SizedBox(height: 15,),
