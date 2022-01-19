@@ -480,7 +480,7 @@ Future<Project> newProject(BuildContext context, String name, String desc, Strin
     Project project = new Project.fromJson(data);
     return project;
   } else {
-    return null;
+    return Future.error("Error");
   }
 }
 
@@ -502,7 +502,8 @@ Future<Project> editProject(BuildContext context, String name, String desc, Stri
     Project project = new Project.fromJson(data);
     return project;
   } else {
-    return null;
+    return Future.error("Error");
+    //errorDialog(context, "Error", json.decode(response.body)['message']);
   }
 }
 

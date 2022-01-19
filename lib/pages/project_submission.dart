@@ -218,6 +218,73 @@ class _ProjSubmitState extends State<ProjSubmit> {
     }
   }
 
+  void submitDialog (BuildContext context) {
+    Future proj;
+
+    if(team == null){
+      errorDialog(context, "Error", "You are not in a team!");
+      return;
+    } else if (projId != null){
+      proj = editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    } else {
+      proj = newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder(
+          future: proj,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Success", style: Theme.of(context).textTheme.headline1),
+                content: new Text("Project info was saved.", style: Theme.of(context).textTheme.bodyText2),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Error", style: Theme.of(context).textTheme.headline1),
+                content: new Text("Project info failed to save. Please try again.", style: Theme.of(context).textTheme.bodyText2),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            }
+            return AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: new Text("Processing...", style: Theme.of(context).textTheme.headline1),
+              content: Container(
+                  alignment: Alignment.center,
+                  height: 70,
+                  child: CircularProgressIndicator()
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -284,7 +351,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
                                               _formKey.currentState.save();
 
-                                              submitProj(context);
+                                              submitDialog(context);
                                             },
                                         ),
                                         SolidButton(
