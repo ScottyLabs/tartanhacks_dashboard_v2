@@ -208,16 +208,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
-  void submitProj(BuildContext context) {
-    if(team == null){
-      errorDialog(context, "Error", "You are not in a team!");
-    } else if (projId != null){
-      editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
-    } else {
-      newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
-    }
-  }
-
   void submitDialog (BuildContext context) {
     Future proj;
 

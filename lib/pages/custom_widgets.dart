@@ -158,7 +158,7 @@ class SolidButton extends StatelessWidget{
   Color color;
   Color textColor;
 
-  SolidButton({this.text, this.onPressed, this.child, this.color});
+  SolidButton({this.text, this.onPressed, this.child, this.color, this.textColor});
 
   @override
   Widget build(BuildContext context) {
