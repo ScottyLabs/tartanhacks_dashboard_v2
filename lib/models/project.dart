@@ -8,6 +8,7 @@ class Project{
   final String video;
   final String team; //objectid
   final List prizes; //objectid
+  final bool presentingVirtually;
 
   Project(
       {this.id,
@@ -18,7 +19,8 @@ class Project{
       this.slides,
       this.video,
       this.team,
-      this.prizes});
+      this.prizes,
+      this.presentingVirtually});
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
     Project project = new Project(
@@ -31,6 +33,7 @@ class Project{
       video: parsedJson['video'],
       team: parsedJson['team'],
       prizes: parsedJson['prizes'],
+      presentingVirtually: parsedJson['presentingVirtually']
     );
     return project;
   }

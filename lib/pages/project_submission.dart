@@ -53,6 +53,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       _githubUrl = proj.url;
       _presUrl = proj.slides;
       _vidUrl = proj.video;
+      isPresenting = proj.presentingVirtually;
       prizes = proj.prizes;
 
       nameController.text = _projName;
@@ -193,7 +194,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 style: Theme.of(context).textTheme.bodyText2),
               Switch(
                 activeColor: Theme.of(context).colorScheme.secondary,
-                activeTrackColor: Theme.of(context).colorScheme.primary,
+                activeTrackColor: Theme.of(context).colorScheme.onPrimary,
                 inactiveTrackColor: Theme.of(context).colorScheme.onSurface,
                 value: isPresenting,
                 onChanged: (value) {
@@ -211,9 +212,9 @@ class _ProjSubmitState extends State<ProjSubmit> {
     if(team == null){
       errorDialog(context, "Error", "You are not in a team!");
     } else if (projId != null){
-      editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, projId, token);
+      editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
     } else {
-      newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, projId, token);
+      newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
     }
   }
 

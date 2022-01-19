@@ -17,7 +17,7 @@ import 'pages/custom_widgets.dart';
 
 SharedPreferences prefs;
 
-const baseUrl = "https://tartanhacks-backend.herokuapp.com/";
+const baseUrl = "https://tartanhacks-backend.herokuapp.com/"; //"https://stg-backend.tartanhacks.com/"
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -460,7 +460,7 @@ Future<Project> getProject(String id, String token) async {
   }
 }
 
-Future<Project> newProject(BuildContext context, String name, String desc, String teamId, String slides, String video, String ghurl, String id, String token) async {
+Future<Project> newProject(BuildContext context, String name, String desc, String teamId, String slides, String video, String ghurl, bool isVirtual, String id, String token) async {
   String url = baseUrl + "projects";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   String body = json.encode({
@@ -469,7 +469,8 @@ Future<Project> newProject(BuildContext context, String name, String desc, Strin
     "team": teamId,
     "slides": slides,
     "video": video,
-    "url": ghurl
+    "url": ghurl,
+    "presentingVirtually": isVirtual
   });
   print(body);
   final response = await http.post(url, headers: headers, body: body);
@@ -479,12 +480,11 @@ Future<Project> newProject(BuildContext context, String name, String desc, Strin
     Project project = new Project.fromJson(data);
     return project;
   } else {
-    errorDialog(context, "Error", json.decode(response.body)['message']);
     return null;
   }
 }
 
-Future<Project> editProject(BuildContext context, String name, String desc, String slides, String video, String ghurl, String id, String token) async {
+Future<Project> editProject(BuildContext context, String name, String desc, String slides, String video, String ghurl, bool isVirtual, String id, String token) async {
   String url = baseUrl + "projects/" + id;
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   String body = json.encode({
@@ -492,7 +492,8 @@ Future<Project> editProject(BuildContext context, String name, String desc, Stri
     "description": desc,
     "slides": slides,
     "video": video,
-    "url": ghurl
+    "url": ghurl,
+    "presentingVirtually": isVirtual
   });
   final response = await http.patch(url, headers: headers, body: body);
 
@@ -501,7 +502,6 @@ Future<Project> editProject(BuildContext context, String name, String desc, Stri
     Project project = new Project.fromJson(data);
     return project;
   } else {
-    errorDialog(context, "Error", json.decode(response.body)['message']);
     return null;
   }
 }
