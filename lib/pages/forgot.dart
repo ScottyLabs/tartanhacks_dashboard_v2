@@ -30,6 +30,18 @@ class _ForgotState extends State<Forgot>{
     super.dispose();
   }
 
+  void passwordRecovery(BuildContext context) async {
+    OverlayEntry loading = LoadingOverlay(context);
+    Overlay.of(context).insert(loading);
+    bool success = await resetPassword(_emailcontroller.text);
+    loading.remove();
+    if (success) {
+      errorDialog(context, "Success", "Please check your email address to reset your password.");
+    } else {
+      errorDialog(context, "Error", "We encountered an error while resetting your password. Please contact ScottyLabs for help.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -89,7 +101,7 @@ class _ForgotState extends State<Forgot>{
                               width: 200,
                               height: 45,
                               onTap: () {
-                                resetPassword(context, _emailcontroller.text);
+                                passwordRecovery(context);
                               },
                               child: Text("Recover Password",
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
