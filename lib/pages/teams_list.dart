@@ -162,6 +162,7 @@ class _TeamsListState extends State<TeamsList> {
     );
     return Card(
         margin: const EdgeInsets.all(12),
+        color: Theme.of(context).colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -236,18 +237,13 @@ class _TeamsListState extends State<TeamsList> {
                                               //height: screenHeight*0.2,
                                               child: _buildCreateTeamBtn()
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                              //height: screenHeight*0.2,
-                                              child: _buildListHeader()
-                                          ),
                                           if (teamInfos != null)
                                           Expanded(
                                             child: ListView.builder(
 
                                               itemCount: numTeams,
                                               itemBuilder: (BuildContext context, int index){
-                                                return teamWidgetList[index];
+                                                return _buildTeamEntry(index);
                                               },
                                             ),
                                           )
