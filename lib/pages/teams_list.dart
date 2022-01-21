@@ -24,6 +24,8 @@ class _TeamsListState extends State<TeamsList> {
   int numTeams;
   List<Map> _teamList = <Map>[];
   List<Widget> teamWidgetList = <Widget>[];
+  List<dynamic> requestsList;
+  List requestedTeams = [];
 
   @override
   initState() {
@@ -38,6 +40,13 @@ class _TeamsListState extends State<TeamsList> {
     numTeams = teamInfos.length;
     _populateTeamList();
     _buildTeamsList();
+    requestsList = await getUserMail(token);
+    requestedTeams = [];
+    for (var r in requestsList) {
+      if (r['type'] == "JOIN") {
+        requestedTeams.add(r['team']['_id']);
+      }
+    }
     setState(() {
       });
   }
@@ -63,10 +72,9 @@ class _TeamsListState extends State<TeamsList> {
               onPressed: (){
                 print("opened mail");
                 Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>
-                  viewInvites()),
-                );
+                  context,
+                  MaterialPageRoute(builder: (context) => viewInvites()),
+                ).then((value) => getData());
               }
           )
         ]
@@ -114,27 +122,34 @@ class _TeamsListState extends State<TeamsList> {
   }
 
   Widget _buildTeamJoinBtn(String teamID){
-    SolidButton btn = SolidButton(
-      text: " Join ",
-
-        onPressed: () {
-          requestTeam(teamID, token);
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(builder: (context) =>
-          //         ViewTeam(),
-          //         settings: RouteSettings(
-          //           arguments: teamID,
-          //         )
-          //     ));
-        }
-    );
-    return btn;
+    if (requestedTeams.contains(teamID)) {
+      return SolidButton(
+        text: "Awaitng response",
+        color: Colors.grey,
+        onPressed: null,
+      );
+    } else {
+      return SolidButton(
+        text: "Ask to join",
+          onPressed: () async {
+            bool success = await requestTeam(teamID, token);
+            if (success) {
+              errorDialog(context, "Success", "A join request was sent to this team");
+              requestedTeams.add(teamID);
+              setState(() {
+                
+              });
+            } else {
+              errorDialog(context, "Error", "An error occurred with joining this team. Please try again.");
+            }
+          }
+      );
+    }
   }
 
   Widget _buildTeamDetailsBtn(String teamID){
     SolidButton btn = SolidButton(
-        text: " View Details ",
+        text: "Details",
         onPressed: () {
           Navigator.push(
             context,
@@ -161,7 +176,7 @@ class _TeamsListState extends State<TeamsList> {
       ],
     );
     return Card(
-        margin: const EdgeInsets.all(12),
+        margin: const EdgeInsets.all(4),
         color: Theme.of(context).colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.all(24),
