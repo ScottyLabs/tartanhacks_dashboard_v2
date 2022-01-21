@@ -42,6 +42,13 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
+  void getBookmarks() async {
+    bookmarks = await getBookmarkIdsList(token);
+    setState(() {
+
+    });
+  }
+
 
   void searchResultCounting(String keyword) {
     searchPressed = true;
@@ -131,7 +138,7 @@ class _SponsorsState extends State<Sponsors> {
                                           alignment: Alignment.topLeft,
                                           //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
 
-                                          child: Text("WELCOME BACK TO TARTANHACKS!", style: Theme.of(context).textTheme.headline1),
+                                          child: Text("Welcome to TartanHacks!", style: Theme.of(context).textTheme.headline1),
                                         ),
                                         SizedBox(height: 10),
                                         /*Container(
@@ -202,7 +209,7 @@ class _SponsorsState extends State<Sponsors> {
                                                         settings: RouteSettings(
                                                           arguments: id,
                                                         )),
-                                                  );
+                                                  ).then((value) => getBookmarks());
                                                 } else {
                                                   errorDialog(context, "Error", "Invalid user ID.");
                                                 }
@@ -234,14 +241,15 @@ class _SponsorsState extends State<Sponsors> {
                                                           bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
                                                           isBookmark: isBookmark,
                                                           toggleFn: isBookmark ? removeBookmark : newBookmark,
-                                                          bmMap: bookmarks
+                                                          bmMap: bookmarks,
+                                                          updateBM: getBookmarks
                                                       );
                                                     }
                                                 )
                                             )
                                         )
                                         else
-                                          Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onBackground,))
+                                          Center(child: CircularProgressIndicator())
                                       ] //children
                                   )
                               )
@@ -267,9 +275,10 @@ class InfoTile extends StatelessWidget {
   Map bmMap;
 
   Function toggleFn;
+  Function updateBM;
 
   InfoTile({this.name, this.team, this.bio, this.participantId,
-    this.bookmarkId, this.isBookmark, this.toggleFn, this.bmMap});
+    this.bookmarkId, this.isBookmark, this.toggleFn, this.bmMap, this.updateBM});
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +300,7 @@ class InfoTile extends StatelessWidget {
                           settings: RouteSettings(
                             arguments: participantId,
                           )),
-                    );
+                    ).then((value) => updateBM());
                   },
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
