@@ -300,57 +300,19 @@ class CheckInEventList extends StatelessWidget {
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                             )));
-                    await model.checkInUser(events[index].id, uid);
-                    Navigator.pop(context);
+                    try {
+                      // TODO Error handling doesn't actually work due to the backend endpoint bad request issue
+                      await model.checkInUser(events[index].id, uid);
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      //   content: Text("Checked in!"),
+                      // ));
+                    } on Exception catch (e) {
+                      print(e);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Error checking in"),
+                      ));
+                    } finally {Navigator.pop(context);}
                   }
-                }
-                // Else user self-check in
-                else {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (dialogContext) {
-                      bool isLoading = false;
-                      return StatefulBuilder(
-                        builder: (context, setState) {
-                          return isLoading ? Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          ) : AlertDialog(
-                            title: Text("Confirm Check In"),
-                            content: RichText(
-                              text: TextSpan(
-                                  text: "You are checking in to ",
-                                  style: DefaultTextStyle.of(context).style.copyWith(color: Colors.black),
-                                  children: [
-                                    TextSpan(
-                                        text: "${events[index].name}. \n\n",
-                                        style: TextStyle(fontWeight: FontWeight.bold)
-                                    ),
-                                    TextSpan(text: "Ensure that you have selected the correct event before confirming you attendance.")
-                                  ]
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                child: Text("Cancel"),
-                                onPressed: () => Navigator.pop(dialogContext),
-                              ),
-                              TextButton(
-                                  child: Text("Confirm"),
-                                  onPressed: () async {
-                                    setState(() {isLoading = true;});
-                                    await model.selfCheckIn(events[index].id);
-                                    Navigator.pop(dialogContext);
-                                  }
-                              )
-                            ],
-                          );
-                        }
-                      );
-                    }
-                  );
                 }
               },
             );

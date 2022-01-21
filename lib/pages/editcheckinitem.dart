@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
-import 'package:thdapp/api.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
