@@ -238,7 +238,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                                               return ListView.builder(
                                                   itemCount: 1,
                                                   itemBuilder: (BuildContext context, int index){
-                                                    return PlaceHolder();
+                                                    return Center(child: CircularProgressIndicator());
                                                   },);
                                             }
                                             return ListView.builder(
