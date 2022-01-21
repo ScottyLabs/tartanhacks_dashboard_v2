@@ -12,6 +12,7 @@ import 'models/project_bookmark.dart';
 import 'models/lb_entry.dart';
 import 'models/prize.dart';
 import 'models/project.dart';
+import 'models/team.dart';
 import 'pages/custom_widgets.dart';
 
 
@@ -518,5 +519,20 @@ Future enterPrize(BuildContext context, String projId, String prizeId, String to
   } else {
     errorDialog(context, "Error", json.decode(response.body)['message']);
     return false;
+  }
+}
+
+Future<Team> getTeamById(String id, String token) async {
+  String url = baseUrl + "users/" + id + "/team";
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    Team team = new Team.fromJson(data);
+    return team;
+  } else {
+    print(response.body.toString());
+    return null;
   }
 }

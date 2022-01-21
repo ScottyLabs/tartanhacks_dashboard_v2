@@ -154,6 +154,7 @@ Future<void> leaveTeam(String token) async {
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully left");
+    return;
   }
 
   print(json.decode(response.body)['message'].toString() + "Unsuccessful");

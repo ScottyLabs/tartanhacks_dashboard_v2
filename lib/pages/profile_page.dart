@@ -44,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     userData = await getProfile(id, token);
 
-    Team userTeam = await getUserTeam(token);
+    Team userTeam = await getTeamById(id, token);
     if (userTeam != null) {
       teamName = userTeam.name;
     } else {
@@ -61,8 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-
-      errorDialog(context, "Error", 'Could not launch $url');
+      errorDialog(context, "Error", 'Could not launch resume url.');
     }
   }
 
@@ -71,8 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-
-      errorDialog(context, "Error", 'Could not launch $url');
+      errorDialog(context, "Error", 'Could not launch GitHub url.');
     }
   }
 
@@ -105,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        TopBar(backflag: userData != null && !isSelf),
+                        TopBar(backflag: true),
                         Stack(
                           children: [
                             Column(

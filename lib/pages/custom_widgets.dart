@@ -823,8 +823,8 @@ class LoadingScreen extends StatelessWidget {
                       width: screenWidth,
                       alignment: Alignment.topCenter,
                       padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
-                          : Image.asset("lib/logos/thLogoDark.png")
+                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
+                          : Image.asset("lib/logos/thLogoLight.png")
                   ),
                   Text("Tartanhacks",
                     style: Theme.of(context).textTheme.headline1,
