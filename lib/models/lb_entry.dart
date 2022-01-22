@@ -9,7 +9,7 @@ class LBEntry {
   factory LBEntry.fromJson(Map<String, dynamic> parsedJson) {
     return new LBEntry(
       user: parsedJson['user'],
-      totalPoints: parsedJson['totalPoints'],
+      totalPoints: parsedJson['totalPoints'] ?? 0,
       displayName: parsedJson['displayName'],
       rank: parsedJson['rank']
     );
