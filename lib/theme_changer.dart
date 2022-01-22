@@ -17,6 +17,7 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
       ),
       inputDecorationTheme: InputDecorationTheme(
           labelStyle: TextStyle(color: text, fontWeight: FontWeight.bold),
+          errorStyle: TextStyle(color: cScheme.secondary),
           isDense: true,
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text),
@@ -34,6 +35,10 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
               borderSide: BorderSide(width: 2.0, color: text),
               borderRadius: BorderRadius.all(Radius.circular(15.0))
           ),
+        focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: text),
+            borderRadius: BorderRadius.all(Radius.circular(15.0))
+        ),
       )
   );
 }

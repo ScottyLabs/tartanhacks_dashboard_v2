@@ -89,7 +89,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project name is required';
@@ -108,7 +107,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project description is required';
@@ -128,7 +126,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: githubController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -147,7 +144,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       controller: slidesController,
       keyboardType: TextInputType.url,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -167,8 +163,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
       controller: videoController,
       keyboardType: TextInputType.url,
       validator: (String value) {
-        if (value.isEmpty) {
-          return 'URL is Required';
+        if (!isPresenting && value.isEmpty) {
+          return 'Video is required if not presenting live.';
         }
         return null;
       },
