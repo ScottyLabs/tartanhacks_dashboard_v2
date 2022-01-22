@@ -80,6 +80,7 @@ Future<Profile> getProfile(String id, String token) async {
 
 Future<List> getStudents(String token) async {
   List listOfUsers = [];
+  List listOfTeams = [];
   String url = baseUrl + "users";
   Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.get(url, headers: headers);
@@ -90,8 +91,11 @@ Future<List> getStudents(String token) async {
     for (String id in ids) {
       Profile prof = await getProfile(id, token);
       listOfUsers.add(prof);
+
+      Team team = await getTeamById(id, token);
+      listOfTeams.add(team);
     }
-    return [ids, listOfUsers];
+    return [ids, listOfUsers, listOfTeams];
   }
 }
 

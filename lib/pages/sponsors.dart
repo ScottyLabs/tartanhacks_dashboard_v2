@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import '../models/profile.dart';
+import '../models/team.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:barras/barras.dart';
@@ -18,6 +19,7 @@ class _SponsorsState extends State<Sponsors> {
   String myName;
   List studentIds;
   List students; // bunch of Profiles
+  List studentTeams;
   Map bookmarks; // dictionary of participant id : actual bookmark id
   int searchResultCount;
   bool searchPressed;
@@ -34,6 +36,7 @@ class _SponsorsState extends State<Sponsors> {
     List studentData = await getStudents(token);
     studentIds = studentData[0];
     students = studentData[1];
+    studentTeams = studentData[2];
     print('students: ' + students.toString());
     bookmarks = await getBookmarkIdsList(token);
     print('bookmarks: ' + bookmarks.toString());
@@ -235,7 +238,7 @@ class _SponsorsState extends State<Sponsors> {
                                                       bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
                                                       return InfoTile(
                                                           name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
-                                                          team: "Cool Team",
+                                                          team: (studentTeams[index] != null) ? studentTeams[index].name : "No team",
                                                           bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                           participantId: studentIds[index],
                                                           bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
