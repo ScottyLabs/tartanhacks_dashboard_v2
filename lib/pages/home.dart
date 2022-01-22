@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/pages/team-api.dart';
+import 'package:thdapp/pages/teams_list.dart';
 import 'custom_widgets.dart';
 import 'package:charcode/charcode.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -10,6 +12,7 @@ import 'project_submission.dart';
 import 'profile_page.dart';
 import 'leaderboard.dart';
 import '../models/profile.dart';
+import '../models/team.dart';
 import 'checkin.dart';
 
 class Home extends StatefulWidget {
@@ -24,6 +27,7 @@ class _HomeState extends State<Home> {
   String token;
 
   Profile userData;
+  Team userTeam;
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -33,6 +37,7 @@ class _HomeState extends State<Home> {
     token = prefs.getString('token');
 
     userData = await getProfile(id, token);
+    userTeam = await getUserTeam(token);
 
     setState(() {
 
@@ -189,21 +194,38 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           SizedBox(height: 15),
-                          GradBox(
-                            width: screenWidth*0.9,
-                            height: 60,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-                                    ProjSubmit()),
-                              );
-                            },
-                            child: Text(
-                              "VIEW YOUR PROJECT",
-                              style: Theme.of(context).textTheme.headline2,
-                            ),
-                          )
+                          if (userTeam != null)
+                            GradBox(
+                              width: screenWidth*0.9,
+                              height: 60,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ProjSubmit()),
+                                );
+                              },
+                              child: Text(
+                                "VIEW YOUR PROJECT",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                            )
+                          else
+                            GradBox(
+                              width: screenWidth*0.9,
+                              height: 60,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      TeamsList()),
+                                );
+                              },
+                              child: Text(
+                                "JOIN A TEAM",
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                            )
                         ],
                       )
                   ],

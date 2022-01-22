@@ -190,8 +190,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 style: Theme.of(context).textTheme.bodyText2),
               Switch(
                 activeColor: Theme.of(context).colorScheme.secondary,
-                activeTrackColor: Theme.of(context).colorScheme.onPrimary,
-                inactiveTrackColor: Theme.of(context).colorScheme.onSurface,
+                activeTrackColor: Theme.of(context).colorScheme.onSurface,
+                inactiveTrackColor: Theme.of(context).colorScheme.surface,
                 value: isPresenting,
                 onChanged: (value) {
                   setState(() {
