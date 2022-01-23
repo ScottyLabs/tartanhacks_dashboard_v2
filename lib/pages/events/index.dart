@@ -392,7 +392,6 @@ class EventsCard extends StatelessWidget{
                             overflow: TextOverflow.ellipsis,
                           )
                       ),
-                      SizedBox(height: screenHeight*0.01),
                       SizedBox(
                           width: screenWidth * 0.4,
                           child:Text(event.description,
@@ -433,11 +432,12 @@ class EventsCard extends StatelessWidget{
                       SizedBox(
                           width: screenWidth * 0.265,
                           height: 170,
-                          child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(10)
-                              ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            alignment: Alignment.center,
                             child: Text(this.getTime((event.startTime).toString()) + "\n"  + this.formatDate((event.startTime).toString()),
                                 style: Theme.of(context).textTheme.headline2
                                     .copyWith(color: Theme.of(context).colorScheme.onPrimary),
