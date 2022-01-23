@@ -364,6 +364,15 @@ class EventsCard extends StatelessWidget{
     );
   }
 
+  _launchLink(BuildContext context) async {
+    String url = event.platformUrl;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      errorDialog(context, "Error", 'Could not launch event url.');
+    }
+  }
+
   @override
   Widget build(BuildContext context){
     final mqData = MediaQuery.of(context);
@@ -373,7 +382,7 @@ class EventsCard extends StatelessWidget{
         padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: GradBox(
             width: 100,
-            height: 200,
+            height: 220,
             alignment: Alignment.topLeft,
             padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
             child: Row(
@@ -396,8 +405,36 @@ class EventsCard extends StatelessWidget{
                           width: screenWidth * 0.4,
                           child:Text(event.description,
                             style: Theme.of(context).textTheme.bodyText2,
-                            maxLines: 3,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
+                          )
+                      ),
+                      if (event.platform == 'IN_PERSON')
+                      SizedBox(
+                          width: screenWidth * 0.4,
+                          child:Text("IN PERSON: " + event.location,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                      )
+                      else
+                      SizedBox(
+                          width: screenWidth * 0.45,
+                          child: Row(
+                            children: [
+                              Text("${event.platform}:",
+                                style: Theme.of(context).textTheme.bodyText2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(width: 8),
+                              SolidButton(
+                                child: Icon(Icons.link,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  size: 35
+                                ),
+                                onPressed: () {_launchLink(context);},
+                              )
+                            ]
                           )
                       ),
                       if (isAdmin)
