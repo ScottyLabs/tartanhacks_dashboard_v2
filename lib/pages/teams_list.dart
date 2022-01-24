@@ -124,7 +124,7 @@ class _TeamsListState extends State<TeamsList> {
   Widget _buildTeamJoinBtn(String teamID){
     if (requestedTeams.contains(teamID)) {
       return SolidButton(
-        text: "Awaitng response",
+        text: "Awaiting response",
         color: Colors.grey,
         onPressed: null,
       );
