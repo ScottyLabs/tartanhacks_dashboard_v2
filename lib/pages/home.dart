@@ -1,22 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:charcode/charcode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/pages/team-api.dart';
 import 'package:thdapp/pages/teams_list.dart';
-import 'custom_widgets.dart';
-import 'package:charcode/charcode.dart';
-import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
-import 'project_submission.dart';
-import 'profile_page.dart';
-import 'leaderboard.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../models/discord.dart';
 import '../models/profile.dart';
 import '../models/team.dart';
 import 'checkin.dart';
-import '../models/discord.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/services.dart';
+import 'custom_widgets.dart';
+import 'leaderboard.dart';
+import 'profile_page.dart';
+import 'project_submission.dart';
 
 class Home extends StatefulWidget {
   @override
