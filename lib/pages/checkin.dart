@@ -153,7 +153,7 @@ class QRHeader extends StatelessWidget {
               child: QrImage(
                 data: id,
                 version: QrVersions.auto,
-                foregroundColor: Colors.white,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
               )
             ),
           )
@@ -290,28 +290,26 @@ class CheckInEventList extends StatelessWidget {
                 ));
               },
               onCheck: () async {
-                if (editable) {
-                  final String uid = await Barras.scan(context);
-                  if (uid != null && uid != "") {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) => Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            )));
-                    try {
-                      await model.checkInUser(events[index].id, uid);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Checked in!"),
-                      ));
-                    } on Exception catch (e) {
-                      print(e);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("Error checking in"),
-                      ));
-                    } finally {Navigator.pop(context);}
-                  }
+                final String uid = await Barras.scan(context);
+                if (uid != null && uid != "") {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) => Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          )));
+                  try {
+                    await model.checkInUser(events[index].id, uid);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Checked in!"),
+                    ));
+                  } on Exception catch (e) {
+                    print(e);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Error checking in"),
+                    ));
+                  } finally {Navigator.pop(context);}
                 }
               },
             );

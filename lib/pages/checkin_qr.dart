@@ -170,7 +170,7 @@ class IDCheckInHeader extends StatelessWidget {
             },
             child: Icon(
               Icons.keyboard_return_rounded,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
         )
@@ -199,9 +199,10 @@ class QREnlarged extends StatelessWidget {
         SizedBox(height: 8,),
         GradBox(
           child: QrImage(
+            size: 250,
             data: id,
             version: QrVersions.auto,
-            foregroundColor: Colors.black,
+            foregroundColor: Theme.of(context).accentColor,
           ),
         ),
         SizedBox(height: 15,),

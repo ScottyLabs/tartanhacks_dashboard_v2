@@ -7,6 +7,7 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
       fontFamily: 'Aktiv Grotesk',
       colorScheme: cScheme,
       scaffoldBackgroundColor: background,
+      accentColor: text,
       textTheme: TextTheme(
         headline1: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: text),
         headline2: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: text),
