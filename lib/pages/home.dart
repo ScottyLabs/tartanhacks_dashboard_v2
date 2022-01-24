@@ -16,6 +16,7 @@ import '../models/team.dart';
 import 'checkin.dart';
 import '../models/discord.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -59,6 +60,91 @@ class _HomeState extends State<Home> {
     } else {
       errorDialog(context, "Error", 'Could not launch Discord Server.');
     }
+  }
+
+  void discordVerifyDialog(BuildContext context) {
+    Future discordCode = getDiscordInfo(token);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder(
+          future: discordCode,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Verification Code",
+                    style: Theme.of(context).textTheme.headline1),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    new Text(
+                      "When you join our server, you'll be prompted to enter the following verification code by the Discord Bot running the server. This code will expire in 10 minutes.\n",
+                      style: Theme.of(context).textTheme.bodyText2
+                    ),
+                    new Text(
+                      snapshot.data.code,
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center,
+                    )
+                  ],
+                ),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "COPY",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: snapshot.data.code));
+                    },
+                  ),
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Error",
+                    style: Theme.of(context).textTheme.headline1),
+                content: new Text(
+                    "We ran into an error while getting your Discord verification code",
+                    style: Theme.of(context).textTheme.bodyText2),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            }
+            return AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: new Text("Verifying...",
+                  style: Theme.of(context).textTheme.headline1),
+              content: Container(
+                  alignment: Alignment.center,
+                  height: 70,
+                  child: CircularProgressIndicator()),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -214,7 +300,9 @@ class _HomeState extends State<Home> {
                                 ),
                                 SolidButton(
                                   text: "Get Verified",
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    discordVerifyDialog(context);
+                                  },
                                 )
                               ])),
                     ],
