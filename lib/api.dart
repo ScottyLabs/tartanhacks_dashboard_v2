@@ -207,7 +207,8 @@ Future<String> addBookmark(String token, String participantId) async {
   }
 }
 
-Future<List<Event>> getEvents() async {
+
+Future<List<List<Event>>> getEvents() async {
   var url = baseUrl + 'schedule/';
   final response = await http.get(url);
   print(response.statusCode);
@@ -215,8 +216,18 @@ Future<List<Event>> getEvents() async {
     List<Event> eventsList;
     var data = json.decode(response.body) as List;
     eventsList = data.map<Event>((json) => Event.fromJson(json)).toList();
-    print(response.body);
-    return eventsList;
+    List<Event> pastEvents = [];
+    List<Event> upcomingEvents = [];
+    var currentTime = DateTime.now().microsecondsSinceEpoch;
+
+    for (int i = 0; i < eventsList.length; i++) {
+      if (currentTime > eventsList[i].endTime) {
+        pastEvents.insert(0,eventsList[i]);
+      } else {
+        upcomingEvents.add(eventsList[i]);
+      }
+    }
+    return [upcomingEvents, pastEvents];
   } else {
     return null;
   }

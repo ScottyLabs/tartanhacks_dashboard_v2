@@ -21,25 +21,22 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   bool isAdmin = false;
 
   bool isSponsor = false;
-  List eventData = [1,2,3,4,5];
+  List eventData = [1, 2, 3, 4, 5];
 
-  bool isSwitched = false;
+  bool viewPast = false;
   int selectedIndex = 1;
-  List<Event> events;
 
   @override
-  initState(){
+  initState() {
     super.initState();
     getData();
   }
 
-  getData() async{
+  getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isAdmin = prefs.getBool("admin");
     isSponsor = prefs.getString("company") != null;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   Widget eventName(data) {
@@ -47,13 +44,13 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
         alignment: Alignment.centerLeft,
         child: RichText(
             text: TextSpan(
-              text: '${data.name}',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 22,
-                  fontFamily: 'TerminalGrotesque'),
-            )));
+          text: '${data.name}',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+              fontSize: 22,
+              fontFamily: 'TerminalGrotesque'),
+        )));
   }
 
   // description for the event
@@ -64,17 +61,17 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             width: MediaQuery.of(context).size.width * 0.60,
             child: RichText(
                 text: TextSpan(
-                  text: '\n${data.description}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 10,
-                  ),
-                ))));
+              text: '\n${data.description}',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 10,
+              ),
+            ))));
   }
 
   String formatDate(String unixDate) {
     var date =
-    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
@@ -82,7 +79,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
 
   String getTime(String unixDate) {
     var date =
-    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+        new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
@@ -124,7 +121,6 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             height: 24,
             color: Colors.white,
           ),
-
           tooltip: 'Zoom Link!',
           color: Color.fromARGB(255, 37, 130, 242),
           onPressed: () => launch('${data.zoom_link}'));
@@ -170,7 +166,6 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -179,90 +174,85 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     return Scaffold(
         body: Container(
             child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TopBar(isSponsor: isSponsor,),
-                        Stack(
-                          children: [
-                            Column(
-                                children:[
-                                  SizedBox(height:screenHeight * 0.05),
-                                  CustomPaint(
-                                      size: Size(screenWidth, screenHeight * 0.75),
-                                      painter: CurvedTop(color1: Theme.of(context).colorScheme.primary,
-                                          color2: Theme.of(context).colorScheme.secondaryVariant)
-                                  ),
-                                ]
-                            ),
-                            //create new event button
-                            Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                Container(
-                                    width: screenWidth,
-                                    padding: EdgeInsets.fromLTRB(25, 10, 0, 0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-
-                                      ],
-                                    )
-                                ),
-                                  if (isAdmin)
-                                  GradBox(
-                                    width: screenWidth * 0.9,
-                                    height: 60,
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => EditEventPage(null)),
-                                      );
-                                    },
-                                    child: Text(
-                                      "CREATE NEW EVENT",
-                                      style: Theme.of(context).textTheme.headline2,
-                                    ),
-                                  ),
-                                  Container(
-                                      alignment: Alignment.center,
-                                      padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            maxHeight: screenHeight*0.65
-                                        ),
-                                        child: FutureBuilder(
-                                          future: getEvents(),
-                                          builder: (context, eventsSnapshot){
-                                            if(eventsSnapshot.data == null || eventsSnapshot.hasData == null){
-                                              return ListView.builder(
-                                                  itemCount: 1,
-                                                  itemBuilder: (BuildContext context, int index){
-                                                    return Center(child: CircularProgressIndicator());
-                                                  },);
-                                            }
-                                            return ListView.builder(
-                                              itemCount: eventsSnapshot.data.length,
-                                              itemBuilder: (BuildContext context, int index){
-                                                return EventsCard(eventsSnapshot.data[index], isAdmin);
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      )
-                                  )
-                            ]),
-                          ],
-                        )
-                      ],
-                    )));
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        TopBar(
+          isSponsor: isSponsor,
+        ),
+        Stack(
+          children: [
+            Column(children: [
+              SizedBox(height: screenHeight * 0.05),
+              CustomPaint(
+                  size: Size(screenWidth, screenHeight * 0.75),
+                  painter: CurvedTop(
+                      color1: Theme.of(context).colorScheme.primary,
+                      color2: Theme.of(context).colorScheme.secondaryVariant)),
+            ]),
+            //create new event button
+            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              SolidButton(
+                text: viewPast ? "View Upcoming Events" : "View Past Events",
+                onPressed: () {
+                  setState(() {
+                    viewPast = !viewPast;
+                  });
+                },
+              ),
+              if (isAdmin)
+                GradBox(
+                  width: screenWidth * 0.9,
+                  height: 60,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditEventPage(null)),
+                    );
+                  },
+                  child: Text(
+                    "CREATE NEW EVENT",
+                    style: Theme.of(context).textTheme.headline2,
+                  ),
+                ),
+              Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: screenHeight * 0.65),
+                    child: FutureBuilder(
+                      future: getEvents(),
+                      builder: (context, eventsSnapshot) {
+                        if (eventsSnapshot.data == null ||
+                            eventsSnapshot.hasData == null) {
+                          return ListView.builder(
+                            itemCount: 1,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Center(child: CircularProgressIndicator());
+                            },
+                          );
+                        }
+                        return ListView.builder(
+                          itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return EventsCard(
+                                (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
+                          },
+                        );
+                      },
+                    ),
+                  ))
+            ]),
+          ],
+        )
+      ],
+    )));
   }
 }
 
-class PlaceHolder extends StatelessWidget{
-
+class PlaceHolder extends StatelessWidget {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
@@ -280,43 +270,36 @@ class PlaceHolder extends StatelessWidget{
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
-                  children:[
-                    SizedBox(
-                      width: screenWidth * 0.5,
-                      child:Text("Loading",
-                      style: Theme.of(context).textTheme.headline2,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      )
-                    ),
-
-                  ]
-                    ),
-
+                    children: [
+                      SizedBox(
+                          width: screenWidth * 0.5,
+                          child: Text(
+                            "Loading",
+                            style: Theme.of(context).textTheme.headline2,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                    ]),
               ],
-            )
-        )
-    );
+            )));
   }
 }
 
-class EventsCard extends StatelessWidget{
+class EventsCard extends StatelessWidget {
   final Event event;
   final bool isAdmin;
 
   EventsCard(this.event, this.isAdmin);
 
   String formatDate(String unixDate) {
-    var date =
-    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
   }
 
   String getTime(String unixDate) {
-    var date =
-    new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
@@ -330,8 +313,10 @@ class EventsCard extends StatelessWidget{
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: new Text("Confirmation", style: Theme.of(context).textTheme.headline1),
-          content: new Text("Are you sure you want to delete this event?", style: Theme.of(context).textTheme.bodyText2),
+          title: new Text("Confirmation",
+              style: Theme.of(context).textTheme.headline1),
+          content: new Text("Are you sure you want to delete this event?",
+              style: Theme.of(context).textTheme.bodyText2),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             new TextButton(
@@ -353,8 +338,7 @@ class EventsCard extends StatelessWidget{
                 deleteEvent(event.id);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => EventsHomeScreen()),
+                  MaterialPageRoute(builder: (context) => EventsHomeScreen()),
                 );
               },
             ),
@@ -374,7 +358,7 @@ class EventsCard extends StatelessWidget{
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
@@ -392,99 +376,103 @@ class EventsCard extends StatelessWidget{
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children:[
+                    children: [
                       SizedBox(
                           width: screenWidth * 0.5,
-                          child:Text(event.name,
+                          child: Text(
+                            event.name,
                             style: Theme.of(context).textTheme.headline2,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                          )
-                      ),
+                          )),
                       SizedBox(
                           width: screenWidth * 0.4,
-                          child:Text(event.description,
+                          child: Text(
+                            event.description,
                             style: Theme.of(context).textTheme.bodyText2,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                          )
-                      ),
+                          )),
                       if (event.platform == 'IN_PERSON')
-                      SizedBox(
-                          width: screenWidth * 0.4,
-                          child:Text("IN PERSON: " + event.location,
-                            style: Theme.of(context).textTheme.bodyText2,
-                            overflow: TextOverflow.ellipsis,
-                          )
-                      )
+                        SizedBox(
+                            width: screenWidth * 0.4,
+                            child: Text(
+                              "IN PERSON: " + event.location,
+                              style: Theme.of(context).textTheme.bodyText2,
+                              overflow: TextOverflow.ellipsis,
+                            ))
                       else
-                      SizedBox(
-                          width: screenWidth * 0.45,
-                          child: Row(
-                            children: [
-                              Text("${event.platform}:",
+                        SizedBox(
+                            width: screenWidth * 0.45,
+                            child: Row(children: [
+                              Text(
+                                "${event.platform}:",
                                 style: Theme.of(context).textTheme.bodyText2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               SizedBox(width: 8),
                               SolidButton(
                                 child: Icon(Icons.link,
-                                  color: Theme.of(context).colorScheme.onPrimary,
-                                  size: 35
-                                ),
-                                onPressed: () {_launchLink(context);},
+                                    color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                    size: 35),
+                                onPressed: () {
+                                  _launchLink(context);
+                                },
                               )
-                            ]
-                          )
-                      ),
+                            ])),
                       if (isAdmin)
-                      Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children:[
-                            SolidButton(
-                              text:"Edit",
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditEventPage(this.event)),
-                                );
-                              },
-                            ),
-                            SizedBox(width: 10,),
-                            SolidButton(
-                              text: "Delete",
-                              color: Theme.of(context).colorScheme.secondary,
-                              onPressed: () => confirmDialog(context),
-                            ),
-                          ]
-                      )
-                    ]
-                ),
-
+                        Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              SolidButton(
+                                text: "Edit",
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditEventPage(this.event)),
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              SolidButton(
+                                text: "Delete",
+                                color: Theme.of(context).colorScheme.secondary,
+                                onPressed: () => confirmDialog(context),
+                              ),
+                            ])
+                    ]),
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children:[
+                    children: [
                       SizedBox(
                           width: screenWidth * 0.265,
                           height: 170,
                           child: Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(this.getTime((event.startTime).toString()) + "\n"  + this.formatDate((event.startTime).toString()),
-                                style: Theme.of(context).textTheme.headline2
-                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                                textAlign: TextAlign.center)
-                          )
-                      )]
-                )
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  borderRadius: BorderRadius.circular(10)),
+                              alignment: Alignment.center,
+                              child: Text(
+                                  this.getTime((event.startTime).toString()) +
+                                      "\n" +
+                                      this.formatDate(
+                                          (event.startTime).toString()),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline2
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary),
+                                  textAlign: TextAlign.center)))
+                    ])
               ],
-            )
-        )
-    );
+            )));
   }
 }

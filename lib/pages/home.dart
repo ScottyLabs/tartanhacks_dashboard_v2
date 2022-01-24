@@ -14,6 +14,7 @@ import '../models/discord.dart';
 import '../models/profile.dart';
 import '../models/team.dart';
 import 'checkin.dart';
+import 'events/index.dart';
 import 'custom_widgets.dart';
 import 'leaderboard.dart';
 import 'profile_page.dart';
@@ -237,12 +238,12 @@ class _HomeState extends State<Home> {
                                   textAlign: TextAlign.center,
                                 ),
                                 SolidButton(
-                                  text: "View Profile",
+                                  text: "View Schedule",
                                   onPressed: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ProfilePage()),
+                                          builder: (context) => EventsHomeScreen()),
                                     );
                                   },
                                 )
