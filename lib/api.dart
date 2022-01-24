@@ -637,7 +637,7 @@ Future<Team> getTeamById(String id, String token) async {
 }
 
 Future<DiscordInfo> getDiscordInfo(String token) async {
-  String url = baseUrl + '/user/verification';
+  String url = baseUrl + 'user/verification';
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
