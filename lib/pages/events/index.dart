@@ -23,9 +23,8 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   bool isSponsor = false;
   List eventData = [1, 2, 3, 4, 5];
 
-  bool isSwitched = false;
+  bool viewPast = false;
   int selectedIndex = 1;
-  
 
   @override
   initState() {
@@ -167,7 +166,6 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -193,13 +191,14 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             ]),
             //create new event button
             Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              Container(
-                  width: screenWidth,
-                  padding: EdgeInsets.fromLTRB(25, 10, 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [],
-                  )),
+              SolidButton(
+                text: viewPast ? "View Upcoming Events" : "View Past Events",
+                onPressed: () {
+                  setState(() {
+                    viewPast = !viewPast;
+                  });
+                },
+              ),
               if (isAdmin)
                 GradBox(
                   width: screenWidth * 0.9,
@@ -218,7 +217,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                 ),
               Container(
                   alignment: Alignment.center,
-                  padding: EdgeInsets.fromLTRB(25, 20, 25, 0),
+                  padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxHeight: screenHeight * 0.65),
                     child: FutureBuilder(
@@ -234,10 +233,10 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                           );
                         }
                         return ListView.builder(
-                          itemCount: (eventsSnapshot.data[0]).length,
+                          itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
                           itemBuilder: (BuildContext context, int index) {
                             return EventsCard(
-                                (eventsSnapshot.data[0])[index], isAdmin);
+                                (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
                           },
                         );
                       },
@@ -293,16 +292,14 @@ class EventsCard extends StatelessWidget {
   EventsCard(this.event, this.isAdmin);
 
   String formatDate(String unixDate) {
-    var date =
-        new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
+    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
   }
 
   String getTime(String unixDate) {
-    var date =
-        new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
+    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
