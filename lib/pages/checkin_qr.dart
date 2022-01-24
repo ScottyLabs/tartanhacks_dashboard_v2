@@ -4,20 +4,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:thdapp/api.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
-class QRPage extends StatelessWidget {
+class QRPage extends StatefulWidget {
+
+  @override
+  State<QRPage> createState() => _QRPageState();
+}
+
+class _QRPageState extends State<QRPage> {
+  final _eventIDController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-
-
-    final _eventIDController = TextEditingController();
 
     return Scaffold(
         body: Container(
@@ -67,9 +70,9 @@ class QRPage extends StatelessWidget {
 
 class IDCheckInHeader extends StatelessWidget {
 
-  final _eventIDController;
+  final TextEditingController eventIDController;
 
-  IDCheckInHeader(this._eventIDController);
+  IDCheckInHeader(this.eventIDController);
 
   @override
   Widget build(BuildContext context) {
@@ -84,37 +87,85 @@ class IDCheckInHeader extends StatelessWidget {
         ),
         SizedBox(height: 10,),
         TextField(
-          controller: _eventIDController,
-          enableSuggestions: false,
+          controller: eventIDController,
+          keyboardType: TextInputType.text,
           style: Theme.of(context).textTheme.bodyText2,
         ),
         SizedBox(height: 5,),
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
-
             onPressed: () async {
-              String id = _eventIDController.text;
+              FocusScope.of(context).unfocus();
+              String snackBarText = "";
+              String id = eventIDController.text;
+              var model = Provider.of<CheckInItemsModel>(context, listen: false);
               if (id != null && id != "") {
-                showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) => Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        )));
                 try {
-                  // TODO Error handling doesn't actually work due to the backend endpoint bad request issue
-                  await Provider.of<CheckInItemsModel>(context, listen: false).selfCheckIn(id);
-                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  //   content: Text("Checked in!"),
-                  // ));
+                  var contains = model.checkInItems.any((val) => val.id == id);
+                  if (!contains) snackBarText = "Invalid scan or item id";
+                  else {
+                    String name = model.checkInItems.firstWhere((val) => val.id == id).name;
+
+                    // Confirmation dialog
+                    await showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (dialogContext) {
+                          bool isLoading = false;
+                          return StatefulBuilder(
+                              builder: (context, setState) {
+                                return isLoading ? Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ) : AlertDialog(
+                                  title: Text("Confirm Check In"),
+                                  content: RichText(
+                                    text: TextSpan(
+                                        text: "You are checking in to ",
+                                        style: DefaultTextStyle.of(context).style.copyWith(color: Colors.black),
+                                        children: [
+                                          TextSpan(
+                                              text: "$name. \n\n",
+                                              style: TextStyle(fontWeight: FontWeight.bold)
+                                          ),
+                                          TextSpan(text: "Ensure that you have selected the correct event before confirming you attendance.")
+                                        ]
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Cancel"),
+                                      onPressed: () => Navigator.pop(dialogContext),
+                                    ),
+                                    TextButton(
+                                        child: Text("Confirm"),
+                                        onPressed: () async {
+                                          setState(() {isLoading = true;});
+                                          await model.selfCheckIn(id);
+                                          Navigator.pop(context);
+                                          snackBarText = "Checked in to $name!";
+                                          eventIDController.clear();
+                                        }
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                    );
+                  }
                 } on Exception catch (e) {
                   print(e);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Error checking in"),
+                  snackBarText = "Error checking in";
+                  Navigator.pop(context);
+                } finally {
+                  if (snackBarText != "") ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(snackBarText),
+                      duration: Duration(seconds: 1),
                   ));
-                } finally {Navigator.pop(context);}
+                }
               }
             },
             child: Icon(
@@ -136,6 +187,7 @@ class QREnlarged extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String id = Provider.of<CheckInItemsModel>(context).userID;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -146,21 +198,10 @@ class QREnlarged extends StatelessWidget {
 
         SizedBox(height: 8,),
         GradBox(
-          height: 250,
-          width: 250,
-          child: FutureBuilder(
-            future: getCurrentUserID(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting)
-                return Center(child: CircularProgressIndicator(),);
-              else if (snapshot.connectionState == ConnectionState.done && snapshot.data!=null)
-                return QrImage(
-                  data: snapshot.data,
-                  version: QrVersions.auto,
-                  foregroundColor: Colors.black,
-                );
-              else return Center(child: Text("Error"),);
-            },
+          child: QrImage(
+            data: id,
+            version: QrVersions.auto,
+            foregroundColor: Colors.black,
           ),
         ),
         SizedBox(height: 15,),

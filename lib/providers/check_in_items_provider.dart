@@ -14,8 +14,8 @@ enum Status {
 
 class CheckInItemsModel with ChangeNotifier {
   Status _status = Status.NotLoaded;
-
   String _token = "";
+  String _uid = "";
 
   List<CheckInItem> _list;
   Map<String, bool> hasCheckedIn;
@@ -25,6 +25,7 @@ class CheckInItemsModel with ChangeNotifier {
 
   Status get checkInItemsStatus => _status;
   List get checkInItems => _list;
+  String get userID => _uid;
 
   void handleException(e) {
     print(e);
@@ -37,8 +38,10 @@ class CheckInItemsModel with ChangeNotifier {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    isAdmin = prefs.getBool("admin");
+    isAdmin = false;
     _token = prefs.getString("token");
+    _uid = prefs.getString("id");
+    print(_uid);
     _status = Status.Fetching;
 
     try {
@@ -81,9 +84,15 @@ class CheckInItemsModel with ChangeNotifier {
   }
 
   Future<void> selfCheckIn(String id) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String uid = prefs.getString("id");
-    await api.checkInUser(id, uid, _token);
+    await api.checkInUser(id, _uid, _token);
     await fetchCheckInItems();
+  }
+
+  void reset() {
+    _status = Status.NotLoaded;
+    _list = null;
+    _uid = "";
+    hasCheckedIn = null;
+    notifyListeners();
   }
 }

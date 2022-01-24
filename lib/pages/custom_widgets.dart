@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 import 'package:thdapp/pages/teams_list.dart';
+import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'dart:math';
 import 'home.dart';
 import 'login.dart';
@@ -395,11 +396,10 @@ class TopBar extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) =>
-                          isSponsor ? Sponsors() : Home(),
-                      )
+                      MaterialPageRoute(builder: (context) => isSponsor ? Sponsors() : Home(),),
+                          (route) => false
                   );
                 },
                 child: Container(
@@ -754,10 +754,12 @@ void logOut(entry, context) async {
   await prefs.clear();
   prefs.setString("theme", theme);
   entry.remove();
-  Navigator.push(
+  Navigator.pushAndRemoveUntil(
     context,
     MaterialPageRoute(builder: (ctxt) => new Login()),
+          (route) => false
   );
+  Provider.of<CheckInItemsModel>(context, listen: false).reset();
 }
 
 void setThemePref(theme, entry, context) async {

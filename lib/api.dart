@@ -394,7 +394,6 @@ Future<List> getUserHistory(String userID, String token) async {
       result[2].add(item);
       result[1][item.id] = val['hasCheckedIn'] as bool;
     });
-    print(result[1]);
     return result;
   } else {
     throw Exception("Failed to fetch user $userID history");
@@ -453,10 +452,9 @@ Future<void> checkInUser(String id, String uid, token) async {
   final uri = Uri.http(base, "/check-in/user", queryParams);
   final response = await http.put(uri, headers: headers);
 
-  // TODO Error with backend, throws a 400 despite successful update
-  // if (response.statusCode != 200) {
-  //   throw Exception(response.body.toString());
-  // }
+  if (response.statusCode != 200) {
+    throw Exception(response.body.toString());
+  }
 }
 
 Future<String> getCurrentUserID() async {
