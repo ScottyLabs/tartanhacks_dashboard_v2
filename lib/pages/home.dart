@@ -15,6 +15,7 @@ import '../models/profile.dart';
 import '../models/team.dart';
 import 'checkin.dart';
 import '../models/discord.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -49,6 +50,15 @@ class _HomeState extends State<Home> {
   initState() {
     super.initState();
     getData();
+  }
+
+  _launchDiscord() async {
+    String url = discordInfo.link;
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      errorDialog(context, "Error", 'Could not launch Discord Server.');
+    }
   }
 
   @override
@@ -193,21 +203,18 @@ class _HomeState extends State<Home> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Text("Join the Discord",
+                                Text("Discord Server",
                                     style:
                                         Theme.of(context).textTheme.headline4),
-                                Text("Your Verification Code: " + discordInfo.code,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2),
                                 SolidButton(
                                   text: "Go to Server",
                                   onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CheckIn()),
-                                    );
+                                    _launchDiscord();
                                   },
+                                ),
+                                SolidButton(
+                                  text: "Get Verified",
+                                  onPressed: () {},
                                 )
                               ])),
                     ],
