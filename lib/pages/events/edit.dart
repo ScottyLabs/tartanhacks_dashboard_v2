@@ -24,8 +24,9 @@ double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
 // MAIN WIDGET
 class EditEventPage extends StatelessWidget {
   final Event event;
+  final bool editable;
 
-  EditEventPage(this.event);
+  EditEventPage(this.event, {this.editable=false});
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class EditEventPage extends StatelessWidget {
                                 child: GradBox(
                                   curvature: 20,
                                   padding: EdgeInsets.fromLTRB(20, 15, 20, 0),
-                                  child: EventItemForm(event),
+                                  child: EventItemForm(event, editable),
                                 ))
                           ],
                         )
@@ -74,8 +75,9 @@ class EditEventPage extends StatelessWidget {
 
 class EventItemForm extends StatefulWidget {
   final Event event;
+  final bool editable;
 
-  EventItemForm(this.event);
+  EventItemForm(this.event, this.editable);
 
   @override
   _EventFormState createState() => _EventFormState();
@@ -192,7 +194,7 @@ class _EventFormState extends State<EventItemForm> {
   @override
   Widget build(BuildContext context) {
     print(platform);
-    var editable = true;
+    var editable = widget.editable;
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
@@ -212,10 +214,12 @@ class _EventFormState extends State<EventItemForm> {
                 EditEventFormField(
                   label: "Name",
                   controller: _nameController,
+                  editable: editable,
                 ),
                 EditEventFormField(
                   label: "Description",
                   controller: _descController,
+                  editable: editable,
                 ),
                 if (editable) EditEventDropDownFormField(
                   items: platforms.asMap().map((i, label) =>
@@ -235,6 +239,7 @@ class _EventFormState extends State<EventItemForm> {
                 EditEventFormField(
                   label: "Location",
                   controller: _locController,
+                  editable: editable,
                   validator: (String value) {
                     if (value.isEmpty && platform == "IN_PERSON") {
                       return "Location is required";
@@ -245,6 +250,7 @@ class _EventFormState extends State<EventItemForm> {
                 EditEventFormField(
                   label: "Event URL",
                   controller: _linkController,
+                  editable: editable,
                   validator: (String value) {
                     if (value.isEmpty && platform != "IN_PERSON") {
                       return "URL is required";
@@ -255,6 +261,7 @@ class _EventFormState extends State<EventItemForm> {
                 EditEventFormField(
                   label: "Start Date",
                   controller: _startDateController,
+                  editable: editable,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     final DateTime picked = await showDatePicker(
@@ -276,6 +283,7 @@ class _EventFormState extends State<EventItemForm> {
 
                   label: "End Date",
                   controller: _endDateController,
+                  editable: editable,
                   validator: (val) {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
@@ -306,6 +314,7 @@ class _EventFormState extends State<EventItemForm> {
                 EditEventFormField(
                     label: "Start Time",
                     controller: _startTimeController,
+                    editable: editable,
                     onTap: () async {
                       FocusScope.of(context).requestFocus(new FocusNode());
                       TimeOfDay picked = await showTimePicker(
@@ -326,6 +335,7 @@ class _EventFormState extends State<EventItemForm> {
 
                     label: "End Time",
                     controller: _endTimeController,
+                    editable: editable,
                     validator: (val) {
                       if (val == null || val.isEmpty) {
                         return 'Cannot be empty';
@@ -415,22 +425,21 @@ class EditEventFormField extends StatelessWidget {
   final String label;
   final TextInputType keyboardType;
   final Function onTap;
-
+  final bool editable;
   final Function validator;
 
   EditEventFormField({
     this.controller,
     this.label,
     this.keyboardType = TextInputType.text,
-
     this.onTap,
+    this.editable,
     this.validator
   });
 
   @override
   Widget build(BuildContext context) {
 
-    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -199,8 +199,8 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                           });
                         },
                       ),
+                      SizedBox(height: 5),
                       if (isAdmin)
-                        SizedBox(height: 5,),
                         GradBox(
                           width: screenWidth * 0.9,
                           height: 60,
@@ -208,7 +208,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditEventPage(null)),
+                                  builder: (context) => EditEventPage(null, editable: isAdmin,)),
                             );
                           },
                           child: Text(
@@ -369,113 +369,131 @@ class EventsCard extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: GradBox(
             width: 100,
-            height: 220,
+            height: 250,
             alignment: Alignment.topLeft,
             padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                          width: screenWidth * 0.5,
-                          child: Text(
-                            event.name,
-                            style: Theme.of(context).textTheme.headline2,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                      SizedBox(
-                          width: screenWidth * 0.4,
-                          child: Text(
-                            event.description,
-                            style: Theme.of(context).textTheme.bodyText2,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          )),
-                      if (event.platform == 'IN_PERSON')
-                        SizedBox(
-                            width: screenWidth * 0.4,
-                            child: Text(
-                              "IN PERSON: " + event.location,
+                Text(
+                  event.name,
+                  style: Theme.of(context).textTheme.headline2,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: screenWidth*0.5,
+                      height: 160,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              event.description,
                               style: Theme.of(context).textTheme.bodyText2,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                            ))
-                      else
-                        SizedBox(
-                            width: screenWidth * 0.45,
-                            child: Row(children: [
+                            ),
+                            if (event.platform == 'IN_PERSON')
                               Text(
-                                "${event.platform}:",
+                                "IN PERSON: " + event.location,
                                 style: Theme.of(context).textTheme.bodyText2,
                                 overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(width: 8),
-                              SolidButton(
-                                child: Icon(Icons.link,
-                                    color:
-                                        Theme.of(context).colorScheme.onPrimary,
-                                    size: 35),
-                                onPressed: () {
-                                  _launchLink(context);
-                                },
                               )
-                            ])),
-                      if (isAdmin)
-                        Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
+                            else
+                              Row(children: [
+                                Text(
+                                  "${event.platform}:",
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(width: 8),
+                                SolidButton(
+                                  child: Icon(Icons.link,
+                                      color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                      size: 35),
+                                  onPressed: () {
+                                    _launchLink(context);
+                                  },
+                                )
+                              ]),
+                            if (isAdmin)
+                              Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    SolidButton(
+                                      text: "Edit",
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EditEventPage(this.event, editable: isAdmin,)),
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    SolidButton(
+                                      text: "Delete",
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      onPressed: () => confirmDialog(context),
+                                    ),
+                                  ])
+                            else
                               SolidButton(
-                                text: "Edit",
+                                text: "View Details",
                                 onPressed: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            EditEventPage(this.event)),
+                                            EditEventPage(this.event, editable: isAdmin,)),
                                   );
                                 },
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              SolidButton(
-                                text: "Delete",
-                                color: Theme.of(context).colorScheme.secondary,
-                                onPressed: () => confirmDialog(context),
-                              ),
-                            ])
-                    ]),
-                Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                          width: screenWidth * 0.265,
-                          height: 170,
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(10)),
-                              alignment: Alignment.center,
-                              child: Text(
-                                  this.getTime((event.startTime).toString()) +
-                                      "\n" +
-                                      this.formatDate(
-                                          (event.startTime).toString()),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline2
-                                      .copyWith(
+                          ]),
+                    ),
+                    SizedBox(width: 5),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: screenWidth * 0.265,
+                              height: 160,
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                      this.getTime((event.startTime).toString()) +
+                                          "\n" +
+                                          this.formatDate(
+                                              (event.startTime).toString()),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline2
+                                          .copyWith(
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onPrimary),
-                                  textAlign: TextAlign.center)))
-                    ])
+                                      textAlign: TextAlign.center)))
+                        ]
+                    )
+                  ],
+                )
               ],
-            )));
+            )
+        )
+    );
   }
 }
