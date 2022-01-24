@@ -1,6 +1,7 @@
 import 'package:charcode/html_entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thdapp/pages/bookmarks.dart';
 import 'custom_widgets.dart';
 import '../models/profile.dart';
 import '../models/team.dart';
@@ -21,8 +22,11 @@ class _SponsorsState extends State<Sponsors> {
   List students; // bunch of Profiles
   List studentTeams;
   Map bookmarks; // dictionary of participant id : actual bookmark id
+
   int searchResultCount;
   bool searchPressed;
+
+  Widget placeholder = Text("Search for participants by name.");
 
   SharedPreferences prefs;
   String token;
@@ -33,11 +37,6 @@ class _SponsorsState extends State<Sponsors> {
   void getData() async{
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
-    List studentData = await getStudents(token);
-    studentIds = studentData[0];
-    students = studentData[1];
-    studentTeams = studentData[2];
-    print('students: ' + students.toString());
     bookmarks = await getBookmarkIdsList(token);
     print('bookmarks: ' + bookmarks.toString());
     setState(() {
@@ -52,6 +51,20 @@ class _SponsorsState extends State<Sponsors> {
     });
   }
 
+  void search() async {
+    studentIds = [];
+    students = [];
+    studentTeams = [];
+    placeholder = CircularProgressIndicator();
+    setState(() {});
+
+    var studentData = await getStudents(token, query: myController.text);
+    studentIds = studentData[0];
+    students = studentData[1];
+    studentTeams = studentData[2];
+    placeholder = Text("No results.");
+    setState(() {});
+  }
 
   void searchResultCounting(String keyword) {
     searchPressed = true;
@@ -103,6 +116,12 @@ class _SponsorsState extends State<Sponsors> {
   }
 
   @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
@@ -144,51 +163,6 @@ class _SponsorsState extends State<Sponsors> {
                                           child: Text("Welcome to TartanHacks!", style: Theme.of(context).textTheme.headline1),
                                         ),
                                         SizedBox(height: 10),
-                                        /*Container(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                                "Search",
-                                                textAlign: TextAlign.left,
-                                                style: Theme.of(context).textTheme.headline3
-                                            )
-                                        ),
-                                        Container(
-                                          child: TextField(
-                                            decoration: InputDecoration(fillColor: Colors.white, filled: true, border: InputBorder.none),
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            enableSuggestions: false,
-
-                                            controller: myController,
-                                          ),
-                                        ),
-                                        Container(
-                                            child: Visibility(
-                                              visible: searchPressed == null ? false : true,
-                                              child: Text(
-                                                '$searchResultCount matching results are in the list.',
-                                                textAlign: TextAlign.left,
-                                                style: Theme.of(context).textTheme.headline4,
-                                              )
-                                            )
-                                        ),
-                                        Container(
-                                          height: 60,
-                                          alignment: Alignment.centerRight,
-                                          child: GradBox(
-                                              alignment: Alignment.center,
-                                              width: 80,
-                                              height: 40,
-
-                                              onTap: () {
-                                                searchResultCounting(myController.text);
-                                              },
-                                              child: Icon(
-                                                  Icons.subdirectory_arrow_left,
-                                                  size: 30,
-                                                  color: Theme.of(context).colorScheme.onSurface
-                                              )
-                                          ),
-                                        ),*/
                                         ButtonBar(
                                           alignment: MainAxisAlignment.spaceEvenly,
                                           children: [
@@ -220,25 +194,65 @@ class _SponsorsState extends State<Sponsors> {
                                             ),
                                             SolidButton(
                                                 color: Theme.of(context).colorScheme.secondary,
-                                                child: Text(" Search ",
+                                                child: Text(" Bookmarks ",
                                                   style: Theme.of(context).textTheme.headline2
                                                       .copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                                                ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Bookmarks()),
+                                                );
+                                              },
+                                            ),
+                                          ]
+                                        ),
+                                        SizedBox(height: 10),
+                                        Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                                "Search",
+                                                textAlign: TextAlign.left,
+                                                style: Theme.of(context).textTheme.headline3
+                                            )
+                                        ),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                                child: TextField(
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  enableSuggestions: false,
+                                                  controller: myController,
+                                                  textInputAction: TextInputAction.send,
+                                                  onSubmitted: (value) {search();},
+                                                ),
+                                            ),
+                                            SizedBox(width: 10,),
+                                            SolidButton(
+                                                onPressed: search,
+                                                child: Icon(
+                                                    Icons.subdirectory_arrow_left,
+                                                    size: 30,
+                                                    color: Theme.of(context).colorScheme.onPrimary
                                                 )
                                             ),
                                           ]
                                         ),
-                                        if (students != null)
+                                        SizedBox(height: 25),
+                                        if (students != null && students.length != 0)
                                         Expanded(
                                             child: Container(
                                                 alignment: Alignment.bottomCenter,
                                                 child: ListView.builder(
-                                                    itemCount: 4,
+                                                    itemCount: students.length,
                                                     itemBuilder: (BuildContext context, int index){
 
                                                       bool isBookmark = (bookmarks.length != 0) ? bookmarks.containsValue(studentIds[index]) : false;
                                                       return InfoTile(
                                                           name: (students[index] != null) ? students[index].firstName + " " + students[index].lastName : "NULL",
-                                                          team: (studentTeams[index] != null) ? studentTeams[index].name : "No team",
+                                                          team: (studentTeams[index] != null) ? studentTeams[index] : "No team",
                                                           bio: (students[index] != null) ? students[index].college + " c/o " + students[index].graduationYear.toString() : "NULL",
                                                           participantId: studentIds[index],
                                                           bookmarkId: (bookmarks.length != 0 && bookmarks.containsValue(studentIds[index])) ? bookmarks.keys.firstWhere((k) => bookmarks[k] == studentIds[index]) : null,
@@ -252,7 +266,7 @@ class _SponsorsState extends State<Sponsors> {
                                             )
                                         )
                                         else
-                                          Center(child: CircularProgressIndicator())
+                                          Center(child: placeholder)
                                       ] //children
                                   )
                               )

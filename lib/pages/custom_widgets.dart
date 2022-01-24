@@ -396,7 +396,7 @@ class TopBar extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
-                          Home(),
+                          isSponsor ? Sponsors() : Home(),
                       )
                   );
                 },

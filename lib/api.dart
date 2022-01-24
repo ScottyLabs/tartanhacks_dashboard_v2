@@ -81,27 +81,20 @@ Future<Profile> getProfile(String id, String token) async {
   }
 }
 
-Future<List> getStudents(String token) async {
-  List listOfUsers = [];
-  List listOfTeams = [];
-  String url = baseUrl + "users";
-  Map<String, String> headers = {
-    "Content-type": "application/json",
-    "x-access-token": token
-  };
+Future<List> getStudents(String token, {String query}) async {
+  String url = baseUrl + "participants";
+  if (query != null) {
+    url = url + "?name=" + query;
+  }
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    var ids = data.map((json) => json['_id']).toList();
-    for (String id in ids) {
-      Profile prof = await getProfile(id, token);
-      listOfUsers.add(prof);
-
-      Team team = await getTeamById(id, token);
-      listOfTeams.add(team);
-    }
-    return [ids, listOfUsers, listOfTeams];
+    var ids = data.map ((json) => json['_id']).toList();
+    List profs = data.map ((json) => Profile.fromJson(json['profile'])).toList();
+    List teams = data.map ((json) => (json['team'] != null) ? json['team']['name'] : null).toList();
+    return [ids, profs, teams];
   }
 }
 
