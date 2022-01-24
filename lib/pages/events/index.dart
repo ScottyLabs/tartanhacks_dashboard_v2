@@ -174,79 +174,82 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     return Scaffold(
         body: Container(
             child: Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        TopBar(
-          isSponsor: isSponsor,
-        ),
-        Stack(
-          children: [
-            Column(children: [
-              SizedBox(height: screenHeight * 0.05),
-              CustomPaint(
-                  size: Size(screenWidth, screenHeight * 0.75),
-                  painter: CurvedTop(
-                      color1: Theme.of(context).colorScheme.primary,
-                      color2: Theme.of(context).colorScheme.secondaryVariant)),
-            ]),
-            //create new event button
-            Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-              SolidButton(
-                text: viewPast ? "View Upcoming Events" : "View Past Events",
-                onPressed: () {
-                  setState(() {
-                    viewPast = !viewPast;
-                  });
-                },
-              ),
-              if (isAdmin)
-                GradBox(
-                  width: screenWidth * 0.9,
-                  height: 60,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => EditEventPage(null)),
-                    );
-                  },
-                  child: Text(
-                    "CREATE NEW EVENT",
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TopBar(
+                  isSponsor: isSponsor,
                 ),
-              Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: screenHeight * 0.65),
-                    child: FutureBuilder(
-                      future: getEvents(),
-                      builder: (context, eventsSnapshot) {
-                        if (eventsSnapshot.data == null ||
-                            eventsSnapshot.hasData == null) {
-                          return ListView.builder(
-                            itemCount: 1,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Center(child: CircularProgressIndicator());
-                            },
-                          );
-                        }
-                        return ListView.builder(
-                          itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return EventsCard(
-                                (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
+                Stack(
+                  children: [
+                    Column(children: [
+                      SizedBox(height: screenHeight * 0.05),
+                      CustomPaint(
+                          size: Size(screenWidth, screenHeight * 0.75),
+                          painter: CurvedTop(
+                              color1: Theme.of(context).colorScheme.primary,
+                              color2: Theme.of(context).colorScheme.secondaryVariant)),
+                    ]),
+                    //create new event button
+                    Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      SolidButton(
+                        text: viewPast ? "View Upcoming Events" : "View Past Events",
+                        onPressed: () {
+                          setState(() {
+                            viewPast = !viewPast;
+                          });
+                        },
+                      ),
+                      if (isAdmin)
+                        SizedBox(height: 5,),
+                        GradBox(
+                          width: screenWidth * 0.9,
+                          height: 60,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditEventPage(null)),
+                            );
                           },
-                        );
-                      },
-                    ),
-                  ))
-            ]),
-          ],
+                          child: Text(
+                            "CREATE NEW EVENT",
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
+                        ),
+                      Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.fromLTRB(25, 10, 25, 5),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
+                            child: FutureBuilder(
+                              future: getEvents(),
+                              builder: (context, eventsSnapshot) {
+                                if (eventsSnapshot.data == null ||
+                                    eventsSnapshot.hasData == null) {
+                                  return ListView.builder(
+                                    itemCount: 1,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Center(child: CircularProgressIndicator());
+                                    },
+                                  );
+                                }
+                                return ListView.builder(
+                                  itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return EventsCard(
+                                        (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
+                                  },
+                                );
+                              },
+                            ),
+                          ))
+                    ]),
+                  ],
+                )
+              ],
+            )
         )
-      ],
-    )));
+    );
   }
 }
 

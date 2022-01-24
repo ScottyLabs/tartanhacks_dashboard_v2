@@ -296,6 +296,7 @@ Future<bool> editEvent(
     String description,
     int startTime,
     int endTime,
+    String location,
     double lat,
     double lng,
     String platform,
@@ -314,6 +315,7 @@ Future<bool> editEvent(
     "description": description,
     "startTime": startTime.toString(),
     "endTime": endTime.toString(),
+    "location": location,
     "lat": lat.toString(),
     "lng": lng.toString(),
     "platform": platform,
@@ -326,7 +328,7 @@ Future<bool> editEvent(
   if (response.statusCode == 200) {
     return true;
   } else if (response.statusCode == 401) {
-    return editEvent(eventId, name, description, startTime, endTime, lat, lng,
+    return editEvent(eventId, name, description, startTime, endTime, location, lat, lng,
         platform, platformUrl);
   } else {
     print(response.body);

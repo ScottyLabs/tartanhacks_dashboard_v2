@@ -128,7 +128,7 @@ class _EventFormState extends State<EventItemForm> {
   }
 
   void editData(Map<String, Object> newEvent) async {
-    bool result = await editEvent(newEvent["id"], newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], 0, 0, newEvent["platform"], newEvent["platformUrl"]);
+    bool result = await editEvent(newEvent["id"], newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], newEvent["location"], 0, 0, newEvent["platform"], newEvent["platformUrl"]);
 
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
