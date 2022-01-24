@@ -159,7 +159,7 @@ class SolidButton extends StatelessWidget{
   Color color;
   Color textColor;
 
-  SolidButton({this.text, this.onPressed, this.child, this.color});
+  SolidButton({this.text, this.onPressed, this.child, this.color, this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +277,9 @@ class TextLogo extends StatelessWidget {
 }
 class MenuButton extends StatelessWidget {
   Function onTap;
-  MenuButton({this.onTap});
+  var icon;
+
+  MenuButton({this.onTap, this.icon});
   @override
   Widget build(BuildContext context) {
     Color color1 = Theme.of(context).colorScheme.background;
@@ -290,7 +292,7 @@ class MenuButton extends StatelessWidget {
             width: 55,
             height: 55,
             padding: EdgeInsets.all(0),
-            child: Icon(Icons.menu,
+            child: Icon(icon ?? Icons.menu,
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 35
             ),
@@ -396,7 +398,7 @@ class TopBar extends StatelessWidget {
                 onTap: () {
                   Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => Home(),),
+                      MaterialPageRoute(builder: (context) => isSponsor ? Sponsors() : Home(),),
                           (route) => false
                   );
                 },
@@ -453,7 +455,7 @@ class WhiteOverlay extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.bottomLeft,
         end: Alignment.topRight,
-        colors:[Colors.white60, Colors.white],
+        colors:[Colors.white24, Colors.white],
       ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
     var path = Path();
     path.moveTo(0, 0);
@@ -496,7 +498,8 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           child: MenuButton(
                               onTap: () {
                                 entry.remove();
-                              }
+                              },
+                              icon: Icons.close
                           )
                       ),
                     ]
@@ -747,7 +750,9 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
 
 void logOut(entry, context) async {
   var prefs = await SharedPreferences.getInstance();
+  String theme = prefs.getString("theme");
   await prefs.clear();
+  prefs.setString("theme", theme);
   entry.remove();
   Navigator.pushAndRemoveUntil(
     context,
@@ -808,6 +813,8 @@ class LoadingScreen extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+
     return Scaffold(
         body: Container(
             height: screenHeight,
@@ -821,8 +828,8 @@ class LoadingScreen extends StatelessWidget {
                       width: screenWidth,
                       alignment: Alignment.topCenter,
                       padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-                      child: Image.asset("lib/logos/thLogoDark.png",
-                      )
+                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
+                          : Image.asset("lib/logos/thLogoLight.png")
                   ),
                   Text("Tartanhacks",
                     style: Theme.of(context).textTheme.headline1,
@@ -837,6 +844,49 @@ class LoadingScreen extends StatelessWidget {
         )
     );
   }
+}
+
+class WhiteOverlayLight extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.white54
+      ..strokeWidth = 15;
+    var path = Path();
+    path.moveTo(0, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.lineTo(0,0);
+    canvas.drawPath(path, paint);
+  }
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+OverlayEntry LoadingOverlay(BuildContext context) {
+  final screenSize = MediaQuery.of(context).size;
+  return OverlayEntry(
+      builder: (context) => Positioned(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              CustomPaint(
+                  size: screenSize,
+                  painter: WhiteOverlayLight()
+              ),
+              Container(
+                  width: screenSize.width,
+                  height: screenSize.height,
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(color: Theme.of(context).colorScheme.error,)
+              )
+            ],
+          )
+      )
+  );
 }
 
 void errorDialog(context, String title, String response) {

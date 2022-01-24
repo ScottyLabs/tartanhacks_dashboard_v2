@@ -154,12 +154,13 @@ Future<void> leaveTeam(String token) async {
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully left");
+    return;
   }
 
   print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
-Future<void> requestTeam(String teamID, String token) async {
+Future<bool> requestTeam(String teamID, String token) async {
   String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + teamID;
   Map<String, String> headers = {"Content-type": "application/json", 
   "x-access-token": token};
@@ -168,8 +169,10 @@ Future<void> requestTeam(String teamID, String token) async {
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully request");
+    return true;
   }
   print("Error");
+  return false;
 }
 
 Future<bool> requestTeamMember(String email, String token) async { 

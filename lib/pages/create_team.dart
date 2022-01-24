@@ -39,6 +39,11 @@ class _CreateTeamState extends State<CreateTeam> {
     team = await getUserTeam(token);
     print(team);
     if (team != null){ //if not on a team, redirects to the teams list page
+      _teamName = team.name;
+      _teamDesc = team.description;
+      visibility = team.visible;
+      teamNameController.text = _teamName;
+      teamDescController.text = _teamDesc;
       buttonText = "Edit Team";
       noTeam = false;
     }
@@ -204,11 +209,7 @@ class _CreateTeamState extends State<CreateTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    if(prefs == null){
-      return LoadingScreen();
-    } else {
     return Scaffold(
-
         body: Container(
             child: SingleChildScrollView(
                 child: ConstrainedBox(
@@ -259,10 +260,10 @@ class _CreateTeamState extends State<CreateTeam> {
                                               crossAxisAlignment: CrossAxisAlignment
                                                   .start,
                                               children: [
-                                                Text("NEW TEAM", style:
+                                                Text("TEAM INFO", style:
                                                 Theme.of(context).textTheme.headline1),
                                                 SizedBox(height:screenHeight*0.02),
-                                                Text("Basic Info", style: 
+                                                Text("Basic Info", style:
                                                 Theme.of(context).textTheme.headline4),
                                                 // SizedBox(height:screenHeight*0.02),
                                                 // _buildName(),
@@ -313,6 +314,5 @@ class _CreateTeamState extends State<CreateTeam> {
             )
         )
     );
-  }
   }
 }

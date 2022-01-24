@@ -27,6 +27,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
   TextEditingController linkController = TextEditingController();
   TextEditingController timeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
@@ -45,6 +46,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   void dispose(){
     nameController.dispose();
     descController.dispose();
+    locationController.dispose();
     linkController.dispose();
     dateController.dispose();
     timeController.dispose();
@@ -53,12 +55,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   }
 
   void saveData() async {
-    bool result;
-    if (_platform == "IN_PERSON") {
-      result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, _location, 0, 0, _platform, "N/A");
-    } else {
-      result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, "N/A", 0, 0, _platform, _eventUrl);
-    }
+    bool result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, _location, 0, 0, _platform, _eventUrl);
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
     }else{
@@ -181,24 +178,37 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-  Widget _buildEventURL() {
+  Widget _buildLocation() {
     return TextFormField(
-      decoration: FormFieldStyle(context, (_platform == "IN_PERSON") ? "Location" : "Event Link"),
+      decoration: FormFieldStyle(context, "Location"),
       style: Theme.of(context).textTheme.bodyText2,
-      keyboardType: TextInputType.url,
-      controller: linkController,
+      controller: locationController,
       validator: (String value) {
-        if (value.isEmpty) {
-          return (_platform == "IN_PERSON") ? "Location is required" : "URL is required";
+        if (value.isEmpty && _platform == "IN_PERSON") {
+          return "Location is required";
         }
         return null;
       },
       onChanged: (String value) {
-        if (_platform == "IN_PERSON") {
-          _location = value;
-        } else {
-          _eventUrl = value;
+        _location = value;
+      },
+    );
+  }
+
+  Widget _buildEventURL() {
+    return TextFormField(
+      decoration: FormFieldStyle(context, "Event Link"),
+      style: Theme.of(context).textTheme.bodyText2,
+      keyboardType: TextInputType.url,
+      controller: linkController,
+      validator: (String value) {
+        if (value.isEmpty && _platform != "IN_PERSON") {
+          return "URL is required";
         }
+        return null;
+      },
+      onChanged: (String value) {
+        _eventUrl = value;
       },
     );
   }
@@ -342,6 +352,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                                 Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
                                                 SizedBox(height:5),
                                                 _meetingPlatformDropdown(screenWidth),
+                                                SizedBox(height:16),
+                                                _buildLocation(),
                                                 SizedBox(height:16),
                                                 _buildEventURL(),
                                                 SizedBox(height:16),

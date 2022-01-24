@@ -53,6 +53,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       _githubUrl = proj.url;
       _presUrl = proj.slides;
       _vidUrl = proj.video;
+      isPresenting = proj.presentingVirtually;
       prizes = proj.prizes;
 
       nameController.text = _projName;
@@ -88,7 +89,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project name is required';
@@ -107,7 +107,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       decoration: FormFieldStyle(context, "Project Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'Project description is required';
@@ -127,7 +126,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: githubController,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -146,7 +144,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
       style: Theme.of(context).textTheme.bodyText2,
       controller: slidesController,
       keyboardType: TextInputType.url,
-      textInputAction: TextInputAction.next,
       validator: (String value) {
         if (value.isEmpty) {
           return 'URL is Required';
@@ -166,8 +163,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
       controller: videoController,
       keyboardType: TextInputType.url,
       validator: (String value) {
-        if (value.isEmpty) {
-          return 'URL is Required';
+        if (!isPresenting && value.isEmpty) {
+          return 'Video is required if not presenting live.';
         }
         return null;
       },
@@ -193,8 +190,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 style: Theme.of(context).textTheme.bodyText2),
               Switch(
                 activeColor: Theme.of(context).colorScheme.secondary,
-                activeTrackColor: Theme.of(context).colorScheme.primary,
-                inactiveTrackColor: Theme.of(context).colorScheme.onSurface,
+                activeTrackColor: Theme.of(context).colorScheme.onSurface,
+                inactiveTrackColor: Theme.of(context).colorScheme.surface,
                 value: isPresenting,
                 onChanged: (value) {
                   setState(() {
@@ -207,14 +204,71 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
-  void submitProj(BuildContext context) {
+  void submitDialog (BuildContext context) {
+    Future proj;
+
     if(team == null){
       errorDialog(context, "Error", "You are not in a team!");
+      return;
     } else if (projId != null){
-      editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, projId, token);
+      proj = editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
     } else {
-      newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, projId, token);
+      proj = newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
     }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder(
+          future: proj,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Success", style: Theme.of(context).textTheme.headline1),
+                content: new Text("Project info was saved.", style: Theme.of(context).textTheme.bodyText2),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return AlertDialog(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                title: new Text("Error", style: Theme.of(context).textTheme.headline1),
+                content: new Text("Project info failed to save. Please try again.", style: Theme.of(context).textTheme.bodyText2),
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text(
+                      "OK",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            }
+            return AlertDialog(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: new Text("Processing...", style: Theme.of(context).textTheme.headline1),
+              content: Container(
+                  alignment: Alignment.center,
+                  height: 70,
+                  child: CircularProgressIndicator()
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -283,7 +337,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
                                               _formKey.currentState.save();
 
-                                              submitProj(context);
+                                              submitDialog(context);
                                             },
                                         ),
                                         SolidButton(

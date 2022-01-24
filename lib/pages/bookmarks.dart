@@ -153,6 +153,7 @@ class _Bookmarks extends State<Bookmarks> {
                                                         fontSize: screenHeight *
                                                             0.02)),
                                               ),
+                                              SizedBox(height: 5),
                                               if(participantBookmarks!=null)
                                               Expanded(
                                                   child: (participantBookmarks.length != 0) ?
@@ -178,6 +179,7 @@ class _Bookmarks extends State<Bookmarks> {
                                                               bio: "[Bio]",
                                                               remove: removeBookmark,
                                                               bmMap: bookmarksMap,
+                                                              refresh: getData,
                                                           );
                                                         },
                                                       )
@@ -203,7 +205,7 @@ class _Bookmarks extends State<Bookmarks> {
                                                 Container(
                                                     alignment: Alignment.center,
                                                     padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                                    child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onBackground,)
+                                                    child: CircularProgressIndicator()
                                                 )
                                             ]
                                         )
@@ -230,8 +232,9 @@ class BookmarkInfo extends StatelessWidget {
   String bio;
   Function remove;
   Map bmMap;
+  Function refresh;
 
-  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap});
+  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap, this.refresh});
 
   @override
   Widget build(BuildContext context) {
@@ -274,7 +277,7 @@ class BookmarkInfo extends StatelessWidget {
                                   settings: RouteSettings(
                                     arguments: data.id,
                                   )),
-                            );
+                            ).then((value) => refresh());
                           },
                         )
                       ]

@@ -215,6 +215,7 @@ class PrizeCard extends StatelessWidget{
             SolidButton(
               text: "  Submitted  ",
               color: Colors.grey,
+              textColor: Colors.white,
               onPressed: null,
             )
             : SolidButton(

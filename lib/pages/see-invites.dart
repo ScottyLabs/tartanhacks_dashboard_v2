@@ -162,6 +162,7 @@ Widget _buildInviteHeader() {
     print('building request');
     return Card(
         margin: const EdgeInsets.all(12),
+        color: Theme.of(context).colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
@@ -235,7 +236,7 @@ Widget _buildInviteHeader() {
                                               itemCount: numRequests,
                                               itemBuilder: (BuildContext context, int index){
                                                 print("testing item builder");
-                                                return requestWidgetList[index];
+                                                return _buildRequests(index);
                                               },
                                             ),
                                           )

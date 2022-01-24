@@ -39,7 +39,10 @@ class _LoginState extends State<Login>{
   }
 
   void login(String email, String password) async {
+    OverlayEntry loading = LoadingOverlay(context);
+    Overlay.of(context).insert(loading);
     User logindata = await checkCredentials(email, password);
+    loading.remove();
     if (logindata != null) {
       if (logindata.company != null) {
         Navigator.pushReplacement(
@@ -62,6 +65,7 @@ class _LoginState extends State<Login>{
   checkLogInStatus() async{
 
     prefs = await SharedPreferences.getInstance();
+    print(prefs.getString('theme'));
 
     if (prefs.getString('theme') == "dark") {
       var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
