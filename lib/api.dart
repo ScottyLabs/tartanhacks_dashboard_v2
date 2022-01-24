@@ -14,6 +14,7 @@ import 'models/prize.dart';
 import 'models/project.dart';
 import 'models/team.dart';
 import 'pages/custom_widgets.dart';
+import 'models/discord.dart';
 
 SharedPreferences prefs;
 
@@ -80,27 +81,20 @@ Future<Profile> getProfile(String id, String token) async {
   }
 }
 
-Future<List> getStudents(String token) async {
-  List listOfUsers = [];
-  List listOfTeams = [];
-  String url = baseUrl + "users";
-  Map<String, String> headers = {
-    "Content-type": "application/json",
-    "x-access-token": token
-  };
+Future<List> getStudents(String token, {String query}) async {
+  String url = baseUrl + "participants";
+  if (query != null) {
+    url = url + "?name=" + query;
+  }
+  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    var ids = data.map((json) => json['_id']).toList();
-    for (String id in ids) {
-      Profile prof = await getProfile(id, token);
-      listOfUsers.add(prof);
-
-      Team team = await getTeamById(id, token);
-      listOfTeams.add(team);
-    }
-    return [ids, listOfUsers, listOfTeams];
+    var ids = data.map ((json) => json['_id']).toList();
+    List profs = data.map ((json) => Profile.fromJson(json['profile'])).toList();
+    List teams = data.map ((json) => (json['team'] != null) ? json['team']['name'] : null).toList();
+    return [ids, profs, teams];
   }
 }
 
@@ -212,6 +206,7 @@ Future<String> addBookmark(String token, String participantId) async {
     return bookmarkId;
   }
 }
+
 
 Future<List<List<Event>>> getEvents() async {
   var url = baseUrl + 'schedule/';
@@ -639,6 +634,24 @@ Future<Team> getTeamById(String id, String token) async {
     var data = json.decode(response.body);
     Team team = new Team.fromJson(data);
     return team;
+  } else {
+    print(response.body.toString());
+    return null;
+  }
+}
+
+Future<DiscordInfo> getDiscordInfo(String token) async {
+  String url = baseUrl + 'user/verification';
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    DiscordInfo discord = new DiscordInfo.fromJson(data);
+    return discord;
   } else {
     print(response.body.toString());
     return null;
