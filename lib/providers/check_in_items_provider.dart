@@ -38,9 +38,10 @@ class CheckInItemsModel with ChangeNotifier {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    isAdmin = prefs.getBool("admin");
+    isAdmin = false;
     _token = prefs.getString("token");
     _uid = prefs.getString("id");
+    print(_uid);
     _status = Status.Fetching;
 
     try {

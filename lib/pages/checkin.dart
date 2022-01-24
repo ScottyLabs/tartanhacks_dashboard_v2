@@ -301,11 +301,10 @@ class CheckInEventList extends StatelessWidget {
                               strokeWidth: 2,
                             )));
                     try {
-                      // TODO Error handling doesn't actually work due to the backend endpoint bad request issue
                       await model.checkInUser(events[index].id, uid);
-                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      //   content: Text("Checked in!"),
-                      // ));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Checked in!"),
+                      ));
                     } on Exception catch (e) {
                       print(e);
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

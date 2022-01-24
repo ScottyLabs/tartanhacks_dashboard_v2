@@ -104,7 +104,6 @@ class IDCheckInHeader extends StatelessWidget {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
                   if (!contains) snackBarText = "Invalid scan or item id";
-                  // TODO Error handling doesn't actually work due to the backend endpoint bad request issue
                   else {
                     String name = model.checkInItems.firstWhere((val) => val.id == id).name;
 
