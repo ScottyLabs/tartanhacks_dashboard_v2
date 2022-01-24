@@ -276,7 +276,9 @@ class TextLogo extends StatelessWidget {
 }
 class MenuButton extends StatelessWidget {
   Function onTap;
-  MenuButton({this.onTap});
+  var icon;
+
+  MenuButton({this.onTap, this.icon});
   @override
   Widget build(BuildContext context) {
     Color color1 = Theme.of(context).colorScheme.background;
@@ -289,7 +291,7 @@ class MenuButton extends StatelessWidget {
             width: 55,
             height: 55,
             padding: EdgeInsets.all(0),
-            child: Icon(Icons.menu,
+            child: Icon(icon ?? Icons.menu,
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 35
             ),
@@ -496,7 +498,8 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           child: MenuButton(
                               onTap: () {
                                 entry.remove();
-                              }
+                              },
+                              icon: Icons.close
                           )
                       ),
                     ]
