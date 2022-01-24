@@ -223,12 +223,11 @@ Future<List<List<Event>>> getEvents() async {
     eventsList = data.map<Event>((json) => Event.fromJson(json)).toList();
     List<Event> pastEvents = [];
     List<Event> upcomingEvents = [];
-    var currentTime = DateTime.now().millisecondsSinceEpoch / 1000;
-    
-    
+    var currentTime = DateTime.now().microsecondsSinceEpoch;
+
     for (int i = 0; i < eventsList.length; i++) {
       if (currentTime > eventsList[i].endTime) {
-        pastEvents.add(eventsList[i]);
+        pastEvents.insert(0,eventsList[i]);
       } else {
         upcomingEvents.add(eventsList[i]);
       }
