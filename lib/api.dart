@@ -18,8 +18,7 @@ import 'models/discord.dart';
 
 SharedPreferences prefs;
 
-const baseUrl =
-    "https://tartanhacks-backend.herokuapp.com/"; //"https://stg-backend.tartanhacks.com/"
+const baseUrl = "https://backend.tartanhacks.com/";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";
@@ -86,14 +85,19 @@ Future<List> getStudents(String token, {String query}) async {
   if (query != null) {
     url = url + "?name=" + query;
   }
-  Map<String, String> headers = {"Content-type": "application/json", "x-access-token": token};
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    var ids = data.map ((json) => json['_id']).toList();
-    List profs = data.map ((json) => Profile.fromJson(json['profile'])).toList();
-    List teams = data.map ((json) => (json['team'] != null) ? json['team']['name'] : null).toList();
+    var ids = data.map((json) => json['_id']).toList();
+    List profs = data.map((json) => Profile.fromJson(json['profile'])).toList();
+    List teams = data
+        .map((json) => (json['team'] != null) ? json['team']['name'] : null)
+        .toList();
     return [ids, profs, teams];
   }
 }
@@ -207,7 +211,6 @@ Future<String> addBookmark(String token, String participantId) async {
   }
 }
 
-
 Future<List<List<Event>>> getEvents() async {
   var url = baseUrl + 'schedule/';
   final response = await http.get(url);
@@ -222,7 +225,7 @@ Future<List<List<Event>>> getEvents() async {
 
     for (int i = 0; i < eventsList.length; i++) {
       if (currentTime > eventsList[i].endTime) {
-        pastEvents.insert(0,eventsList[i]);
+        pastEvents.insert(0, eventsList[i]);
       } else {
         upcomingEvents.add(eventsList[i]);
       }
@@ -328,8 +331,8 @@ Future<bool> editEvent(
   if (response.statusCode == 200) {
     return true;
   } else if (response.statusCode == 401) {
-    return editEvent(eventId, name, description, startTime, endTime, location, lat, lng,
-        platform, platformUrl);
+    return editEvent(eventId, name, description, startTime, endTime, location,
+        lat, lng, platform, platformUrl);
   } else {
     print(response.body);
     return false;
