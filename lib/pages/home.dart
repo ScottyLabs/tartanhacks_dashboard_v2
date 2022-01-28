@@ -45,6 +45,7 @@ class _HomeState extends State<Home> {
     userData = await getProfile(id, token);
     userTeam = await getUserTeam(token);
     discordInfo = await getDiscordInfo(token);
+    print(discordInfo.link);
 
     setState(() {});
   }
@@ -184,7 +185,7 @@ class _HomeState extends State<Home> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                      alignment: Alignment.topLeft,
+                      alignment: Alignment.topCenter,
                       padding: EdgeInsets.fromLTRB(30, 0, 20, 0),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,7 +194,7 @@ class _HomeState extends State<Home> {
                                 style: Theme.of(context).textTheme.headline1),
                             SizedBox(height: 8),
                             CountdownTimer(
-                              endTime: 1644954396000,
+                              endTime: 1644184800000,
                               textStyle: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold,
@@ -206,11 +207,11 @@ class _HomeState extends State<Home> {
                       width: screenWidth,
                       height: screenHeight * 0.10,
                       alignment: Alignment.bottomCenter,
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: Text(
-                        "Swipe to see all the places where the\n" +
+                        "Swipe to see all the places where\n" +
                             String.fromCharCode($larr) +
-                            "hacking is happening" +
+                            "the hacking is happening" +
                             String.fromCharCode(($rarr)),
                         style: Theme.of(context).textTheme.bodyText1,
                         textAlign: TextAlign.center,
