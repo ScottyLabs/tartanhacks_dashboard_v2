@@ -67,9 +67,9 @@ class _LoginState extends State<Login>{
     prefs = await SharedPreferences.getInstance();
     print(prefs.getString('theme'));
 
-    if (prefs.getString('theme') == "dark") {
+    if (prefs.getString('theme') == "light") {
       var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-      _themeProvider.setTheme(darkTheme);
+      _themeProvider.setTheme(lightTheme);
     }
 
     if (prefs.get('email') != null) {
@@ -120,7 +120,7 @@ class _LoginState extends State<Login>{
                                       height: screenHeight*0.3,
                                       width: screenWidth,
                                       alignment: Alignment.topCenter,
-                                      padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                      padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                                       child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
                                           : Image.asset("lib/logos/thLogoDark.png")
                                   )

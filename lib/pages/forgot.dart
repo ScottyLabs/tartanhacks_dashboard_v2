@@ -70,7 +70,7 @@ class _ForgotState extends State<Forgot>{
                                     height: screenHeight*0.3,
                                     width: screenWidth,
                                     alignment: Alignment.topCenter,
-                                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                                     child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
                                         : Image.asset("lib/logos/thLogoDark.png")
                                 )

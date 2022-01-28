@@ -308,7 +308,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                             child: GradBox(
                               width: screenWidth*0.9,
                               height: screenHeight*0.75,
-                              padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
                               child: Form(
                                   key: _formKey,
                                   child: SingleChildScrollView(

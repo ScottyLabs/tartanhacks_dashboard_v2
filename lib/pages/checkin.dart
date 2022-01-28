@@ -109,7 +109,7 @@ class Header extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(30, 0, 15, 0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
         children: isAdmin ? [AdminHeader()] : [PointsHeader(points), QRHeader()],
@@ -144,8 +144,8 @@ class QRHeader extends StatelessWidget {
           ),
 
           SizedBox(
-            height: 130,
-            width: 130,
+            height: 125,
+            width: 125,
             child: DecoratedBox(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
@@ -171,8 +171,9 @@ class PointsHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
+        SizedBox(height: 5,),
         Text(
           "CHECKIN",
           style: Theme.of(context).textTheme.headline1,
