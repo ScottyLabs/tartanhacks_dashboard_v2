@@ -11,7 +11,7 @@ description: A new Flutter application.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: ">=2.5.2 <3.0.0"
@@ -40,25 +40,22 @@ dependencies:
   flutter_svg: ^0.22.0
   decorated_icon: ^1.2.1
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
   fonts:
     - family: Poppins
-      fonts :
+      fonts:
         - asset: lib/fonts/Poppins/Poppins-Regular.ttf
     - family: Aktiv Grotesk
       fonts:

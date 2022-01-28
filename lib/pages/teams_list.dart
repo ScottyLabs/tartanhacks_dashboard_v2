@@ -17,8 +17,6 @@ class TeamsList extends StatefulWidget {
 }
 
 class _TeamsListState extends State<TeamsList> {
-
-
   String token;
   List<Team> teamInfos;
   int numTeams;
@@ -37,6 +35,10 @@ class _TeamsListState extends State<TeamsList> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     teamInfos = await getTeams(token);
+    if (teamInfos == null) {
+      errorDialog(context, 'Error',
+          'We ran into an error while getting your team information. If the issue persists please contact a TartanHacks organizer.');
+    }
     numTeams = teamInfos.length;
     _populateTeamList();
     _buildTeamsList();
@@ -47,71 +49,59 @@ class _TeamsListState extends State<TeamsList> {
         requestedTeams.add(r['team']['_id']);
       }
     }
-    setState(() {
-      });
+    setState(() {});
   }
+
   bool read = true;
 
-  
-  void _populateTeamList(){
-    for(int i = 0; i < teamInfos.length; i++){
-      if(teamInfos[i].visible){
-        _teamList.add({'teamID': teamInfos[i].teamID, 'teamName': teamInfos[i].name});
+  void _populateTeamList() {
+    for (int i = 0; i < teamInfos.length; i++) {
+      if (teamInfos[i].visible) {
+        _teamList.add(
+            {'teamID': teamInfos[i].teamID, 'teamName': teamInfos[i].name});
       }
     }
   }
 
   Widget _buildTeamHeader() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("TEAM", style: Theme.of(context).textTheme.headline2),
-          IconButton(
-              icon: Icon(Icons.email, size: 30.0),
-              color: Theme.of(context).colorScheme.secondary,
-              onPressed: (){
-                print("opened mail");
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => viewInvites()),
-                ).then((value) => getData());
-              }
-          )
-        ]
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Text("TEAM", style: Theme.of(context).textTheme.headline2),
+      IconButton(
+          icon: Icon(Icons.email, size: 30.0),
+          color: Theme.of(context).colorScheme.secondary,
+          onPressed: () {
+            print("opened mail");
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => viewInvites()),
+            ).then((value) => getData());
+          })
+    ]);
   }
 
-  Widget mailIconSelect(bool read){
-    if (read){
-      return Icon(
-          Icons.email,
-          color: Theme.of(context).colorScheme.secondary,
-          size: 40.0
-      );
+  Widget mailIconSelect(bool read) {
+    if (read) {
+      return Icon(Icons.email,
+          color: Theme.of(context).colorScheme.secondary, size: 40.0);
     } else {
-      return Icon(
-          Icons.mark_email_unread,
-          color: Theme.of(context).colorScheme.secondary,
-          size: 40.0
-      );
+      return Icon(Icons.mark_email_unread,
+          color: Theme.of(context).colorScheme.secondary, size: 40.0);
     }
   }
 
-  Widget _buildCreateTeamBtn(){
+  Widget _buildCreateTeamBtn() {
     SolidButton btn = SolidButton(
-      text : "Create New Team",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) =>
-              CreateTeam()),
-        );
-      }
-    );
+        text: "Create New Team",
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateTeam()),
+          );
+        });
     return btn;
   }
 
-  Widget _buildListHeader(){
+  Widget _buildListHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -121,7 +111,7 @@ class _TeamsListState extends State<TeamsList> {
     );
   }
 
-  Widget _buildTeamJoinBtn(String teamID){
+  Widget _buildTeamJoinBtn(String teamID) {
     if (requestedTeams.contains(teamID)) {
       return SolidButton(
         text: "Awaiting response",
@@ -130,71 +120,62 @@ class _TeamsListState extends State<TeamsList> {
       );
     } else {
       return SolidButton(
-        text: "Ask to join",
+          text: "Ask to join",
           onPressed: () async {
             bool success = await requestTeam(teamID, token);
             if (success) {
-              errorDialog(context, "Success", "A join request was sent to this team");
+              errorDialog(
+                  context, "Success", "A join request was sent to this team");
               requestedTeams.add(teamID);
-              setState(() {
-                
-              });
+              setState(() {});
             } else {
-              errorDialog(context, "Error", "An error occurred with joining this team. Please try again.");
+              errorDialog(context, "Error",
+                  "An error occurred with joining this team. Please try again.");
             }
-          }
-      );
+          });
     }
   }
 
-  Widget _buildTeamDetailsBtn(String teamID){
+  Widget _buildTeamDetailsBtn(String teamID) {
     SolidButton btn = SolidButton(
         text: "Details",
         onPressed: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) =>
-
-                ViewTeam(),
-                settings: RouteSettings(
-                  arguments: teamID,
-                )
-          ));
-        }
-    );
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewTeam(),
+                  settings: RouteSettings(
+                    arguments: teamID,
+                  )));
+        });
     return btn;
   }
 
-  Widget _buildTeamEntry(int index){
+  Widget _buildTeamEntry(int index) {
     String teamID = _teamList[index]['teamID'];
     String teamName = _teamList[index]['teamName'];
     Row btnRow = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildTeamJoinBtn(teamID),
-        _buildTeamDetailsBtn(teamID)
-      ],
+      children: [_buildTeamJoinBtn(teamID), _buildTeamDetailsBtn(teamID)],
     );
     return Card(
         margin: const EdgeInsets.all(4),
         color: Theme.of(context).colorScheme.background,
         child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(teamName, style: Theme.of(context).textTheme.headline4),
-              const SizedBox(height: 8),
-              btnRow
-            ],
-          )
-      )
-    );
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(teamName, style: Theme.of(context).textTheme.headline4),
+                const SizedBox(height: 8),
+                btnRow
+              ],
+            )));
   }
 
-  void _buildTeamsList(){
-    for(int i = 0; i < numTeams; i++){
+  void _buildTeamsList() {
+    for (int i = 0; i < numTeams; i++) {
       teamWidgetList.add(_buildTeamEntry(i));
     }
   }
@@ -206,74 +187,74 @@ class _TeamsListState extends State<TeamsList> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body:  Container(
+        body: Container(
             child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
+                    constraints: BoxConstraints(maxHeight: screenHeight),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TopBar(),
                         Stack(
                           children: [
-                            Column(
-                                children:[
-                                  SizedBox(height:screenHeight * 0.05),
-                                  CustomPaint(
-                                      size: Size(screenWidth, screenHeight * 0.75),
-                                      painter: CurvedTop(
-                                          color1: Theme.of(context).colorScheme.secondaryVariant,
-                                          color2: Theme.of(context).colorScheme.primary,
-                                          reverse: true)
-                                  ),
-                                ]
-                            ),
+                            Column(children: [
+                              SizedBox(height: screenHeight * 0.05),
+                              CustomPaint(
+                                  size: Size(screenWidth, screenHeight * 0.75),
+                                  painter: CurvedTop(
+                                      color1: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryVariant,
+                                      color2:
+                                          Theme.of(context).colorScheme.primary,
+                                      reverse: true)),
+                            ]),
                             Container(
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 child: GradBox(
-                                    width: screenWidth*0.9,
-                                    height: screenHeight*0.75,
+                                    width: screenWidth * 0.9,
+                                    height: screenHeight * 0.75,
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                     child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Container(
-                                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 10, 0, 10),
                                               //height: screenHeight*0.05,
-                                              child: _buildTeamHeader()
-                                          ),
+                                              child: _buildTeamHeader()),
                                           Container(
-                                              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 5, 0, 5),
                                               //height: screenHeight*0.2,
-                                              child: _buildCreateTeamBtn()
-                                          ),
+                                              child: _buildCreateTeamBtn()),
                                           if (teamInfos != null)
-                                          Expanded(
-                                            child: ListView.builder(
-
-                                              itemCount: numTeams,
-                                              itemBuilder: (BuildContext context, int index){
-                                                return _buildTeamEntry(index);
-                                              },
-                                            ),
-                                          )
-                                          else Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onSurface))
-                                        ]
-                                    )
-                                )
-                            )
+                                            Expanded(
+                                              child: ListView.builder(
+                                                itemCount: numTeams,
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return _buildTeamEntry(index);
+                                                },
+                                              ),
+                                            )
+                                          else
+                                            Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .onSurface))
+                                        ])))
                           ],
                         )
                       ],
-                    )
-                )
-            )
-        )
-    );
+                    )))));
   }
 }

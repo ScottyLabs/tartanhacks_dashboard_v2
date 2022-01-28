@@ -7,13 +7,21 @@ import '/models/team.dart';
 import '/models/member.dart';
 import 'dart:developer';
 
-Future<bool> createTeam(String teamName, String description, bool visibility, String token) async  {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+Future<bool> createTeam(
+    String teamName, String description, bool visibility, String token) async {
+  String url = "https://backend.tartanhacks.com/team/";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   print("try to create");
-  String body = '{"name": "' + teamName + '","description": "' + description + 
-  '","visible": ' + visibility.toString() + '}';
+  String body = '{"name": "' +
+      teamName +
+      '","description": "' +
+      description +
+      '","visible": ' +
+      visibility.toString() +
+      '}';
   print(body);
   final response = await http.post(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
@@ -26,13 +34,21 @@ Future<bool> createTeam(String teamName, String description, bool visibility, St
   print(decoded);
 }
 
-Future<bool> editTeam(String teamName, String description, bool visibility, String token) async  {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+Future<bool> editTeam(
+    String teamName, String description, bool visibility, String token) async {
+  String url = "https://backend.tartanhacks.com/team/";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   print("try to create");
-  String body = '{"name": "' + teamName + '","description": "' + description + 
-  '","visible": ' + visibility.toString() + '}';
+  String body = '{"name": "' +
+      teamName +
+      '","description": "' +
+      description +
+      '","visible": ' +
+      visibility.toString() +
+      '}';
   print(body);
   final response = await http.patch(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
@@ -46,9 +62,12 @@ Future<bool> editTeam(String teamName, String description, bool visibility, Stri
 }
 
 Future<void> promoteToAdmin(String userID, String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/promote/" + userID;
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url =
+      "https://backend.tartanhacks.com/team/promote/" + userID;
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.post(url, headers: headers);
   if (response.statusCode == 200) {
     print("Successfully promoted member");
@@ -59,14 +78,16 @@ Future<void> promoteToAdmin(String userID, String token) async {
 }
 
 Future<Team> getUserTeam(String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/user/team";
+  String url = "https://backend.tartanhacks.com/user/team";
 
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var parsedJson = jsonDecode(response.body);
-    if (response.body.contains("You are not in a team!")){
+    if (response.body.contains("You are not in a team!")) {
       return null;
     }
     Team team = new Team.fromJson(parsedJson);
@@ -76,9 +97,11 @@ Future<Team> getUserTeam(String token) async {
 }
 
 Future<List<dynamic>> getTeamMail(String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/requests/team";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url = "https://backend.tartanhacks.com/requests/team";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
@@ -88,9 +111,12 @@ Future<List<dynamic>> getTeamMail(String token) async {
 }
 
 Future<void> acceptRequest(String token, String requestID) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/requests/accept/" + requestID;
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url =
+      "https://backend.tartanhacks.com/requests/accept/" + requestID;
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.post(url, headers: headers);
   if (response.statusCode == 200) {
     print("success");
@@ -98,31 +124,37 @@ Future<void> acceptRequest(String token, String requestID) async {
 }
 
 Future<void> cancelRequest(String token, String requestID) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/requests/cancel/" + requestID;
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url =
+      "https://backend.tartanhacks.com/requests/cancel/" + requestID;
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.post(url, headers: headers);
   if (response.statusCode == 200) {
     print("success");
   }
 }
-
 
 Future<void> declineRequest(String token, String requestID) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/requests/cancel/" + requestID;
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url =
+      "https://backend.tartanhacks.com/requests/cancel/" + requestID;
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.post(url, headers: headers);
   if (response.statusCode == 200) {
     print("success");
   }
 }
 
-
 Future<List<dynamic>> getUserMail(String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/requests/user";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url = "https://backend.tartanhacks.com/requests/user";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
@@ -132,11 +164,12 @@ Future<List<dynamic>> getUserMail(String token) async {
   }
 }
 
-
 Future<void> inviteTeamMember(String user_email, String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/team/invite";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  const url = "https://backend.tartanhacks.com/team/invite";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   var body = json.encode({'email': user_email});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
@@ -147,9 +180,11 @@ Future<void> inviteTeamMember(String user_email, String token) async {
 }
 
 Future<void> leaveTeam(String token) async {
-  const url = "https://tartanhacks-backend.herokuapp.com/team/leave";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  const url = "https://backend.tartanhacks.com/team/leave";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   var body = json.encode({});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
@@ -161,9 +196,11 @@ Future<void> leaveTeam(String token) async {
 }
 
 Future<bool> requestTeam(String teamID, String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/join/" + teamID;
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  String url = "https://backend.tartanhacks.com/team/join/" + teamID;
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   var body = json.encode({});
   print("Team request attempt");
   final response = await http.post(url, headers: headers, body: body);
@@ -175,10 +212,12 @@ Future<bool> requestTeam(String teamID, String token) async {
   return false;
 }
 
-Future<bool> requestTeamMember(String email, String token) async { 
-  String url = "https://tartanhacks-backend.herokuapp.com/team/invite";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+Future<bool> requestTeamMember(String email, String token) async {
+  String url = "https://backend.tartanhacks.com/team/invite";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   String body = '{"email":"' + email + '"}';
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
@@ -190,15 +229,15 @@ Future<bool> requestTeamMember(String email, String token) async {
   return false;
 }
 
-Future<void> updateTeamInfo(String name, String description, bool visible, String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/";
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
-  var body = json.encode({
-    "name": name,
-    "description": description,
-    "visible": visible
-  });
+Future<void> updateTeamInfo(
+    String name, String description, bool visible, String token) async {
+  String url = "https://backend.tartanhacks.com/team/";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+  var body = json
+      .encode({"name": name, "description": description, "visible": visible});
   final response = await http.patch(url, headers: headers, body: body); //patch?
   if (response.statusCode == 200) {
     print("Successfully updated info");
@@ -206,12 +245,13 @@ Future<void> updateTeamInfo(String name, String description, bool visible, Strin
   print("error");
 }
 
-Future<Team> getTeamInfo(String teamId,
-                         String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/team/" + teamId;
+Future<Team> getTeamInfo(String teamId, String token) async {
+  String url = "https://backend.tartanhacks.com/team/" + teamId;
 
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode == 200) {
@@ -223,10 +263,12 @@ Future<Team> getTeamInfo(String teamId,
 }
 
 Future<List<Team>> getTeams(String token) async {
-  String url = "https://tartanhacks-backend.herokuapp.com/teams";
+  String url = "https://backend.tartanhacks.com/teams";
 
-  Map<String, String> headers = {"Content-type": "application/json", 
-  "x-access-token": token};
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     print("Response body: ");
@@ -234,7 +276,7 @@ Future<List<Team>> getTeams(String token) async {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
     print("Parsed 1 success");
     List<Team> teamsList = [];
-    for(int i = 0; i < teamStrings.length; i++){
+    for (int i = 0; i < teamStrings.length; i++) {
       teamsList.add(Team.fromJson(teamStrings[i]));
       print("Added team");
     }
@@ -242,6 +284,6 @@ Future<List<Team>> getTeams(String token) async {
     print(teamsList);
     return teamsList;
   }
+  print(response.body);
   return null;
 }
-
