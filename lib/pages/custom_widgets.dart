@@ -478,216 +478,43 @@ OverlayEntry MenuOverlay(BuildContext context) {
   OverlayEntry entry;
 
   entry = OverlayEntry(
-      builder: (context) => Positioned(
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          entry.remove();
+        },
         child: Stack(
-          alignment: Alignment.topRight,
-          children:[
-            CustomPaint(
-              size: mqData.size,
-              painter: WhiteOverlay()
-            ),
-            Column(
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children:[
-                      Container(
-                          width: screenWidth/4,
-                          alignment: Alignment.topCenter,
-                          padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-                          child: MenuButton(
-                              onTap: () {
-                                entry.remove();
-                              },
-                              icon: Icons.close
-                          )
-                      ),
-                    ]
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            alignment: Alignment.topRight,
+            children:[
+              CustomPaint(
+                  size: mqData.size,
+                  painter: WhiteOverlay()
+              ),
+              Column(
                   children: [
-                    Column(
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children:[
-                          MenuChoice(
-                              icon: Icons.schedule,
-
-                              text: "Schedule",
-
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        EventsHomeScreen(),
-                                    )
-                                );
-                              },
-                          ),
-                          MenuChoice(
-                              icon: Icons.pages,
-                              text: "Project",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      ProjSubmit(),
-                                  )
-                                );
-                              },
-                          ),
-                          MenuChoice(
-                              icon: Icons.home,
-                              text: "Home",
-                              onTap: () {
-                                entry.remove();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        Home(),
-                                    )
-                                );
-                              },
-                          ),
-                          _themeProvider.getTheme==lightTheme ?
-                          MenuChoice(
-                            icon: Icons.mode_night,
-                            text: "Dark",
-                            onTap: () {
-                              _themeProvider.setTheme(darkTheme);
-                              setThemePref("dark", entry, context);
-                            },
-                          ) :
-                          MenuChoice(
-                            icon: Icons.wb_sunny,
-                            text: "Light",
-                            onTap: () {
-                              _themeProvider.setTheme(lightTheme);
-                              setThemePref("light", entry, context);
-                            },
+                          Container(
+                              width: screenWidth/4,
+                              alignment: Alignment.topCenter,
+                              padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                              child: MenuButton(
+                                  onTap: () {
+                                    entry.remove();
+                                  },
+                                  icon: Icons.close
+                              )
                           ),
                         ]
                     ),
-                    Column(
-                      children: [
-                        MenuChoice(
-                            icon: Icons.people_alt,
-                            text: "Team",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) =>
-
-                                    ViewTeam(),
-                                    settings: RouteSettings(
-                                      arguments: "",
-                                    )),
-
-                              );
-                            },
-                        ),
-                        MenuChoice(
-                            icon: Icons.qr_code_scanner,
-                            text: "Scan",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      CheckIn(),
-                                  )
-                              );
-                            },
-                        ),
-                        MenuChoice(
-                            icon: Icons.person,
-                            text: "Profile",
-                            onTap: () {
-                              entry.remove();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    settings: RouteSettings(name: "profpage"),
-                                    builder: (context) => ProfilePage()),
-                              );
-                            },
-                        ),
-                        MenuChoice(
-                            icon: Icons.logout,
-                            text: "Logout",
-                            onTap: () {logOut(entry, context);}
-                        ),
-                      ],
-                    )
-                  ]
-                )
-              ]
-            ),
-          ]
-        )
-      )
-  );
-  return entry;
-}
-
-OverlayEntry SponsorMenuOverlay(BuildContext context) {
-  final mqData = MediaQuery.of(context);
-  final screenWidth = mqData.size.width;
-
-  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-  OverlayEntry entry;
-
-  entry = OverlayEntry(
-      builder: (context) => Positioned(
-          child: Stack(
-              alignment: Alignment.topRight,
-              children:[
-                CustomPaint(
-                    size: mqData.size,
-                    painter: WhiteOverlay()
-                ),
-                Column(
-                    children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children:[
-                            Container(
-                                width: screenWidth/4,
-                                alignment: Alignment.topCenter,
-                                padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-                                child: MenuButton(
-                                    onTap: () {
-                                      entry.remove();
-                                    }
-                                )
-                            ),
-                          ]
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                          alignment: Alignment.topRight,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    SizedBox(height: 10),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
                               children:[
-                                MenuChoice(
-                                  icon: Icons.person,
-                                  text: "Home",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            Sponsors(),
-                                        )
-                                    );
-                                  },
-                                ),
                                 MenuChoice(
                                   icon: Icons.schedule,
                                   text: "Schedule",
@@ -702,19 +529,31 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                                   },
                                 ),
                                 MenuChoice(
-                                  icon: Icons.bookmark_outline,
-                                  text: "Bookmarks",
+                                  icon: Icons.pages,
+                                  text: "Project",
                                   onTap: () {
                                     entry.remove();
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
-                                            Bookmarks(),
+                                            ProjSubmit(),
                                         )
                                     );
                                   },
                                 ),
-
+                                MenuChoice(
+                                  icon: Icons.home,
+                                  text: "Home",
+                                  onTap: () {
+                                    entry.remove();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            Home(),
+                                        )
+                                    );
+                                  },
+                                ),
                                 _themeProvider.getTheme==lightTheme ?
                                 MenuChoice(
                                   icon: Icons.mode_night,
@@ -732,18 +571,186 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                                     setThemePref("light", entry, context);
                                   },
                                 ),
-                                MenuChoice(
+                              ]
+                          ),
+                          Column(
+                            children: [
+                              MenuChoice(
+                                icon: Icons.people_alt,
+                                text: "Team",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+
+                                        ViewTeam(),
+                                        settings: RouteSettings(
+                                          arguments: "",
+                                        )),
+
+                                  );
+                                },
+                              ),
+                              MenuChoice(
+                                icon: Icons.qr_code_scanner,
+                                text: "Scan",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          CheckIn(),
+                                      )
+                                  );
+                                },
+                              ),
+                              MenuChoice(
+                                icon: Icons.person,
+                                text: "Profile",
+                                onTap: () {
+                                  entry.remove();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        settings: RouteSettings(name: "profpage"),
+                                        builder: (context) => ProfilePage()),
+                                  );
+                                },
+                              ),
+                              MenuChoice(
                                   icon: Icons.logout,
                                   text: "Logout",
-                                  onTap: () {logOut(entry, context);},
-                                ),
-                              ]
+                                  onTap: () {logOut(entry, context);}
+                              ),
+                            ],
                           )
-                      )
-                    ]
-                )
-              ]
-          )
+                        ]
+                    )
+                  ]
+              ),
+            ]
+        ),
+      )
+  );
+  return entry;
+}
+
+OverlayEntry SponsorMenuOverlay(BuildContext context) {
+  final mqData = MediaQuery.of(context);
+  final screenWidth = mqData.size.width;
+
+  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+  OverlayEntry entry;
+
+  entry = OverlayEntry(
+      builder: (context) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            entry.remove();
+          },
+            child: Stack(
+                alignment: Alignment.topRight,
+                children:[
+                  CustomPaint(
+                      size: mqData.size,
+                      painter: WhiteOverlay()
+                  ),
+                  Column(
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children:[
+                              Container(
+                                  width: screenWidth/4,
+                                  alignment: Alignment.topCenter,
+                                  padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                                  child: MenuButton(
+                                    onTap: () {
+                                      entry.remove();
+                                    },
+                                    icon: Icons.close,
+                                  )
+                              ),
+                            ]
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                            alignment: Alignment.topRight,
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children:[
+                                  MenuChoice(
+                                    icon: Icons.person,
+                                    text: "Home",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              Sponsors(),
+                                          )
+                                      );
+                                    },
+                                  ),
+                                  MenuChoice(
+                                    icon: Icons.schedule,
+                                    text: "Schedule",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              EventsHomeScreen(),
+                                          )
+                                      );
+                                    },
+                                  ),
+                                  MenuChoice(
+                                    icon: Icons.bookmark_outline,
+                                    text: "Bookmarks",
+                                    onTap: () {
+                                      entry.remove();
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) =>
+                                              Bookmarks(),
+                                          )
+                                      );
+                                    },
+                                  ),
+
+                                  _themeProvider.getTheme==lightTheme ?
+                                  MenuChoice(
+                                    icon: Icons.mode_night,
+                                    text: "Dark",
+                                    onTap: () {
+                                      _themeProvider.setTheme(darkTheme);
+                                      setThemePref("dark", entry, context);
+                                    },
+                                  ) :
+                                  MenuChoice(
+                                    icon: Icons.wb_sunny,
+                                    text: "Light",
+                                    onTap: () {
+                                      _themeProvider.setTheme(lightTheme);
+                                      setThemePref("light", entry, context);
+                                    },
+                                  ),
+                                  MenuChoice(
+                                    icon: Icons.logout,
+                                    text: "Logout",
+                                    onTap: () {logOut(entry, context);},
+                                  ),
+                                ]
+                            )
+                        )
+                      ]
+                  )
+                ]
+            )
       )
   );
   return entry;
