@@ -80,6 +80,48 @@ Future<Profile> getProfile(String id, String token) async {
   }
 }
 
+Future<bool> checkNameAvailable(String name, String token) async {
+  String url = baseUrl + "user/name/available";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+  String body = json.encode({"name" : name});
+
+  final response = await http.post(url, headers: headers, body: body);
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    var data = json.decode(response.body);
+    return data;
+  } else {
+    return null;
+  }
+}
+
+Future<bool> setDisplayName(String name, String token) async {
+  bool isAvailable = await checkNameAvailable(name, token);
+  print(isAvailable);
+  if (isAvailable != true) {
+    return isAvailable;
+  }
+
+  String url = baseUrl + "user/profile";
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+  String body = json.encode({"displayName" : name});
+
+  final response = await http.put(url, headers: headers, body: body);
+
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    return null;
+  }
+}
+
 Future<List> getStudents(String token, {String query}) async {
   String url = baseUrl + "participants";
   if (query != null) {

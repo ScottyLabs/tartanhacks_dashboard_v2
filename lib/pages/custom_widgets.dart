@@ -610,8 +610,9 @@ OverlayEntry MenuOverlay(BuildContext context) {
                               entry.remove();
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) =>
-                                    ProfilePage()),
+                                MaterialPageRoute(
+                                    settings: RouteSettings(name: "profpage"),
+                                    builder: (context) => ProfilePage()),
                               );
                             },
                         ),

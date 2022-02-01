@@ -45,7 +45,6 @@ class _HomeState extends State<Home> {
     userData = await getProfile(id, token);
     userTeam = await getUserTeam(token);
     discordInfo = await getDiscordInfo(token);
-    print(discordInfo.link);
 
     setState(() {});
   }

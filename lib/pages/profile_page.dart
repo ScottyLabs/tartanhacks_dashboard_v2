@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
@@ -29,11 +30,11 @@ class _ProfilePageState extends State<ProfilePage> {
   String teamName;
   bool isSelf = false;
 
+  final _editNicknameController = new TextEditingController();
+
   void getData() async{
     prefs = await SharedPreferences.getInstance();
 
-    String email = prefs.get('email');
-    String password = prefs.get('password');
     isAdmin = prefs.getBool('admin');
     token = prefs.getString('token');
 
@@ -74,10 +75,89 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  _editNickname() async {
+    _editNicknameController.clear();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
+          content: TextField(
+            controller: _editNicknameController,
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context
+                ).textTheme.headline4,
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "Save",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () async{
+                OverlayEntry loading = LoadingOverlay(context);
+                Overlay.of(context).insert(loading);
+                bool success = await setDisplayName(_editNicknameController.text, token);
+                loading.remove();
+                
+                if (success == null) {
+                  errorDialog(context, "Error", "An error occurred. Please try again.");
+                } else if (success) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      // return object of type Dialog
+                      return AlertDialog(
+                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        title: new Text("Success", style: Theme.of(context).textTheme.headline1),
+                        content: new Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
+                        actions: <Widget>[
+                          // usually buttons at the bottom of the dialog
+                          new TextButton(
+                            child: new Text(
+                              "OK",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).popUntil(ModalRoute.withName("profpage"));
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  errorDialog(context, "Nickname taken", "Please try a different name.");
+                }
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => getData());
+  }
+
   @override
   initState() {
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    _editNicknameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -244,6 +324,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   if (isSelf)
                                                   SolidButton(
                                                     text: "Edit Nickname",
+                                                    onPressed: _editNickname,
                                                   ),
                                                   SizedBox(height: 10),
                                                   Text(userData.school,
