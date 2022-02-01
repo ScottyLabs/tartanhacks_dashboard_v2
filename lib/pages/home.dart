@@ -269,6 +269,7 @@ class _HomeState extends State<Home> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
+                                          settings: RouteSettings(name: "leaderboard"),
                                           builder: (context) => Leaderboard()),
                                     );
                                   },

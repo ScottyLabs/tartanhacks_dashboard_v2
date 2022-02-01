@@ -15,10 +15,12 @@ class _LeaderboardState extends State<Leaderboard> {
   List<LBEntry> lbData;
   int selfRank;
   Profile userData;
+  String token;
+  TextEditingController _editNicknameController = TextEditingController();
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
+    token = prefs.getString('token');
     String id = prefs.getString('id');
 
     lbData = await getLeaderboard();
@@ -29,10 +31,89 @@ class _LeaderboardState extends State<Leaderboard> {
     });
   }
 
+  _editNickname() async {
+    _editNicknameController.clear();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
+          content: TextField(
+            controller: _editNicknameController,
+            style: Theme.of(context).textTheme.bodyText2,
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context
+                ).textTheme.headline4,
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "Save",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () async{
+                OverlayEntry loading = LoadingOverlay(context);
+                Overlay.of(context).insert(loading);
+                bool success = await setDisplayName(_editNicknameController.text, token);
+                loading.remove();
+
+                if (success == null) {
+                  errorDialog(context, "Error", "An error occurred. Please try again.");
+                } else if (success) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      // return object of type Dialog
+                      return AlertDialog(
+                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        title: new Text("Success", style: Theme.of(context).textTheme.headline1),
+                        content: new Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
+                        actions: <Widget>[
+                          // usually buttons at the bottom of the dialog
+                          new TextButton(
+                            child: new Text(
+                              "OK",
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).popUntil(ModalRoute.withName("leaderboard"));
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  errorDialog(context, "Nickname taken", "Please try a different name.");
+                }
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => getData());
+  }
+
   @override
   initState() {
     super.initState();
     getData();
+  }
+
+  @override
+  void dispose() {
+    _editNicknameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,19 +159,29 @@ class _LeaderboardState extends State<Leaderboard> {
                                   children: [
                                     GradBox(
                                       width: screenWidth*0.9,
-                                      height: 110,
+                                      height: 120,
                                       padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                                       alignment: Alignment.topLeft,
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
+                                              SolidButton(
+                                                text: "Edit Nickname",
+                                                color: Theme.of(context).colorScheme.secondary,
+                                                onPressed: _editNickname,
+                                              ),
+                                            ],
+                                          ),
                                           LBRow(
                                               place: selfRank,
                                               name: userData.displayName,
                                               points: userData.totalPoints
-                                          )
+                                          ),
                                         ],
                                       ),
                                     ),
