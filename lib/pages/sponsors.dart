@@ -174,8 +174,6 @@ class _SponsorsState extends State<Sponsors> {
                                               ),
                                               onPressed: () async {
                                                 String id = await Barras.scan(context);
-                                                id = id.substring(7);
-                                                print(id);
                                                 Profile isValid = await getProfile(id, token);
                                                 if (isValid != null) {
                                                   Navigator.push(

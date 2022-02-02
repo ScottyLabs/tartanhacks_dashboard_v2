@@ -265,7 +265,7 @@ class TextLogo extends StatelessWidget {
               ),
               Text(" Tartanhacks ",
                   style: TextStyle(
-                    fontSize: height*0.4,
+                    fontSize: width*0.1,
                     fontWeight: FontWeight.w600,
                     color: color,
                   )
