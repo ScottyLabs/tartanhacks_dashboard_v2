@@ -171,7 +171,7 @@ class _LeaderboardState extends State<Leaderboard> {
                                             children: [
                                               Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
                                               SolidButton(
-                                                text: "Edit Nickname",
+                                                child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onSecondary),
                                                 color: Theme.of(context).colorScheme.secondary,
                                                 onPressed: _editNickname,
                                               ),
