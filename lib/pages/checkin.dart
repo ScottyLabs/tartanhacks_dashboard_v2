@@ -1,4 +1,3 @@
-
 import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -10,15 +9,12 @@ import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
 
-
 class CheckIn extends StatefulWidget {
-
   @override
   State<CheckIn> createState() => _CheckInState();
 }
 
 class _CheckInState extends State<CheckIn> {
-
   @override
   void initState() {
     // Refresh on page load
@@ -56,40 +52,33 @@ class _CheckInState extends State<CheckIn> {
                                           Theme.of(context).colorScheme.primary,
                                       reverse: true)),
                             ]),
-
                             Consumer<CheckInItemsModel>(
                               builder: (context, checkInItemsModel, child) {
-                                var status = checkInItemsModel.checkInItemsStatus;
-                                var checkInItemsList = checkInItemsModel.checkInItems;
-                                if (status==Status.NotLoaded ||
-                                    checkInItemsList==null) {
+                                var status =
+                                    checkInItemsModel.checkInItemsStatus;
+                                var checkInItemsList =
+                                    checkInItemsModel.checkInItems;
+                                if (status == Status.NotLoaded ||
+                                    checkInItemsList == null) {
                                   checkInItemsModel.fetchCheckInItems();
                                   return Center(
-                                      child: CircularProgressIndicator()
-                                  );
+                                      child: CircularProgressIndicator());
                                 }
                                 // Error
-                                else if (status==Status.Error) {
+                                else if (status == Status.Error) {
                                   return Center(
-                                      child: Text("Error Loading Data")
-                                  );
-                                }
-                                else {
+                                      child: Text("Error Loading Data"));
+                                } else {
                                   return Container(
                                       alignment: Alignment.center,
                                       height: screenHeight * 0.78,
                                       child: Column(
                                         children: [
+                                          Expanded(flex: 1, child: Header()),
                                           Expanded(
-                                              flex: 1,
-                                              child: Header()),
-                                          Expanded(
-                                              flex: 2,
-                                              child: CheckInEvents()
-                                          )
+                                              flex: 2, child: CheckInEvents())
                                         ],
-                                      )
-                                  );
+                                      ));
                                 }
                               },
                             )
@@ -101,7 +90,6 @@ class _CheckInState extends State<CheckIn> {
 }
 
 class Header extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     var isAdmin = Provider.of<CheckInItemsModel>(context).isAdmin;
@@ -111,8 +99,8 @@ class Header extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-        children: isAdmin ? [AdminHeader()] : [PointsHeader(points), QRHeader()],
+        children:
+            isAdmin ? [AdminHeader()] : [PointsHeader(points), QRHeader()],
       ),
     );
   }
@@ -124,8 +112,8 @@ class QRHeader extends StatelessWidget {
     String id = Provider.of<CheckInItemsModel>(context).userID;
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => QRPage()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => QRPage()));
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -136,26 +124,23 @@ class QRHeader extends StatelessWidget {
             child: Text(
               "Get Checked In",
               style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                fontSize: 16
-              ),
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+                  fontSize: 16),
             ),
           ),
-
           SizedBox(
             height: 125,
             width: 125,
             child: DecoratedBox(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              child: QrImage(
-                data: id,
-                version: QrVersions.auto,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              )
-            ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: QrImage(
+                  data: id,
+                  version: QrVersions.auto,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                )),
           )
         ],
       ),
@@ -173,7 +158,9 @@ class PointsHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(height: 5,),
+        SizedBox(
+          height: 5,
+        ),
         Text(
           "CHECKIN",
           style: Theme.of(context).textTheme.headline1,
@@ -194,9 +181,7 @@ class PointsHeader extends StatelessWidget {
   }
 }
 
-
 class AdminHeader extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -220,7 +205,6 @@ class AdminHeader extends StatelessWidget {
 }
 
 class CheckInEvents extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<CheckInItemsModel>(context);
@@ -234,34 +218,36 @@ class CheckInEvents extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(child: CheckInEventList(checkInItemsList)),
-
-            SizedBox(height: 9,),
-            if (editable) Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: GradBox(
-                child: Text(
-                  "NEW CHECKIN ITEM",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold
+            SizedBox(
+              height: 9,
+            ),
+            if (editable)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: GradBox(
+                  child: Text(
+                    "NEW CHECKIN ITEM",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
+                  onTap: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditCheckInItemPage(null)))
+                  },
+                  curvature: 12,
                 ),
-                onTap: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => EditCheckInItemPage(null))
-                  )
-                },
-                curvature: 12,
-              ),
-            )
+              )
           ],
         ),
       ),
     );
   }
 }
-
 
 class CheckInEventList extends StatelessWidget {
   final List<CheckInItem> events;
@@ -270,54 +256,64 @@ class CheckInEventList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var model = Provider.of<CheckInItemsModel>(context);
     var editable = model.isAdmin;
+    String userID = model.userID;
+    bool isAdmin = editable;
     var hasCheckedIn = model.hasCheckedIn;
     return Container(
         child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          itemCount: events.length,
-          itemBuilder: (BuildContext context, int index) {
-            return CheckInEventListItem(
-              name: events[index].name,
-
-              isChecked: editable ? false : hasCheckedIn[events[index].id],
-              enabled: events[index].enableSelfCheckIn,
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EditCheckInItemPage(events[index])
-                ));
-              },
-              onCheck: () async {
-                final String uid = await Barras.scan(context);
-                if (uid != null && uid != "") {
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => Center(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      itemCount: events.length,
+      itemBuilder: (BuildContext context, int index) {
+        return CheckInEventListItem(
+          name: events[index].name,
+          isChecked: editable ? false : hasCheckedIn[events[index].id],
+          enabled: events[index].enableSelfCheckIn,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditCheckInItemPage(events[index])));
+          },
+          onCheck: () async {
+            String uid = "";
+            String checkInItemId = "";
+            if (isAdmin) {
+              checkInItemId = events[index].id;
+              uid = await Barras.scan(context);
+            } else {
+              uid = userID;
+              checkInItemId = await Barras.scan(context);
+            }
+            if (uid != null && uid != "" && checkInItemId != null && checkInItemId != "") {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => Center(
                           child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          )));
-                  try {
-                    await model.checkInUser(events[index].id, uid);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Checked in!"),
-                    ));
-                  } on Exception catch (e) {
-                    print(e);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Error checking in"),
-                    ));
-                  } finally {Navigator.pop(context);}
-                }
-              },
-            );
+                        strokeWidth: 2,
+                      )));
+              try {
+                await model.checkInUser(events[index].id, uid);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Checked in for " + events[index].name + "!"),
+                ));
+              } on Exception catch (e) {
+                print(e);
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Error checking in"),
+                ));
+              } finally {
+                Navigator.pop(context);
+              }
+            }
+          },
+        );
       },
-          separatorBuilder: (context, index) => SizedBox(
-            height: 15,
-          ),
+      separatorBuilder: (context, index) => SizedBox(
+        height: 15,
+      ),
     ));
   }
 }
@@ -333,15 +329,15 @@ class CheckInEventListItem extends StatelessWidget {
   CheckInEventListItem({
     this.name,
     this.isChecked,
-
     this.enabled,
     this.onTap,
     this.onCheck,
-});
+  });
 
   @override
   Widget build(BuildContext context) {
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
+    bool isAdmin = editable;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -365,37 +361,47 @@ class CheckInEventListItem extends StatelessWidget {
                         .headline1
                         ?.copyWith(fontSize: 23),
                   ),
-
                   InkWell(
-                    onTap: () {if (!isChecked && enabled) onCheck();},
+                    onTap: () {
+                      if ((!isChecked && enabled) || isAdmin) onCheck();
+                    },
                     child: IgnorePointer(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          editable ? Padding(
-                              padding: EdgeInsets.all(9),
-                            child: Icon(
-                              Icons.linked_camera,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          )
-                          : Transform.scale(
-                            scale: 1.4,
-                            child: Checkbox(
-                                side: BorderSide(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    width: 2),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5),
+                          editable
+                              ? Padding(
+                                  padding: EdgeInsets.all(9),
+                                  child: Icon(
+                                    Icons.linked_camera,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                )
+                              : Transform.scale(
+                                  scale: 1.4,
+                                  child: Checkbox(
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    value: isChecked,
+                                    onChanged: null,
+                                  ),
                                 ),
-                                value: isChecked,
-                              onChanged: null,
-                            ),
-                          ),
                           Text(
-                            isChecked ? "You are checked in"
-                                : enabled ? "Scan to Check In" : "Check in at venue",
+                            isChecked
+                                ? "You are checked in"
+                                : isAdmin
+                                    ? "Scan Users In"
+                                    : enabled
+                                        ? "Scan to Check In"
+                                        : "Check in at venue",
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
@@ -419,9 +425,9 @@ class CheckInEventListItem extends StatelessWidget {
                   editable ? "Edit\nItem" : "View\nItem",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize:14.0,
+                    fontSize: 14.0,
                     fontWeight: FontWeight.w600,
-                    color:Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   maxLines: 2,
                 ),

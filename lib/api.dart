@@ -498,7 +498,8 @@ Future<void> checkInUser(String id, String uid, token) async {
   final response = await http.put(uri, headers: headers);
 
   if (response.statusCode != 200) {
-    throw Exception(response.body.toString());
+    Map<String, dynamic> error = jsonDecode(response.body);
+    throw Exception(error['message']);
   }
 }
 
