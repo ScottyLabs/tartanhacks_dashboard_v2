@@ -319,6 +319,10 @@ class CheckInEventList extends StatelessWidget {
               } finally {
                 Navigator.pop(context);
               }
+            }else{
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Invalid Scan, please try again."),
+                ));
             }
           },
         );

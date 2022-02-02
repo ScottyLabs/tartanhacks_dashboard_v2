@@ -105,7 +105,7 @@ class IDCheckInHeader extends StatelessWidget {
               if (id != null && id != "") {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
-                  if (!contains) snackBarText = "Invalid scan or item id";
+                  if (!contains) snackBarText = "Invalid item id";
                   else {
                     String name = model.checkInItems.firstWhere((val) => val.id == id).name;
 
@@ -144,11 +144,18 @@ class IDCheckInHeader extends StatelessWidget {
                                     TextButton(
                                         child: Text("Confirm"),
                                         onPressed: () async {
-                                          setState(() {isLoading = true;});
-                                          await model.selfCheckIn(id);
-                                          Navigator.pop(context);
-                                          snackBarText = "Checked in to $name!";
-                                          eventIDController.clear();
+                                          try{
+                                            setState(() {isLoading = true;});
+                                            await model.selfCheckIn(id);
+                                            Navigator.pop(context);
+                                            snackBarText = "Checked in to $name!";
+                                            eventIDController.clear();
+                                          } on Exception catch (e) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: Text(e.toString().substring(11)),
+                                            ));
+                                          }
                                         }
                                     )
                                   ],
