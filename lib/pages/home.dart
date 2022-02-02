@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/team-api.dart';
 import 'package:thdapp/pages/teams_list.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -245,6 +246,16 @@ class _HomeState extends State<Home> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => EventsHomeScreen()),
+                                    );
+                                  },
+                                ),
+                                SolidButton(
+                                  text: "Your QR Code",
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => QRPage()),
                                     );
                                   },
                                 )
