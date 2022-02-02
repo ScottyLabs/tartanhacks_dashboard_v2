@@ -230,6 +230,7 @@ class _HomeState extends State<Home> {
                                         " " +
                                         userData.lastName +
                                         "!",
+                                    textAlign: TextAlign.center,
                                     style:
                                         Theme.of(context).textTheme.headline4),
                                 Text(
