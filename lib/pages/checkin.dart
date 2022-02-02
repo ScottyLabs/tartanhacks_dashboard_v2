@@ -364,7 +364,7 @@ class CheckInEventListItem extends StatelessWidget {
           Expanded(
             flex: 80,
             child: GradBox(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 7),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 7),
               curvature: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -404,7 +404,7 @@ class CheckInEventListItem extends StatelessWidget {
                                         color: Theme.of(context)
                                             .colorScheme
                                             .primary,
-                                        width: 2),
+                                        width: 1),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5),
                                     ),
@@ -413,13 +413,17 @@ class CheckInEventListItem extends StatelessWidget {
                                   ),
                                 ),
                           Text(
+                            
                             isChecked
-                                ? "You are checked in for ${points}pts"
+                                ? "You are checked in - ${points}pts"
                                 : isAdmin
-                                    ? "Scan Users in for ${points}pts"
+                                    ? "Scan Users in - ${points}pts"
                                     : enabled
-                                        ? "Scan to Check in for ${points}pts"
-                                        : "Check in at venue for ${points}pts",
+                                        ? "Click to Check in - ${points}pts"
+                                        : "Check in at venue - ${points}pts",
+overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
