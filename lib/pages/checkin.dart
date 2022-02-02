@@ -302,7 +302,7 @@ class CheckInEventList extends StatelessWidget {
               } on Exception catch (e) {
                 print(e);
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Error checking in"),
+                  content: Text(e.toString().substring(11)),
                 ));
               } finally {
                 Navigator.pop(context);
