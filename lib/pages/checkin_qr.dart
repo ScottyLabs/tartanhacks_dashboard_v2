@@ -214,23 +214,23 @@ class QREnlarged extends StatelessWidget {
                 ),
                 )),
         SizedBox(height: 15,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: SizedBox(
-                height: 45,
-                child: SolidButton(
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: [
+        //     Expanded(
+        //       flex: 3,
+        //       child: SizedBox(
+        //         height: 45,
+        //         child: SolidButton(
 
-                  onPressed: onPressed,
-                  text: "Scan Event ID",
-                ),
-              ),
-            ),
-          ],
-        )
+        //           onPressed: onPressed,
+        //           text: "Scan Event ID",
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // )
       ],
     );
   }
