@@ -307,7 +307,7 @@ class CheckInEventList extends StatelessWidget {
                         strokeWidth: 2,
                       )));
               try {
-                await model.checkInUser(events[index].id, uid);
+                await model.checkInUser(checkInItemId, uid);
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Checked in for " + events[index].name + "!"),
                 ));
