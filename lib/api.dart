@@ -86,7 +86,7 @@ Future<bool> checkNameAvailable(String name, String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({"name" : name});
+  String body = json.encode({"name": name});
 
   final response = await http.post(url, headers: headers, body: body);
   print(response.body);
@@ -111,7 +111,7 @@ Future<bool> setDisplayName(String name, String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({"displayName" : name});
+  String body = json.encode({"displayName": name});
 
   final response = await http.put(url, headers: headers, body: body);
 
@@ -498,7 +498,13 @@ Future<void> checkInUser(String id, String uid, token) async {
   final response = await http.put(uri, headers: headers);
 
   if (response.statusCode != 200) {
-    throw Exception(response.body.toString());
+    Map<String, dynamic> error = jsonDecode(response.body);
+    String msg = error['message'].toString();
+    print(msg);
+    if (msg.length<=2) {
+      msg = "We encountered an error while checking you in.";
+    }
+    throw Exception(msg);
   }
 }
 

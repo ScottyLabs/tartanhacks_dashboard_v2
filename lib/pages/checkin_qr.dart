@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
+import '../theme_changer.dart';
+
 
 class QRPage extends StatefulWidget {
 
@@ -103,7 +105,7 @@ class IDCheckInHeader extends StatelessWidget {
               if (id != null && id != "") {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
-                  if (!contains) snackBarText = "Invalid scan or item id";
+                  if (!contains) snackBarText = "Invalid item id";
                   else {
                     String name = model.checkInItems.firstWhere((val) => val.id == id).name;
 
@@ -142,11 +144,18 @@ class IDCheckInHeader extends StatelessWidget {
                                     TextButton(
                                         child: Text("Confirm"),
                                         onPressed: () async {
-                                          setState(() {isLoading = true;});
-                                          await model.selfCheckIn(id);
-                                          Navigator.pop(context);
-                                          snackBarText = "Checked in to $name!";
-                                          eventIDController.clear();
+                                          try{
+                                            setState(() {isLoading = true;});
+                                            await model.selfCheckIn(id);
+                                            Navigator.pop(context);
+                                            snackBarText = "Checked in to $name!";
+                                            eventIDController.clear();
+                                          } on Exception catch (e) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                              content: Text(e.toString().substring(11)),
+                                            ));
+                                          }
                                         }
                                     )
                                   ],
@@ -188,6 +197,8 @@ class QREnlarged extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String id = Provider.of<CheckInItemsModel>(context).userID;
+    var isLight = Provider.of<ThemeChanger>(context, listen: false).getTheme ==
+        lightTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -197,32 +208,36 @@ class QREnlarged extends StatelessWidget {
         ),
 
         SizedBox(height: 8,),
-        GradBox(
-          child: QrImage(
-            size: 250,
-            data: id,
-            version: QrVersions.auto,
-            foregroundColor: Theme.of(context).accentColor,
-          ),
-        ),
-        SizedBox(height: 15,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: 3,
-              child: SizedBox(
-                height: 45,
-                child: SolidButton(
-
-                  onPressed: onPressed,
-                  text: "Scan Event ID",
+        DecoratedBox(
+                decoration: BoxDecoration(
+                    color: isLight?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: QrImage(
+                  data: id,
+                  version: QrVersions.auto,
+                  foregroundColor: isLight?Theme.of(context).accentColor:Theme.of(context).colorScheme.onPrimary,
                 ),
-              ),
-            ),
-          ],
-        )
+                )),
+        SizedBox(height: 15,),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: [
+        //     Expanded(
+        //       flex: 3,
+        //       child: SizedBox(
+        //         height: 45,
+        //         child: SolidButton(
+
+        //           onPressed: onPressed,
+        //           text: "Scan Event ID",
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // )
       ],
     );
   }
