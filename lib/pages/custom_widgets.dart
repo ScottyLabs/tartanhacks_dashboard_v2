@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
 
 import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
@@ -259,13 +260,13 @@ class TextLogo extends StatelessWidget {
             children:[
               Container(
                   height: height,
-                  width: width*0.20,
+                  width: min(width*0.20, 50),
                   child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
                       : Image.asset("lib/logos/thLogoDark.png")
               ),
               Text(" Tartanhacks ",
                   style: TextStyle(
-                    fontSize: width*0.1,
+                    fontSize: min(width*0.1, 30),
                     fontWeight: FontWeight.w600,
                     color: color,
                   )
@@ -453,9 +454,10 @@ class TopBar extends StatelessWidget {
             alignment: Alignment.topCenter,
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 HomeButton(isSponsor),
+                SizedBox(width: 10),
                 MenuButton(
                     onTap: () {
                       if (isSponsor) {
@@ -464,7 +466,8 @@ class TopBar extends StatelessWidget {
                         Overlay.of(context).insert(MenuOverlay(context));
                       }
                     }
-                )
+                ),
+                SizedBox(width: 17)
               ]
             )
         )
@@ -528,8 +531,8 @@ OverlayEntry MenuOverlay(BuildContext context) {
                         children:[
                           Container(
                               width: screenWidth/4,
-                              alignment: Alignment.topCenter,
-                              padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                              alignment: Alignment.topRight,
+                              padding: EdgeInsets.fromLTRB(0, 25, 17, 0),
                               child: MenuButton(
                                   onTap: () {
                                     entry.remove();
@@ -695,8 +698,8 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                             children:[
                               Container(
                                   width: screenWidth/4,
-                                  alignment: Alignment.topCenter,
-                                  padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+                                  alignment: Alignment.topRight,
+                                  padding: EdgeInsets.fromLTRB(0, 25, 17, 0),
                                   child: MenuButton(
                                     onTap: () {
                                       entry.remove();
@@ -818,7 +821,7 @@ class MenuChoice extends StatelessWidget {
     Color color = Theme.of(context).colorScheme.error;
     return Container(
         width: screenWidth/4,
-        alignment: Alignment.center,
+        alignment: Alignment.centerRight,
         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: Column(
             children: [

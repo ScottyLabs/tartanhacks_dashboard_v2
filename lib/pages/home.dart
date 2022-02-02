@@ -10,6 +10,7 @@ import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/team-api.dart';
 import 'package:thdapp/pages/teams_list.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:math';
 
 import '../models/discord.dart';
 import '../models/profile.dart';
@@ -220,7 +221,7 @@ class _HomeState extends State<Home> {
                     items: [
                       GradBox(
                           width: screenWidth * 0.48,
-                          height: screenWidth * 0.48,
+                          height: min(screenWidth * 0.48, 200),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -262,7 +263,7 @@ class _HomeState extends State<Home> {
                               ])),
                       GradBox(
                           width: screenWidth * 0.48,
-                          height: screenWidth * 0.48,
+                          height: min(screenWidth * 0.48, 200),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -299,7 +300,7 @@ class _HomeState extends State<Home> {
                               ])),
                       GradBox(
                           width: screenWidth * 0.48,
-                          height: screenWidth * 0.48,
+                          height: min(screenWidth * 0.48, 200),
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -322,7 +323,7 @@ class _HomeState extends State<Home> {
                               ])),
                     ],
                     options: CarouselOptions(
-                      height: screenWidth * 0.50,
+                      height: min(screenWidth * 0.50, 200),
                       enlargeCenterPage: false,
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enableInfiniteScroll: true,
