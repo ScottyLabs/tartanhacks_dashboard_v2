@@ -260,7 +260,7 @@ class TextLogo extends StatelessWidget {
               Container(
                   height: height,
                   width: width*0.20,
-                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
+                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
                       : Image.asset("lib/logos/thLogoDark.png")
               ),
               Text(" Tartanhacks ",
@@ -867,8 +867,7 @@ class LoadingScreen extends StatelessWidget {
                       width: screenWidth,
                       alignment: Alignment.topCenter,
                       padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
-                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
-                          : Image.asset("lib/logos/thLogoLight.png")
+                      child: Image.asset("lib/logos/thLogoDark.png")
                   ),
                   Text("Tartanhacks",
                     style: Theme.of(context).textTheme.headline1,
