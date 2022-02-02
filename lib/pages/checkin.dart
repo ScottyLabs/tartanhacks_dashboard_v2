@@ -138,12 +138,16 @@ class QRHeader extends StatelessWidget {
             width: 125,
             child: DecoratedBox(
                 decoration: BoxDecoration(
-                    color: isLight?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.primary,
+                    color: isLight
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
                 child: QrImage(
                   data: id,
                   version: QrVersions.auto,
-                  foregroundColor: isLight?Theme.of(context).accentColor:Theme.of(context).colorScheme.onPrimary,
+                  foregroundColor: isLight
+                      ? Theme.of(context).accentColor
+                      : Theme.of(context).colorScheme.onPrimary,
                 )),
           )
         ],
@@ -272,6 +276,7 @@ class CheckInEventList extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return CheckInEventListItem(
           name: events[index].name,
+          points:events[index].points,
           isChecked: editable ? false : hasCheckedIn[events[index].id],
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
@@ -332,6 +337,7 @@ class CheckInEventListItem extends StatelessWidget {
   final bool enabled;
   final Function onCheck;
   final Function onTap;
+  final int points;
 
   CheckInEventListItem({
     this.name,
@@ -339,6 +345,7 @@ class CheckInEventListItem extends StatelessWidget {
     this.enabled,
     this.onTap,
     this.onCheck,
+    this.points
   });
 
   @override
@@ -403,12 +410,12 @@ class CheckInEventListItem extends StatelessWidget {
                                 ),
                           Text(
                             isChecked
-                                ? "You are checked in"
+                                ? "You are checked in for ${points}pts"
                                 : isAdmin
-                                    ? "Scan Users In"
+                                    ? "Scan Users in for ${points}pts"
                                     : enabled
-                                        ? "Scan to Check In"
-                                        : "Check in at venue",
+                                        ? "Scan to Check in for ${points}pts"
+                                        : "Check in at venue for ${points}pts",
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
