@@ -83,7 +83,7 @@ ThemeData genDarkTheme (){
   var primary = Color(0xFFFFC738);
   var primarytrans = Color(0xFF7B6368); // box gradient 2
   var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0x87DB4D20); // background curves gradient
+  var secondarytrans = Color(0xFFDB4D20); // background curves gradient
   var accent = Color(0xFF78524a);
   var surface = Color(0xFF07054C);
   var background = Color(0xFF07054C);
