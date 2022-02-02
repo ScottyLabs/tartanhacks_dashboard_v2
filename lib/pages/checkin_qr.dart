@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
+import '../theme_changer.dart';
+
 
 class QRPage extends StatefulWidget {
 
@@ -188,6 +190,8 @@ class QREnlarged extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String id = Provider.of<CheckInItemsModel>(context).userID;
+    var isLight = Provider.of<ThemeChanger>(context, listen: false).getTheme ==
+        lightTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -197,14 +201,18 @@ class QREnlarged extends StatelessWidget {
         ),
 
         SizedBox(height: 8,),
-        GradBox(
-          child: QrImage(
-            size: 250,
-            data: id,
-            version: QrVersions.auto,
-            foregroundColor: Theme.of(context).accentColor,
-          ),
-        ),
+        DecoratedBox(
+                decoration: BoxDecoration(
+                    color: isLight?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                child: Padding(
+                  padding: EdgeInsets.all(30),
+                  child: QrImage(
+                  data: id,
+                  version: QrVersions.auto,
+                  foregroundColor: isLight?Theme.of(context).accentColor:Theme.of(context).colorScheme.onPrimary,
+                ),
+                )),
         SizedBox(height: 15,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

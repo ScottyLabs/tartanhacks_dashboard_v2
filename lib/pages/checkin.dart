@@ -8,6 +8,7 @@ import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import 'custom_widgets.dart';
+import '../theme_changer.dart';
 
 class CheckIn extends StatefulWidget {
   @override
@@ -109,6 +110,9 @@ class Header extends StatelessWidget {
 class QRHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var isLight = Provider.of<ThemeChanger>(context, listen: false).getTheme ==
+        lightTheme;
+
     String id = Provider.of<CheckInItemsModel>(context).userID;
     return InkWell(
       onTap: () {
@@ -134,12 +138,12 @@ class QRHeader extends StatelessWidget {
             width: 125,
             child: DecoratedBox(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: isLight?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.primary,
                     borderRadius: BorderRadius.all(Radius.circular(16))),
                 child: QrImage(
                   data: id,
                   version: QrVersions.auto,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  foregroundColor: isLight?Theme.of(context).accentColor:Theme.of(context).colorScheme.onPrimary,
                 )),
           )
         ],
@@ -286,7 +290,10 @@ class CheckInEventList extends StatelessWidget {
               uid = userID;
               checkInItemId = await Barras.scan(context);
             }
-            if (uid != null && uid != "" && checkInItemId != null && checkInItemId != "") {
+            if (uid != null &&
+                uid != "" &&
+                checkInItemId != null &&
+                checkInItemId != "") {
               showDialog(
                   context: context,
                   barrierDismissible: false,
