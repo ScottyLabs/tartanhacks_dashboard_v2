@@ -259,7 +259,7 @@ class TextLogo extends StatelessWidget {
             children:[
               Container(
                   height: height,
-                  width: width*0.15,
+                  width: width*0.20,
                   child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
                       : Image.asset("lib/logos/thLogoDark.png")
               ),
@@ -301,6 +301,40 @@ class MenuButton extends StatelessWidget {
     );
   }
 }
+
+class HomeButton extends StatelessWidget {
+  bool isSponsor;
+
+  HomeButton(this.isSponsor);
+
+  @override
+  Widget build(BuildContext context) {
+    Color color1 = Theme.of(context).colorScheme.background;
+    Color color2 = Theme.of(context).colorScheme.surface;
+    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
+    return Material(
+        type: MaterialType.button,
+        color: Color(0x00000000),
+        child: GradBox(
+            width: 55,
+            height: 55,
+            padding: EdgeInsets.all(0),
+            child: Icon(Icons.home,
+                color: Theme.of(context).colorScheme.onSurface,
+                size: 35
+            ),
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => isSponsor ? Sponsors() : Home(),),
+                      (route) => false
+              );
+            }
+        )
+    );
+  }
+}
+
 class FlagPainter extends CustomPainter {
   Color color;
   FlagPainter({this.color});
@@ -391,32 +425,23 @@ class TopBar extends StatelessWidget {
             alignment: Alignment.topLeft,
             children: [
               CustomPaint(
-                size: Size(screenWidth*0.75, screenHeight*0.2),
+                size: Size(screenWidth*0.65, screenHeight*0.2),
                 painter: CurvedCorner(color: Theme.of(context).colorScheme.primary),
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => isSponsor ? Sponsors() : Home(),),
-                          (route) => false
-                  );
-                },
-                child: Container(
-                    width: screenWidth*0.75,
-                    height: screenHeight*0.2,
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                    child:TextLogo(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        width: screenWidth*0.70,
-                        height: screenHeight*0.10
-                    )
-                ),
+              Container(
+                  width: screenWidth*0.65,
+                  height: screenHeight*0.2,
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                  child:TextLogo(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      width: screenWidth*0.65,
+                      height: screenHeight*0.10
+                  )
               ),
               if (backflag)
                 Container(
-                    width: screenWidth*0.75,
+                    width: screenWidth*0.65,
                     height: screenHeight*0.2,
                     alignment: Alignment.bottomLeft,
                     child: BackFlag()
@@ -424,17 +449,23 @@ class TopBar extends StatelessWidget {
             ]
         ),
         Container(
-            width: screenWidth/4,
+            width: screenWidth*0.35,
             alignment: Alignment.topCenter,
             padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
-            child: backflag ? null : MenuButton(
-              onTap: () {
-                if (isSponsor) {
-                  Overlay.of(context).insert(SponsorMenuOverlay(context));
-                } else {
-                  Overlay.of(context).insert(MenuOverlay(context));
-                }
-              }
+            child: backflag ? null : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                HomeButton(isSponsor),
+                MenuButton(
+                    onTap: () {
+                      if (isSponsor) {
+                        Overlay.of(context).insert(SponsorMenuOverlay(context));
+                      } else {
+                        Overlay.of(context).insert(MenuOverlay(context));
+                      }
+                    }
+                )
+              ]
             )
         )
       ],

@@ -31,7 +31,7 @@ class _viewInvitesState extends State<viewInvites> {
   List<Widget> requestWidgetList = <Widget>[];
   SharedPreferences prefs;
   bool checkAdmin(String id){
-    return team.admin.id == id;
+    return team.admins.map((e) => e.id).toList().contains(id);
   }
 
   void getData() async {
