@@ -406,23 +406,21 @@ class EventsCard extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               )
                             else
-                              Row(children: [
                                 Text(
                                   "${event.platform}:",
                                   style: Theme.of(context).textTheme.bodyText2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(width: 8),
-                                SolidButton(
-                                  child: Icon(Icons.link,
-                                      color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                      size: 35),
-                                  onPressed: () {
-                                    _launchLink(context);
-                                  },
-                                )
-                              ]),
+                            if(event.platformUrl!="")
+                              SolidButton(
+                                    child: Icon(Icons.link,
+                                        color:
+                                        Theme.of(context).colorScheme.onPrimary,
+                                        size: 35),
+                                    onPressed: () {
+                                      _launchLink(context);
+                                    },
+                              ),
                             if (isAdmin)
                               Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
