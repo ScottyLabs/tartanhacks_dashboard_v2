@@ -121,7 +121,7 @@ class _LoginState extends State<Login>{
                                       width: screenWidth,
                                       alignment: Alignment.topCenter,
                                       padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight.png")
+                                      child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
                                           : Image.asset("lib/logos/thLogoDark.png")
                                   )
                                 ]

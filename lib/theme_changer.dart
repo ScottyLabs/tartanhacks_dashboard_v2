@@ -46,14 +46,15 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 
 ThemeData genLightTheme (){
 
-  var primary = Color(0xFF07054C);
-  var primarytrans = Color(0xB31156BD); // background curves gradient
-  var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0xFF697EAF); // box gradient 2
-  var accent = Color(0xFF07054C);
+  var primary = Color(0xFFFFC738);
+  var primarytrans = Color(0xFFDB4D20); // background curves gradient
+  var secondary = Color(0xFFFFC738);
+  var secondarytrans = Color(0xFFFFE8AC); // box gradient 2
+  var accent = Color(0xFFDB4D20);
   var surface = Color(0xFFFFFFFF);
-  var background = Color(0xFFFFC738);
+  var background = Color(0xFFFFFFFF);
 
+  var shadow = Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       primaryVariant: secondarytrans,
@@ -62,11 +63,11 @@ ThemeData genLightTheme (){
 
       surface: surface, //box gradient 1
       background: secondarytrans, //box gradient 2
-      error: primary, //menu buttons
+      error: accent, //menu buttons
       onPrimary: background,
       onSecondary: surface,
-      onSurface: primary,
-      onBackground: primarytrans, //shadows
+      onSurface: accent,
+      onBackground: shadow, //shadows
       onError: background,
       brightness: Brightness.light
   );
