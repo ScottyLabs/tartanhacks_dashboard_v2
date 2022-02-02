@@ -30,6 +30,7 @@ class _ViewTeamState extends State<ViewTeam> {
   String teamName;
   String teamDesc;
   List<Widget> teamMembers = <Widget>[];
+  List<String> adminIds;
   int memLength;
   bool visible;
   bool flag = false;
@@ -38,7 +39,6 @@ class _ViewTeamState extends State<ViewTeam> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     memberID = prefs.getString('id');
-    isAdmin = prefs.getBool('admin');
     team = await getUserTeam(token);
     getTeams(token);
     if (teamID == '' &&
@@ -58,9 +58,14 @@ class _ViewTeamState extends State<ViewTeam> {
       teamDesc = team.description;
       memLength = team.members.length;
       visible = team.visible;
-      isAdmin = team.admin.id == memberID;
+      adminIds = team.admins.map((mem) => mem.id).toList();
+      isAdmin = adminIds.contains(memberID);
       for (int i = 0; i < team.members.length; i++) {
         if (team.members[i].id == memberID) isMember = true;
+      }
+      teamMembers = [];
+      for (int i = 0; i < memLength; i++) {
+        teamMembers.add(_buildMember(i));
       }
       setState(() {});
     }
@@ -156,24 +161,88 @@ class _ViewTeamState extends State<ViewTeam> {
 
   Widget _buildMember(int member) {
     Member mem = team.members[member];
+    String id = mem.id;
     String email_str = "(" + mem.email + ")";
     String name_str = mem.name;
+    bool isMemAdmin = adminIds.contains(id);
     return Container(
         padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name_str, style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText2),
-              Text(email_str, style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText2)
-            ]
-        ));
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(text: TextSpan(
+                      children: [
+                        TextSpan(text: name_str + "  ", style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText2),
+                        if (isMemAdmin)
+                          WidgetSpan(
+                              child: Icon(Icons.star,
+                                  size: 20,
+                                  color: Theme.of(context).colorScheme.secondary)
+                          )
+                      ]
+                  )),
+                  Text(email_str, style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText2)
+                ]
+            ),
+            if (isAdmin && !isMemAdmin)
+            SolidButton(
+              text: "Promote",
+              color: Theme.of(context).colorScheme.secondary,
+              onPressed: () {
+                promoteConfirm(id);
+              },
+            )
+          ]
+        )
+    );
+  }
+
+  void promoteConfirm(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: new Text("Confirmation", style: Theme.of(context).textTheme.headline1),
+          content: new Text("Are you sure you want to promote this member to an admin? You will no longer be an admin.", style: Theme.of(context).textTheme.bodyText2),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new TextButton(
+              child: new Text(
+                "Cancel",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new TextButton(
+              child: new Text(
+                "OK",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                promoteToAdmin(id, token);
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => ViewTeam())
+                );
+              },
+            ),
+          ],
+        );
+      },
+    ).then((value) => getData());
   }
 
   Widget _inviteMessage() {
@@ -272,12 +341,18 @@ class _ViewTeamState extends State<ViewTeam> {
     return SolidButton(
         text: buttonText,
         onPressed: () {
-          leaveTeam(token);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) =>
-                TeamsList()),
-          );
+          if (isAdmin && adminIds.length==1) {
+            errorDialog(context, "Error", "You cannot leave the team if "
+                "you are the only admin. You must promote someone else to admin "
+                "before leaving.");
+          } else {
+            leaveTeam(token);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  TeamsList()),
+            );
+          }
         },
         color: Theme
             .of(context)
