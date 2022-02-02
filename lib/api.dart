@@ -494,7 +494,7 @@ Future<void> checkInUser(String id, String uid, token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final uri = Uri.http(base, "/check-in/user", queryParams);
+  final uri = Uri.https(base, "/check-in/user", queryParams);
   final response = await http.put(uri, headers: headers);
 
   if (response.statusCode != 200) {
