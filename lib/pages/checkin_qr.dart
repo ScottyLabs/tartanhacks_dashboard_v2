@@ -120,11 +120,11 @@ class IDCheckInHeader extends StatelessWidget {
                                     strokeWidth: 2,
                                   ),
                                 ) : AlertDialog(
+                                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                   title: Text("Confirm Check In"),
                                   content: RichText(
                                     text: TextSpan(
                                         text: "You are checking in to ",
-                                        style: DefaultTextStyle.of(context).style.copyWith(color: Colors.black),
                                         children: [
                                           TextSpan(
                                               text: "$name. \n\n",
