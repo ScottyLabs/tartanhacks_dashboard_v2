@@ -276,7 +276,7 @@ class CheckInEventList extends StatelessWidget {
       itemBuilder: (BuildContext context, int index) {
         return CheckInEventListItem(
           name: events[index].name,
-          points:events[index].points,
+          points: events[index].points,
           isChecked: editable ? false : hasCheckedIn[events[index].id],
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
@@ -307,7 +307,7 @@ class CheckInEventList extends StatelessWidget {
                         strokeWidth: 2,
                       )));
               try {
-                await model.checkInUser(events[index].id, uid);
+                await model.checkInUser(checkInItemId, uid);
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Checked in for " + events[index].name + "!"),
                 ));
@@ -318,11 +318,12 @@ class CheckInEventList extends StatelessWidget {
                 ));
               } finally {
                 Navigator.pop(context);
+                model.fetchCheckInItems();
               }
-            }else{
+            } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Invalid Scan, please try again."),
-                ));
+                content: Text("Invalid Scan, please try again."),
+              ));
             }
           },
         );
@@ -343,14 +344,13 @@ class CheckInEventListItem extends StatelessWidget {
   final Function onTap;
   final int points;
 
-  CheckInEventListItem({
-    this.name,
-    this.isChecked,
-    this.enabled,
-    this.onTap,
-    this.onCheck,
-    this.points
-  });
+  CheckInEventListItem(
+      {this.name,
+      this.isChecked,
+      this.enabled,
+      this.onTap,
+      this.onCheck,
+      this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -413,7 +413,6 @@ class CheckInEventListItem extends StatelessWidget {
                                   ),
                                 ),
                           Text(
-                            
                             isChecked
                                 ? "You are checked in - ${points}pts"
                                 : isAdmin
@@ -421,9 +420,9 @@ class CheckInEventListItem extends StatelessWidget {
                                     : enabled
                                         ? "Click to Check in - ${points}pts"
                                         : "Check in at venue - ${points}pts",
-overflow: TextOverflow.fade,
-                    maxLines: 1,
-                    softWrap: false,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: false,
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
