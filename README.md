@@ -1,11 +1,12 @@
 # Tartanhacks Dashboard
-ScottyLabs's mobile and web app for Pittsburgh's largest hackathon.
+ScottyLabs's mobile and web app for Pittsburgh's largest hackathon. Supports features for hackathon participants, admins, and sponsor representatives to organize their hackathon experience.
 
 ## Table of Contents
 1. [Setup](#setup)
-2. [Participant Features](#pfeatures)
-3. [Admin Features](#afeatures)
-4. [Sponsor Features](#sfeatures)
+2. [Custom Widgets](#customw)
+4. [Participant Features](#pfeatures)
+5. [Admin Features](#afeatures)
+6. [Sponsor Features](#sfeatures)
 
 ## Setup <a name="setup"></a>
 The Tartanhacks Dashboard is a Flutter project, and is compatible with Android, iOS, and web.
@@ -19,8 +20,43 @@ TODO
 - Open repository in Android Studio
 - Select web browser from run menu and run
 
+## Custom Widgets <a name="customw"></a>
+The Tartanhacks Dashboard uses a collection of custom widgets to simplify styling and maintain consistency across the app.
+
+### Page template widgets
+Widgets that make up the "frame" of the app screen, generally common to every page
+
+Background graphics:
+- `CurvedTop` and `CurvedBottom`: `CustomPainter` widgets for use with Flutter's `CustomPaint`. Decorative gradient fill blocks with curved edges that fill either the top or bottom half of the screen. Take two colors as input for the gradient.
+
+Top bar:
+- `CurvedCorner`: `CustomPainter` widget, solid-color fill block with a curved edge in the top left corner of the screen.
+- `TextLogo`: small logo + name of event, scaled to be stacked on top of `CurvedCorner`
+- `MenuButton`: opens menu overlay
+- `HomeButton`: returns to home screen from anywhere in the app
+- `FlagPainter` and `BackFlag`: flag at the top left that navigates back to the last screen. Home/menu buttons will be hidden when this is visible and vice versa.
+- `TopBar`: consolidates everything above into a single block that can be dropped into the top of any page
+
+Menu overlay:
+- `WhiteOverlay`: white overlay with gradient transparency that serves as a background for the menu overlay
+- `MenuChoice`: buttons for each menu option
+- `MenuOverlay`: combine `WhiteOverlay` with `MenuChoice` objects to make complete menu overlay
+- `SponsorOverlay`: alternate menu for sponsors
+
+### Functional widgets
+Styled components used to build pages
+- `GradBox`: main container used within the app
+- `SolidButton`: main button used within the app
+- `GradText`: gradient text
+- `errorDialog`: simple pop up dialog containing a message and a button to close
+- `LoadingScreen`: solid loading screen with logo that covers the whole page
+- `LoadingOverlay`: semi-transparent white overlay with circular progress indicator that covers the page
+
+### Color scheme
+Most of the colors in the app are pulled from a centralized `ColorScheme` object, so it is easy to update with new themes. The Tartanhacks Dashboard supports switching between light and dark themes from within the app. Colors for both themes can be edited from `theme_changer.dart`
+
 ## Participant Features <a name="pfeatures"></a>
-Hackathon participants can use the dashboard to manage their project, team, and general hackathon experience.
+Hackathon participants can use the dashboard to manage their project, team, and schedule.
 
 ### Home
 Central hub linking to every other major page.
