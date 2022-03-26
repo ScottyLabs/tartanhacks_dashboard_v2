@@ -60,7 +60,9 @@ Hackathon participants can use the dashboard to manage their project, team, and 
 
 ### Home
 Central hub linking to every other major page.
-- Hacking time counts down to project submission deadline
+- Hacking Time Left (`flutter_countdown_timer` library): countdown to project submission deadline
+- Carousel (`carousel_slider` library): navigation to schedule, check in, leaderboard pages, as well as Discord server link and verification
+- Join Team/Project Submission button: navigates to join team page if user is not in a team, navigates to project submission page if user is already in a team
 
 ### Project Submission
 Participants submit their projects for judging via the in-app form. Details can be edited from the same page any time before the submission deadline. Once a project has been registered, participants can navigate to the prize submission page to select prize categories to enter their project in.
@@ -69,12 +71,16 @@ Participants submit their projects for judging via the in-app form. Details can 
 If the user does not have a team, the teams button navigates to the team formation page. Here, they can create a new team or send join requests from a list of all registered teams.
 
 ### Check-in
+Users can select check-in items from a list to self-check in with event QR codes and gain points for completion. The user's personal QR code for admin scan check-in is accessible from this page, as well as from the home screen carousel.
 
 ### Schedule
+List of events in chronological order with times, locations, and links if applicable. Displays only upcoming events by default, but can be toggled to display past events.
 
 ### Profile
+View personal profile card displaying information submitted during registration - this is the same profile that is visible to recruiters. Includes links to GitHub account and resume. Leaderboard nickname is editable from this page, as well as from the leaderboard page.
 
 ### Leaderboard
+Displays points ranking of all hackathon participants (using leaderboard nickname), as well as the current user's own ranking. Leaderboard nickname is editable from this page, as well as from the profile page.
 
 ## Admin Features <a name="afeatures"></a>
 Admins can use the dashboard to add schedule items and check participants into events.
