@@ -480,7 +480,7 @@ class DefaultPage extends StatelessWidget {
   Widget child;
   bool reverse;
 
-  DefaultPage({this.child, this.reverse=true})
+  DefaultPage({this.child, this.reverse=true});
 
   @override
   Widget build(BuildContext context) {
