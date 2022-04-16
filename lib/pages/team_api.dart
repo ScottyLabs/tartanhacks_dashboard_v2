@@ -1,11 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'custom_widgets.dart';
 import '/models/team.dart';
-import '/models/member.dart';
-import 'dart:developer';
 
 const baseUrl = "https://backend.tartanhacks.com/";
 
@@ -94,7 +90,7 @@ Future<Team> getUserTeam(String token) async {
     if (response.body.contains("You are not in a team!")) {
       return null;
     }
-    Team team = new Team.fromJson(parsedJson);
+    Team team = Team.fromJson(parsedJson);
     return team;
   }
   return null;
@@ -168,13 +164,13 @@ Future<List<dynamic>> getUserMail(String token) async {
   }
 }
 
-Future<void> inviteTeamMember(String user_email, String token) async {
+Future<void> inviteTeamMember(String userEmail, String token) async {
   const url = baseUrl + "team/invite";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  var body = json.encode({'email': user_email});
+  var body = json.encode({'email': userEmail});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     print("Successfully invited");
@@ -260,7 +256,7 @@ Future<Team> getTeamInfo(String teamId, String token) async {
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
-    Team team = new Team.fromJson(data);
+    Team team = Team.fromJson(data);
     return team;
   }
   return null;

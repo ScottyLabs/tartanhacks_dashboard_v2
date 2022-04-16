@@ -1,7 +1,6 @@
 
 import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
@@ -25,48 +24,47 @@ class _QRPageState extends State<QRPage> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: screenHeight),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: screenHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TopBar(backflag: true),
+                    Stack(
                       children: [
-                        TopBar(backflag: true),
-                        Stack(
-                          children: [
-                            Column(children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2:
-                                      Theme.of(context).colorScheme.primary,
-                                      reverse: true)),
-                            ]),
-                            Container(
-                                alignment: Alignment.center,
-                                height: screenHeight * 0.78,
-                                padding: EdgeInsets.fromLTRB(35, 20, 35, 0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
+                        Column(children: [
+                          SizedBox(height: screenHeight * 0.05),
+                          CustomPaint(
+                              size: Size(screenWidth, screenHeight * 0.75),
+                              painter: CurvedTop(
+                                  color1: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryVariant,
+                                  color2:
+                                  Theme.of(context).colorScheme.primary,
+                                  reverse: true)),
+                        ]),
+                        Container(
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.78,
+                            padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
 
-                                    IDCheckInHeader(_eventIDController),
-                                    QREnlarged(onPressed: () async {
-                                      final String id = await Barras.scan(context);
-                                      _eventIDController.value = TextEditingValue(text: id);
-                                    },)
-                                  ],
-                                ))
-                          ],
-                        )
+                                IDCheckInHeader(_eventIDController),
+                                QREnlarged(onPressed: () async {
+                                  final String id = await Barras.scan(context);
+                                  _eventIDController.value = TextEditingValue(text: id);
+                                },)
+                              ],
+                            ))
                       ],
-                    )))));
+                    )
+                  ],
+                ))));
   }
 }
 
@@ -74,7 +72,7 @@ class IDCheckInHeader extends StatelessWidget {
 
   final TextEditingController eventIDController;
 
-  IDCheckInHeader(this.eventIDController);
+  const IDCheckInHeader(this.eventIDController);
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +85,13 @@ class IDCheckInHeader extends StatelessWidget {
             fontSize: 20
           ),
         ),
-        SizedBox(height: 10,),
+        const SizedBox(height: 10,),
         TextField(
           controller: eventIDController,
           keyboardType: TextInputType.text,
           style: Theme.of(context).textTheme.bodyText2,
         ),
-        SizedBox(height: 5,),
+        const SizedBox(height: 5,),
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
@@ -105,8 +103,9 @@ class IDCheckInHeader extends StatelessWidget {
               if (id != null && id != "") {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
-                  if (!contains) snackBarText = "Invalid item id";
-                  else {
+                  if (!contains) {
+                    snackBarText = "Invalid item id";
+                  } else {
                     String name = model.checkInItems.firstWhere((val) => val.id == id).name;
 
                     // Confirmation dialog
@@ -117,32 +116,32 @@ class IDCheckInHeader extends StatelessWidget {
                           bool isLoading = false;
                           return StatefulBuilder(
                               builder: (context, setState) {
-                                return isLoading ? Center(
+                                return isLoading ? const Center(
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                   ),
                                 ) : AlertDialog(
                                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                                  title: Text("Confirm Check In"),
+                                  title: const Text("Confirm Check In"),
                                   content: RichText(
                                     text: TextSpan(
                                         text: "You are checking in to ",
                                         children: [
                                           TextSpan(
                                               text: "$name. \n\n",
-                                              style: TextStyle(fontWeight: FontWeight.bold)
+                                              style: const TextStyle(fontWeight: FontWeight.bold)
                                           ),
-                                          TextSpan(text: "Ensure that you have selected the correct event before confirming you attendance.")
+                                          const TextSpan(text: "Ensure that you have selected the correct event before confirming you attendance.")
                                         ]
                                     ),
                                   ),
                                   actions: [
                                     TextButton(
-                                      child: Text("Cancel"),
+                                      child: const Text("Cancel"),
                                       onPressed: () => Navigator.pop(dialogContext),
                                     ),
                                     TextButton(
-                                        child: Text("Confirm"),
+                                        child: const Text("Confirm"),
                                         onPressed: () async {
                                           try{
                                             setState(() {isLoading = true;});
@@ -170,10 +169,12 @@ class IDCheckInHeader extends StatelessWidget {
                   snackBarText = "Error checking in";
                   Navigator.pop(context);
                 } finally {
-                  if (snackBarText != "") ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  if (snackBarText != "") {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(snackBarText),
-                      duration: Duration(seconds: 1),
+                      duration: const Duration(seconds: 1),
                   ));
+                  }
                 }
               }
             },
@@ -192,7 +193,7 @@ class QREnlarged extends StatelessWidget {
 
   final Function onPressed;
 
-  QREnlarged({this.onPressed});
+  const QREnlarged({this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -207,20 +208,20 @@ class QREnlarged extends StatelessWidget {
           style: Theme.of(context).textTheme.headline1,
         ),
 
-        SizedBox(height: 8,),
+        const SizedBox(height: 8,),
         DecoratedBox(
                 decoration: BoxDecoration(
                     color: isLight?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                    borderRadius: const BorderRadius.all(Radius.circular(16))),
                 child: Padding(
-                  padding: EdgeInsets.all(30),
+                  padding: const EdgeInsets.all(30),
                   child: QrImage(
                   data: id,
                   version: QrVersions.auto,
                   foregroundColor: isLight?Theme.of(context).accentColor:Theme.of(context).colorScheme.onPrimary,
                 ),
                 )),
-        SizedBox(height: 15,),
+        const SizedBox(height: 15,),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
         //   crossAxisAlignment: CrossAxisAlignment.center,

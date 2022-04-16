@@ -27,7 +27,7 @@ class Event {
   });
 
   factory Event.fromJson(Map<String, dynamic> parsedJson) {
-    return new Event(
+    return Event(
       id: parsedJson['_id'],
       platform: parsedJson['platform'],
       active: true,

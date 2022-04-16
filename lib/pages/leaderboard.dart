@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/models/lb_entry.dart';
@@ -8,7 +7,7 @@ import 'package:thdapp/api.dart';
 
 class Leaderboard extends StatefulWidget {
   @override
-  _LeaderboardState createState() => new _LeaderboardState();
+  _LeaderboardState createState() => _LeaderboardState();
 }
 
 class _LeaderboardState extends State<Leaderboard> {
@@ -16,7 +15,7 @@ class _LeaderboardState extends State<Leaderboard> {
   int selfRank;
   Profile userData;
   String token;
-  TextEditingController _editNicknameController = TextEditingController();
+  final TextEditingController _editNicknameController = TextEditingController();
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,15 +38,15 @@ class _LeaderboardState extends State<Leaderboard> {
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: new Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
+          title: Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
           content: TextField(
             controller: _editNicknameController,
             style: Theme.of(context).textTheme.bodyText2,
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Cancel",
                 style: Theme.of(context
                 ).textTheme.headline4,
@@ -56,13 +55,13 @@ class _LeaderboardState extends State<Leaderboard> {
                 Navigator.of(context).pop();
               },
             ),
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Save",
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () async{
-                OverlayEntry loading = LoadingOverlay(context);
+                OverlayEntry loading = loadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success = await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
@@ -76,12 +75,12 @@ class _LeaderboardState extends State<Leaderboard> {
                       // return object of type Dialog
                       return AlertDialog(
                         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        title: new Text("Success", style: Theme.of(context).textTheme.headline1),
-                        content: new Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
+                        title: Text("Success", style: Theme.of(context).textTheme.headline1),
+                        content: Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
-                          new TextButton(
-                            child: new Text(
+                          TextButton(
+                            child: Text(
                               "OK",
                               style: Theme.of(context).textTheme.headline4,
                             ),
@@ -123,106 +122,104 @@ class _LeaderboardState extends State<Leaderboard> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: screenHeight
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TopBar(backflag: true),
+                    Stack(
                       children: [
-                        TopBar(backflag: true),
-                        Stack(
-                          children: [
-                            Column(
-                                children:[
-                                  SizedBox(height:screenHeight * 0.05),
-                                  CustomPaint(
-                                      size: Size(screenWidth, screenHeight * 0.75),
-                                      painter: CurvedTop(
-                                          color1: Theme.of(context).colorScheme.secondaryVariant,
-                                          color2: Theme.of(context).colorScheme.primary,
-                                          reverse: true)
-                                  ),
-                                ]
-                            ),
-                            if (userData == null)
-                              Center(child: CircularProgressIndicator())
-                            else
-                            Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                height: screenHeight*0.75,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    GradBox(
-                                      width: screenWidth*0.9,
-                                      height: 120,
-                                      padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                      alignment: Alignment.topLeft,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                        Column(
+                            children:[
+                              SizedBox(height:screenHeight * 0.05),
+                              CustomPaint(
+                                  size: Size(screenWidth, screenHeight * 0.75),
+                                  painter: CurvedTop(
+                                      color1: Theme.of(context).colorScheme.secondaryVariant,
+                                      color2: Theme.of(context).colorScheme.primary,
+                                      reverse: true)
+                              ),
+                            ]
+                        ),
+                        if (userData == null)
+                          const Center(child: CircularProgressIndicator())
+                        else
+                        Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            height: screenHeight*0.75,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GradBox(
+                                  width: screenWidth*0.9,
+                                  height: 120,
+                                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                  alignment: Alignment.topLeft,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
-                                              SolidButton(
-                                                child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onSecondary),
-                                                color: Theme.of(context).colorScheme.secondary,
-                                                onPressed: _editNickname,
-                                              ),
-                                            ],
-                                          ),
-                                          LBRow(
-                                              place: selfRank,
-                                              name: userData.displayName,
-                                              points: userData.totalPoints
+                                          Text("YOUR POSITION:", style: Theme.of(context).textTheme.headline3),
+                                          SolidButton(
+                                            child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onSecondary),
+                                            color: Theme.of(context).colorScheme.secondary,
+                                            onPressed: _editNickname,
                                           ),
                                         ],
                                       ),
-                                    ),
-                                    GradBox(
-                                        width: screenWidth*0.9,
-                                        height: screenHeight*0.55,
-                                        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                        alignment: Alignment.topLeft,
-                                        child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text("LEADERBOARD", style: Theme.of(context).textTheme.headline1),
-                                              Text("Scroll to see the whole board!",
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                              ),
-                                              Expanded(
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    child: ListView.builder(
-                                                      itemCount: lbData.length,
-                                                      itemBuilder: (BuildContext context, int index){
-                                                        return LBRow(
-                                                            place: lbData[index].rank,
-                                                            name: lbData[index].displayName,
-                                                            points: lbData[index].totalPoints
-                                                        );
-                                                      },
-                                                    ),
-                                                  )
+                                      LBRow(
+                                          place: selfRank,
+                                          name: userData.displayName,
+                                          points: userData.totalPoints
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GradBox(
+                                    width: screenWidth*0.9,
+                                    height: screenHeight*0.55,
+                                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                    alignment: Alignment.topLeft,
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("LEADERBOARD", style: Theme.of(context).textTheme.headline1),
+                                          Text("Scroll to see the whole board!",
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                          ),
+                                          Expanded(
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: ListView.builder(
+                                                  itemCount: lbData.length,
+                                                  itemBuilder: (BuildContext context, int index){
+                                                    return LBRow(
+                                                        place: lbData[index].rank,
+                                                        name: lbData[index].displayName,
+                                                        points: lbData[index].totalPoints
+                                                    );
+                                                  },
+                                                ),
                                               )
-                                            ]
-                                        )
+                                          )
+                                        ]
                                     )
-                                  ],
                                 )
+                              ],
                             )
-                          ],
                         )
                       ],
                     )
+                  ],
                 )
             )
         )
@@ -241,7 +238,7 @@ class LBRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

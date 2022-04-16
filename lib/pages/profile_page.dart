@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/profile.dart';
@@ -8,7 +6,6 @@ import '../models/profile.dart';
 import '../models/team.dart';
 import 'package:thdapp/api.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'team-api.dart';
 
 class ProfilePage extends StatefulWidget {
   Map bookmarks;
@@ -16,7 +13,7 @@ class ProfilePage extends StatefulWidget {
   ProfilePage({this.bookmarks});
 
   @override
-  _ProfilePageState createState() => new _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -30,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String teamName;
   bool isSelf = false;
 
-  final _editNicknameController = new TextEditingController();
+  final _editNicknameController = TextEditingController();
 
   void getData() async{
     prefs = await SharedPreferences.getInstance();
@@ -83,15 +80,15 @@ class _ProfilePageState extends State<ProfilePage> {
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: new Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
+          title: Text("Enter New Nickname", style: Theme.of(context).textTheme.headline1),
           content: TextField(
             controller: _editNicknameController,
             style: Theme.of(context).textTheme.bodyText2,
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Cancel",
                 style: Theme.of(context
                 ).textTheme.headline4,
@@ -100,13 +97,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.of(context).pop();
               },
             ),
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Save",
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () async{
-                OverlayEntry loading = LoadingOverlay(context);
+                OverlayEntry loading = loadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success = await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
@@ -120,12 +117,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       // return object of type Dialog
                       return AlertDialog(
                         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        title: new Text("Success", style: Theme.of(context).textTheme.headline1),
-                        content: new Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
+                        title: Text("Success", style: Theme.of(context).textTheme.headline1),
+                        content: Text("Nickname has been changed.", style: Theme.of(context).textTheme.bodyText2),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
-                          new TextButton(
-                            child: new Text(
+                          TextButton(
+                            child: Text(
                               "OK",
                               style: Theme.of(context).textTheme.headline4,
                             ),
@@ -174,236 +171,232 @@ class _ProfilePageState extends State<ProfilePage> {
     }
 
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: screenHeight
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TopBar(backflag: true),
+                    Stack(
                       children: [
-                        TopBar(backflag: true),
-                        Stack(
-                          children: [
-                            Column(
-                                children: [
-                                  SizedBox(height: screenHeight * 0.05),
-                                  CustomPaint(
-                                      size: Size(
-                                          screenWidth, screenHeight * 0.75),
-                                      painter: CurvedTop(
-                                          color1: Theme
+                        Column(
+                            children: [
+                              SizedBox(height: screenHeight * 0.05),
+                              CustomPaint(
+                                  size: Size(
+                                      screenWidth, screenHeight * 0.75),
+                                  painter: CurvedTop(
+                                      color1: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .secondaryVariant,
+                                      color2: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .primary,
+                                      reverse: true)
+                              ),
+                            ]
+                        ),
+                        Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            child: GradBox(
+                                width: screenWidth * 0.9,
+                                height: screenHeight * 0.75,
+                                padding: const EdgeInsets.fromLTRB(
+                                    20, 10, 20, 10),
+                                child: SizedBox(
+                                  width: screenWidth * 0.9,
+                                  height: screenHeight * 0.75,
+                                  child:
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Row(
+                                        children:[
+                                          Text("HACKER PROFILE", style: Theme
                                               .of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          color2: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .primary,
-                                          reverse: true)
-                                  ),
-                                ]
-                            ),
-                            Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                child: GradBox(
-                                    width: screenWidth * 0.9,
-                                    height: screenHeight * 0.75,
-                                    padding: EdgeInsets.fromLTRB(
-                                        20, 10, 20, 10),
-                                    child: Container(
-                                      width: screenWidth * 0.9,
-                                      height: screenHeight * 0.75,
-                                      child:
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .start,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Row(
-                                            children:[
-                                              Text("HACKER PROFILE", style: Theme
-                                                  .of(context)
-                                                  .textTheme
-                                                  .headline1,),
-                                              if (!isSelf && id != null)
-                                                Expanded(
-                                                  child: Container(
-                                                    child: IconButton(
-                                                        icon: widget.bookmarks.containsValue(id) ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
-                                                        color: Theme.of(context).colorScheme.primary,
-                                                        iconSize: 40.0,
-                                                        onPressed: () async {
-                                                          if (widget.bookmarks.containsValue(id)) {
-                                                            String bmId = widget.bookmarks.keys.firstWhere(
-                                                                    (k) => widget.bookmarks[k] == id, orElse: () => null);
-                                                            deleteBookmark(token, bmId);
-                                                            widget.bookmarks.remove(bmId);
-                                                          } else {
-                                                            String bmId = await addBookmark(token, id);
-                                                            widget.bookmarks[bmId] = id;
-                                                          }
-                                                          setState(() {
+                                              .textTheme
+                                              .headline1,),
+                                          if (!isSelf && id != null)
+                                            Expanded(
+                                              child: IconButton(
+                                                  icon: widget.bookmarks.containsValue(id) ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
+                                                  color: Theme.of(context).colorScheme.primary,
+                                                  iconSize: 40.0,
+                                                  onPressed: () async {
+                                                    if (widget.bookmarks.containsValue(id)) {
+                                                      String bmId = widget.bookmarks.keys.firstWhere(
+                                                              (k) => widget.bookmarks[k] == id, orElse: () => null);
+                                                      deleteBookmark(token, bmId);
+                                                      widget.bookmarks.remove(bmId);
+                                                    } else {
+                                                      String bmId = await addBookmark(token, id);
+                                                      widget.bookmarks[bmId] = id;
+                                                    }
+                                                    setState(() {
 
-                                                          });
-                                                        }
-                                                    ),
-                                                  )
-                                                )
-                                            ]
-                                          ),
-                                          if (userData == null)
-                                            Container(
-                                              height: 100,
-                                              child: Center(child: CircularProgressIndicator())
+                                                    });
+                                                  }
+                                              )
                                             )
-                                          else
-                                            Column(
-                                                mainAxisAlignment: MainAxisAlignment
-                                                    .start,
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  Container(
-                                                      height: 150,
-                                                      padding: EdgeInsets.fromLTRB(
-                                                          0, 10, 0, 10),
-                                                      child: Row(
-                                                        children: [
-                                                          ClipRRect(
-                                                              borderRadius: BorderRadius
-                                                                  .circular(10),
-                                                              child:
-                                                              Image(
-                                                                image: AssetImage(
-                                                                    "lib/logos/defaultpfp.PNG"),
-                                                              )
-                                                          ),
-                                                          SizedBox(width: 25),
-                                                          Expanded(
-                                                              child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment
-                                                                    .end,
-                                                                crossAxisAlignment: CrossAxisAlignment
-                                                                    .start,
-                                                                children: [
-                                                                  Text(userData.firstName,
-                                                                      style: Theme
-                                                                          .of(context)
-                                                                          .textTheme
-                                                                          .headline3
-                                                                  ),
-                                                                  Text(userData.lastName,
-                                                                      style: Theme
-                                                                          .of(context)
-                                                                          .textTheme
-                                                                          .headline3
-                                                                  ),
-                                                                  Text('"' + userData.displayName + '"',
-                                                                      style: Theme
-                                                                          .of(context)
-                                                                          .textTheme
-                                                                          .bodyText2
-                                                                  ),
-
-                                                                  Text(teamName,
-                                                                      style: Theme
-                                                                          .of(context)
-                                                                          .textTheme
-                                                                          .bodyText2
-                                                                  ),
-                                                                ],
-                                                              )
-                                                          )
-                                                        ],
-                                                      )
-                                                  ),
-                                                  if (isSelf)
-                                                  SolidButton(
-                                                    text: "Edit Nickname",
-                                                    onPressed: _editNickname,
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Text(userData.school,
-                                                      style: Theme
-                                                          .of(context)
-                                                          .textTheme
-                                                          .headline3
-                                                  ),
-                                                  Text(userData.major,
-                                                      style: Theme
-                                                          .of(context)
-                                                          .textTheme
-                                                          .bodyText2
-                                                  ),
-                                                  Text("Expected graduation "+ userData.graduationYear.toString(),
-                                                      style: Theme
-                                                          .of(context)
-                                                          .textTheme
-                                                          .bodyText2
-                                                  ),
-                                                  Row(
+                                        ]
+                                      ),
+                                      if (userData == null)
+                                        const SizedBox(
+                                          height: 100,
+                                          child: Center(child: CircularProgressIndicator())
+                                        )
+                                      else
+                                        Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .start,
+                                            crossAxisAlignment: CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Container(
+                                                  height: 150,
+                                                  padding: const EdgeInsets.fromLTRB(
+                                                      0, 10, 0, 10),
+                                                  child: Row(
                                                     children: [
-                                                      ButtonBar(
-                                                        children: [
-                                                          SolidButton(
-                                                            text: " Link to GitHub ",
-                                                            onPressed: () => _launchGithub(),
-                                                          ),
-                                                          SolidButton(
-                                                            text: " View Resume ",
-                                                            onPressed: () => _launchResume(),
-                                                          ),
-                                                        ],
+                                                      ClipRRect(
+                                                          borderRadius: BorderRadius
+                                                              .circular(10),
+                                                          child:
+                                                          const Image(
+                                                            image: AssetImage(
+                                                                "lib/logos/defaultpfp.PNG"),
+                                                          )
                                                       ),
+                                                      const SizedBox(width: 25),
+                                                      Expanded(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment
+                                                                .end,
+                                                            crossAxisAlignment: CrossAxisAlignment
+                                                                .start,
+                                                            children: [
+                                                              Text(userData.firstName,
+                                                                  style: Theme
+                                                                      .of(context)
+                                                                      .textTheme
+                                                                      .headline3
+                                                              ),
+                                                              Text(userData.lastName,
+                                                                  style: Theme
+                                                                      .of(context)
+                                                                      .textTheme
+                                                                      .headline3
+                                                              ),
+                                                              Text('"' + userData.displayName + '"',
+                                                                  style: Theme
+                                                                      .of(context)
+                                                                      .textTheme
+                                                                      .bodyText2
+                                                              ),
+
+                                                              Text(teamName,
+                                                                  style: Theme
+                                                                      .of(context)
+                                                                      .textTheme
+                                                                      .bodyText2
+                                                              ),
+                                                            ],
+                                                          )
+                                                      )
                                                     ],
                                                   )
-                                                  /*SizedBox(height: 8),
-                                          Text("Bio:",
-                                              style: Theme
-                                                  .of(context)
-                                                  .textTheme
-                                                  .bodyText2
-                                          ),
-                                          Container(
-                                              height: 100,
-                                              padding: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: darken(Theme
-                                                    .of(context)
-                                                    .colorScheme
-                                                    .surface, 0.04),
-                                                borderRadius: BorderRadius
-                                                    .circular(15),
                                               ),
-                                              child: SingleChildScrollView(
-                                                child: Text(
-                                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
-                                                      "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                                                      "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
-                                                      "laboris nisi ut aliquip ex ea commodo consequat.",
+                                              if (isSelf)
+                                              SolidButton(
+                                                text: "Edit Nickname",
+                                                onPressed: _editNickname,
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Text(userData.school,
                                                   style: Theme
                                                       .of(context)
                                                       .textTheme
-                                                      .bodyText2,
-                                                ),
+                                                      .headline3
+                                              ),
+                                              Text(userData.major,
+                                                  style: Theme
+                                                      .of(context)
+                                                      .textTheme
+                                                      .bodyText2
+                                              ),
+                                              Text("Expected graduation "+ userData.graduationYear.toString(),
+                                                  style: Theme
+                                                      .of(context)
+                                                      .textTheme
+                                                      .bodyText2
+                                              ),
+                                              Row(
+                                                children: [
+                                                  ButtonBar(
+                                                    children: [
+                                                      SolidButton(
+                                                        text: " Link to GitHub ",
+                                                        onPressed: () => _launchGithub(),
+                                                      ),
+                                                      SolidButton(
+                                                        text: " View Resume ",
+                                                        onPressed: () => _launchResume(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
                                               )
-                                          ),
-                                          SizedBox(height: 8),*/
-                                                ]
-                                            )
-                                        ],
+                                              /*SizedBox(height: 8),
+                                      Text("Bio:",
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .bodyText2
                                       ),
-                                    )
+                                      Container(
+                                          height: 100,
+                                          padding: EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: darken(Theme
+                                                .of(context)
+                                                .colorScheme
+                                                .surface, 0.04),
+                                            borderRadius: BorderRadius
+                                                .circular(15),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: Text(
+                                              "Lorem ipsum dolor sit amet, consectetur adipiscing elit, "
+                                                  "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                                                  "Ut enim ad minim veniam, quis nostrud exercitation ullamco "
+                                                  "laboris nisi ut aliquip ex ea commodo consequat.",
+                                              style: Theme
+                                                  .of(context)
+                                                  .textTheme
+                                                  .bodyText2,
+                                            ),
+                                          )
+                                      ),
+                                      SizedBox(height: 8),*/
+                                            ]
+                                        )
+                                    ],
+                                  ),
                                 )
                             )
-                          ],
                         )
                       ],
                     )
+                  ],
                 )
             )
         )

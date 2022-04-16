@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +11,7 @@ class EnterPrizes extends StatefulWidget {
   EnterPrizes({this.projId, this.enteredPrizes});
 
   @override
-  _EnterPrizesState createState() => new _EnterPrizesState(projId: projId, enteredPrizes: enteredPrizes);
+  _EnterPrizesState createState() => _EnterPrizesState(projId: projId, enteredPrizes: enteredPrizes);
 }
 
 class _EnterPrizesState extends State<EnterPrizes> {
@@ -50,12 +49,12 @@ class _EnterPrizesState extends State<EnterPrizes> {
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: new Text("Confirmation", style: Theme.of(context).textTheme.headline1),
-          content: new Text("Are you sure you want to enter for this prize? This action cannot be undone.", style: Theme.of(context).textTheme.bodyText2),
+          title: Text("Confirmation", style: Theme.of(context).textTheme.headline1),
+          content: Text("Are you sure you want to enter for this prize? This action cannot be undone.", style: Theme.of(context).textTheme.bodyText2),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Cancel",
                 style: Theme.of(context).textTheme.headline4,
               ),
@@ -63,8 +62,8 @@ class _EnterPrizesState extends State<EnterPrizes> {
                 Navigator.of(context).pop();
               },
             ),
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "OK",
                 style: Theme.of(context).textTheme.headline4,
               ),
@@ -102,77 +101,75 @@ class _EnterPrizesState extends State<EnterPrizes> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body:Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+        body:Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TopBar(backflag: true),
+            Stack(
               children: [
-                TopBar(backflag: true),
-                Stack(
+                Column(
+                    children:[
+                      SizedBox(height:screenHeight * 0.05),
+                      CustomPaint(
+                          size: Size(screenWidth, screenHeight * 0.75),
+                          painter: CurvedTop(
+                              color1: Theme.of(context).colorScheme.secondaryVariant,
+                              color2: Theme.of(context).colorScheme.primary,
+                              reverse: true)
+                      ),
+                    ]
+                ),
+                Column(
                   children: [
-                    Column(
-                        children:[
-                          SizedBox(height:screenHeight * 0.05),
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.75),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context).colorScheme.secondaryVariant,
-                                  color2: Theme.of(context).colorScheme.primary,
-                                  reverse: true)
-                          ),
-                        ]
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                            height: screenHeight*0.15,
-                            width: screenWidth,
-                            padding: EdgeInsets.fromLTRB(25, 10, 0, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("ENTER FOR PRIZE",
-                                  style: Theme.of(context).textTheme.headline1,
-                                ),
-                                Text("Scroll to see the full list.",
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                )
-                              ],
+                    Container(
+                        height: screenHeight*0.15,
+                        width: screenWidth,
+                        padding: const EdgeInsets.fromLTRB(25, 10, 0, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("ENTER FOR PRIZE",
+                              style: Theme.of(context).textTheme.headline1,
+                            ),
+                            Text("Scroll to see the full list.",
+                              style: Theme.of(context).textTheme.bodyText2,
                             )
-                        ),
-                        if (prizes == null)
-                          Container(
-                            height: 100,
-                            child: Center(child: CircularProgressIndicator())
-                          )
-                        else
-                        Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                  maxHeight: screenHeight*0.65
-                              ),
-                              child: ListView.builder(
-                                itemCount: prizes.length,
-                                itemBuilder: (BuildContext context, int index){
-                                  return PrizeCard(
-                                    id: prizes[index].id,
-                                    name: prizes[index].name,
-
-                                    desc: prizes[index].description,
-                                    entered: enteredPrizes.contains(prizes[index].id),
-                                    entryFn: () => prizeDialog(prizes[index].id,),
-                                  );
-                                },
-                              ),
-                            )
+                          ],
                         )
-                      ],
+                    ),
+                    if (prizes == null)
+                      const SizedBox(
+                        height: 100,
+                        child: Center(child: CircularProgressIndicator())
+                      )
+                    else
+                    Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxHeight: screenHeight*0.65
+                          ),
+                          child: ListView.builder(
+                            itemCount: prizes.length,
+                            itemBuilder: (BuildContext context, int index){
+                              return PrizeCard(
+                                id: prizes[index].id,
+                                name: prizes[index].name,
+
+                                desc: prizes[index].description,
+                                entered: enteredPrizes.contains(prizes[index].id),
+                                entryFn: () => prizeDialog(prizes[index].id,),
+                              );
+                            },
+                          ),
+                        )
                     )
                   ],
                 )
               ],
             )
+          ],
         )
     );
   }
@@ -191,12 +188,12 @@ class PrizeCard extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Container(
-      padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
       child: GradBox(
         width: 100,
         height: 200,
         alignment: Alignment.topLeft,
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceAround,

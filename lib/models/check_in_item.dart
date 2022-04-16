@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class CheckInItem {
   final int points;
   final String accessLevel;
@@ -25,7 +23,7 @@ class CheckInItem {
       this.event});
 
   factory CheckInItem.fromJson(Map<String, dynamic> parsedJson) {
-    return new CheckInItem(
+    return CheckInItem(
       points: parsedJson['points'],
       accessLevel: parsedJson['accessLevel'],
       active: parsedJson['active'],

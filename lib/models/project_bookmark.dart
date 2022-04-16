@@ -18,7 +18,7 @@ class ProjectBookmark {
   });
 
   factory ProjectBookmark.fromJson(Map<String, dynamic> parsedJson) {
-    return new ProjectBookmark(
+    return ProjectBookmark(
       bookmarkId: parsedJson['_id'],
       bookmarkType: parsedJson['bookmarkType'],
       description: parsedJson['description'],

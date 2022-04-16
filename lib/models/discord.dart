@@ -11,7 +11,7 @@ class DiscordInfo {
 
   factory DiscordInfo.fromJson(Map<String, dynamic> parsedJson) {
 
-    return new DiscordInfo(
+    return DiscordInfo(
         code:  parsedJson["code"],
         expiry: parsedJson["expiry"],
         link: parsedJson["link"],

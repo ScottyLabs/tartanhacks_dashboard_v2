@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'create_team.dart';
@@ -6,10 +5,8 @@ import 'view_team.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
-import 'team-api.dart';
-import '/models/member.dart';
-import 'see-invites.dart';
-import 'dart:async';
+import 'team_api.dart';
+import 'see_invites.dart';
 
 class TeamsList extends StatefulWidget {
   @override
@@ -20,7 +17,7 @@ class _TeamsListState extends State<TeamsList> {
   String token;
   List<Team> teamInfos;
   int numTeams;
-  List<Map> _teamList = <Map>[];
+  final List<Map> _teamList = <Map>[];
   List<Widget> teamWidgetList = <Widget>[];
   List<dynamic> requestsList;
   List requestedTeams = [];
@@ -67,13 +64,13 @@ class _TeamsListState extends State<TeamsList> {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
       Text("TEAM", style: Theme.of(context).textTheme.headline2),
       IconButton(
-          icon: Icon(Icons.email, size: 30.0),
+          icon: const Icon(Icons.email, size: 30.0),
           color: Theme.of(context).colorScheme.secondary,
           onPressed: () {
             print("opened mail");
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => viewInvites()),
+              MaterialPageRoute(builder: (context) => ViewInvites()),
             ).then((value) => getData());
           })
     ]);
@@ -101,15 +98,6 @@ class _TeamsListState extends State<TeamsList> {
     return btn;
   }
 
-  Widget _buildListHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("VIEW OPEN TEAMS", style: Theme.of(context).textTheme.bodyText2),
-        Text("Filter", style: Theme.of(context).textTheme.caption),
-      ],
-    );
-  }
 
   Widget _buildTeamJoinBtn(String teamID) {
     if (requestedTeams.contains(teamID)) {
@@ -187,74 +175,73 @@ class _TeamsListState extends State<TeamsList> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: screenHeight),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: screenHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TopBar(),
+                    Stack(
                       children: [
-                        TopBar(),
-                        Stack(
-                          children: [
-                            Column(children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2:
-                                          Theme.of(context).colorScheme.primary,
-                                      reverse: true)),
-                            ]),
-                            Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                child: GradBox(
-                                    width: screenWidth * 0.9,
-                                    height: screenHeight * 0.75,
-                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                    child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 10, 0, 10),
-                                              //height: screenHeight*0.05,
-                                              child: _buildTeamHeader()),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 5, 0, 5),
-                                              //height: screenHeight*0.2,
-                                              child: _buildCreateTeamBtn()),
-                                          if (teamInfos != null)
-                                            Expanded(
-                                              child: ListView.builder(
-                                                itemCount: numTeams,
-                                                itemBuilder:
-                                                    (BuildContext context,
-                                                        int index) {
-                                                  return _buildTeamEntry(index);
-                                                },
-                                              ),
-                                            )
-                                          else
-                                            Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onSurface))
-                                        ])))
-                          ],
-                        )
+                        Column(children: [
+                          SizedBox(height: screenHeight * 0.05),
+                          CustomPaint(
+                              size: Size(screenWidth, screenHeight * 0.75),
+                              painter: CurvedTop(
+                                  color1: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryVariant,
+                                  color2:
+                                      Theme.of(context).colorScheme.primary,
+                                  reverse: true)),
+                        ]),
+                        Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            child: GradBox(
+                                width: screenWidth * 0.9,
+                                height: screenHeight * 0.75,
+                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 10, 0, 10),
+                                          //height: screenHeight*0.05,
+                                          child: _buildTeamHeader()),
+                                      Container(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 5, 0, 5),
+                                          //height: screenHeight*0.2,
+                                          child: _buildCreateTeamBtn()),
+                                      if (teamInfos != null)
+                                        Expanded(
+                                          child: ListView.builder(
+                                            itemCount: numTeams,
+                                            itemBuilder:
+                                                (BuildContext context,
+                                                    int index) {
+                                              return _buildTeamEntry(index);
+                                            },
+                                          ),
+                                        )
+                                      else
+                                        Center(
+                                            child:
+                                                CircularProgressIndicator(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .onSurface))
+                                    ])))
                       ],
-                    )))));
+                    )
+                  ],
+                ))));
   }
 }

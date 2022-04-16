@@ -8,7 +8,7 @@ class User {
   User({this.admin, this.id, this.email, this.token, this.company});
 
   factory User.fromJson(Map<String, dynamic> parsedJson) {
-    return new User(
+    return User(
       admin: parsedJson['admin'],
       id: parsedJson['_id'],
       email: parsedJson['email'],

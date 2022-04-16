@@ -1,18 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:decorated_icon/decorated_icon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 
-import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
-import 'dart:math';
 import 'home.dart';
 import 'login.dart';
-import 'leaderboard.dart';
 import 'project_submission.dart';
 import 'sponsors.dart';
 import 'bookmarks.dart';
@@ -20,13 +14,12 @@ import 'events/index.dart';
 import 'profile_page.dart';
 import 'checkin.dart';
 
-import 'teams_list.dart';
 
 import 'view_team.dart';
 import '../theme_changer.dart';
 
 
-InputDecoration FormFieldStyle(BuildContext context, String labelText) {
+InputDecoration formFieldStyle(BuildContext context, String labelText) {
   return InputDecoration(
     labelText: labelText,
   );
@@ -71,7 +64,6 @@ class CurvedBottom extends CustomPainter {
   CurvedBottom({this.color1, this.color2});
   @override
   void paint(Canvas canvas, Size size) {
-    Color blend = Color.alphaBlend(color2, color1);
     var paint = Paint()
       ..color = color1
       ..strokeWidth = 15
@@ -134,8 +126,8 @@ class GradBox extends StatelessWidget{
     return Container(
         width: width,
         height: height,
-        alignment: alignment==null ? Alignment.center : alignment,
-        padding: padding==null ? EdgeInsets.all(10) : padding,
+        alignment: alignment ?? Alignment.center,
+        padding: padding ?? const EdgeInsets.all(10),
         decoration: BoxDecoration(
             color: Colors.white,
             gradient: LinearGradient(
@@ -146,7 +138,7 @@ class GradBox extends StatelessWidget{
             borderRadius: BorderRadius.circular(curvature),
             boxShadow: [BoxShadow(
                 color: shadow,
-                offset: Offset(0.0, 5.0),
+                offset: const Offset(0.0, 5.0),
                 blurRadius: 5.0)]
         ),
         child: (onTap==null) ? child : InkWell(onTap: onTap, child: child)
@@ -207,7 +199,7 @@ class SolidSquareButton extends StatelessWidget{
             backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
             shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            fixedSize: MaterialStateProperty.all<Size>(Size.square(10)),
+            fixedSize: MaterialStateProperty.all<Size>(const Size.square(10)),
             elevation: MaterialStateProperty.all(5)
         ),
     );
@@ -251,14 +243,14 @@ class TextLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     print(height);
     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-    return Container(
+    return SizedBox(
         width: width,
         height: height,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:[
-              Container(
+              SizedBox(
                   height: height,
                   width: min(width*0.20, 50),
                   child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
@@ -283,16 +275,13 @@ class MenuButton extends StatelessWidget {
   MenuButton({this.onTap, this.icon});
   @override
   Widget build(BuildContext context) {
-    Color color1 = Theme.of(context).colorScheme.background;
-    Color color2 = Theme.of(context).colorScheme.surface;
-    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
     return Material(
         type: MaterialType.button,
-        color: Color(0x00000000),
+        color: const Color(0x00000000),
         child: GradBox(
             width: 55,
             height: 55,
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             child: Icon(icon ?? Icons.menu,
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 35
@@ -310,16 +299,13 @@ class HomeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color1 = Theme.of(context).colorScheme.background;
-    Color color2 = Theme.of(context).colorScheme.surface;
-    Color shadow = Theme.of(context).colorScheme.secondaryVariant;
     return Material(
         type: MaterialType.button,
-        color: Color(0x00000000),
+        color: const Color(0x00000000),
         child: GradBox(
             width: 55,
             height: 55,
-            padding: EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             child: Icon(Icons.home,
                 color: Theme.of(context).colorScheme.onSurface,
                 size: 35
@@ -361,7 +347,7 @@ class FlagPainter extends CustomPainter {
 class BackFlag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: 80,
         height: 35,
         child: InkWell(
@@ -372,11 +358,11 @@ class BackFlag extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 children: [
                   CustomPaint(
-                    size: Size(80, 35),
+                    size: const Size(80, 35),
                     painter: FlagPainter(color: Theme.of(context).colorScheme.primary),
                   ),
                   Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -384,13 +370,13 @@ class BackFlag extends StatelessWidget {
                           BoxShadow(
                             blurRadius: 6.0,
                             color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
-                            offset: Offset(3.0, 0),
+                            offset: const Offset(3.0, 0),
                           ),
                         ],
                       )
                   ),
                   Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 22, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 22, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -398,7 +384,7 @@ class BackFlag extends StatelessWidget {
                           BoxShadow(
                             blurRadius: 6.0,
                             color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
-                            offset: Offset(3.0, 0),
+                            offset: const Offset(3.0, 0),
                           ),
                         ],
                       )
@@ -412,7 +398,6 @@ class BackFlag extends StatelessWidget {
 class TopBar extends StatelessWidget {
   bool backflag;
   bool isSponsor;
-  OverlayEntry _overlayEntry;
   TopBar({this.backflag = false, this.isSponsor = false});
   @override
   Widget build(BuildContext context) {
@@ -433,7 +418,7 @@ class TopBar extends StatelessWidget {
                   width: screenWidth*0.65,
                   height: screenHeight*0.2,
                   alignment: Alignment.topLeft,
-                  padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                   child:TextLogo(
                       color: Theme.of(context).colorScheme.onPrimary,
                       width: screenWidth*0.65,
@@ -452,22 +437,22 @@ class TopBar extends StatelessWidget {
         Container(
             width: screenWidth*0.35,
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.fromLTRB(0, 25, 0, 0),
+            padding: const EdgeInsets.fromLTRB(0, 25, 0, 0),
             child: backflag ? null : Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 HomeButton(isSponsor),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 MenuButton(
                     onTap: () {
                       if (isSponsor) {
-                        Overlay.of(context).insert(SponsorMenuOverlay(context));
+                        Overlay.of(context).insert(sponsorMenuOverlay(context));
                       } else {
-                        Overlay.of(context).insert(MenuOverlay(context));
+                        Overlay.of(context).insert(menuOverlay(context));
                       }
                     }
                 ),
-                SizedBox(width: 17)
+                const SizedBox(width: 17)
               ]
             )
         )
@@ -488,40 +473,38 @@ class DefaultPage extends StatelessWidget {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return Scaffold(
-      body: Container(
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: screenHeight
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TopBar(),
-                Stack(
-                  children: [
-                    Column(
-                      children: [
-                        SizedBox(height: screenHeight * 0.05),
-                        CustomPaint(
-                            size: Size(screenWidth, screenHeight * 0.75),
-                            painter: CurvedTop(
-                                color1: Theme.of(context).colorScheme.primary,
-                                color2: Theme.of(context).colorScheme.secondaryVariant,
-                                reverse: reverse
-                            )
-                        ),
-                      ]
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                      height: screenHeight * 0.8,
-                      child: child
-                    )
-                  ]
-                )
-              ]
-            )
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: screenHeight
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TopBar(),
+              Stack(
+                children: [
+                  Column(
+                    children: [
+                      SizedBox(height: screenHeight * 0.05),
+                      CustomPaint(
+                          size: Size(screenWidth, screenHeight * 0.75),
+                          painter: CurvedTop(
+                              color1: Theme.of(context).colorScheme.primary,
+                              color2: Theme.of(context).colorScheme.secondaryVariant,
+                              reverse: reverse
+                          )
+                      ),
+                    ]
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                    height: screenHeight * 0.8,
+                    child: child
+                  )
+                ]
+              )
+            ]
           )
         )
       )
@@ -540,7 +523,7 @@ class WhiteOverlay extends CustomPainter {
     var paint = Paint()
       ..color = Colors.white
       ..strokeWidth = 15
-      ..shader = LinearGradient(
+      ..shader = const LinearGradient(
         begin: Alignment.bottomLeft,
         end: Alignment.topRight,
         colors:[Colors.white24, Colors.white],
@@ -558,9 +541,8 @@ class WhiteOverlay extends CustomPainter {
     return true;
   }
 }
-OverlayEntry MenuOverlay(BuildContext context) {
+OverlayEntry menuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
-  final screenHeight = mqData.size.height;
   final screenWidth = mqData.size.width;
   var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   OverlayEntry entry;
@@ -586,7 +568,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           Container(
                               width: screenWidth/4,
                               alignment: Alignment.topRight,
-                              padding: EdgeInsets.fromLTRB(0, 25, 17, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 25, 17, 0),
                               child: MenuButton(
                                   onTap: () {
                                     entry.remove();
@@ -596,7 +578,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                           ),
                         ]
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -673,7 +655,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                     MaterialPageRoute(builder: (context) =>
 
                                         ViewTeam(),
-                                        settings: RouteSettings(
+                                        settings: const RouteSettings(
                                           arguments: "",
                                         )),
 
@@ -701,7 +683,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        settings: RouteSettings(name: "profpage"),
+                                        settings: const RouteSettings(name: "profpage"),
                                         builder: (context) => ProfilePage()),
                                   );
                                 },
@@ -724,7 +706,7 @@ OverlayEntry MenuOverlay(BuildContext context) {
   return entry;
 }
 
-OverlayEntry SponsorMenuOverlay(BuildContext context) {
+OverlayEntry sponsorMenuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
 
@@ -753,7 +735,7 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                               Container(
                                   width: screenWidth/4,
                                   alignment: Alignment.topRight,
-                                  padding: EdgeInsets.fromLTRB(0, 25, 17, 0),
+                                  padding: const EdgeInsets.fromLTRB(0, 25, 17, 0),
                                   child: MenuButton(
                                     onTap: () {
                                       entry.remove();
@@ -763,7 +745,7 @@ OverlayEntry SponsorMenuOverlay(BuildContext context) {
                               ),
                             ]
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Container(
                             alignment: Alignment.topRight,
                             child: Column(
@@ -852,7 +834,7 @@ void logOut(entry, context) async {
   entry.remove();
   Navigator.pushAndRemoveUntil(
     context,
-    MaterialPageRoute(builder: (ctxt) => new Login()),
+    MaterialPageRoute(builder: (ctxt) => Login()),
           (route) => false
   );
   Provider.of<CheckInItemsModel>(context, listen: false).reset();
@@ -876,7 +858,7 @@ class MenuChoice extends StatelessWidget {
     return Container(
         width: screenWidth/4,
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: Column(
             children: [
               RawMaterialButton(
@@ -888,8 +870,8 @@ class MenuChoice extends StatelessWidget {
                   size: 40.0,
                   color: Theme.of(context).colorScheme.onError,
                 ),
-                padding: EdgeInsets.all(12),
-                shape: CircleBorder(),
+                padding: const EdgeInsets.all(12),
+                shape: const CircleBorder(),
               ),
               Text(text,
                 style: TextStyle(
@@ -909,7 +891,6 @@ class LoadingScreen extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: Container(
@@ -923,7 +904,7 @@ class LoadingScreen extends StatelessWidget {
                       height: screenHeight*0.35,
                       width: screenWidth,
                       alignment: Alignment.topCenter,
-                      padding: EdgeInsets.fromLTRB(0, 20, 0, 10),
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
                       child: Image.asset("lib/logos/thLogoDark.png")
                   ),
                   Text("Tartanhacks",
@@ -932,7 +913,7 @@ class LoadingScreen extends StatelessWidget {
                   Text("by Scottylabs",
                     style: Theme.of(context).textTheme.bodyText2,
                   ),
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
                   CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,)
                 ]
             )
@@ -961,7 +942,7 @@ class WhiteOverlayLight extends CustomPainter {
   }
 }
 
-OverlayEntry LoadingOverlay(BuildContext context) {
+OverlayEntry loadingOverlay(BuildContext context) {
   final screenSize = MediaQuery.of(context).size;
   return OverlayEntry(
       builder: (context) => Positioned(
@@ -992,12 +973,12 @@ void errorDialog(context, String title, String response) {
       // return object of type Dialog
       return AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: new Text(title, style: Theme.of(context).textTheme.headline1),
-        content: new Text(response, style: Theme.of(context).textTheme.bodyText2),
+        title: Text(title, style: Theme.of(context).textTheme.headline1),
+        content: Text(response, style: Theme.of(context).textTheme.bodyText2),
         actions: <Widget>[
           // usually buttons at the bottom of the dialog
-          new TextButton(
-            child: new Text(
+          TextButton(
+            child: Text(
               "OK",
               style: Theme.of(context).textTheme.headline4,
             ),
