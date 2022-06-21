@@ -123,6 +123,7 @@ class _EditTeamState extends State<EditTeam> {
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
             elevation: MaterialStateProperty.all(5),
             ),
+          onPressed: () {  },
           child: Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Text("Leave Team",
@@ -151,7 +152,7 @@ class _EditTeamState extends State<EditTeam> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TopBar(backflag: true),
+                  const TopBar(backflag: true),
                   Stack(
                     children: [
                       Column(

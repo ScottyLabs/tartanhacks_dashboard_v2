@@ -28,7 +28,6 @@ class CheckInItemsModel with ChangeNotifier {
   String get userID => _uid;
 
   void handleException(e) {
-    print(e);
     _list = [];
     _status = Status.error;
     notifyListeners();
@@ -41,7 +40,6 @@ class CheckInItemsModel with ChangeNotifier {
     _token = prefs.getString("token");
     _uid = prefs.getString("id");
     isAdmin = prefs.getBool("admin");
-    print(_uid);
     _status = Status.fetching;
 
     try {
@@ -59,7 +57,6 @@ class CheckInItemsModel with ChangeNotifier {
       notifyListeners();
 
     } on Exception catch (e) {
-      print(e);
       handleException(e);
     }
   }

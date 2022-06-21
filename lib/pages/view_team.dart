@@ -48,7 +48,6 @@ class _ViewTeamState extends State<ViewTeam> {
         team = await getTeamInfo(teamID, token);
         flag = true;
       }
-      print(team);
       teamName = team.name;
       teamDesc = team.description;
       memLength = team.members.length;
@@ -104,7 +103,6 @@ class _ViewTeamState extends State<ViewTeam> {
                   .colorScheme
                   .secondary,
               onPressed: () {
-                print("opened mail");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>
@@ -273,8 +271,6 @@ class _ViewTeamState extends State<ViewTeam> {
                         SolidButton(
                             text: "Send",
                             onPressed: () async {
-                              print("sent request");
-                              print(emailInvite);
                               await requestTeamMember(emailInvite, token);
                             }
                         )

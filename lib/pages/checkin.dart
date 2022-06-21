@@ -36,7 +36,7 @@ class _CheckInState extends State<CheckIn> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(),
+                    const TopBar(),
                     Stack(
                       children: [
                         Column(children: [

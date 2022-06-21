@@ -36,7 +36,7 @@ class EditEventPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(children: [
@@ -334,10 +334,11 @@ class _EventFormState extends State<EventItemForm> {
                       return 'Cannot be empty';
                     }
                     if (startDate!=null) {
-                      if (daysBetween(startDate, endDate)==0)
-                        if (toDouble(startTime)>toDouble(endTime)) {
+                      if (daysBetween(startDate, endDate)==0) {
+                        if (toDouble(startTime) > toDouble(endTime)) {
                           return 'End time must be after start time';
                         }
+                      }
                     }
                     return null;
                   },

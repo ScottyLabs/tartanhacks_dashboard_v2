@@ -130,7 +130,7 @@ class _LeaderboardState extends State<Leaderboard> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(
@@ -228,12 +228,11 @@ class _LeaderboardState extends State<Leaderboard> {
 }
 
 class LBRow extends StatelessWidget {
-  int place;
-  String name;
-  int points;
+  final int place;
+  final String name;
+  final int points;
 
-
-  LBRow({this.place, this.name, this.points});
+  const LBRow({this.place, this.name, this.points});
 
   @override
   Widget build(BuildContext context) {

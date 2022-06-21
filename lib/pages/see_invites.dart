@@ -35,17 +35,11 @@ class _ViewInvitesState extends State<ViewInvites> {
     team = await getUserTeam(token);
     if (team == null){ 
         requestsList = await getUserMail(token);
-        print("test test test");
         numRequests = requestsList.length;
-        print("num requests are");
-        print(numRequests);
         _buildInvitesList();
     } else {
-        print("tried heree");
         requestsList = await getTeamMail(token);
         numRequests = requestsList.length;
-        print("num requests are");
-        print(numRequests);
         _buildInvitesList();
     }
     
@@ -87,8 +81,7 @@ Widget _buildInviteHeader() {
   }
 
  Widget _requestResponses(String requestType, String requestID){
-     print("worked here");
-     if ((team == null && requestType == "INVITE") || 
+     if ((team == null && requestType == "INVITE") ||
      (team != null && requestType == "JOIN")) {
          return Row (
              mainAxisAlignment: MainAxisAlignment.end,
@@ -152,7 +145,6 @@ Widget _buildInviteHeader() {
     }
     String requestID = requestsList[index]['_id'];
     Row btnRow = _requestResponses(requestType, requestID);
-    print('building request');
     return Card(
         margin: const EdgeInsets.all(12),
         color: Theme.of(context).colorScheme.background,
@@ -188,7 +180,7 @@ Widget _buildInviteHeader() {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(
@@ -227,7 +219,6 @@ Widget _buildInviteHeader() {
                                         child: ListView.builder(
                                           itemCount: numRequests,
                                           itemBuilder: (BuildContext context, int index){
-                                            print("testing item builder");
                                             return _buildRequests(index);
                                           },
                                         ),

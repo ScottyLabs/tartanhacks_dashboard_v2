@@ -38,7 +38,6 @@ class _SponsorsState extends State<Sponsors> {
     token = prefs.getString('token');
     bookmarks = await getBookmarkIdsList(token);
     discordInfo = await getDiscordInfo(token);
-    print('bookmarks: ' + bookmarks.toString());
     setState(() {});
   }
 
@@ -158,7 +157,6 @@ class _SponsorsState extends State<Sponsors> {
 
   void searchResultCounting(String keyword) {
     searchPressed = true;
-    print(keyword);
     int counter = 0;
     for (var i = 0; i < students.length; i++) {
       if (students[i] != null) {
@@ -168,14 +166,11 @@ class _SponsorsState extends State<Sponsors> {
         }
       }
     }
-    print(counter);
-    print(searchPressed);
     searchResultCount = counter;
     setState(() {});
   }
 
   void newBookmark(String bookmarkId, String participantId) async {
-    print('ADDING A BOOKMARK FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     String newBookmarkId = await addBookmark(token, participantId);
@@ -184,7 +179,6 @@ class _SponsorsState extends State<Sponsors> {
   }
 
   void removeBookmark(String bookmarkId, String participantId) async {
-    print('REMOVING A BOOKMARK WITH ' + bookmarkId + 'FOR ' + participantId);
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     bookmarks.remove(bookmarkId);
@@ -217,7 +211,7 @@ class _SponsorsState extends State<Sponsors> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(
+                    const TopBar(
                       isSponsor: true,
                     ),
                     Stack(children: [
@@ -427,18 +421,18 @@ class _SponsorsState extends State<Sponsors> {
 }
 
 class InfoTile extends StatelessWidget {
-  String name;
-  String team;
-  String bio;
-  String participantId;
-  String bookmarkId;
-  bool isBookmark;
-  Map bmMap;
+  final String name;
+  final String team;
+  final String bio;
+  final String participantId;
+  final String bookmarkId;
+  final bool isBookmark;
+  final Map bmMap;
 
-  Function toggleFn;
-  Function updateBM;
+  final Function toggleFn;
+  final Function updateBM;
 
-  InfoTile(
+  const InfoTile(
       {this.name,
       this.team,
       this.bio,
@@ -510,8 +504,6 @@ class InfoTile extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                     iconSize: 40.0,
                     onPressed: () {
-                      print(bookmarkId);
-                      print(participantId);
                       toggleFn(bookmarkId, participantId);
                     }),
               ],

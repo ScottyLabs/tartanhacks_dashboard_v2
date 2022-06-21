@@ -96,7 +96,7 @@ class _Bookmarks extends State<Bookmarks> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(isSponsor: true),
+                    const TopBar(isSponsor: true),
                     Stack(
                         children: [
                           Column(
@@ -217,15 +217,15 @@ class _Bookmarks extends State<Bookmarks> {
 
 class BookmarkInfo extends StatelessWidget {
 
-  ParticipantInfo data;
-  String bmID;
-  String team;
-  String bio;
-  Function remove;
-  Map bmMap;
-  Function refresh;
+  final ParticipantInfo data;
+  final String bmID;
+  final String team;
+  final String bio;
+  final Function remove;
+  final Map bmMap;
+  final Function refresh;
 
-  BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap, this.refresh});
+  const BookmarkInfo({this.bmID, this.data, this.team, this.bio, this.remove, this.bmMap, this.refresh});
 
   @override
   Widget build(BuildContext context) {

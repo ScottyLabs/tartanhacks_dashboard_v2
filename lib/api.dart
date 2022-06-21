@@ -136,6 +136,7 @@ Future<List> getStudents(String token, {String query}) async {
         .toList();
     return [ids, profs, teams];
   }
+  return null;
 }
 
 Future<Map> getBookmarkIdsList(String token) async {
@@ -161,6 +162,7 @@ Future<Map> getBookmarkIdsList(String token) async {
     }
     return bookmarks;
   }
+  return null;
 }
 
 Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
@@ -176,6 +178,7 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
     data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
     return data;
   }
+  return null;
 }
 
 Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
@@ -191,6 +194,7 @@ Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
     data = data.map((bm) => ProjectBookmark.fromJson(bm)).toList();
     return data;
   }
+  return null;
 }
 
 Future<void> deleteBookmark(String token, String id) async {

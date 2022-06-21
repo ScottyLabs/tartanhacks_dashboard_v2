@@ -12,7 +12,7 @@ class ScanConfigPage extends StatelessWidget {
       body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget> [
-            TopBar(backflag: true,),
+            const TopBar(backflag: true,),
             Stack(
               children: [
                 Column(
@@ -75,7 +75,7 @@ class ScanConfigBox extends StatelessWidget {
             child: Text("Ctrl+F - Working with your team",
               style: Theme.of(context).textTheme.bodyText2,
             ),
-          )]),
+          )], onChanged: (value) {  },),
           const SizedBox(height: 25,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

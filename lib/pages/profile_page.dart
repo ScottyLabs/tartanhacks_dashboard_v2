@@ -8,9 +8,9 @@ import 'package:thdapp/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
-  Map bookmarks;
+  final Map bookmarks;
 
-  ProfilePage({this.bookmarks});
+  const ProfilePage({this.bookmarks});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -179,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(

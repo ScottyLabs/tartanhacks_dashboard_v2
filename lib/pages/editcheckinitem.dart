@@ -35,7 +35,7 @@ class EditCheckInItemPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(children: [
@@ -236,10 +236,11 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       return 'Cannot be empty';
                     }
                     if (startDate!=null) {
-                      if (daysBetween(startDate, endDate)==0)
-                        if (toDouble(startTime)>toDouble(endTime)) {
+                      if (daysBetween(startDate, endDate)==0) {
+                        if (toDouble(startTime) > toDouble(endTime)) {
                           return 'End time must be after start time';
                         }
+                      }
                     }
                     return null;
                   },
@@ -323,7 +324,6 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     if (_formKey.currentState.validate()) {
                       DateTime startDateTime = DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute);
                       DateTime endDateTime = DateTime(endDate.year, endDate.month, endDate.day, endTime.hour, endTime.minute);
-                      print(enableSelfCheckIn);
 
                       CheckInItemDTO updatedItem = CheckInItemDTO(
                           name: _nameController.text,

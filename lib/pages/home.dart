@@ -156,7 +156,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: Column(mainAxisAlignment: MainAxisAlignment.end, children: <
           Widget>[
-        TopBar(),
+        const TopBar(),
         Stack(
       children: [
         Column(children: [

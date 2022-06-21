@@ -154,8 +154,6 @@ class _CreateTeamState extends State<CreateTeam> {
                               SolidButton(
                               text: "Send",
                               onPressed: () async {
-                                print("sent request");
-                                print(emailInvite);
                                 await requestTeamMember(emailInvite, token);
                               }
                             )
@@ -193,7 +191,7 @@ class _CreateTeamState extends State<CreateTeam> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(

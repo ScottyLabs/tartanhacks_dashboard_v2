@@ -107,15 +107,15 @@ class CurvedCorner extends CustomPainter {
   }
 }
 class GradBox extends StatelessWidget{
-  double width;
-  double height;
-  double curvature;
-  Widget child;
-  bool reverse;
-  EdgeInsets padding;
-  Function onTap;
-  Alignment alignment;
-  GradBox({this.width, this.height, this.child, this.reverse=false,
+  final double width;
+  final double height;
+  final double curvature;
+  final Widget child;
+  final bool reverse;
+  final EdgeInsets padding;
+  final Function onTap;
+  final Alignment alignment;
+  const GradBox({this.width, this.height, this.child, this.reverse=false,
     this.padding, this.onTap, this.alignment, this.curvature=25});
 
   @override
@@ -160,7 +160,6 @@ class SolidButton extends StatelessWidget{
       color = Theme.of(context).colorScheme.primary;
     } else if (color == Theme.of(context).colorScheme.secondary) {
       textColor = Theme.of(context).colorScheme.onSecondary;
-      print("SET COLOR");
     }
     return ElevatedButton(
         onPressed: onPressed,
@@ -185,10 +184,10 @@ class SolidButton extends StatelessWidget{
 }
 
 class SolidSquareButton extends StatelessWidget{
-  String image;
-  Function onPressed;
+  final String image;
+  final Function onPressed;
 
-  SolidSquareButton({this.image, this.onPressed});
+  const SolidSquareButton({this.image, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -207,11 +206,11 @@ class SolidSquareButton extends StatelessWidget{
 }
 
 class GradText extends StatelessWidget {
-  String text;
-  Color color1;
-  Color color2;
-  double size;
-  GradText({this.text, this.size, this.color1, this.color2});
+  final String text;
+  final Color color1;
+  final Color color2;
+  final double size;
+  const GradText({this.text, this.size, this.color1, this.color2});
   @override
   Widget build(BuildContext context) {
     return ShaderMask(
@@ -233,15 +232,14 @@ class GradText extends StatelessWidget {
   }
 }
 class TextLogo extends StatelessWidget {
-  Color color;
-  double width;
-  double height;
+  final Color color;
+  final double width;
+  final double height;
 
-  TextLogo({this.color, this.width, this.height});
+  const TextLogo({this.color, this.width, this.height});
 
   @override
   Widget build(BuildContext context) {
-    print(height);
     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
     return SizedBox(
         width: width,
@@ -269,10 +267,10 @@ class TextLogo extends StatelessWidget {
   }
 }
 class MenuButton extends StatelessWidget {
-  Function onTap;
-  var icon;
+  final Function onTap;
+  final IconData icon;
 
-  MenuButton({this.onTap, this.icon});
+  const MenuButton({this.onTap, this.icon});
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -293,9 +291,9 @@ class MenuButton extends StatelessWidget {
 }
 
 class HomeButton extends StatelessWidget {
-  bool isSponsor;
+  final bool isSponsor;
 
-  HomeButton(this.isSponsor);
+  const HomeButton(this.isSponsor);
 
   @override
   Widget build(BuildContext context) {
@@ -396,9 +394,9 @@ class BackFlag extends StatelessWidget {
   }
 }
 class TopBar extends StatelessWidget {
-  bool backflag;
-  bool isSponsor;
-  TopBar({this.backflag = false, this.isSponsor = false});
+  final bool backflag;
+  final bool isSponsor;
+  const TopBar({this.backflag = false, this.isSponsor = false});
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -462,10 +460,10 @@ class TopBar extends StatelessWidget {
 }
 
 class DefaultPage extends StatelessWidget {
-  Widget child;
-  bool reverse;
+  final Widget child;
+  final bool reverse;
 
-  DefaultPage({this.child, this.reverse=true});
+  const DefaultPage({this.child, this.reverse=true});
 
   @override
   Widget build(BuildContext context) {
@@ -481,7 +479,7 @@ class DefaultPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TopBar(),
+              const TopBar(),
               Stack(
                 children: [
                   Column(
@@ -684,7 +682,7 @@ OverlayEntry menuOverlay(BuildContext context) {
                                     context,
                                     MaterialPageRoute(
                                         settings: const RouteSettings(name: "profpage"),
-                                        builder: (context) => ProfilePage()),
+                                        builder: (context) => const ProfilePage()),
                                   );
                                 },
                               ),
@@ -846,10 +844,10 @@ void setThemePref(theme, entry, context) async {
 }
 
 class MenuChoice extends StatelessWidget {
-  IconData icon;
-  String text;
-  Function onTap;
-  MenuChoice({this.icon, this.text, this.onTap});
+  final IconData icon;
+  final String text;
+  final Function onTap;
+  const MenuChoice({this.icon, this.text, this.onTap});
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);

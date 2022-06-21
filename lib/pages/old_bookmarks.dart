@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 
 class OldBookmarks extends StatelessWidget {
-  List bookmarks = ["[Student A]", "[Student B]", "[Student C]", "[Student D]",
+  final List bookmarks = ["[Student A]", "[Student B]", "[Student C]", "[Student D]",
                     "[Student E]", "[Student F]", "[Student G]", "[Student F]"];
-  bool isProjects = true;
+  final bool isProjects = true;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class OldBookmarks extends StatelessWidget {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(),
+                    const TopBar(),
                     Stack(
                         children: [
                           Column(
@@ -98,11 +98,11 @@ class OldBookmarks extends StatelessWidget {
 }
 
 class BookmarkInfo extends StatelessWidget {
-  String name;
-  String team;
-  String bio;
+  final String name;
+  final String team;
+  final String bio;
 
-  BookmarkInfo({this.name, this.team, this.bio});
+  const BookmarkInfo({this.name, this.team, this.bio});
 
   @override
   Widget build(BuildContext context) {

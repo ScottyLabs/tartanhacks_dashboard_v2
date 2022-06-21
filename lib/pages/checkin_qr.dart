@@ -30,7 +30,7 @@ class _QRPageState extends State<QRPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(backflag: true),
+                    const TopBar(backflag: true),
                     Stack(
                       children: [
                         Column(children: [
@@ -164,8 +164,7 @@ class IDCheckInHeader extends StatelessWidget {
                         }
                     );
                   }
-                } on Exception catch (e) {
-                  print(e);
+                } on Exception {
                   snackBarText = "Error checking in";
                   Navigator.pop(context);
                 } finally {

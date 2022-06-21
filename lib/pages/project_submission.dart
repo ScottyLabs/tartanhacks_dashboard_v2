@@ -201,6 +201,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
         )
     );
     }
+    return const SizedBox.shrink();
   }
 
   void submitDialog (BuildContext context) {
@@ -285,7 +286,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TopBar(),
+                  const TopBar(),
                   Stack(
                     children: [
                       Column(

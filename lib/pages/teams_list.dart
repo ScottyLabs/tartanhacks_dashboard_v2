@@ -67,7 +67,6 @@ class _TeamsListState extends State<TeamsList> {
           icon: const Icon(Icons.email, size: 30.0),
           color: Theme.of(context).colorScheme.secondary,
           onPressed: () {
-            print("opened mail");
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ViewInvites()),
@@ -182,7 +181,7 @@ class _TeamsListState extends State<TeamsList> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TopBar(),
+                    const TopBar(),
                     Stack(
                       children: [
                         Column(children: [

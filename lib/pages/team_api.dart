@@ -12,7 +12,6 @@ Future<bool> createTeam(
     "Content-type": "application/json",
     "x-access-token": token
   };
-  print("try to create");
   String body = '{"name": "' +
       teamName +
       '","description": "' +
@@ -20,16 +19,8 @@ Future<bool> createTeam(
       '","visible": ' +
       visibility.toString() +
       '}';
-  print(body);
   final response = await http.post(url, headers: headers, body: body); //patch?
-  if (response.statusCode == 200) {
-    print("Successfully updated info");
-  } else {
-    print("error");
-  }
-  print("response text");
-  var decoded = utf8.decode(response.bodyBytes);
-  print(decoded);
+  return (response.statusCode == 200);
 }
 
 Future<bool> editTeam(
@@ -39,7 +30,6 @@ Future<bool> editTeam(
     "Content-type": "application/json",
     "x-access-token": token
   };
-  print("try to create");
   String body = '{"name": "' +
       teamName +
       '","description": "' +
@@ -47,16 +37,8 @@ Future<bool> editTeam(
       '","visible": ' +
       visibility.toString() +
       '}';
-  print(body);
   final response = await http.patch(url, headers: headers, body: body); //patch?
-  if (response.statusCode == 200) {
-    print("Successfully updated info");
-  } else {
-    print("error");
-  }
-  print("response text");
-  var decoded = utf8.decode(response.bodyBytes);
-  print(decoded);
+  return (response.statusCode == 200);
 }
 
 Future<bool> promoteToAdmin(String userID, String token) async {
@@ -67,12 +49,9 @@ Future<bool> promoteToAdmin(String userID, String token) async {
     "x-access-token": token
   };
   final response = await http.post(url, headers: headers);
-  print(response);
   if (response.statusCode == 200) {
-    print("Successfully promoted member");
     return true;
   } else {
-    print("did not work");
     return false;
   }
 }
@@ -105,9 +84,9 @@ Future<List<dynamic>> getTeamMail(String token) async {
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    print(data);
     return data;
   }
+  return null;
 }
 
 Future<void> acceptRequest(String token, String requestID) async {
@@ -117,10 +96,7 @@ Future<void> acceptRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.post(url, headers: headers);
-  if (response.statusCode == 200) {
-    print("success");
-  }
+  await http.post(url, headers: headers);
 }
 
 Future<void> cancelRequest(String token, String requestID) async {
@@ -130,10 +106,7 @@ Future<void> cancelRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.post(url, headers: headers);
-  if (response.statusCode == 200) {
-    print("success");
-  }
+  await http.post(url, headers: headers);
 }
 
 Future<void> declineRequest(String token, String requestID) async {
@@ -143,10 +116,7 @@ Future<void> declineRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.post(url, headers: headers);
-  if (response.statusCode == 200) {
-    print("success");
-  }
+  await http.post(url, headers: headers);
 }
 
 Future<List<dynamic>> getUserMail(String token) async {
@@ -158,10 +128,9 @@ Future<List<dynamic>> getUserMail(String token) async {
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    print("received requests for current team");
-    print(data);
     return data;
   }
+  return null;
 }
 
 Future<void> inviteTeamMember(String userEmail, String token) async {
@@ -171,12 +140,7 @@ Future<void> inviteTeamMember(String userEmail, String token) async {
     "x-access-token": token
   };
   var body = json.encode({'email': userEmail});
-  final response = await http.post(url, headers: headers, body: body);
-  if (response.statusCode == 200) {
-    print("Successfully invited");
-  } else {
-    print("not successful");
-  }
+  await http.post(url, headers: headers, body: body);
 }
 
 Future<void> leaveTeam(String token) async {
@@ -188,11 +152,8 @@ Future<void> leaveTeam(String token) async {
   var body = json.encode({});
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    print("Successfully left");
     return;
   }
-
-  print(json.decode(response.body)['message'].toString() + "Unsuccessful");
 }
 
 Future<bool> requestTeam(String teamID, String token) async {
@@ -202,13 +163,10 @@ Future<bool> requestTeam(String teamID, String token) async {
     "x-access-token": token
   };
   var body = json.encode({});
-  print("Team request attempt");
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    print("Successfully request");
     return true;
   }
-  print("Error");
   return false;
 }
 
@@ -221,11 +179,8 @@ Future<bool> requestTeamMember(String email, String token) async {
   String body = '{"email":"' + email + '"}';
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
-    print("Successfully request member");
     return true;
   }
-  print("did not work");
-  print(response);
   return false;
 }
 
@@ -238,11 +193,7 @@ Future<void> updateTeamInfo(
   };
   var body = json
       .encode({"name": name, "description": description, "visible": visible});
-  final response = await http.patch(url, headers: headers, body: body); //patch?
-  if (response.statusCode == 200) {
-    print("Successfully updated info");
-  }
-  print("error");
+  await http.patch(url, headers: headers, body: body); //patch?
 }
 
 Future<Team> getTeamInfo(String teamId, String token) async {
@@ -271,19 +222,12 @@ Future<List<Team>> getTeams(String token) async {
   };
   final response = await http.get(url, headers: headers);
   if (response.statusCode == 200) {
-    print("Response body: ");
-    print(response.body);
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
-    print("Parsed 1 success");
     List<Team> teamsList = [];
     for (int i = 0; i < teamStrings.length; i++) {
       teamsList.add(Team.fromJson(teamStrings[i]));
-      print("Added team");
     }
-    print("Successfully retrieved all teams");
-    print(teamsList);
     return teamsList;
   }
-  print(response.body);
   return null;
 }
