@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:thdapp/pages/checkin.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/login.dart';
 import 'theme_changer.dart';
 
@@ -22,7 +20,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,]);
     final theme = Provider.of<ThemeChanger>(context);
     return MaterialApp(

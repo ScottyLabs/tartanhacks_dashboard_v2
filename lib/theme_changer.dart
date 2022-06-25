@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 
 ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
@@ -22,23 +21,23 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
           isDense: true,
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: BorderRadius.all(Radius.circular(15.0))
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))
           ),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: BorderRadius.all(Radius.circular(15.0))
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))
           ),
           disabledBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text.withAlpha(87)),
-              borderRadius: BorderRadius.all(Radius.circular(15.0))
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))
           ),
           errorBorder: OutlineInputBorder(
               borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: BorderRadius.all(Radius.circular(15.0))
+              borderRadius: const BorderRadius.all(Radius.circular(15.0))
           ),
         focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(width: 2.0, color: text),
-            borderRadius: BorderRadius.all(Radius.circular(15.0))
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))
         ),
       )
   );
@@ -46,15 +45,15 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 
 ThemeData genLightTheme (){
 
-  var primary = Color(0xFFFFC738);
-  var primarytrans = Color(0xFFDB4D20); // background curves gradient
-  var secondary = Color(0xFFFFC738);
-  var secondarytrans = Color(0xFFFFE8AC); // box gradient 2
-  var accent = Color(0xFFDB4D20);
-  var surface = Color(0xFFFFFFFF);
-  var background = Color(0xFFFFFFFF);
+  var primary = const Color(0xFFFFC738);
+  var primarytrans = const Color(0xFFDB4D20); // background curves gradient
+  var secondary = const Color(0xFFFFC738);
+  var secondarytrans = const Color(0xFFFFE8AC); // box gradient 2
+  var accent = const Color(0xFFDB4D20);
+  var surface = const Color(0xFFFFFFFF);
+  var background = const Color(0xFFFFFFFF);
 
-  var shadow = Color(0x30473F3C);
+  var shadow = const Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       primaryVariant: secondarytrans,
@@ -80,15 +79,14 @@ ThemeData genLightTheme (){
 
 ThemeData genDarkTheme (){
 
-  var primary = Color(0xFFFFC738);
-  var primarytrans = Color(0xFF7B6368); // box gradient 2
-  var secondary = Color(0xFFDB4D20);
-  var secondarytrans = Color(0xFFDB4D20); // background curves gradient
-  var accent = Color(0xFF78524a);
-  var surface = Color(0xFF07054C);
-  var background = Color(0xFF07054C);
-  var text = Color(0xFFFFFFFF);
-  var shadow = Color(0x87473F3C);
+  var primary = const Color(0xFFFFC738);
+  var primarytrans = const Color(0xFF7B6368); // box gradient 2
+  var secondary = const Color(0xFFDB4D20);
+  var secondarytrans = const Color(0xFFDB4D20); // background curves gradient
+  var surface = const Color(0xFF07054C);
+  var background = const Color(0xFF07054C);
+  var text = const Color(0xFFFFFFFF);
+  var shadow = const Color(0x87473F3C);
 
   ColorScheme cScheme = ColorScheme(
       primary: primary,

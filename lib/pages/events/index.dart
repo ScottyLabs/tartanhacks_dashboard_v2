@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/models/event.dart';
 import 'package:thdapp/pages/events/edit.dart';
-import 'new.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../custom_widgets.dart';
@@ -12,7 +10,7 @@ import 'package:share/share.dart';
 
 class EventsHomeScreen extends StatefulWidget {
   @override
-  _EventsHomeScreenState createState() => new _EventsHomeScreenState();
+  _EventsHomeScreenState createState() => _EventsHomeScreenState();
 }
 
 class _EventsHomeScreenState extends State<EventsHomeScreen> {
@@ -45,7 +43,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
         child: RichText(
             text: TextSpan(
           text: '${data.name}',
-          style: TextStyle(
+          style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,
               fontSize: 22,
@@ -57,12 +55,12 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   Widget eventDescription(data) {
     return Align(
         alignment: Alignment.centerLeft,
-        child: Container(
+        child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.60,
             child: RichText(
                 text: TextSpan(
               text: '\n${data.description}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 10,
               ),
@@ -71,7 +69,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
 
   String formatDate(String unixDate) {
     var date =
-        new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+        DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
@@ -79,7 +77,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
 
   String getTime(String unixDate) {
     var date =
-        new DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+        DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
@@ -91,18 +89,18 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
-            '${getTime(data.timestamp)}',
+            getTime(data.timestamp),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 fontSize: 20,
                 fontFamily: 'TerminalGrotesque'),
           ),
           Text(
-            '${formatDate(data.timestamp)}',
+            formatDate(data.timestamp),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 fontSize: 16.5,
@@ -115,50 +113,50 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   Widget zoomLink(data) {
     if (data.access_code == 2) {
       return IconButton(
-          icon: new Image.asset(
+          icon: Image.asset(
             "lib/logos/hopinLogo.png",
             width: 24,
             height: 24,
             color: Colors.white,
           ),
           tooltip: 'Zoom Link!',
-          color: Color.fromARGB(255, 37, 130, 242),
+          color: const Color.fromARGB(255, 37, 130, 242),
           onPressed: () => launch('${data.zoom_link}'));
     } else if (data.access_code == 1) {
       return IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.videocam,
             color: Colors.white,
             size: 25,
           ),
           tooltip: 'Zoom Link!',
-          color: Color.fromARGB(255, 37, 130, 242),
+          color: const Color.fromARGB(255, 37, 130, 242),
           onPressed: () => launch('${data.zoom_link}'));
     } else {
       return IconButton(
-          icon: new Image.asset(
+          icon: Image.asset(
             "lib/logos/discordLogoWhite.png",
             width: 24,
             height: 24,
             color: Colors.white,
           ),
           tooltip: 'Zoom Link!',
-          color: Color.fromARGB(255, 37, 130, 242),
+          color: const Color.fromARGB(255, 37, 130, 242),
           onPressed: () => launch('${data.zoom_link}'));
     }
   }
 
   Widget shareLink(data) {
     return IconButton(
-      icon: Icon(
+      icon: const Icon(
         Icons.share,
         color: Colors.white,
         size: 25,
       ),
       tooltip: 'Share Link!',
-      color: Color.fromARGB(255, 37, 130, 242),
+      color: const Color.fromARGB(255, 37, 130, 242),
       onPressed: () {
-        String text = 'Join ${data.name} at ' + '${data.zoom_link}';
+        String text = 'Join ${data.name} at ' '${data.zoom_link}';
         final RenderBox box = context.findRenderObject();
         Share.share(text,
             sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
@@ -172,82 +170,80 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return Scaffold(
-        body: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TopBar(
-                  isSponsor: isSponsor,
-                ),
-                Stack(
-                  children: [
-                    Column(children: [
-                      SizedBox(height: screenHeight * 0.05),
-                      CustomPaint(
-                          size: Size(screenWidth, screenHeight * 0.75),
-                          painter: CurvedTop(
-                              color1: Theme.of(context).colorScheme.primary,
-                              color2: Theme.of(context).colorScheme.secondaryVariant)),
-                    ]),
-                    //create new event button
-                    Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      SolidButton(
-                        text: viewPast ? "View Upcoming Events" : "View Past Events",
-                        onPressed: () {
-                          setState(() {
-                            viewPast = !viewPast;
-                          });
-                        },
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            TopBar(
+              isSponsor: isSponsor,
+            ),
+            Stack(
+              children: [
+                Column(children: [
+                  SizedBox(height: screenHeight * 0.05),
+                  CustomPaint(
+                      size: Size(screenWidth, screenHeight * 0.75),
+                      painter: CurvedTop(
+                          color1: Theme.of(context).colorScheme.primary,
+                          color2: Theme.of(context).colorScheme.secondaryVariant)),
+                ]),
+                //create new event button
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                  SolidButton(
+                    text: viewPast ? "View Upcoming Events" : "View Past Events",
+                    onPressed: () {
+                      setState(() {
+                        viewPast = !viewPast;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 5),
+                  if (isAdmin)
+                    GradBox(
+                      width: screenWidth * 0.9,
+                      height: 60,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditEventPage(null, editable: isAdmin,)),
+                        );
+                      },
+                      child: Text(
+                        "CREATE NEW EVENT",
+                        style: Theme.of(context).textTheme.headline2,
                       ),
-                      SizedBox(height: 5),
-                      if (isAdmin)
-                        GradBox(
-                          width: screenWidth * 0.9,
-                          height: 60,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditEventPage(null, editable: isAdmin,)),
+                    ),
+                  Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.fromLTRB(25, 10, 25, 5),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
+                        child: FutureBuilder(
+                          future: getEvents(),
+                          builder: (context, eventsSnapshot) {
+                            if (eventsSnapshot.data == null ||
+                                eventsSnapshot.hasData == null) {
+                              return ListView.builder(
+                                itemCount: 1,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return const Center(child: CircularProgressIndicator());
+                                },
+                              );
+                            }
+                            return ListView.builder(
+                              itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return EventsCard(
+                                    (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
+                              },
                             );
                           },
-                          child: Text(
-                            "CREATE NEW EVENT",
-                            style: Theme.of(context).textTheme.headline2,
-                          ),
                         ),
-                      Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.fromLTRB(25, 10, 25, 5),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
-                            child: FutureBuilder(
-                              future: getEvents(),
-                              builder: (context, eventsSnapshot) {
-                                if (eventsSnapshot.data == null ||
-                                    eventsSnapshot.hasData == null) {
-                                  return ListView.builder(
-                                    itemCount: 1,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return Center(child: CircularProgressIndicator());
-                                    },
-                                  );
-                                }
-                                return ListView.builder(
-                                  itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return EventsCard(
-                                        (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
-                                  },
-                                );
-                              },
-                            ),
-                          ))
-                    ]),
-                  ],
-                )
+                      ))
+                ]),
               ],
             )
+          ],
         )
     );
   }
@@ -257,15 +253,14 @@ class PlaceHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
-    final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: GradBox(
             width: 100,
             height: 200,
             alignment: Alignment.topLeft,
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -292,38 +287,37 @@ class EventsCard extends StatelessWidget {
   final Event event;
   final bool isAdmin;
 
-  EventsCard(this.event, this.isAdmin);
+  const EventsCard(this.event, this.isAdmin);
 
   String formatDate(String unixDate) {
-    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
+    var date = DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
   }
 
   String getTime(String unixDate) {
-    var date = new DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
+    var date = DateTime.fromMicrosecondsSinceEpoch(int.parse(unixDate));
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
   }
 
   void confirmDialog(BuildContext context) {
-    bool confirmed = false;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: new Text("Confirmation",
+          title: Text("Confirmation",
               style: Theme.of(context).textTheme.headline1),
-          content: new Text("Are you sure you want to delete this event?",
+          content: Text("Are you sure you want to delete this event?",
               style: Theme.of(context).textTheme.bodyText2),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "Cancel",
                 style: Theme.of(context).textTheme.headline4,
               ),
@@ -331,13 +325,12 @@ class EventsCard extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
-            new TextButton(
-              child: new Text(
+            TextButton(
+              child: Text(
                 "OK",
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () {
-                confirmed = true;
                 deleteEvent(event.id);
                 Navigator.push(
                   context,
@@ -363,15 +356,14 @@ class EventsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
-    final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return Container(
-        padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
         child: GradBox(
             width: 100,
             height: 250,
             alignment: Alignment.topLeft,
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -381,12 +373,12 @@ class EventsCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: screenWidth*0.5,
                       height: 160,
                       child: Column(
@@ -432,11 +424,11 @@ class EventsCard extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  EditEventPage(this.event, editable: isAdmin,)),
+                                                  EditEventPage(event, editable: isAdmin,)),
                                         );
                                       },
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     SolidButton(
@@ -453,13 +445,13 @@ class EventsCard extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            EditEventPage(this.event, editable: isAdmin,)),
+                                            EditEventPage(event, editable: isAdmin,)),
                                   );
                                 },
                               ),
                           ]),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -473,9 +465,9 @@ class EventsCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10)),
                                   alignment: Alignment.center,
                                   child: Text(
-                                      this.getTime((event.startTime).toString()) +
+                                      getTime((event.startTime).toString()) +
                                           "\n" +
-                                          this.formatDate(
+                                          formatDate(
                                               (event.startTime).toString()),
                                       style: Theme.of(context)
                                           .textTheme

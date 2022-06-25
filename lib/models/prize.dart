@@ -18,7 +18,7 @@ class Prize{
       this.winner});
 
   factory Prize.fromJson(Map<String, dynamic> parsedJson) {
-    Prize newPrize = new Prize(
+    Prize newPrize = Prize(
 
       id: parsedJson['_id'],
       event: parsedJson['event'],

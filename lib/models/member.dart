@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-
 class Member {
   final String id;
   final bool isAdmin;
@@ -20,7 +16,7 @@ class Member {
     bool isAdminBool = false;
     String currID = parsedJson["_id"];
     if(currID == adminID) isAdminBool = true;
-    return new Member(
+    return Member(
         id:  parsedJson["_id"],
         isAdmin: isAdminBool,
         name: parsedJson["firstName"] + " " + parsedJson["lastName"],

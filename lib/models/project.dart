@@ -23,7 +23,7 @@ class Project{
       this.presentingVirtually});
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
-    Project project = new Project(
+    Project project = Project(
       id: parsedJson['_id'],
       name: parsedJson['name'],
       desc: parsedJson['description'],

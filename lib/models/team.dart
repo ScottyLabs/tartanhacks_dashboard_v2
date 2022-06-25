@@ -1,7 +1,3 @@
-
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
 import '/models/member.dart';
 
 class Team {
@@ -32,7 +28,7 @@ class Team {
       if(newMem.isAdmin) adminList.add(newMem);
       memberList.add(newMem);
     }
-    return new Team(
+    return Team(
         teamID:  parsedJson["_id"],
         visible: parsedJson["visible"],
         admins: adminList,

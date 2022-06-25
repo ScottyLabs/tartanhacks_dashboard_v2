@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 
-import '../api.dart';
-import 'team-api.dart';
+import 'team_api.dart';
 import 'view_team.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/team.dart';
@@ -14,7 +12,6 @@ class CreateTeam extends StatefulWidget {
 
 class _CreateTeamState extends State<CreateTeam> {
 
-  String _yourName = "";
   String _teamName = "";
   String _teamDesc = "";
 
@@ -24,8 +21,6 @@ class _CreateTeamState extends State<CreateTeam> {
   TextEditingController inviteMemberController = TextEditingController();
   bool visibility = true;
   String buttonText = "Create Team";
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String token;
   SharedPreferences prefs;
@@ -37,7 +32,6 @@ class _CreateTeamState extends State<CreateTeam> {
     token = prefs.getString('token');
     id = prefs.getString('id');
     team = await getUserTeam(token);
-    print(team);
     if (team != null){ //if not on a team, redirects to the teams list page
       _teamName = team.name;
       _teamDesc = team.description;
@@ -66,29 +60,10 @@ class _CreateTeamState extends State<CreateTeam> {
     super.dispose();
   }
 
-  Widget _buildName() {
-    return TextFormField(
-      decoration: FormFieldStyle(context, "Your Name"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText1,
-      controller: yourNameController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Your name is required';
-        }
-        return null;
-      },
-      onChanged: (String value) {
-        _yourName = value;
-      },
-    );
-  }
 
   Widget _buildTeamName() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Team Name"),
+      decoration: formFieldStyle(context, "Team Name"),
       style: Theme
           .of(context)
           .textTheme
@@ -108,7 +83,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _buildTeamDesc() {
     return TextFormField(
-      decoration: FormFieldStyle(context, "Team Description"),
+      decoration: formFieldStyle(context, "Team Description"),
       style: Theme
           .of(context)
           .textTheme
@@ -130,7 +105,7 @@ class _CreateTeamState extends State<CreateTeam> {
   Widget _visible(){
     return Row(
       children: [
-        Text("Team Visibility"), 
+        const Text("Team Visibility"),
         Checkbox(
           activeColor: Theme.of(context).colorScheme.secondary,
           value: visibility,
@@ -146,16 +121,16 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _inviteMessage(){
     TextEditingController inviteController = TextEditingController();
-    String email_invite;
+    String emailInvite;
 
     return AlertDialog(
-                  title: Text('Send Invite'),
+                  title: const Text('Send Invite'),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
-                        decoration: FormFieldStyle(context, "email"),
-                        style: TextStyle(color: Colors.black),
+                        decoration: formFieldStyle(context, "email"),
+                        style: const TextStyle(color: Colors.black),
                         controller: inviteController,
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -164,11 +139,11 @@ class _CreateTeamState extends State<CreateTeam> {
                           return null;
                           },
                           onSaved: (String value) {
-                            email_invite = value;
+                            emailInvite = value;
                             },
                       ),
                       Container( 
-                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -179,9 +154,7 @@ class _CreateTeamState extends State<CreateTeam> {
                               SolidButton(
                               text: "Send",
                               onPressed: () async {
-                                print("sent request");
-                                print(email_invite);
-                                await requestTeamMember(email_invite, token);
+                                await requestTeamMember(emailInvite, token);
                               }
                             )
                           ]
@@ -210,106 +183,99 @@ class _CreateTeamState extends State<CreateTeam> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: screenHeight
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxHeight: screenHeight
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const TopBar(backflag: true),
+                    Stack(
                       children: [
-                        TopBar(backflag: true),
-                        Stack(
-                          children: [
-                            Column(
-                                children: [
-                                  SizedBox(height: screenHeight * 0.05),
-                                  CustomPaint(
-                                      size: Size(
-                                          screenWidth, screenHeight * 0.75),
-                                      painter: CurvedTop(
-                                          color1: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .secondaryVariant,
-                                          color2: Theme
-                                              .of(context)
-                                              .colorScheme
-                                              .primary,
-                                          reverse: true)
-                                  ),
-                                ]
-                            ),
-                            Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                child: GradBox(
-                                    width: screenWidth * 0.9,
-                                    height: screenHeight * 0.75,
-                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 20),
-                                    child: Column(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Column(
-                                              mainAxisAlignment: MainAxisAlignment
-                                                  .start,
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Text("TEAM INFO", style:
-                                                Theme.of(context).textTheme.headline1),
-                                                SizedBox(height:screenHeight*0.02),
-                                                Text("Basic Info", style:
-                                                Theme.of(context).textTheme.headline4),
-                                                // SizedBox(height:screenHeight*0.02),
-                                                // _buildName(),
-                                                SizedBox(height:screenHeight*0.02),
-                                                _buildTeamName(),
-                                                SizedBox(height:screenHeight*0.02),
-                                                _buildTeamDesc(),
-                                                SizedBox(height:screenHeight*0.02),
-                                                _visible(),
-                                                SizedBox(height:screenHeight*0.02),
-                                                _inviteMem()
-                                              ],
-                                            ),
-                                    Container(
-                                        alignment: Alignment.center,
-                                        padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                        child: SolidButton(
-                                          text: buttonText,
-                                          onPressed: () async {
-                                            print("try to create");
-                                            print(_teamName);
-                                            print(_teamDesc);
-                                            print(visibility);
-                                            print("reading");
-                                            if (noTeam) {
-                                              await createTeam(_teamName, _teamDesc, visibility, token);
-                                            } else {
-                                              await editTeam(_teamName, _teamDesc, visibility, token);
-                                            };
-                                            await promoteToAdmin(id, token);
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => ViewTeam())
-                                            );
-                                          },
-                                          color: Theme.of(context).colorScheme.secondary
-                                        )
+                        Column(
+                            children: [
+                              SizedBox(height: screenHeight * 0.05),
+                              CustomPaint(
+                                  size: Size(
+                                      screenWidth, screenHeight * 0.75),
+                                  painter: CurvedTop(
+                                      color1: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .secondaryVariant,
+                                      color2: Theme
+                                          .of(context)
+                                          .colorScheme
+                                          .primary,
+                                      reverse: true)
+                              ),
+                            ]
+                        ),
+                        Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            child: GradBox(
+                                width: screenWidth * 0.9,
+                                height: screenHeight * 0.75,
+                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Column(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .start,
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Text("TEAM INFO", style:
+                                            Theme.of(context).textTheme.headline1),
+                                            SizedBox(height:screenHeight*0.02),
+                                            Text("Basic Info", style:
+                                            Theme.of(context).textTheme.headline4),
+                                            // SizedBox(height:screenHeight*0.02),
+                                            // _buildName(),
+                                            SizedBox(height:screenHeight*0.02),
+                                            _buildTeamName(),
+                                            SizedBox(height:screenHeight*0.02),
+                                            _buildTeamDesc(),
+                                            SizedBox(height:screenHeight*0.02),
+                                            _visible(),
+                                            SizedBox(height:screenHeight*0.02),
+                                            _inviteMem()
+                                          ],
+                                        ),
+                                Container(
+                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                                    child: SolidButton(
+                                      text: buttonText,
+                                      onPressed: () async {
+                                        if (noTeam) {
+                                          await createTeam(_teamName, _teamDesc, visibility, token);
+                                        } else {
+                                          await editTeam(_teamName, _teamDesc, visibility, token);
+                                        }
+                                        await promoteToAdmin(id, token);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => ViewTeam())
+                                        );
+                                      },
+                                      color: Theme.of(context).colorScheme.secondary
                                     )
-                                ]
-                              )
                                 )
+                            ]
+                          )
                             )
-                          ],
                         )
                       ],
                     )
+                  ],
                 )
             )
         )

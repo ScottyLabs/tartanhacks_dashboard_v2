@@ -30,7 +30,7 @@ Future<User> checkCredentials(String email, String password) async {
   if (response.statusCode == 200) {
     User loginData;
     var data = json.decode(response.body);
-    loginData = new User.fromJson(data);
+    loginData = User.fromJson(data);
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', loginData.token);
@@ -42,7 +42,6 @@ Future<User> checkCredentials(String email, String password) async {
 
     return loginData;
   } else {
-    print(json1);
     return null;
   }
 }
@@ -56,7 +55,6 @@ Future<bool> resetPassword(String email) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    print(response.body.toString());
     return false;
   }
 }
@@ -71,11 +69,9 @@ Future<Profile> getProfile(String id, String token) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    Profile profile = new Profile.fromJson(data);
+    Profile profile = Profile.fromJson(data);
     return profile;
   } else {
-    print(token);
-    print(response.body.toString());
     return null;
   }
 }
@@ -89,7 +85,6 @@ Future<bool> checkNameAvailable(String name, String token) async {
   String body = json.encode({"name": name});
 
   final response = await http.post(url, headers: headers, body: body);
-  print(response.body);
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
@@ -101,7 +96,6 @@ Future<bool> checkNameAvailable(String name, String token) async {
 
 Future<bool> setDisplayName(String name, String token) async {
   bool isAvailable = await checkNameAvailable(name, token);
-  print(isAvailable);
   if (isAvailable != true) {
     return isAvailable;
   }
@@ -142,10 +136,11 @@ Future<List> getStudents(String token, {String query}) async {
         .toList();
     return [ids, profs, teams];
   }
+  return null;
 }
 
 Future<Map> getBookmarkIdsList(String token) async {
-  var bookmarks = new Map();
+  var bookmarks = {};
   List bookmarkIds;
   List bmParticipantIds;
   String url = baseUrl + "bookmarks/participant";
@@ -167,10 +162,10 @@ Future<Map> getBookmarkIdsList(String token) async {
     }
     return bookmarks;
   }
+  return null;
 }
 
 Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
-  List participantBookmarks = [];
   String url = baseUrl + "bookmarks/participant";
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -181,11 +176,9 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
   if (response.statusCode == 200) {
     List data = json.decode(response.body);
     data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
-    print(data);
     return data;
-  } else {
-    print('error getting participant bookmarks');
   }
+  return null;
 }
 
 Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
@@ -200,9 +193,8 @@ Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
     List data = json.decode(response.body);
     data = data.map((bm) => ProjectBookmark.fromJson(bm)).toList();
     return data;
-  } else {
-    print('error getting project bookmarks');
   }
+  return null;
 }
 
 Future<void> deleteBookmark(String token, String id) async {
@@ -211,16 +203,7 @@ Future<void> deleteBookmark(String token, String id) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.delete(url, headers: headers);
-
-  if (response.statusCode != 200) {
-    print('Failed to delete bookmark ' +
-        id +
-        ' with code ' +
-        response.statusCode.toString());
-  } else {
-    print('Successfully deleted bookmark ' + id);
-  }
+  await http.delete(url, headers: headers);
 }
 
 Future<String> addBookmark(String token, String participantId) async {
@@ -233,22 +216,14 @@ Future<String> addBookmark(String token, String participantId) async {
   String jsonInput = '{"bookmarkType": "PARTICIPANT", "participant":"' +
       participantId.toString() +
       '", "project":null, "description": "sample description"}';
-  print(jsonInput);
   final response = await http.post(url, headers: headers, body: jsonInput);
 
   if (response.statusCode != 200) {
-    print(
-        'Failed to add bookmark with participant ' + participantId.toString());
-    print(response.body);
     return null;
   } else {
-    print('Successfully added bookmark');
     Map<String, dynamic> data =
-        new Map<String, dynamic>.from(json.decode(response.body));
-    print(data);
+        Map<String, dynamic>.from(json.decode(response.body));
     var bookmarkId = data["_id"];
-    print('bookmarkId is ' + bookmarkId);
-
     return bookmarkId;
   }
 }
@@ -256,7 +231,6 @@ Future<String> addBookmark(String token, String participantId) async {
 Future<List<List<Event>>> getEvents() async {
   var url = baseUrl + 'schedule/';
   final response = await http.get(url);
-  print(response.statusCode);
   if (response.statusCode == 200) {
     List<Event> eventsList;
     var data = json.decode(response.body) as List;
@@ -297,7 +271,6 @@ Future<bool> addEvent(
     "Content-type": "application/json",
     "x-access-token": token
   };
-  print("TOKEN:" + token);
 
   // String essayQuestionsAgg = "";
   // for (int i = 0; i < essayQuestions.length; i++) {
@@ -323,7 +296,6 @@ Future<bool> addEvent(
       platformUrl +
       '"}';
 
-  print(bodyJson);
   final response = await http.post(url, headers: headers, body: bodyJson);
   if (response.statusCode == 200) {
     return true;
@@ -367,8 +339,6 @@ Future<bool> editEvent(
     "platformUrl": platformUrl
   });
 
-  print(bodyJson);
-
   final response = await http.patch(url, headers: headers, body: bodyJson);
   if (response.statusCode == 200) {
     return true;
@@ -376,7 +346,6 @@ Future<bool> editEvent(
     return editEvent(eventId, name, description, startTime, endTime, location,
         lat, lng, platform, platformUrl);
   } else {
-    print(response.body);
     return false;
   }
 }
@@ -430,7 +399,7 @@ Future<List> getUserHistory(String userID, String token) async {
     var jsonHistory = json.decode(response.body);
     List result = [
       jsonHistory['totalPoints'],
-      Map<String, bool>(),
+      <String, bool>{},
       <CheckInItem>[]
     ];
 
@@ -500,7 +469,6 @@ Future<void> checkInUser(String id, String uid, token) async {
   if (response.statusCode != 200) {
     Map<String, dynamic> error = jsonDecode(response.body);
     String msg = error['message'].toString();
-    print(msg);
     if (msg.length<=2) {
       msg = "We encountered an error while checking you in.";
     }
@@ -524,7 +492,6 @@ Future<List<LBEntry>> getLeaderboard() async {
         data.map<LBEntry>((json) => LBEntry.fromJson(json)).toList();
     return lb;
   } else {
-    print(response.body.toString());
     return null;
   }
 }
@@ -542,7 +509,6 @@ Future<int> getSelfRank(String token) async {
     var data = json.decode(response.body);
     return data;
   } else {
-    print(response.body.toString());
     return null;
   }
 }
@@ -558,7 +524,6 @@ Future<List<Prize>> getPrizes() async {
         data.map<Prize>((json) => Prize.fromJson(json)).toList();
     return prizes;
   } else {
-    print(response.body.toString());
     return null;
   }
 }
@@ -574,10 +539,9 @@ Future<Project> getProject(String id, String token) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    Project project = new Project.fromJson(data);
+    Project project = Project.fromJson(data);
     return project;
   } else {
-    print(response.body.toString());
     return null;
   }
 }
@@ -607,12 +571,11 @@ Future<Project> newProject(
     "url": ghurl,
     "presentingVirtually": isVirtual
   });
-  print(body);
   final response = await http.post(url, headers: headers, body: body);
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    Project project = new Project.fromJson(data);
+    Project project = Project.fromJson(data);
     return project;
   } else {
     return Future.error("Error");
@@ -646,7 +609,7 @@ Future<Project> editProject(
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    Project project = new Project.fromJson(data);
+    Project project = Project.fromJson(data);
     return project;
   } else {
     return Future.error("Error");
@@ -683,10 +646,9 @@ Future<Team> getTeamById(String id, String token) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    Team team = new Team.fromJson(data);
+    Team team = Team.fromJson(data);
     return team;
   } else {
-    print(response.body.toString());
     return null;
   }
 }
@@ -701,10 +663,9 @@ Future<DiscordInfo> getDiscordInfo(String token) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
-    DiscordInfo discord = new DiscordInfo.fromJson(data);
+    DiscordInfo discord = DiscordInfo.fromJson(data);
     return discord;
   } else {
-    print(response.body.toString());
     return null;
   }
 }

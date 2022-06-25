@@ -18,7 +18,7 @@ class ParticipantBookmark {
   });
 
   factory ParticipantBookmark.fromJson(Map<String, dynamic> parsedJson) {
-    return new ParticipantBookmark(
+    return ParticipantBookmark(
       bookmarkId: parsedJson['_id'],
       bookmarkType: parsedJson['bookmarkType'],
       description: parsedJson['description'],
@@ -41,7 +41,7 @@ class ParticipantInfo {
   ParticipantInfo({this.id, this.email, this.firstName, this.lastName});
 
   factory ParticipantInfo.fromJson(Map<String, dynamic> parsedJson) {
-    return new ParticipantInfo(
+    return ParticipantInfo(
       id: parsedJson['_id'],
       email: parsedJson['email'],
       firstName: parsedJson['firstName'],

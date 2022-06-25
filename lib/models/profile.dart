@@ -1,7 +1,3 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-
 class Profile {
   final int totalPoints;
   final String user;
@@ -32,7 +28,7 @@ class Profile {
   final String design;
   final String website;
   final List essays;
-  final dietaryRestrictions;
+  final String dietaryRestrictions;
   final String shirtSize;
   final bool wantsHardware;
   final String address;
@@ -78,7 +74,7 @@ class Profile {
       this.displayName});
 
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
-    return new Profile(
+    return Profile(
         totalPoints: parsedJson['totalPoints'],
         user: parsedJson['user'],
         event: parsedJson['event'],

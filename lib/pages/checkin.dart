@@ -1,6 +1,5 @@
 import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:thdapp/models/check_in_item.dart';
@@ -20,7 +19,7 @@ class _CheckInState extends State<CheckIn> {
   void initState() {
     // Refresh on page load
     var model = Provider.of<CheckInItemsModel>(context, listen: false);
-    if (model.checkInItemsStatus == Status.Loaded) model.fetchCheckInItems();
+    if (model.checkInItemsStatus == Status.loaded) model.fetchCheckInItems();
     super.initState();
   }
 
@@ -31,62 +30,61 @@ class _CheckInState extends State<CheckIn> {
     final screenWidth = mqData.size.width;
 
     return Scaffold(
-        body: Container(
-            child: SingleChildScrollView(
-                child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: screenHeight),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: screenHeight),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const TopBar(),
+                    Stack(
                       children: [
-                        TopBar(),
-                        Stack(
-                          children: [
-                            Column(children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2:
-                                          Theme.of(context).colorScheme.primary,
-                                      reverse: true)),
-                            ]),
-                            Consumer<CheckInItemsModel>(
-                              builder: (context, checkInItemsModel, child) {
-                                var status =
-                                    checkInItemsModel.checkInItemsStatus;
-                                var checkInItemsList =
-                                    checkInItemsModel.checkInItems;
-                                if (status == Status.NotLoaded ||
-                                    checkInItemsList == null) {
-                                  checkInItemsModel.fetchCheckInItems();
-                                  return Center(
-                                      child: CircularProgressIndicator());
-                                }
-                                // Error
-                                else if (status == Status.Error) {
-                                  return Center(
-                                      child: Text("Error Loading Data"));
-                                } else {
-                                  return Container(
-                                      alignment: Alignment.center,
-                                      height: screenHeight * 0.78,
-                                      child: Column(
-                                        children: [
-                                          Expanded(flex: 1, child: Header()),
-                                          Expanded(
-                                              flex: 2, child: CheckInEvents())
-                                        ],
-                                      ));
-                                }
-                              },
-                            )
-                          ],
+                        Column(children: [
+                          SizedBox(height: screenHeight * 0.05),
+                          CustomPaint(
+                              size: Size(screenWidth, screenHeight * 0.75),
+                              painter: CurvedTop(
+                                  color1: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryVariant,
+                                  color2:
+                                      Theme.of(context).colorScheme.primary,
+                                  reverse: true)),
+                        ]),
+                        Consumer<CheckInItemsModel>(
+                          builder: (context, checkInItemsModel, child) {
+                            var status =
+                                checkInItemsModel.checkInItemsStatus;
+                            var checkInItemsList =
+                                checkInItemsModel.checkInItems;
+                            if (status == Status.notLoaded ||
+                                checkInItemsList == null) {
+                              checkInItemsModel.fetchCheckInItems();
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+                            // Error
+                            else if (status == Status.error) {
+                              return const Center(
+                                  child: Text("Error Loading Data"));
+                            } else {
+                              return Container(
+                                  alignment: Alignment.center,
+                                  height: screenHeight * 0.78,
+                                  child: Column(
+                                    children: [
+                                      Expanded(flex: 1, child: Header()),
+                                      Expanded(
+                                          flex: 2, child: CheckInEvents())
+                                    ],
+                                  ));
+                            }
+                          },
                         )
                       ],
-                    )))));
+                    )
+                  ],
+                ))));
   }
 }
 
@@ -96,7 +94,7 @@ class Header extends StatelessWidget {
     var isAdmin = Provider.of<CheckInItemsModel>(context).isAdmin;
     var points = Provider.of<CheckInItemsModel>(context).points;
     return Container(
-      padding: EdgeInsets.fromLTRB(30, 0, 15, 0),
+      padding: const EdgeInsets.fromLTRB(30, 0, 15, 0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,7 +139,7 @@ class QRHeader extends StatelessWidget {
                     color: isLight
                         ? Theme.of(context).colorScheme.onPrimary
                         : Theme.of(context).colorScheme.primary,
-                    borderRadius: BorderRadius.all(Radius.circular(16))),
+                    borderRadius: const BorderRadius.all(Radius.circular(16))),
                 child: QrImage(
                   data: id,
                   version: QrVersions.auto,
@@ -158,7 +156,7 @@ class QRHeader extends StatelessWidget {
 
 class PointsHeader extends StatelessWidget {
   final int points;
-  PointsHeader(this.points);
+  const PointsHeader(this.points);
 
   @override
   Widget build(BuildContext context) {
@@ -166,14 +164,14 @@ class PointsHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Text(
           "CHECKIN",
           style: Theme.of(context).textTheme.headline1,
         ),
-        SizedBox(
+        const SizedBox(
           height: 2,
         ),
         Text(
@@ -200,7 +198,7 @@ class AdminHeader extends StatelessWidget {
           "CHECKIN",
           style: Theme.of(context).textTheme.headline1,
         ),
-        SizedBox(
+        const SizedBox(
           height: 2,
         ),
         Text(
@@ -221,17 +219,17 @@ class CheckInEvents extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: model.fetchCheckInItems,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(child: CheckInEventList(checkInItemsList)),
-            SizedBox(
+            const SizedBox(
               height: 9,
             ),
             if (editable)
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: GradBox(
                   child: Text(
                     "NEW CHECKIN ITEM",
@@ -245,7 +243,7 @@ class CheckInEvents extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => EditCheckInItemPage(null)))
+                            builder: (context) => const EditCheckInItemPage(null)))
                   },
                   curvature: 12,
                 ),
@@ -260,7 +258,7 @@ class CheckInEvents extends StatelessWidget {
 class CheckInEventList extends StatelessWidget {
   final List<CheckInItem> events;
 
-  CheckInEventList(this.events);
+  const CheckInEventList(this.events);
 
   @override
   Widget build(BuildContext context) {
@@ -269,69 +267,67 @@ class CheckInEventList extends StatelessWidget {
     String userID = model.userID;
     bool isAdmin = editable;
     var hasCheckedIn = model.hasCheckedIn;
-    return Container(
-        child: ListView.separated(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       itemCount: events.length,
       itemBuilder: (BuildContext context, int index) {
-        return CheckInEventListItem(
-          name: events[index].name,
-          points: events[index].points,
-          isChecked: editable ? false : hasCheckedIn[events[index].id],
-          enabled: events[index].enableSelfCheckIn,
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EditCheckInItemPage(events[index])));
-          },
-          onCheck: () async {
-            String uid = "";
-            String checkInItemId = "";
-            if (isAdmin) {
-              checkInItemId = events[index].id;
-              uid = await Barras.scan(context);
-            } else {
-              uid = userID;
-              checkInItemId = await Barras.scan(context);
-            }
-            if (uid != null &&
-                uid != "" &&
-                checkInItemId != null &&
-                checkInItemId != "") {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => Center(
-                          child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      )));
-              try {
-                await model.checkInUser(checkInItemId, uid);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text("Checked in for " + events[index].name + "!"),
-                ));
-              } on Exception catch (e) {
-                print(e);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text(e.toString().substring(11)),
-                ));
-              } finally {
-                Navigator.pop(context);
-                model.fetchCheckInItems();
-              }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Invalid Scan, please try again."),
-              ));
-            }
-          },
-        );
+    return CheckInEventListItem(
+      name: events[index].name,
+      points: events[index].points,
+      isChecked: editable ? false : hasCheckedIn[events[index].id],
+      enabled: events[index].enableSelfCheckIn,
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditCheckInItemPage(events[index])));
       },
-      separatorBuilder: (context, index) => SizedBox(
-        height: 15,
+      onCheck: () async {
+        String uid = "";
+        String checkInItemId = "";
+        if (isAdmin) {
+          checkInItemId = events[index].id;
+          uid = await Barras.scan(context);
+        } else {
+          uid = userID;
+          checkInItemId = await Barras.scan(context);
+        }
+        if (uid != null &&
+            uid != "" &&
+            checkInItemId != null &&
+            checkInItemId != "") {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => const Center(
+                      child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  )));
+          try {
+            await model.checkInUser(checkInItemId, uid);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Checked in for " + events[index].name + "!"),
+            ));
+          } on Exception catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(e.toString().substring(11)),
+            ));
+          } finally {
+            Navigator.pop(context);
+            model.fetchCheckInItems();
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Invalid Scan, please try again."),
+          ));
+        }
+      },
+    );
+      },
+      separatorBuilder: (context, index) => const SizedBox(
+    height: 15,
       ),
-    ));
+    );
   }
 }
 
@@ -344,7 +340,7 @@ class CheckInEventListItem extends StatelessWidget {
   final Function onTap;
   final int points;
 
-  CheckInEventListItem(
+  const CheckInEventListItem(
       {this.name,
       this.isChecked,
       this.enabled,
@@ -364,7 +360,7 @@ class CheckInEventListItem extends StatelessWidget {
           Expanded(
             flex: 80,
             child: GradBox(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
               curvature: 12,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -390,7 +386,7 @@ class CheckInEventListItem extends StatelessWidget {
                         children: [
                           editable
                               ? Padding(
-                                  padding: EdgeInsets.all(9),
+                                  padding: const EdgeInsets.all(9),
                                   child: Icon(
                                     Icons.linked_camera,
                                     color:
@@ -434,7 +430,7 @@ class CheckInEventListItem extends StatelessWidget {
             ),
           ),
 
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           // Button

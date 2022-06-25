@@ -6,14 +6,14 @@ import 'package:thdapp/api.dart' as api;
 import 'package:thdapp/models/check_in_item.dart';
 
 enum Status {
-  NotLoaded,
-  Fetching,
-  Loaded,
-  Error
+  notLoaded,
+  fetching,
+  loaded,
+  error
 }
 
 class CheckInItemsModel with ChangeNotifier {
-  Status _status = Status.NotLoaded;
+  Status _status = Status.notLoaded;
   String _token = "";
   String _uid = "";
 
@@ -28,9 +28,8 @@ class CheckInItemsModel with ChangeNotifier {
   String get userID => _uid;
 
   void handleException(e) {
-    print(e);
     _list = [];
-    _status = Status.Error;
+    _status = Status.error;
     notifyListeners();
   }
 
@@ -41,8 +40,7 @@ class CheckInItemsModel with ChangeNotifier {
     _token = prefs.getString("token");
     _uid = prefs.getString("id");
     isAdmin = prefs.getBool("admin");
-    print(_uid);
-    _status = Status.Fetching;
+    _status = Status.fetching;
 
     try {
       if (isAdmin) {
@@ -55,11 +53,10 @@ class CheckInItemsModel with ChangeNotifier {
         hasCheckedIn = history[1];
         _list = history[2];
       }
-      _status = Status.Loaded;
+      _status = Status.loaded;
       notifyListeners();
 
     } on Exception catch (e) {
-      print(e);
       handleException(e);
     }
   }
@@ -89,7 +86,7 @@ class CheckInItemsModel with ChangeNotifier {
   }
 
   void reset() {
-    _status = Status.NotLoaded;
+    _status = Status.notLoaded;
     _list = null;
     _uid = "";
     hasCheckedIn = null;
