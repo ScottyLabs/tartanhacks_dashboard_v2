@@ -1,5 +1,5 @@
 
-import 'package:barras/barras.dart';
+// import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -56,7 +56,7 @@ class _QRPageState extends State<QRPage> {
 
                                 IDCheckInHeader(_eventIDController),
                                 QREnlarged(onPressed: () async {
-                                  final String id = await Barras.scan(context);
+                                  final String id = ""; //await Barras.scan(context);
                                   _eventIDController.value = TextEditingValue(text: id);
                                 },)
                               ],

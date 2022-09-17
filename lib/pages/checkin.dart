@@ -1,4 +1,4 @@
-import 'package:barras/barras.dart';
+// import 'package:barras/barras.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -287,10 +287,10 @@ class CheckInEventList extends StatelessWidget {
         String checkInItemId = "";
         if (isAdmin) {
           checkInItemId = events[index].id;
-          uid = await Barras.scan(context);
+          uid = ""; //await Barras.scan(context);
         } else {
           uid = userID;
-          checkInItemId = await Barras.scan(context);
+          checkInItemId = ""; //await Barras.scan(context);
         }
         if (uid != null &&
             uid != "" &&
