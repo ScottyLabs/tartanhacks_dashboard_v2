@@ -117,12 +117,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
           content: Text(response),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            FlatButton(
+            TextButton(
               child: const Text(
                 "OK",
                 style: TextStyle(color: Colors.white),
               ),
-              color: const Color.fromARGB(255, 255, 75, 43),
+              style: TextButton.styleFrom(
+                foregroundColor: const Color.fromARGB(255, 255, 75, 43),
+              ),
               onPressed: () {
 
                 Navigator.of(context).pop();
