@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import '/models/team.dart';
 
-const baseUrl = "https://backend.tartanhacks.com/";
+const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<bool> createTeam(
     String teamName, String description, bool visibility, String token) async {
@@ -220,7 +220,9 @@ Future<List<Team>> getTeams(String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
+  print(token);
   final response = await http.get(url, headers: headers);
+  print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
     List<Team> teamsList = [];
