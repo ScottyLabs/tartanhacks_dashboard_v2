@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
+import '../components/background_shapes/CurvedBottom.dart';
 import 'login.dart';
 import '../api.dart';
 import 'package:provider/provider.dart';

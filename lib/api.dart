@@ -18,7 +18,7 @@ import 'models/discord.dart';
 
 SharedPreferences prefs;
 
-const baseUrl = "https://backend.tartanhacks.com/";
+const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<User> checkCredentials(String email, String password) async {
   String url = baseUrl + "auth/login";

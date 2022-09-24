@@ -191,7 +191,7 @@ class _HomeState extends State<Home> {
                             style: Theme.of(context).textTheme.headline1),
                         const SizedBox(height: 8),
                         CountdownTimer(
-                          endTime: 1644184800000,
+                          endTime: 1675720800000,
                           textStyle: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,

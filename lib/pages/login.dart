@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models/user.dart';
 import 'custom_widgets.dart';
+import '../components/background_shapes/CurvedBottom.dart';
 import 'home.dart';
 import 'forgot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
