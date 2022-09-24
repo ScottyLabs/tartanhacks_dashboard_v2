@@ -4,7 +4,7 @@ import 'custom_widgets.dart';
 import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
-import 'package:barras/barras.dart';
+// import 'package:barras/barras.dart';
 import 'profile_page.dart';
 import '../models/discord.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -261,8 +261,8 @@ class _SponsorsState extends State<Sponsors> {
                                                   .onSecondary),
                                     ),
                                     onPressed: () async {
-                                      String id =
-                                          await Barras.scan(context);
+                                      String id = "";
+                                          //await Barras.scan(context);
                                       Profile isValid =
                                           await getProfile(id, token);
                                       if (isValid != null) {
