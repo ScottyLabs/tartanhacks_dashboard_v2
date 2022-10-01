@@ -1,0 +1,13 @@
+name: Lint
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '2.5.2'
+          channel: 'stable'
+      - run: flutter analyze
