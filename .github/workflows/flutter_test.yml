@@ -88,6 +88,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
+          ndk: 21.0.6113669
           arch: x86_64
           profile: Nexus 6
           script: flutter test integration_tests --verbose
