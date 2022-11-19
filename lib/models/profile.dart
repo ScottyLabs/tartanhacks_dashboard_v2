@@ -34,7 +34,7 @@ class Profile {
   final String address;
   final String region;
   final String displayName;
-
+  String picture;
 
   Profile({
       this.totalPoints,
@@ -71,7 +71,8 @@ class Profile {
       this.wantsHardware,
       this.address,
       this.region,
-      this.displayName});
+      this.displayName,
+      this.picture});
 
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
     return Profile(
@@ -110,6 +111,7 @@ class Profile {
         address: parsedJson['address'],
         region: parsedJson['region'],
         displayName: parsedJson['displayName'],
+        picture: parsedJson['picture']
     );
   }
 }

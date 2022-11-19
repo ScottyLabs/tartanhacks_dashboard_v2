@@ -70,6 +70,7 @@ Future<Profile> getProfile(String id, String token) async {
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Profile profile = Profile.fromJson(data);
+    profile.picture = "lib/logos/defaultpfp.PNG";
     return profile;
   } else {
     return null;
