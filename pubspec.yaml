@@ -33,7 +33,7 @@ dependencies:
   share: ^0.6.5+4
   date_time_picker: ^1.1.1
   qr_flutter: ^3.1.0
-#  barras: ^0.0.2
+  flutter_smart_scan: ^1.0.4
   json_annotation: ^3.1.1
   charcode: ^1.2.0
   carousel_slider: ^2.3.1
