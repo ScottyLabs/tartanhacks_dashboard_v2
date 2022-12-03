@@ -13,6 +13,7 @@ class TeamsList extends StatefulWidget {
   _TeamsListState createState() => _TeamsListState();
 }
 
+//the real stuff/page
 class _TeamsListState extends State<TeamsList> {
   String token;
   List<Team> teamInfos;
@@ -21,6 +22,27 @@ class _TeamsListState extends State<TeamsList> {
   List<Widget> teamWidgetList = <Widget>[];
   List<dynamic> requestsList;
   List requestedTeams = [];
+
+  //SEARCH CONTROLLER
+  TextEditingController searchController = TextEditingController();
+
+  //add a search function (similar to the one in sponsors)
+//harvests data and sends it to team search function in team_api
+//search (sponsors.dart)
+
+//takes a token (look at getData)
+  void search() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+
+    //some list that will be filled is a work in progress
+    // (pass results back to the build)?
+
+    //search in sponsors has a query
+    //make it 2 required queries
+    var searchResults = await teamSearch(token, searchController.text);
+
+  }
 
   @override
   initState() {
@@ -193,7 +215,7 @@ class _TeamsListState extends State<TeamsList> {
                                       .colorScheme
                                       .secondaryVariant,
                                   color2:
-                                      Theme.of(context).colorScheme.primary,
+                                  Theme.of(context).colorScheme.primary,
                                   reverse: true)),
                         ]),
                         Container(
@@ -205,10 +227,11 @@ class _TeamsListState extends State<TeamsList> {
                                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                                 child: Column(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
+                                      //different containers for different buttons
                                       Container(
                                           padding: const EdgeInsets.fromLTRB(
                                               0, 10, 0, 10),
@@ -219,13 +242,41 @@ class _TeamsListState extends State<TeamsList> {
                                               0, 5, 0, 5),
                                           //height: screenHeight*0.2,
                                           child: _buildCreateTeamBtn()),
+                                      Row(children: [
+                                        Expanded(
+                                          child: TextField(
+                                            style:
+                                            Theme.of(context).textTheme.bodyText2,
+                                            enableSuggestions: false,
+                                            controller: searchController,
+                                            textInputAction: TextInputAction.send,
+                                            onSubmitted: (value) {
+                                              search(); //searches when ENTER pressed
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            width: 10
+                                        ),
+                                        SolidButton(
+                                            onPressed: search, //searches when button pressed
+                                            child: Icon(Icons.subdirectory_arrow_left,
+                                                size: 30,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onPrimary)),
+                                      ]),
+                                      const SizedBox(
+                                          height: 50
+                                      ),
                                       if (teamInfos != null)
+                                      //box which loads the thingy...
                                         Expanded(
                                           child: ListView.builder(
                                             itemCount: numTeams,
                                             itemBuilder:
                                                 (BuildContext context,
-                                                    int index) {
+                                                int index) {
                                               return _buildTeamEntry(index);
                                             },
                                           ),
@@ -233,10 +284,10 @@ class _TeamsListState extends State<TeamsList> {
                                       else
                                         Center(
                                             child:
-                                                CircularProgressIndicator(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface))
+                                            CircularProgressIndicator(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .onSurface))
                                     ])))
                       ],
                     )

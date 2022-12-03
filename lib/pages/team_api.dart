@@ -233,3 +233,8 @@ Future<List<Team>> getTeams(String token) async {
   }
   return null;
 }
+
+//getStudent (in api)
+Future<List<Team>> teamSearch(String token, String query) async {
+  return [];
+}
