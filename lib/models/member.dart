@@ -19,7 +19,7 @@ class Member {
     return Member(
         id:  parsedJson["_id"],
         isAdmin: isAdminBool,
-        name: parsedJson["firstName"] + " " + parsedJson["lastName"],
+        name: (parsedJson["firstName"]??"") + " " + (parsedJson["lastName"]??""),
         email: parsedJson["email"]
     );
   }
