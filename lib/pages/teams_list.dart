@@ -42,6 +42,11 @@ class _TeamsListState extends State<TeamsList> {
     //make it 2 required queries
     var searchResults = await teamSearch(token, searchController.text);
 
+    //can print searchResults
+    //prints the objects, can map it to print the names
+
+    //look up myteam in get(something)
+
   }
 
   @override
