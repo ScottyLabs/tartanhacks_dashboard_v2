@@ -136,7 +136,14 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.11"
+    version: "2.0.7"
+  flutter_smart_scan:
+    dependency: "direct main"
+    description:
+      name: flutter_smart_scan
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -549,4 +556,4 @@ packages:
     version: "5.1.2"
 sdks:
   dart: ">=2.17.0-0 <3.0.0"
-  flutter: ">=1.24.0-7.0"
+  flutter: ">=2.8.0"
