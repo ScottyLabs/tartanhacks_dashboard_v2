@@ -153,8 +153,20 @@ class _ProfilePageState extends State<ProfilePage> {
         context: context,
         builder: (BuildContext context) {
           // return object of type Dialog
-          return AlertDialog(
+          return SimpleDialog(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            children: [
+              ButtonBar(alignment: MainAxisAlignment.center,
+                  children:[SolidButton(
+                    text: "Gallery",
+                   ),
+                    SolidButton(
+                      text: "Camera",
+                    )
+                  ]
+              )
+
+            ]
           );
         }
     );
@@ -286,25 +298,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       //   text: "This is a test",
                                                       // ),
                                                       //make stack with this and add a gesture detector as a child
-                                                      Stack(
-                                                          children: [
-                                                            ClipRRect(
-                                                                borderRadius: BorderRadius
-                                                                    .circular(10),
-                                                                child:
-                                                                //does it need to be const?
-                                                                Image(
-                                                                  // maybe used image.network
-                                                                  image: AssetImage(userData.picture.toString()),
-                                                                  //image: AssetImage("lib/logos/defaultpfp.PNG")
-                                                                )
-                                                            ),
-                                                            // GestureDetector(
-                                                            //     onTap: (){
-                                                            //       _editPicture();
-                                                            //     }
-                                                            // )
-                                                          ]
+                                                      GestureDetector(
+                                                          onTap: (){
+                                                            _editPicture();
+                                                          },
+                                                          child:
+                                                          ClipRRect(
+                                                              borderRadius: BorderRadius
+                                                                  .circular(10),
+                                                              child:
+                                                              //does it need to be const?
+                                                              Image.network(userData.profilePicture)
+                                                          )
                                                       ),
 
                                                       const SizedBox(width: 25),
