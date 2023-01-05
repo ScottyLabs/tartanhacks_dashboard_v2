@@ -9,7 +9,6 @@ import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/topbar/TopBar.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
-import 'custom_widgets.dart';
 
 // HELPER FUNCTIONS
 int daysBetween(DateTime from, DateTime to) {
