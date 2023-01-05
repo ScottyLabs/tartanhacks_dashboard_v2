@@ -21,11 +21,11 @@ import 'view_team.dart';
 import '../theme_changer.dart';
 
 
-InputDecoration formFieldStyle(BuildContext context, String labelText) {
-  return InputDecoration(
-    labelText: labelText,
-  );
-}
+// InputDecoration formFieldStyle(BuildContext context, String labelText) {
+//   return InputDecoration(
+//     labelText: labelText,
+//   );
+// }
 // Color darken(Color color, [double amount = .1]) {
 //   assert(amount >= 0 && amount <= 1);
 //   final hsl = HSLColor.fromColor(color);
@@ -185,89 +185,90 @@ InputDecoration formFieldStyle(BuildContext context, String labelText) {
 //   }
 // }
 
-class SolidSquareButton extends StatelessWidget{
-  final String image;
-  final Function onPressed;
+// class SolidSquareButton extends StatelessWidget{
+//   final String image;
+//   final Function onPressed;
+//
+//   const SolidSquareButton({this.image, this.onPressed});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//         onPressed: onPressed,
+//         style: ButtonStyle(
+//             foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+//             backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+//             shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+//             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+//             fixedSize: MaterialStateProperty.all<Size>(const Size.square(10)),
+//             elevation: MaterialStateProperty.all(5)
+//         ),
+//     );
+//   }
+// }
 
-  const SolidSquareButton({this.image, this.onPressed});
+// class GradText extends StatelessWidget {
+//   final String text;
+//   final Color color1;
+//   final Color color2;
+//   final double size;
+//   const GradText({this.text, this.size, this.color1, this.color2});
+//   @override
+//   Widget build(BuildContext context) {
+//     return ShaderMask(
+//       shaderCallback: (bounds) =>
+//           LinearGradient(
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
+//               colors:[color1, color2]
+//           ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+//           ),
+//       child: Text(text,
+//         style: TextStyle(
+//             color: Colors.white,
+//             fontSize: size,
+//             fontWeight: FontWeight.bold
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: onPressed,
-        style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-            backgroundColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            fixedSize: MaterialStateProperty.all<Size>(const Size.square(10)),
-            elevation: MaterialStateProperty.all(5)
-        ),
-    );
-  }
-}
-
-class GradText extends StatelessWidget {
-  final String text;
-  final Color color1;
-  final Color color2;
-  final double size;
-  const GradText({this.text, this.size, this.color1, this.color2});
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      shaderCallback: (bounds) =>
-          LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors:[color1, color2]
-          ).createShader(Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-          ),
-      child: Text(text,
-        style: TextStyle(
-            color: Colors.white,
-            fontSize: size,
-            fontWeight: FontWeight.bold
-        ),
-      ),
-    );
-  }
-}
-class TextLogo extends StatelessWidget {
-  final Color color;
-  final double width;
-  final double height;
-
-  const TextLogo({this.color, this.width, this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-    return SizedBox(
-        width: width,
-        height: height,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children:[
-              SizedBox(
-                  height: height,
-                  width: min(width*0.20, 50),
-                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
-                      : Image.asset("lib/logos/thLogoDark.png")
-              ),
-              Text(" Tartanhacks ",
-                  style: TextStyle(
-                    fontSize: min(width*0.1, 30),
-                    fontWeight: FontWeight.w600,
-                    color: color,
-                  )
-              )
-            ]
-        )
-    );
-  }
-}
+// class TextLogo extends StatelessWidget {
+//   final Color color;
+//   final double width;
+//   final double height;
+//
+//   const TextLogo({this.color, this.width, this.height});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+//     return SizedBox(
+//         width: width,
+//         height: height,
+//         child: Row(
+//             mainAxisAlignment: MainAxisAlignment.start,
+//             crossAxisAlignment: CrossAxisAlignment.center,
+//             children:[
+//               SizedBox(
+//                   height: height,
+//                   width: min(width*0.20, 50),
+//                   child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
+//                       : Image.asset("lib/logos/thLogoDark.png")
+//               ),
+//               Text(" Tartanhacks ",
+//                   style: TextStyle(
+//                     fontSize: min(width*0.1, 30),
+//                     fontWeight: FontWeight.w600,
+//                     color: color,
+//                   )
+//               )
+//             ]
+//         )
+//     );
+//   }
+// }
 // class MenuButton extends StatelessWidget {
 //   final Function onTap;
 //   final IconData icon;
@@ -461,56 +462,56 @@ class TextLogo extends StatelessWidget {
 //   }
 // }
 
-class DefaultPage extends StatelessWidget {
-  final Widget child;
-  final bool reverse;
-
-  const DefaultPage({this.child, this.reverse=true});
-
-  @override
-  Widget build(BuildContext context) {
-    final mqData = MediaQuery.of(context);
-    final screenHeight = mqData.size.height;
-    final screenWidth = mqData.size.width;
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: screenHeight
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const TopBar(),
-              Stack(
-                children: [
-                  Column(
-                    children: [
-                      SizedBox(height: screenHeight * 0.05),
-                      CustomPaint(
-                          size: Size(screenWidth, screenHeight * 0.75),
-                          painter: CurvedTop(
-                              color1: Theme.of(context).colorScheme.primary,
-                              color2: Theme.of(context).colorScheme.secondaryVariant,
-                              reverse: reverse
-                          )
-                      ),
-                    ]
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                    height: screenHeight * 0.8,
-                    child: child
-                  )
-                ]
-              )
-            ]
-          )
-        )
-      )
-    );
-  }
-}
+// class DefaultPage extends StatelessWidget {
+//   final Widget child;
+//   final bool reverse;
+//
+//   const DefaultPage({this.child, this.reverse=true});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final mqData = MediaQuery.of(context);
+//     final screenHeight = mqData.size.height;
+//     final screenWidth = mqData.size.width;
+//     return Scaffold(
+//       body: SingleChildScrollView(
+//         child: ConstrainedBox(
+//           constraints: BoxConstraints(
+//             maxHeight: screenHeight
+//           ),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.end,
+//             children: [
+//               const TopBar(),
+//               Stack(
+//                 children: [
+//                   Column(
+//                     children: [
+//                       SizedBox(height: screenHeight * 0.05),
+//                       CustomPaint(
+//                           size: Size(screenWidth, screenHeight * 0.75),
+//                           painter: CurvedTop(
+//                               color1: Theme.of(context).colorScheme.primary,
+//                               color2: Theme.of(context).colorScheme.secondaryVariant,
+//                               reverse: reverse
+//                           )
+//                       ),
+//                     ]
+//                   ),
+//                   Container(
+//                     padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+//                     height: screenHeight * 0.8,
+//                     child: child
+//                   )
+//                 ]
+//               )
+//             ]
+//           )
+//         )
+//       )
+//     );
+//   }
+// }
 
 // class WhiteOverlay extends CustomPainter {
 //   @override
@@ -885,109 +886,109 @@ class DefaultPage extends StatelessWidget {
 //   }
 // }
 
-class LoadingScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final mqData = MediaQuery.of(context);
-    final screenHeight = mqData.size.height;
-    final screenWidth = mqData.size.width;
+// class LoadingScreen extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     final mqData = MediaQuery.of(context);
+//     final screenHeight = mqData.size.height;
+//     final screenWidth = mqData.size.width;
+//
+//     return Scaffold(
+//         body: Container(
+//             height: screenHeight,
+//             width: screenWidth,
+//             alignment: Alignment.center,
+//             child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children:[
+//                   Container(
+//                       height: screenHeight*0.35,
+//                       width: screenWidth,
+//                       alignment: Alignment.topCenter,
+//                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+//                       child: Image.asset("lib/logos/thLogoDark.png")
+//                   ),
+//                   Text("Tartanhacks",
+//                     style: Theme.of(context).textTheme.headline1,
+//                   ),
+//                   Text("by Scottylabs",
+//                     style: Theme.of(context).textTheme.bodyText2,
+//                   ),
+//                   const SizedBox(height: 25),
+//                   CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,)
+//                 ]
+//             )
+//         )
+//     );
+//   }
+// }
 
-    return Scaffold(
-        body: Container(
-            height: screenHeight,
-            width: screenWidth,
-            alignment: Alignment.center,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:[
-                  Container(
-                      height: screenHeight*0.35,
-                      width: screenWidth,
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-                      child: Image.asset("lib/logos/thLogoDark.png")
-                  ),
-                  Text("Tartanhacks",
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
-                  Text("by Scottylabs",
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                  const SizedBox(height: 25),
-                  CircularProgressIndicator(color: Theme.of(context).colorScheme.primary,)
-                ]
-            )
-        )
-    );
-  }
-}
+// class WhiteOverlayLight extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     var paint = Paint()
+//       ..color = Colors.white54
+//       ..strokeWidth = 15;
+//     var path = Path();
+//     path.moveTo(0, 0);
+//     path.lineTo(size.width, 0);
+//     path.lineTo(size.width, size.height);
+//     path.lineTo(0, size.height);
+//     path.lineTo(0,0);
+//     canvas.drawPath(path, paint);
+//   }
+//   @override
+//   bool shouldRepaint(CustomPainter oldDelegate) {
+//     return true;
+//   }
+// }
 
-class WhiteOverlayLight extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..color = Colors.white54
-      ..strokeWidth = 15;
-    var path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height);
-    path.lineTo(0, size.height);
-    path.lineTo(0,0);
-    canvas.drawPath(path, paint);
-  }
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
+// OverlayEntry loadingOverlay(BuildContext context) {
+//   final screenSize = MediaQuery.of(context).size;
+//   return OverlayEntry(
+//       builder: (context) => Positioned(
+//           child: Stack(
+//             alignment: Alignment.center,
+//             children: [
+//               CustomPaint(
+//                   size: screenSize,
+//                   painter: WhiteOverlayLight()
+//               ),
+//               Container(
+//                   width: screenSize.width,
+//                   height: screenSize.height,
+//                   alignment: Alignment.center,
+//                   child: CircularProgressIndicator(color: Theme.of(context).colorScheme.error,)
+//               )
+//             ],
+//           )
+//       )
+//   );
+// }
 
-OverlayEntry loadingOverlay(BuildContext context) {
-  final screenSize = MediaQuery.of(context).size;
-  return OverlayEntry(
-      builder: (context) => Positioned(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CustomPaint(
-                  size: screenSize,
-                  painter: WhiteOverlayLight()
-              ),
-              Container(
-                  width: screenSize.width,
-                  height: screenSize.height,
-                  alignment: Alignment.center,
-                  child: CircularProgressIndicator(color: Theme.of(context).colorScheme.error,)
-              )
-            ],
-          )
-      )
-  );
-}
-
-void errorDialog(context, String title, String response) {
-  // flutter defined function
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      // return object of type Dialog
-      return AlertDialog(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(title, style: Theme.of(context).textTheme.headline1),
-        content: Text(response, style: Theme.of(context).textTheme.bodyText2),
-        actions: <Widget>[
-          // usually buttons at the bottom of the dialog
-          TextButton(
-            child: Text(
-              "OK",
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+// void errorDialog(context, String title, String response) {
+//   // flutter defined function
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       // return object of type Dialog
+//       return AlertDialog(
+//         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//         title: Text(title, style: Theme.of(context).textTheme.headline1),
+//         content: Text(response, style: Theme.of(context).textTheme.bodyText2),
+//         actions: <Widget>[
+//           // usually buttons at the bottom of the dialog
+//           TextButton(
+//             child: Text(
+//               "OK",
+//               style: Theme.of(context).textTheme.headline4,
+//             ),
+//             onPressed: () {
+//               Navigator.of(context).pop();
+//             },
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }

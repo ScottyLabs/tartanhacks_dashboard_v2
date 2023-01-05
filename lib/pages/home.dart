@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
@@ -19,7 +20,6 @@ import '../models/profile.dart';
 import '../models/team.dart';
 import 'checkin.dart';
 import 'events/index.dart';
-import 'custom_widgets.dart';
 import 'leaderboard.dart';
 import 'project_submission.dart';
 

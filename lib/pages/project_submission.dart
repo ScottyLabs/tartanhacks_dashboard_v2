@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/topbar/TopBar.dart';
-import 'custom_widgets.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
@@ -89,7 +89,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildName() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Project Name"),
+      decoration: const InputDecoration(labelText: "Project Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
       validator: (String value) {
@@ -107,7 +107,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildDesc() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Project Description"),
+      decoration: const InputDecoration(labelText: "Project Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
       validator: (String value) {
@@ -125,7 +125,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildGitHubURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Github Repository URL"),
+      decoration: const InputDecoration(labelText: "Github Repository URL"),
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: githubController,
@@ -143,7 +143,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildPresURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Presentation URL"),
+      decoration: const InputDecoration(labelText: "Presentation URL"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: slidesController,
       keyboardType: TextInputType.url,
@@ -161,7 +161,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildVidURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Video URL"),
+      decoration: const InputDecoration(labelText: "Video URL"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: videoController,
       keyboardType: TextInputType.url,

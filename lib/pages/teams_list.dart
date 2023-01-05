@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/topbar/TopBar.dart';
-import 'custom_widgets.dart';
 import 'create_team.dart';
 import 'view_team.dart';
 

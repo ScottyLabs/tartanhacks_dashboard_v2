@@ -67,7 +67,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _buildTeamName() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Team Name"),
+      decoration: const InputDecoration(labelText: "Team Name"),
       style: Theme
           .of(context)
           .textTheme
@@ -87,7 +87,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _buildTeamDesc() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Team Description"),
+      decoration: const InputDecoration(labelText: "Team Description"),
       style: Theme
           .of(context)
           .textTheme
@@ -133,7 +133,7 @@ class _CreateTeamState extends State<CreateTeam> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
-                        decoration: formFieldStyle(context, "email"),
+                        decoration: const InputDecoration(labelText: "email"),
                         style: const TextStyle(color: Colors.black),
                         controller: inviteController,
                         validator: (String value) {
