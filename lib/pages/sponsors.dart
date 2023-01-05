@@ -8,6 +8,7 @@ import 'package:thdapp/pages/bookmarks.dart';
 import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:flutter_smart_scan/flutter_smart_scan.dart';
 import 'profile_page.dart';
 import '../models/discord.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -264,8 +265,7 @@ class _SponsorsState extends State<Sponsors> {
                                                   .onSecondary),
                                     ),
                                     onPressed: () async {
-                                      String id = "";
-                                          //await Barras.scan(context);
+                                      String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
                                       Profile isValid =
                                           await getProfile(id, token);
                                       if (isValid != null) {

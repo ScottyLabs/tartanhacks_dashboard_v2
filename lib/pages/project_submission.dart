@@ -178,7 +178,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
   }
 
   Widget _buildPresentingLive() {
-    if (isPresenting) {
       return Container(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: Column(
@@ -204,8 +203,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
             ]
         )
     );
-    }
-    return const SizedBox.shrink();
   }
 
   void submitDialog (BuildContext context) {
@@ -237,7 +234,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProjSubmit()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProjSubmit()));
                     },
                   ),
                 ],

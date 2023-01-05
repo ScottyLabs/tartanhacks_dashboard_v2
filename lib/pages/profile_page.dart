@@ -12,6 +12,9 @@ import '../models/team.dart';
 import 'package:thdapp/api.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// getting to the gallery
+import 'package:image_picker/image_picker.dart';
+
 class ProfilePage extends StatefulWidget {
   final Map bookmarks;
 
@@ -112,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Overlay.of(context).insert(loading);
                 bool success = await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
-                
+
                 if (success == null) {
                   errorDialog(context, "Error", "An error occurred. Please try again.");
                 } else if (success) {
@@ -148,6 +151,30 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     ).then((value) => getData());
+  }
+
+  _editPicture() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return SimpleDialog(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            children: [
+              ButtonBar(alignment: MainAxisAlignment.center,
+                  children:[SolidButton(
+                    text: "Gallery",
+                   ),
+                    SolidButton(
+                      text: "Camera",
+                    )
+                  ]
+              )
+
+            ]
+          );
+        }
+    );
   }
 
   @override
@@ -225,39 +252,39 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .start,
                                     children: [
                                       Row(
-                                        children:[
-                                          Text("HACKER PROFILE", style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .headline1,),
-                                          if (!isSelf && id != null)
-                                            Expanded(
-                                              child: IconButton(
-                                                  icon: widget.bookmarks.containsValue(id) ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
-                                                  color: Theme.of(context).colorScheme.primary,
-                                                  iconSize: 40.0,
-                                                  onPressed: () async {
-                                                    if (widget.bookmarks.containsValue(id)) {
-                                                      String bmId = widget.bookmarks.keys.firstWhere(
-                                                              (k) => widget.bookmarks[k] == id, orElse: () => null);
-                                                      deleteBookmark(token, bmId);
-                                                      widget.bookmarks.remove(bmId);
-                                                    } else {
-                                                      String bmId = await addBookmark(token, id);
-                                                      widget.bookmarks[bmId] = id;
-                                                    }
-                                                    setState(() {
+                                          children:[
+                                            Text("HACKER PROFILE", style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .headline1,),
+                                            if (!isSelf && id != null)
+                                              Expanded(
+                                                  child: IconButton(
+                                                      icon: widget.bookmarks.containsValue(id) ? const Icon(Icons.bookmark) : const Icon(Icons.bookmark_outline),
+                                                      color: Theme.of(context).colorScheme.primary,
+                                                      iconSize: 40.0,
+                                                      onPressed: () async {
+                                                        if (widget.bookmarks.containsValue(id)) {
+                                                          String bmId = widget.bookmarks.keys.firstWhere(
+                                                                  (k) => widget.bookmarks[k] == id, orElse: () => null);
+                                                          deleteBookmark(token, bmId);
+                                                          widget.bookmarks.remove(bmId);
+                                                        } else {
+                                                          String bmId = await addBookmark(token, id);
+                                                          widget.bookmarks[bmId] = id;
+                                                        }
+                                                        setState(() {
 
-                                                    });
-                                                  }
+                                                        });
+                                                      }
+                                                  )
                                               )
-                                            )
-                                        ]
+                                          ]
                                       ),
                                       if (userData == null)
                                         const SizedBox(
-                                          height: 100,
-                                          child: Center(child: CircularProgressIndicator())
+                                            height: 100,
+                                            child: Center(child: CircularProgressIndicator())
                                         )
                                       else
                                         Column(
@@ -272,15 +299,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       0, 10, 0, 10),
                                                   child: Row(
                                                     children: [
-                                                      ClipRRect(
-                                                          borderRadius: BorderRadius
-                                                              .circular(10),
+                                                      // SolidButton(
+                                                      //   text: "This is a test",
+                                                      // ),
+                                                      //make stack with this and add a gesture detector as a child
+                                                      GestureDetector(
+                                                          onTap: (){
+                                                            _editPicture();
+                                                          },
                                                           child:
-                                                          const Image(
-                                                            image: AssetImage(
-                                                                "lib/logos/defaultpfp.PNG"),
+                                                          ClipRRect(
+                                                              borderRadius: BorderRadius
+                                                                  .circular(10),
+                                                              child:
+                                                              //does it need to be const?
+                                                              Image.network(userData.profilePicture)
                                                           )
                                                       ),
+
                                                       const SizedBox(width: 25),
                                                       Expanded(
                                                           child: Column(
@@ -321,10 +357,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   )
                                               ),
                                               if (isSelf)
-                                              SolidButton(
-                                                text: "Edit Nickname",
-                                                onPressed: _editNickname,
-                                              ),
+                                                SolidButton(
+                                                  text: "Edit Nickname",
+                                                  onPressed: _editNickname,
+                                                ),
                                               const SizedBox(height: 10),
                                               Text(userData.school,
                                                   style: Theme

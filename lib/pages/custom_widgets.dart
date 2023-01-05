@@ -20,7 +20,6 @@ import 'checkin.dart';
 import 'view_team.dart';
 import '../theme_changer.dart';
 
-
 // InputDecoration formFieldStyle(BuildContext context, String labelText) {
 //   return InputDecoration(
 //     labelText: labelText,
