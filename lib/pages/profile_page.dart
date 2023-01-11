@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,7 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               ButtonBar(alignment: MainAxisAlignment.center,
                   children:[SolidButton(
-                    text: "Gallery",
+                      text: "Gallery",
+                      onPressed: _getImage()
                    ),
                     SolidButton(
                       text: "Camera",
@@ -170,6 +173,46 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         }
     );
+  }
+
+_getImage() async {
+// Pick an image
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+    return AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        content:
+        Center(child: FutureBuilder<File>(
+            future: getFile(),
+            builder: (context, snapshot){
+              if (snapshot.hasData){
+                return Image.file(snapshot.data);
+              }
+              return Image.network(userData.profilePicture);
+          }
+        ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              "Cancel",
+              style: Theme.of(context
+              ).textTheme.headline4,
+            ),
+            onPressed: () async {
+              Navigator.of(context).pop();
+            },
+          ),
+        ]
+    );
+    }
+    );
+  }
+
+getFile() async {
+    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    return file;
   }
 
   @override
@@ -294,9 +337,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       0, 10, 0, 10),
                                                   child: Row(
                                                     children: [
-                                                      // SolidButton(
-                                                      //   text: "This is a test",
-                                                      // ),
                                                       //make stack with this and add a gesture detector as a child
                                                       GestureDetector(
                                                           onTap: (){
