@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 
 class OldBookmarks extends StatelessWidget {
   final List bookmarks = ["[Student A]", "[Student B]", "[Student C]", "[Student D]",

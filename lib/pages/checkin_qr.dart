@@ -1,10 +1,11 @@
-
 import 'package:flutter_smart_scan/flutter_smart_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
-import 'custom_widgets.dart';
 import '../theme_changer.dart';
 
 

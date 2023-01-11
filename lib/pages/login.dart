@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/loading/LoadingOverlay.dart';
+import 'package:thdapp/components/text/GradText.dart';
 import '../api.dart';
 import '../models/user.dart';
-import 'custom_widgets.dart';
 import '../components/background_shapes/CurvedBottom.dart';
 import 'home.dart';
 import 'forgot.dart';

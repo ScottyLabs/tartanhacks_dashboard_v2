@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 import 'create_team.dart';
 import 'view_team.dart';
 
@@ -219,6 +223,7 @@ class _TeamsListState extends State<TeamsList> {
                                               0, 5, 0, 5),
                                           //height: screenHeight*0.2,
                                           child: _buildCreateTeamBtn()),
+
                                       if (teamInfos != null)
                                         Expanded(
                                           child: ListView.builder(
