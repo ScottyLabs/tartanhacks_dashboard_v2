@@ -51,8 +51,8 @@ ThemeData genLightTheme (){
   var surface = const Color(0xFFF7F1E2);
   var surface2 = const Color(0xFF6E9AFD);
   var background = const Color(0xFFF7F1E2);
+  var shadow = const Color(0x304200FF);
 
-  var shadow = const Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       secondary: secondary,

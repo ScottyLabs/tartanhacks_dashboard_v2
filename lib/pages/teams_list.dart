@@ -68,7 +68,7 @@ class _TeamsListState extends State<TeamsList> {
       Text("TEAM", style: Theme.of(context).textTheme.headline2),
       IconButton(
           icon: const Icon(Icons.email, size: 30.0),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.tertiary,
           onPressed: () {
             Navigator.push(
               context,
