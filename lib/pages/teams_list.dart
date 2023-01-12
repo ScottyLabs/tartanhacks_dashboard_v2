@@ -149,7 +149,7 @@ class _TeamsListState extends State<TeamsList> {
     );
     return Card(
         margin: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surfaceTint,
         child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(

@@ -175,8 +175,8 @@ class _CreateTeamState extends State<CreateTeam> {
             context: context,
             builder: (_) => _inviteMessage()
           );
-        }, 
-        color: Theme.of(context).colorScheme.primary); 
+        }
+    );
   }
 
   @override

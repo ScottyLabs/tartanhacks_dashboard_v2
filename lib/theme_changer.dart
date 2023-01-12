@@ -49,16 +49,17 @@ ThemeData genLightTheme (){
   var secondary = const Color(0xFF4200FF);
   var accent = const Color(0xFFFEA801);
   var surface = const Color(0xFFF7F1E2);
-  var surface2 = const Color(0xFF6E9AFD);
+  var surface2 = const Color(0xFFA8C2fE);
   var background = const Color(0xFFF7F1E2);
-  var shadow = const Color(0x304200FF);
+  var shadow = const Color(0xFF866CF1);
 
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       secondary: secondary,
       tertiary: accent,
       surface: surface, //box gradient 1
-      background: surface2, //box gradient 2
+      surfaceTint: surface2, //box gradient 2
+      background: background,
       error: secondary, //menu buttons
       onPrimary: background,
       onSecondary: surface,
@@ -66,6 +67,7 @@ ThemeData genLightTheme (){
       onSurface: secondary,
       onBackground: shadow, //shadows
       onError: background,
+      shadow: shadow,
       brightness: Brightness.light
   );
   return baseTheme(

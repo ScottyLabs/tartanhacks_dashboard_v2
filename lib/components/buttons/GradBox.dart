@@ -15,8 +15,8 @@ class GradBox extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     Color color1 = Theme.of(context).colorScheme.surface;
-    Color color2 = Theme.of(context).colorScheme.primaryVariant;
-    Color shadow = Theme.of(context).colorScheme.onBackground;
+    Color color2 = Theme.of(context).colorScheme.surfaceTint;
+    Color shadow = Theme.of(context).colorScheme.shadow;
     return Container(
         width: width,
         height: height,
