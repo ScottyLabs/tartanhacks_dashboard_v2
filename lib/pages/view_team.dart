@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 
 import 'team_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -246,7 +250,7 @@ class _ViewTeamState extends State<ViewTeam> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
-                decoration: formFieldStyle(context, "email"),
+                decoration: const InputDecoration(labelText: "email"),
                 style: const TextStyle(color: Colors.black),
                 controller: inviteController,
                 validator: (String value) {

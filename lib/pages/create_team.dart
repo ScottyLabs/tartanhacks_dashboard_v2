@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
@@ -63,7 +66,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _buildTeamName() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Team Name"),
+      decoration: const InputDecoration(labelText: "Team Name"),
       style: Theme
           .of(context)
           .textTheme
@@ -83,7 +86,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   Widget _buildTeamDesc() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Team Description"),
+      decoration: const InputDecoration(labelText: "Team Description"),
       style: Theme
           .of(context)
           .textTheme
@@ -129,7 +132,7 @@ class _CreateTeamState extends State<CreateTeam> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       TextFormField(
-                        decoration: formFieldStyle(context, "email"),
+                        decoration: const InputDecoration(labelText: "email"),
                         style: const TextStyle(color: Colors.black),
                         controller: inviteController,
                         validator: (String value) {

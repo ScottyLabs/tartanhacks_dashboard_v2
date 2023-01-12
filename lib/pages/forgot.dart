@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/loading/LoadingOverlay.dart';
+import 'package:thdapp/components/text/GradText.dart';
 import '../components/background_shapes/CurvedBottom.dart';
 import 'login.dart';
 import '../api.dart';

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import '../custom_widgets.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 import 'index.dart';
 import 'package:intl/intl.dart';
 
@@ -145,7 +148,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildName() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Event Name"),
+      decoration: const InputDecoration(labelText: "Event Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
       validator: (String value) {
@@ -163,7 +166,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildDesc() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Event Description"),
+      decoration: const InputDecoration(labelText: "Event Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
       validator: (String value) {
@@ -181,7 +184,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildLocation() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Location"),
+      decoration: const InputDecoration(labelText: "Location"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: locationController,
       validator: (String value) {
@@ -198,7 +201,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildEventURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Event Link"),
+      decoration: const InputDecoration(labelText: "Event Link"),
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: linkController,
@@ -216,7 +219,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildDate() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Date"),
+      decoration: const InputDecoration(labelText: "Date"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: dateController,
       validator: (String value) {
@@ -233,7 +236,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildTime() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Time"),
+      decoration: const InputDecoration(labelText: "Time"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: timeController,
       validator: (String value) {
@@ -250,7 +253,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildDuration() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Duration (min)"),
+      decoration: const InputDecoration(labelText: "Duration (min)"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: durationController,
       keyboardType: TextInputType.number,
