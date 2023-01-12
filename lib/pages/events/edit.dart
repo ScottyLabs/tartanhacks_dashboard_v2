@@ -243,7 +243,7 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: startDate ?? DateTime.now(),
                     firstDate: startDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(DateTime.now().year+1),
                   );
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
@@ -276,7 +276,7 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: endDate ?? DateTime.now(),
                     firstDate: endDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(DateTime.now().year+1),
                   );
                   if (picked != null) {
                     _endDateController.value = TextEditingValue(
@@ -474,7 +474,8 @@ class EditEventDropDownFormField extends StatelessWidget {
         Expanded(
           flex: 8,
           child: DropdownButtonFormField(
-
+            style: Theme.of(context).textTheme.bodyText2,
+            dropdownColor: Theme.of(context).colorScheme.surface,
             onChanged: onChange,
             items: items,
             value: initial,
