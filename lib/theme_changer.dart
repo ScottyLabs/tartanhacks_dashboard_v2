@@ -46,22 +46,19 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 ThemeData genLightTheme (){
 
   var primary = const Color(0xFF6E9AFD);
-  var primarytrans = const Color(0xFF4200FF); // background curves gradient
   var secondary = const Color(0xFF4200FF);
-  var secondarytrans = const Color(0xFF6E9AFD); // box gradient 2
   var accent = const Color(0xFFFEA801);
   var surface = const Color(0xFFF7F1E2);
+  var surface2 = const Color(0xFF6E9AFD);
   var background = const Color(0xFFF7F1E2);
 
   var shadow = const Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
-      primaryVariant: secondarytrans,
       secondary: secondary,
-      secondaryVariant: primarytrans, // background curves gradient
       tertiary: accent,
       surface: surface, //box gradient 1
-      background: secondarytrans, //box gradient 2
+      background: surface2, //box gradient 2
       error: secondary, //menu buttons
       onPrimary: background,
       onSecondary: surface,

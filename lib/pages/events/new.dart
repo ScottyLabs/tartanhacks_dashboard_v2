@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/api.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 import 'index.dart';
 import 'package:intl/intl.dart';
 
@@ -307,83 +306,57 @@ class _NewEventScreenState extends State<NewEventScreen> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body:  SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
-                      children: [
-                        Column(
-                            children:[
-                              SizedBox(height:screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context).colorScheme.secondaryVariant,
-                                      color2: Theme.of(context).colorScheme.primary,
-                                      reverse: true)
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+            //color: Colors.black,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: GradBox(
+                  width: screenWidth*0.9,
+                  height: screenHeight*0.75,
+                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  child: Form(
+                      key: _formKey,
+                      child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("CREATE NEW EVENT", style: Theme.of(context).textTheme.headline2),
+                              const SizedBox(height:45),
+                              _buildName(),
+                              const SizedBox(height:16),
+                              _buildDesc(),
+                              const SizedBox(height:16),
+                              Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
+                              const SizedBox(height:5),
+                              _meetingPlatformDropdown(screenWidth),
+                              const SizedBox(height:16),
+                              _buildLocation(),
+                              const SizedBox(height:16),
+                              _buildEventURL(),
+                              const SizedBox(height:16),
+                              _buildDate(),
+                              const SizedBox(height:16),
+                              _buildTime(),
+                              const SizedBox(height:16),
+                              _buildDuration(),
+                              const SizedBox(height:16),
+                              Center(
+                                child: SolidButton(
+                                  text: "Save information",
+                                  onPressed: saveData,
+                                ),
                               ),
-                            ]
-                        ),
-                        Container(
-                          //color: Colors.black,
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth*0.9,
-                                height: screenHeight*0.75,
-                                padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                                child: Form(
-                                    key: _formKey,
-                                    child: SingleChildScrollView(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text("CREATE NEW EVENT", style: Theme.of(context).textTheme.headline2),
-                                            const SizedBox(height:45),
-                                            _buildName(),
-                                            const SizedBox(height:16),
-                                            _buildDesc(),
-                                            const SizedBox(height:16),
-                                            Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
-                                            const SizedBox(height:5),
-                                            _meetingPlatformDropdown(screenWidth),
-                                            const SizedBox(height:16),
-                                            _buildLocation(),
-                                            const SizedBox(height:16),
-                                            _buildEventURL(),
-                                            const SizedBox(height:16),
-                                            _buildDate(),
-                                            const SizedBox(height:16),
-                                            _buildTime(),
-                                            const SizedBox(height:16),
-                                            _buildDuration(),
-                                            const SizedBox(height:16),
-                                            Center(
-                                              child: SolidButton(
-                                                text: "Save information",
-                                                onPressed: saveData,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                      ],
-                    )
-                  ],
-                )
-            )
-        )
+                            ],
+                          )
+                      )
+                  )
+              )
+          )
     );
   }
 }
