@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 
 import 'team_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,7 +104,7 @@ class _ViewTeamState extends State<ViewTeam> {
               color: Theme
                   .of(context)
                   .colorScheme
-                  .secondary,
+                  .tertiaryContainer,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -180,7 +178,7 @@ class _ViewTeamState extends State<ViewTeam> {
                           WidgetSpan(
                               child: Icon(Icons.star,
                                   size: 20,
-                                  color: Theme.of(context).colorScheme.tertiary)
+                                  color: Theme.of(context).colorScheme.tertiaryContainer)
                           )
                       ]
                   )),

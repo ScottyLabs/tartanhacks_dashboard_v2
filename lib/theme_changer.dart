@@ -47,7 +47,8 @@ ThemeData genLightTheme (){
 
   var primary = const Color(0xFF6E9AFD);
   var secondary = const Color(0xFF4200FF);
-  var accent = const Color(0xFFFEA801);
+  var buttons = const Color(0xFFFEA801);
+  var altbuttons = const Color(0xFF9C79F0);
   var surface = const Color(0xFFF7F1E2);
   var surface2 = const Color(0xFFA8C2fE);
   var background = const Color(0xFFF7F1E2);
@@ -56,7 +57,8 @@ ThemeData genLightTheme (){
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       secondary: secondary,
-      tertiary: accent,
+      tertiary: buttons, //main button color
+      tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
       surfaceTint: surface2, //box gradient 2
       background: background,
@@ -64,6 +66,7 @@ ThemeData genLightTheme (){
       onPrimary: background,
       onSecondary: surface,
       onTertiary: surface,
+      onTertiaryContainer: surface,
       onSurface: secondary,
       onBackground: shadow, //shadows
       onError: background,

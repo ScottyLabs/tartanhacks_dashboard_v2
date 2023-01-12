@@ -14,6 +14,8 @@ class SolidButton extends StatelessWidget{
     if (color == null) {
       color = Theme.of(context).colorScheme.tertiary;
       textColor = Theme.of(context).colorScheme.onTertiary;
+    } else if (color == Theme.of(context).colorScheme.tertiaryContainer) {
+      textColor = Theme.of(context).colorScheme.onTertiaryContainer;
     } else if (color == Theme.of(context).colorScheme.primary) {
       textColor = Theme.of(context).colorScheme.onPrimary;
     } else if (color == Theme.of(context).colorScheme.secondary) {

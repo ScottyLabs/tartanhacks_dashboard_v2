@@ -241,7 +241,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                 MaterialPageRoute(builder: (context) => ViewTeam())
                               );
                             },
-                            color: Theme.of(context).colorScheme.secondary
+                            color: Theme.of(context).colorScheme.tertiaryContainer
                           )
                       )
                   ]
