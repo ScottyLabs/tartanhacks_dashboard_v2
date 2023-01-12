@@ -157,7 +157,7 @@ class SolidButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     if (color == null) {
-      color = Theme.of(context).colorScheme.primary;
+      color = Theme.of(context).colorScheme.tertiary;
     } else if (color == Theme.of(context).colorScheme.secondary) {
       textColor = Theme.of(context).colorScheme.onSecondary;
     }

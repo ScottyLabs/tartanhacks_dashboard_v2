@@ -196,7 +196,7 @@ class _HomeState extends State<Home> {
                               fontSize: 30.0,
                               fontWeight: FontWeight.bold,
                               color:
-                                  Theme.of(context).colorScheme.secondary),
+                                  Theme.of(context).colorScheme.tertiary),
                         ),
                       ])),
               SizedBox(height: screenHeight * 0.08),
