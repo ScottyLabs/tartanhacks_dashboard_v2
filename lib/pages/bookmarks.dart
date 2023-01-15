@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'profile_page.dart';
@@ -90,130 +89,71 @@ class _Bookmarks extends State<Bookmarks> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxHeight: screenHeight
-              ),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(isSponsor: true),
-                    Stack(
-                        children: [
-                          Column(
-                              children: [
-                                SizedBox(height: screenHeight * 0.05),
-                                CustomPaint(
-                                    size: Size(
-                                        screenWidth, screenHeight * 0.75),
-                                    painter: CurvedTop(
-                                        color1: Theme
-                                            .of(context)
-                                            .colorScheme
-                                            .secondaryVariant,
-                                        color2: Theme
-                                            .of(context)
-                                            .colorScheme
-                                            .primary,
-                                        reverse: true)
-                                ),
-                              ] // children
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                  height: screenHeight * 0.80,
-                                  child: Column(
-                                      children: [
-                                        Container(
-                                          alignment: Alignment.topLeft,
-                                          padding: EdgeInsets.fromLTRB(
-                                              screenWidth * 0.08, 0,
-                                              screenWidth * 0.08, 0),
-                                          child: Text(
-                                              "BOOKMARKS", style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .headline2),
-                                        ),
-                                        Container(
-                                          alignment: Alignment.topLeft,
-                                          padding: EdgeInsets.fromLTRB(
-                                              screenWidth * 0.08, 0,
-                                              screenWidth * 0.08, 0),
-                                          child: Text(
-                                              "Scroll to see the full list.",
-                                              style: TextStyle(
-                                                  fontSize: screenHeight *
-                                                      0.02)),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        if(participantBookmarks!=null)
-                                        Expanded(
-                                            child: (participantBookmarks.isNotEmpty) ?
-                                            Container(
-                                                padding: EdgeInsets
-                                                    .fromLTRB(
-                                                    screenWidth * 0.05,
-                                                    0,
-                                                    screenWidth * 0.05,
-                                                    0),
-                                                alignment: Alignment
-                                                    .topCenter,
-                                                child: ListView.builder(
-                                                  itemCount: participantBookmarks
-                                                      .length,
-                                                  itemBuilder: (
-                                                      BuildContext context,
-                                                      int index) {
-                                                    return BookmarkInfo(
-                                                        bmID: participantBookmarks[index].bookmarkId,
-                                                        data: participantBookmarks[index].participantData,
-                                                        team: "ScottyLabs",
-                                                        bio: "[Bio]",
-                                                        remove: removeBookmark,
-                                                        bmMap: bookmarksMap,
-                                                        refresh: getData,
-                                                    );
-                                                  },
-                                                )
-                                            ) :
-                                            Container(
-                                                padding: EdgeInsets
-                                                    .fromLTRB(
-                                                    screenWidth * 0.05,
-                                                    0,
-                                                    screenWidth * 0.05,
-                                                    0),
-                                                alignment: Alignment
-                                                    .center,
-                                                child: Text(
-                                                    "No bookmarks.",
-                                                    style: Theme
-                                                        .of(context)
-                                                        .textTheme
-                                                        .headline3)
-                                            )
-                                        )
-                                        else
-                                          Container(
-                                              alignment: Alignment.center,
-                                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                              child: const CircularProgressIndicator()
-                                          )
-                                      ]
-                                  )
-                              )
-                            ], // children
+    return DefaultPage(
+      isSponsor: true,
+      reverse: true,
+      child:
+          Column(
+            children: [
+              SizedBox(
+                  height: screenHeight * 0.80,
+                  child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                          child: Text("BOOKMARKS",
+                              style: Theme.of(context).textTheme.headline2),
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+                          child: Text(
+                              "Scroll to see the full list.",
+                              style: TextStyle(
+                                  fontSize: screenHeight * 0.02)),
+                        ),
+                        const SizedBox(height: 5),
+                        if(participantBookmarks!=null)
+                        Expanded(
+                            child: (participantBookmarks.isNotEmpty) ?
+                            Container(
+                                padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
+                                alignment: Alignment.topCenter,
+                                child: ListView.builder(
+                                  itemCount: participantBookmarks.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return BookmarkInfo(
+                                        bmID: participantBookmarks[index].bookmarkId,
+                                        data: participantBookmarks[index].participantData,
+                                        team: "ScottyLabs",
+                                        bio: "[Bio]",
+                                        remove: removeBookmark,
+                                        bmMap: bookmarksMap,
+                                        refresh: getData,
+                                    );
+                                  },
+                                )
+                            ) :
+                            Container(
+                                padding: EdgeInsets.fromLTRB(screenWidth * 0.05, 0, screenWidth * 0.05, 0),
+                                alignment: Alignment.center,
+                                child: Text(
+                                    "No bookmarks.",
+                                    style: Theme.of(context).textTheme.headline3)
+                            )
+                        )
+                        else
+                          Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: const CircularProgressIndicator()
                           )
-                        ]
-                    ),
-                  ]
-              ),
-            )
-        )
+                      ]
+                  )
+              )
+            ], // children
+          )
     );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
@@ -185,100 +184,67 @@ class _CreateTeamState extends State<CreateTeam> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.75,
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
-                      children: [
-                        Column(
-                            children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(
-                                      screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .primary,
-                                      reverse: true)
-                              ),
-                            ]
-                        ),
-                        Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth * 0.9,
-                                height: screenHeight * 0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Column(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text("TEAM INFO", style:
-                                            Theme.of(context).textTheme.headline1),
-                                            SizedBox(height:screenHeight*0.02),
-                                            Text("Basic Info", style:
-                                            Theme.of(context).textTheme.headline4),
-                                            // SizedBox(height:screenHeight*0.02),
-                                            // _buildName(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _buildTeamName(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _buildTeamDesc(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _visible(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _inviteMem()
-                                          ],
-                                        ),
-                                Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                    child: SolidButton(
-                                      text: buttonText,
-                                      onPressed: () async {
-                                        if (noTeam) {
-                                          await createTeam(_teamName, _teamDesc, visibility, token);
-                                        } else {
-                                          await editTeam(_teamName, _teamDesc, visibility, token);
-                                        }
-                                        await promoteToAdmin(id, token);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ViewTeam())
-                                        );
-                                      },
-                                      color: Theme.of(context).colorScheme.secondary
-                                    )
-                                )
-                            ]
+                    mainAxisAlignment: MainAxisAlignment
+                        .spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment
+                        .start,
+                    children: [
+                      Column(
+                          mainAxisAlignment: MainAxisAlignment
+                              .start,
+                          crossAxisAlignment: CrossAxisAlignment
+                              .start,
+                          children: [
+                            Text("TEAM INFO", style:
+                            Theme.of(context).textTheme.headline1),
+                            SizedBox(height:screenHeight*0.02),
+                            Text("Basic Info", style:
+                            Theme.of(context).textTheme.headline4),
+                            // SizedBox(height:screenHeight*0.02),
+                            // _buildName(),
+                            SizedBox(height:screenHeight*0.02),
+                            _buildTeamName(),
+                            SizedBox(height:screenHeight*0.02),
+                            _buildTeamDesc(),
+                            SizedBox(height:screenHeight*0.02),
+                            _visible(),
+                            SizedBox(height:screenHeight*0.02),
+                            _inviteMem()
+                          ],
+                      ),
+                      Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                          child: SolidButton(
+                            text: buttonText,
+                            onPressed: () async {
+                              if (noTeam) {
+                                await createTeam(_teamName, _teamDesc, visibility, token);
+                              } else {
+                                await editTeam(_teamName, _teamDesc, visibility, token);
+                              }
+                              await promoteToAdmin(id, token);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ViewTeam())
+                              );
+                            },
+                            color: Theme.of(context).colorScheme.secondary
                           )
-                            )
-                        )
-                      ],
-                    )
-                  ],
+                      )
+                  ]
                 )
             )
         )

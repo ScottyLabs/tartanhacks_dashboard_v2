@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
@@ -368,92 +369,50 @@ class _ViewTeamState extends State<ViewTeam> {
     else {
       teamID = "";
     }
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TopBar(backflag: flag),
-                    Stack(
-                      children: [
-                        Column(
-                            children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(
-                                      screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .primary,
-                                      reverse: true)
-                              ),
-                            ]
-                        ),
-                        Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth * 0.9,
-                                height: screenHeight * 0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                alignment: Alignment.topLeft,
-                                child: SingleChildScrollView(
-                                    child: Column(
-                                         mainAxisAlignment: MainAxisAlignment
-                                             .start,
-                                         crossAxisAlignment: CrossAxisAlignment
-                                             .start,
-                                         children: [
-                                           _buildTeamHeader(),
-                                           if (team != null)
-                                             Column(
-                                               crossAxisAlignment: CrossAxisAlignment.start,
-                                               children: [
-                                                 Container(
-                                                     padding: const EdgeInsets
-                                                         .fromLTRB(
-                                                         0, 5, 0, 5),
-                                                     child: _buildTeamDesc()
-                                                 ),
-                                                 _buildEditTeam(),
-                                                 Container(
-                                                     padding: const EdgeInsets
-                                                         .fromLTRB(
-                                                         0, 5, 0, 5),
-                                                     child: _buildTeamMembers()
-                                                 ),
-                                                 _inviteMembersBtn(),
-                                                 const SizedBox(height: 10),
-                                                 _leaveJoinTeamBtn()
-                                               ],
-                                             )
-                                           else
-                                             Center(child: CircularProgressIndicator(
-                                                 color: Theme
-                                                     .of(context)
-                                                     .colorScheme
-                                                     .onSurface))
-                                         ]
-                                     )
-                                )
-                            )
-                        )
-                      ],
-                    )
-                  ],
-                )
-            )
-        )
+    return DefaultPage(
+      backflag: flag,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: GradBox(
+                  width: screenWidth * 0.9,
+                  height: screenHeight * 0.75,
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  alignment: Alignment.topLeft,
+                  child: SingleChildScrollView(
+                      child: Column(
+                           mainAxisAlignment: MainAxisAlignment.start,
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             _buildTeamHeader(),
+                             if (team != null)
+                               Column(
+                                 crossAxisAlignment: CrossAxisAlignment.start,
+                                 children: [
+                                   Container(
+                                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                       child: _buildTeamDesc()
+                                   ),
+                                   _buildEditTeam(),
+                                   Container(
+                                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                       child: _buildTeamMembers()
+                                   ),
+                                   _inviteMembersBtn(),
+                                   const SizedBox(height: 10),
+                                   _leaveJoinTeamBtn()
+                                 ],
+                               )
+                             else
+                               Center(child: CircularProgressIndicator(
+                                   color: Theme.of(context).colorScheme.onSurface))
+                           ]
+                       )
+                  )
+              )
+          )
     );
   }
 }

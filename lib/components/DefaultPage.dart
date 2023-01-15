@@ -6,8 +6,10 @@ import 'topbar/TopBar.dart';
 class DefaultPage extends StatelessWidget {
   final Widget child;
   final bool reverse;
+  final bool backflag;
+  final bool isSponsor;
 
-  const DefaultPage({this.child, this.reverse=true});
+  const DefaultPage({this.child, this.reverse=true, this.backflag=false, this.isSponsor=false});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class DefaultPage extends StatelessWidget {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const TopBar(),
+                      TopBar(backflag: backflag, isSponsor: isSponsor),
                       Stack(
                           children: [
                             Column(
@@ -33,15 +35,13 @@ class DefaultPage extends StatelessWidget {
                                       size: Size(screenWidth, screenHeight * 0.75),
                                       painter: CurvedTop(
                                           color1: Theme.of(context).colorScheme.primary,
-                                          color2: Theme.of(context).colorScheme.secondaryVariant,
+                                          color2: Theme.of(context).colorScheme.secondary,
                                           reverse: reverse
                                       )
                                   ),
                                 ]
                             ),
                             Container(
-                                padding: EdgeInsets.fromLTRB(screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                                height: screenHeight * 0.8,
                                 child: child
                             )
                           ]

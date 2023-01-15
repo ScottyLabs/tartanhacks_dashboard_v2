@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 import 'create_team.dart';
 import 'view_team.dart';
 
@@ -101,7 +100,6 @@ class _TeamsListState extends State<TeamsList> {
     return btn;
   }
 
-
   Widget _buildTeamJoinBtn(String teamID) {
     if (requestedTeams.contains(teamID)) {
       return SolidButton(
@@ -177,75 +175,40 @@ class _TeamsListState extends State<TeamsList> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: screenHeight),
+    return DefaultPage(
+        reverse: true,
+        child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.75,
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(),
-                    Stack(
-                      children: [
-                        Column(children: [
-                          SizedBox(height: screenHeight * 0.05),
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.75),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant,
-                                  color2:
-                                      Theme.of(context).colorScheme.primary,
-                                  reverse: true)),
-                        ]),
-                        Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth * 0.9,
-                                height: screenHeight * 0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 10, 0, 10),
-                                          //height: screenHeight*0.05,
-                                          child: _buildTeamHeader()),
-                                      Container(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 5, 0, 5),
-                                          //height: screenHeight*0.2,
-                                          child: _buildCreateTeamBtn()),
-
-                                      if (teamInfos != null)
-                                        Expanded(
-                                          child: ListView.builder(
-                                            itemCount: numTeams,
-                                            itemBuilder:
-                                                (BuildContext context,
-                                                    int index) {
-                                              return _buildTeamEntry(index);
-                                            },
-                                          ),
-                                        )
-                                      else
-                                        Center(
-                                            child:
-                                                CircularProgressIndicator(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .onSurface))
-                                    ])))
-                      ],
-                    )
-                  ],
-                ))));
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                          //height: screenHeight*0.05,
+                          child: _buildTeamHeader()),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          //height: screenHeight*0.2,
+                          child: _buildCreateTeamBtn()),
+                      if (teamInfos != null)
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: numTeams,
+                            itemBuilder: (BuildContext context, int index) {
+                              return _buildTeamEntry(index);
+                            },
+                          ),
+                        )
+                      else
+                        Center(
+                            child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.onSurface))
+                    ]))));
   }
 }

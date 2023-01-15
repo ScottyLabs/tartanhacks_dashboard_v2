@@ -2,9 +2,8 @@ import 'package:flutter_smart_scan/flutter_smart_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import '../theme_changer.dart';
 
@@ -24,48 +23,27 @@ class _QRPageState extends State<QRPage> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: screenHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
-                      children: [
-                        Column(children: [
-                          SizedBox(height: screenHeight * 0.05),
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.75),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant,
-                                  color2:
-                                  Theme.of(context).colorScheme.primary,
-                                  reverse: true)),
-                        ]),
-                        Container(
-                            alignment: Alignment.center,
-                            height: screenHeight * 0.78,
-                            padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              height: screenHeight * 0.78,
+              padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
 
-                                IDCheckInHeader(_eventIDController),
-                                QREnlarged(onPressed: () async {
-                                  final String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-                                  _eventIDController.value = TextEditingValue(text: id);
-                                },)
-                              ],
-                            ))
-                      ],
-                    )
-                  ],
-                ))));
+                  IDCheckInHeader(_eventIDController),
+                  QREnlarged(onPressed: () async {
+                    final String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+                    _eventIDController.value = TextEditingValue(text: id);
+                  },)
+                ],
+              ))
+    );
   }
 }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/components/topbar/TopBar.dart';
 
 class ScanConfigPage extends StatelessWidget {
   @override
@@ -11,42 +10,22 @@ class ScanConfigPage extends StatelessWidget {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-      body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget> [
-            const TopBar(backflag: true,),
-            Stack(
-              children: [
-                Column(
-                    children:[
-                      SizedBox(height:screenHeight * 0.05),
-                      CustomPaint(
-                          size: Size(screenWidth, screenHeight * 0.75),
-                          painter: CurvedTop(
-                              color1: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryVariant,
-                              color2:
-                              Theme.of(context).colorScheme.primary,
-                              reverse: true)),
-                    ]
-                ),
-                Container(
-                    alignment: Alignment.center,
-                    height: screenHeight * 0.78,
-                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ScanConfigBox()
-                      ],
-                    ))
-              ],
-            ),
-          ]
-      ),
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              height: screenHeight * 0.78,
+              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ScanConfigBox()
+                ],
+              )
+          )
     );
   }
 }
