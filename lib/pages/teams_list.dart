@@ -151,7 +151,12 @@ class _TeamsListState extends State<TeamsList> {
     );
     return Card(
         margin: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.surfaceTint,
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2.0),
+            borderRadius: BorderRadius.circular(4.0)
+        ),
         child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
