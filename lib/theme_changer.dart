@@ -47,25 +47,30 @@ ThemeData genLightTheme (){
 
   var primary = const Color(0xFF6E9AFD);
   var secondary = const Color(0xFF4200FF);
-  var accent = const Color(0xFFFEA801);
+  var buttons = const Color(0xFFFEA801);
+  var altbuttons = const Color(0xFF9C79F0);
   var surface = const Color(0xFFF7F1E2);
-  var surface2 = const Color(0xFF6E9AFD);
+  var surface2 = const Color(0xFFA8C2fE);
   var background = const Color(0xFFF7F1E2);
+  var shadow = const Color(0xFF866CF1);
 
-  var shadow = const Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
       secondary: secondary,
-      tertiary: accent,
+      tertiary: buttons, //main button color
+      tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      background: surface2, //box gradient 2
+      surfaceTint: surface2, //box gradient 2
+      background: background,
       error: secondary, //menu buttons
       onPrimary: background,
       onSecondary: surface,
       onTertiary: surface,
+      onTertiaryContainer: surface,
       onSurface: secondary,
       onBackground: shadow, //shadows
       onError: background,
+      shadow: shadow,
       brightness: Brightness.light
   );
   return baseTheme(
@@ -77,36 +82,39 @@ ThemeData genLightTheme (){
 
 ThemeData genDarkTheme (){
 
-  var primary = const Color(0xFFFFC738);
-  var primarytrans = const Color(0xFF7B6368); // box gradient 2
-  var secondary = const Color(0xFFDB4D20);
-  var secondarytrans = const Color(0xFFDB4D20); // background curves gradient
-  var surface = const Color(0xFF07054C);
-  var background = const Color(0xFF07054C);
-  var text = const Color(0xFFFFFFFF);
-  var shadow = const Color(0x87473F3C);
+  var primary = const Color(0xFF4200FF);
+  var secondary = const Color(0xFF0085FF);
+  var buttons = const Color(0xFFFEA801);
+  var altbuttons = const Color(0xFF4200FF);
+  var surface = const Color(0xFF65676C);
+  var surface2 = const Color(0xFF866CF1);
+  var background = const Color(0xFF000000);
+  var shadow = const Color(0xFF866CF1);
+  var text = const Color(0xFFF7F1E2);
 
   ColorScheme cScheme = ColorScheme(
       primary: primary,
-      primaryVariant: primarytrans,
       secondary: secondary,
-      secondaryVariant: secondarytrans, // background curves gradient
-      tertiary: primary,
+      tertiary: buttons, //main button color
+      tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      background: primarytrans, //box gradient 2
-      error: surface, // menu buttons
-      onPrimary: background,
-      onSecondary: text,
+      surfaceTint: surface2, //box gradient 2
+      background: background,
+      error: primary, //menu buttons
+      onPrimary: text,
+      onSecondary: background,
       onTertiary: background,
-      onSurface: primary,
+      onTertiaryContainer: text,
+      onSurface: text,
       onBackground: shadow, //shadows
-      onError: primary,
-      brightness: Brightness.dark
+      onError: text,
+      shadow: shadow,
+      brightness: Brightness.light
   );
   return baseTheme(
       cScheme: cScheme,
       background: background,
-      text: text
+      text: text,
   );
 }
 

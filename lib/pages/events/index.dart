@@ -418,7 +418,7 @@ class EventsCard extends StatelessWidget {
                                     ),
                                     SolidButton(
                                       text: "Delete",
-                                      color: Theme.of(context).colorScheme.secondary,
+                                      color: Theme.of(context).colorScheme.tertiaryContainer,
                                       onPressed: () => confirmDialog(context),
                                     ),
                                   ])
