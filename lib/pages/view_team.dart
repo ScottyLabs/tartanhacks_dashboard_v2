@@ -244,44 +244,44 @@ class _ViewTeamState extends State<ViewTeam> {
     String emailInvite;
 
     return AlertDialog(
-        title: const Text('Send Invite'),
-        content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: "email"),
-                style: const TextStyle(color: Colors.black),
-                controller: inviteController,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return 'An email is required';
-                  }
-                  return null;
-                },
-                onChanged: (String value) {
-                  emailInvite = value;
-                },
-              ),
-              Container(
-                  padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SolidButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            text: "Cancel"
-                        ),
-                        SolidButton(
-                            text: "Send",
-                            onPressed: () async {
-                              await requestTeamMember(emailInvite, token);
-                            }
-                        )
-                      ]
-                  )
-              )
-            ]
-        )
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text('Send Invite', style: Theme.of(context).textTheme.headline1),
+        content: TextFormField(
+          decoration: const InputDecoration(labelText: "email"),
+          style: const TextStyle(color: Colors.black),
+          controller: inviteController,
+          validator: (String value) {
+            if (value.isEmpty) {
+              return 'An email is required';
+            }
+            return null;
+          },
+          onChanged: (String value) {
+            emailInvite = value;
+          },
+        ),
+      actions: [
+        TextButton(
+          child: Text(
+            "Cancel",
+            style: Theme.of(context
+            ).textTheme.headline4,
+          ),
+          onPressed: () async {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text(
+            "Send",
+            style: Theme.of(context
+            ).textTheme.headline4,
+          ),
+          onPressed: () async {
+            await requestTeamMember(emailInvite, token);
+          },
+        ),
+      ],
     );
   }
 
