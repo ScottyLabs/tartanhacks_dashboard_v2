@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:thdapp/providers/check_in_items_provider.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import 'pages/login.dart';
 import 'theme_changer.dart';
 
@@ -11,6 +12,7 @@ void main() => runApp(
         providers: [
           ChangeNotifierProvider(create: (context) => CheckInItemsModel()),
           ChangeNotifierProvider(create: (_) => ThemeChanger(darkTheme)),
+          ChangeNotifierProvider(create: (context) => UserInfoModel())
         ],
       child: MyApp()
     )

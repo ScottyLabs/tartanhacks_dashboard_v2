@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,58 +23,36 @@ class _ViewTeamState extends State<ViewTeam> {
 
   bool isAdmin = false;
   bool isMember = false;
-  String teamID = "";
+  bool hasTeam = false;
   Team team;
   String token;
   String memberID;
-  String teamName;
-  String teamDesc;
-  List<Widget> teamMembers = <Widget>[];
   List<String> adminIds;
-  int memLength;
-  bool visible;
-  bool flag = false;
 
-  void getData() async {
+  Future<void> _getData(String teamID, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     memberID = prefs.getString('id');
-    team = await getUserTeam(token);
-    getTeams(token);
-    if (teamID == '' &&
-        team == null) { //if not on a team, redirects to the teams list page
-      Navigator.push(
+
+    if (teamID == '' && !hasTeam) { //if not on a team, redirects to the teams list page
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) =>
               TeamsList())
       );
-    } else {
-      if (team == null) {
-        team = await getTeamInfo(teamID, token);
-        flag = true;
-      }
-      teamName = team.name;
-      teamDesc = team.description;
-      memLength = team.members.length;
-      visible = team.visible;
-      adminIds = team.admins.map((mem) => mem.id).toList();
-      isAdmin = adminIds.contains(memberID);
-      for (int i = 0; i < team.members.length; i++) {
-        if (team.members[i].id == memberID) isMember = true;
-      }
-      teamMembers = [];
-      for (int i = 0; i < memLength; i++) {
-        teamMembers.add(_buildMember(i));
-      }
-      setState(() {});
+      return;
+    } else if (teamID != ''){
+      team = await getTeamInfo(teamID, token);
     }
+
+    adminIds = team.admins.map((mem) => mem.id).toList();
+    isAdmin = adminIds.contains(memberID);
+    isMember = team.members.map((e) => e.id).contains(memberID);
   }
 
   @override
   initState() {
-    getData();
     super.initState();
-    getData();
   }
 
   Widget _buildEditTeam() {
@@ -141,11 +121,11 @@ class _ViewTeamState extends State<ViewTeam> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(teamName ?? "", style: Theme
+          Text(team.name ?? "", style: Theme
               .of(context)
               .textTheme
               .headline4),
-          Text(teamDesc ?? "", style: Theme
+          Text(team.description ?? "", style: Theme
               .of(context)
               .textTheme
               .bodyText2)
@@ -153,8 +133,7 @@ class _ViewTeamState extends State<ViewTeam> {
     );
   }
 
-  Widget _buildMember(int member) {
-    Member mem = team.members[member];
+  Widget _buildMember(Member mem) {
     String id = mem.id;
     String emailStr = "(" + mem.email + ")";
     String nameStr = mem.name;
@@ -227,16 +206,17 @@ class _ViewTeamState extends State<ViewTeam> {
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () {
-                promoteToAdmin(id, token);
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => ViewTeam())
+                promoteToAdmin(id, token).then(
+                    (_) {
+                      Navigator.of(context).pop();
+                      Provider.of<UserInfoModel>(context).fetchUserInfo();}
                 );
               },
             ),
           ],
         );
       },
-    ).then((value) => getData());
+    );
   }
 
   Widget _inviteMessage() {
@@ -286,7 +266,7 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _inviteMembersBtn() {
-    if (memLength < 4 && isAdmin && isMember) {
+    if (team.members.length < 4 && isAdmin && isMember) {
       return SolidButton(
           text: "INVITE NEW MEMBER",
           onPressed: () {
@@ -305,10 +285,6 @@ class _ViewTeamState extends State<ViewTeam> {
   }
 
   Widget _buildTeamMembers() {
-    teamMembers = [];
-    for (int i = 0; i < memLength; i++) {
-      teamMembers.add(_buildMember(i));
-    }
 
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -320,7 +296,7 @@ class _ViewTeamState extends State<ViewTeam> {
               .headline4),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-              children: teamMembers
+              children: team.members.map((e) => _buildMember(e)).toList()
           )
         ]
     );
@@ -358,17 +334,20 @@ class _ViewTeamState extends State<ViewTeam> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
+    hasTeam = Provider.of<UserInfoModel>(context).hasTeam;
+    team = Provider.of<UserInfoModel>(context).team;
+
+    String teamID = "";
     if (ModalRoute.of(context) != null) {
       teamID = ModalRoute
           .of(context)
           .settings
           .arguments as String;
     }
-    else {
-      teamID = "";
-    }
+    var _data = _getData(teamID, context);
+
     return DefaultPage(
-      backflag: flag,
+      backflag: teamID != "",
       reverse: true,
       child:
           Container(
@@ -380,34 +359,46 @@ class _ViewTeamState extends State<ViewTeam> {
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   alignment: Alignment.topLeft,
                   child: SingleChildScrollView(
-                      child: Column(
-                           mainAxisAlignment: MainAxisAlignment.start,
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                           children: [
-                             _buildTeamHeader(),
-                             if (team != null)
-                               Column(
-                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                 children: [
-                                   Container(
-                                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                       child: _buildTeamDesc()
-                                   ),
-                                   _buildEditTeam(),
-                                   Container(
-                                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                       child: _buildTeamMembers()
-                                   ),
-                                   _inviteMembersBtn(),
-                                   const SizedBox(height: 10),
-                                   _leaveJoinTeamBtn()
-                                 ],
-                               )
-                             else
-                               Center(child: CircularProgressIndicator(
-                                   color: Theme.of(context).colorScheme.onSurface))
-                           ]
-                       )
+                      child: FutureBuilder(
+                        future: _data,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            return Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildTeamHeader(),
+                                  if (team != null)
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                            child: _buildTeamDesc()
+                                        ),
+                                        _buildEditTeam(),
+                                        Container(
+                                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                            child: _buildTeamMembers()
+                                        ),
+                                        _inviteMembersBtn(),
+                                        const SizedBox(height: 10),
+                                        _leaveJoinTeamBtn()
+                                      ],
+                                    )
+                                  else
+                                    Center(child: CircularProgressIndicator(
+                                        color: Theme.of(context).colorScheme.onSurface))
+                                ]
+                            );
+                          } else {
+                            return const Center(child: Padding(
+                                child: CircularProgressIndicator(),
+                              padding: EdgeInsets.symmetric(vertical: 50),
+                            ));
+                          }
+                        },
+                      )
                   )
               )
           )

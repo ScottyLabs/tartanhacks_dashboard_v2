@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
@@ -26,25 +28,26 @@ class _CreateTeamState extends State<CreateTeam> {
 
   String token;
   SharedPreferences prefs;
-  Team team;
+
   String id;
-  bool noTeam = true;
+  bool hasTeam = false;
   void getData() async {
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     id = prefs.getString('id');
-    team = await getUserTeam(token);
-    if (team != null){ //if not on a team, redirects to the teams list page
+
+    hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+
+    if (hasTeam){
+      Team team = Provider.of<UserInfoModel>(context, listen: false).team;
       _teamName = team.name;
       _teamDesc = team.description;
       visibility = team.visible;
       teamNameController.text = _teamName;
       teamDescController.text = _teamDesc;
       buttonText = "Edit Team";
-      noTeam = false;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -230,16 +233,23 @@ class _CreateTeamState extends State<CreateTeam> {
                           child: SolidButton(
                             text: buttonText,
                             onPressed: () async {
-                              if (noTeam) {
+                              if (!hasTeam) {
                                 await createTeam(_teamName, _teamDesc, visibility, token);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ViewTeam(),
+                                      settings: const RouteSettings(
+                                        arguments: "",
+                                      )
+                                  ),
+                                );
                               } else {
                                 await editTeam(_teamName, _teamDesc, visibility, token);
+                                Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                                Navigator.pop(context);
                               }
                               await promoteToAdmin(id, token);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ViewTeam())
-                              );
                             },
                             color: Theme.of(context).colorScheme.tertiaryContainer
                           )

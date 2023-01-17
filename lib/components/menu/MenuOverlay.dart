@@ -8,7 +8,9 @@ import 'package:thdapp/pages/events/index.dart';
 import 'package:thdapp/pages/home.dart';
 import 'package:thdapp/pages/profile_page.dart';
 import 'package:thdapp/pages/project_submission.dart';
+import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/pages/view_team.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import '../../../theme_changer.dart';
 import './MenuButton.dart';
 
@@ -16,6 +18,7 @@ OverlayEntry menuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
   var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+  bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
   OverlayEntry entry;
 
   entry = OverlayEntry(
