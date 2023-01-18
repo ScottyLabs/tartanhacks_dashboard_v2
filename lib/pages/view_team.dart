@@ -193,7 +193,7 @@ class MemberListElement extends StatelessWidget {
                             WidgetSpan(
                                 child: Icon(Icons.star,
                                     size: 20,
-                                    color: Theme.of(context).colorScheme.tertiaryContainer)
+                                    color: Theme.of(context).colorScheme.tertiary)
                             )
                         ]
                     )),

@@ -68,7 +68,7 @@ class _TeamsListState extends State<TeamsList> {
       Text("TEAM", style: Theme.of(context).textTheme.headline2),
       IconButton(
           icon: const Icon(Icons.email, size: 30.0),
-          color: Theme.of(context).colorScheme.tertiaryContainer,
+          color: Theme.of(context).colorScheme.tertiary,
           onPressed: () {
             Navigator.push(
               context,
@@ -111,7 +111,6 @@ class _TeamsListState extends State<TeamsList> {
     } else {
       return SolidButton(
           text: "Ask to join",
-          color: Theme.of(context).colorScheme.tertiaryContainer,
           onPressed: () async {
             bool success = await requestTeam(teamID, token);
             if (success) {
@@ -130,7 +129,6 @@ class _TeamsListState extends State<TeamsList> {
   Widget _buildTeamDetailsBtn(String teamID) {
     SolidButton btn = SolidButton(
         text: "Details",
-        color: Theme.of(context).colorScheme.tertiaryContainer,
         onPressed: () {
           Navigator.push(
               context,
@@ -152,12 +150,7 @@ class _TeamsListState extends State<TeamsList> {
     );
     return Card(
         margin: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2.0),
-            borderRadius: BorderRadius.circular(4.0)
-        ),
+        color: Theme.of(context).colorScheme.background,
         child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
