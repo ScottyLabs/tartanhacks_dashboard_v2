@@ -9,7 +9,6 @@ class MenuChoice extends StatelessWidget {
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenWidth = mqData.size.width;
-    Color color = Theme.of(context).colorScheme.error;
     return Container(
         width: screenWidth/4,
         alignment: Alignment.centerRight,
@@ -19,7 +18,7 @@ class MenuChoice extends StatelessWidget {
               RawMaterialButton(
                 onPressed: onTap,
                 elevation: 2.0,
-                fillColor: color,
+                fillColor: Theme.of(context).colorScheme.error,
                 child: Icon(
                   icon,
                   size: 40.0,
@@ -29,9 +28,8 @@ class MenuChoice extends StatelessWidget {
                 shape: const CircleBorder(),
               ),
               Text(text,
-                style: TextStyle(
-                    color: color,
-                    fontSize: 14
+                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  color: Theme.of(context).colorScheme.error
                 ),
               )
             ]

@@ -124,64 +124,6 @@ class _CreateTeamState extends State<CreateTeam> {
     );
   }
 
-  Widget _inviteMessage(){
-    TextEditingController inviteController = TextEditingController();
-    String emailInvite;
-
-    return AlertDialog(
-                  title: const Text('Send Invite'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: "email"),
-                        style: const TextStyle(color: Colors.black),
-                        controller: inviteController,
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return 'An email is required';
-                          }
-                          return null;
-                          },
-                          onSaved: (String value) {
-                            emailInvite = value;
-                            },
-                      ),
-                      Container( 
-                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SolidButton(
-                                onPressed: () => Navigator.pop(context, 'Cancel'),
-                                text: "Cancel"
-                              ),
-                              SolidButton(
-                              text: "Send",
-                              onPressed: () async {
-                                await requestTeamMember(emailInvite, token);
-                              }
-                            )
-                          ]
-                        )
-                      )
-                    ]
-                  )
-      );
-  }
-
-  Widget _inviteMem()  {
-    return SolidButton(
-        text: "INVITE NEW MEMBER", 
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => _inviteMessage()
-          );
-        }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -205,26 +147,23 @@ class _CreateTeamState extends State<CreateTeam> {
                         .start,
                     children: [
                       Column(
-                          mainAxisAlignment: MainAxisAlignment
-                              .start,
-                          crossAxisAlignment: CrossAxisAlignment
-                              .start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const SizedBox(height: 15,),
                             Text("TEAM INFO", style:
                             Theme.of(context).textTheme.headline1),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 10),
                             Text("Basic Info", style:
                             Theme.of(context).textTheme.headline4),
                             // SizedBox(height:screenHeight*0.02),
                             // _buildName(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 15),
                             _buildTeamName(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 20),
                             _buildTeamDesc(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 20),
                             _visible(),
-                            SizedBox(height:screenHeight*0.02),
-                            _inviteMem()
                           ],
                       ),
                       Container(

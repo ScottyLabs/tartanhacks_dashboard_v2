@@ -64,11 +64,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Schedule",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             EventsHomeScreen(),
-                                        )
+                                        ),
+                                            (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -77,11 +78,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Project",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             ProjSubmit(),
-                                        )
+                                        ),
+                                        (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -90,11 +92,10 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Home",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            Home(),
-                                        )
+                                        MaterialPageRoute(builder: (context) => Home()),
+                                            (route) => false
                                     );
                                   },
                                 ),
@@ -124,14 +125,16 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Team",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                                  Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) =>
+                                    hasTeam ? MaterialPageRoute(builder: (context) =>
                                         ViewTeam(),
                                         settings: const RouteSettings(
                                           arguments: "",
                                         )
-                                    ),
+                                    ) : MaterialPageRoute(builder: (context) => TeamsList()),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),
@@ -140,11 +143,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Scan",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
                                           CheckIn(),
-                                      )
+                                      ),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),
@@ -153,11 +157,13 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Profile",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                         settings: const RouteSettings(name: "profpage"),
-                                        builder: (context) => const ProfilePage()),
+                                        builder: (context) => const ProfilePage()
+                                    ),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),

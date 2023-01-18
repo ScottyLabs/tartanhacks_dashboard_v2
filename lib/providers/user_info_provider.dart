@@ -17,12 +17,14 @@ class UserInfoModel with ChangeNotifier {
   String _token = "";
   String _uid = "";
 
-  Profile userProfile = null;
-  Team team = null;
+  Profile userProfile;
+  Team team;
   bool hasTeam = false;
   bool isAdmin = false;
 
   Status get userInfoStatus => _status;
+  String get id => _uid;
+  String get token => _token;
 
   void handleException(e) {
     _status = Status.error;
@@ -51,13 +53,13 @@ class UserInfoModel with ChangeNotifier {
   }
 
   void reset() {
-    Status _status = Status.notLoaded;
-    String _token = "";
-    String _uid = "";
+    _status = Status.notLoaded;
+    _token = "";
+    _uid = "";
 
-    Profile userProfile = null;
-    Team team = null;
-    bool hasTeam = false;
-    bool isAdmin = false;
+    userProfile = null;
+    team = null;
+    hasTeam = false;
+    isAdmin = false;
   }
 }
