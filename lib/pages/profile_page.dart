@@ -152,6 +152,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _editPicture() async {
+    profilePicFile = null;
+    print(Image.network(userData.profilePicture) == null);
+    print("code changed!");
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -166,8 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       AspectRatio(aspectRatio: 1.0 / 1.0,
-                          child: profilePicFile != null ? Image.file(profilePicFile) : Image
-                              .network(userData.profilePicture)),
+                          child: profilePicFile != null ? Image.file(profilePicFile) : Image.network(userData.profilePicture, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');},)),
                       ButtonBar(alignment: MainAxisAlignment.center,
                           children: [SolidButton(
                             text: "Gallery",
@@ -192,24 +194,27 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                     onPressed: () async {
-                      profilePicFile = null;
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: Text("Save", style: Theme.of(context).textTheme.headline4,),
                     onPressed: () async {
-                      OverlayEntry loading = loadingOverlay(context);
-                      Overlay.of(context).insert(loading);
-                      bool didUpload = await uploadProfilePic(profilePicFile, token);
-                      if (!didUpload) {
-                        errorDialog(context, "Error", "An error occurred. Please try again.");
+                      if (profilePicFile != null) {
+                        OverlayEntry loading = loadingOverlay(context);
+                        Overlay.of(context).insert(loading);
+                        bool didUpload = await uploadProfilePic(
+                            profilePicFile, token);
+                        if (!didUpload) {
+                          errorDialog(context, "Error",
+                              "An error occurred. Please try again.");
+                        }
+                        else {
+                          loading.remove();
+                        }
                       }
-                      else {
-                        loading.remove();
-                        Navigator.of(context).popUntil(ModalRoute.withName("profpage"));
-                        profilePicFile = null;
-                      }
+                      Navigator.of(context).popUntil(ModalRoute.withName(
+                      "profpage"));
                     },
                   )
                 ]
@@ -357,7 +362,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                               borderRadius: BorderRadius
                                                                   .circular(10),
                                                               child:
-                                                              AspectRatio(aspectRatio:1/1, child: Image.network(userData.profilePicture, fit: BoxFit.cover)
+                                                              AspectRatio(aspectRatio:1/1, child: Image.network(userData.profilePicture, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');},),
                                                               )
                                                           )
                                                       ),
