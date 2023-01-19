@@ -125,7 +125,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               style: TextButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 255, 75, 43),
+                // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
               ),
               onPressed: () {
 
