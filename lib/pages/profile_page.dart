@@ -31,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Profile userData;
   String teamName;
   bool isSelf = false;
+  File profilePicFile;
 
   final _editNicknameController = TextEditingController();
 
@@ -154,65 +155,74 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          // return object of type Dialog
-          return SimpleDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            children: [
-              ButtonBar(alignment: MainAxisAlignment.center,
-                  children:[SolidButton(
-                      text: "Gallery",
-                      onPressed: _getImage()
-                   ),
-                    SolidButton(
-                      text: "Camera",
-                    )
-                  ]
-              )
-
-            ]
-          );
+          return StatefulBuilder(builder: (context, setState)
+          {
+            return AlertDialog(
+                title: Text("Profile Picture:", style: Theme.of(context).textTheme.headline1),
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                content: Align(alignment: Alignment.center, widthFactor: 1, heightFactor: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      AspectRatio(aspectRatio: 1.0 / 1.0,
+                          child: profilePicFile != null ? Image.file(profilePicFile) : Image
+                              .network(userData.profilePicture)),
+                      ButtonBar(alignment: MainAxisAlignment.center,
+                          children: [SolidButton(
+                            text: "Gallery",
+                            onPressed: () {
+                              _getImage(ImageSource.gallery, setState);
+                            }
+                          ),
+                            SolidButton(
+                              text: "Camera",
+                              onPressed: () {
+                              _getImage(ImageSource.camera, setState);
+                              }
+                            )
+                          ]
+                      ),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("Cancel",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+                    onPressed: () async {
+                      profilePicFile = null;
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text("Save", style: Theme.of(context).textTheme.headline4,),
+                    onPressed: () async {
+                      OverlayEntry loading = loadingOverlay(context);
+                      Overlay.of(context).insert(loading);
+                      bool didUpload = await uploadProfilePic(profilePicFile, token);
+                      if (!didUpload) {
+                        errorDialog(context, "Error", "An error occurred. Please try again.");
+                      }
+                      else {
+                        loading.remove();
+                        Navigator.of(context).popUntil(ModalRoute.withName("profpage"));
+                        profilePicFile = null;
+                      }
+                    },
+                  )
+                ]
+            );
+          });
         }
-    );
+    ).then((value) => getData());
   }
 
-_getImage() async {
-// Pick an image
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-    return AlertDialog(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        content:
-        Center(child: FutureBuilder<File>(
-            future: getFile(),
-            builder: (context, snapshot){
-              if (snapshot.hasData){
-                return Image.file(snapshot.data);
-              }
-              return Image.network(userData.profilePicture);
-          }
-        ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              "Cancel",
-              style: Theme.of(context
-              ).textTheme.headline4,
-            ),
-            onPressed: () async {
-              Navigator.of(context).pop();
-            },
-          ),
-        ]
-    );
-    }
-    );
-  }
-
-getFile() async {
-    File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    return file;
+ _getImage(ImageSource source, setState) async {
+    profilePicFile = await ImagePicker.pickImage(source: source);
+    setState((){
+    });
   }
 
   @override
@@ -347,8 +357,8 @@ getFile() async {
                                                               borderRadius: BorderRadius
                                                                   .circular(10),
                                                               child:
-                                                              //does it need to be const?
-                                                              Image.network(userData.profilePicture)
+                                                              AspectRatio(aspectRatio:1/1, child: Image.network(userData.profilePicture, fit: BoxFit.cover)
+                                                              )
                                                           )
                                                       ),
 
