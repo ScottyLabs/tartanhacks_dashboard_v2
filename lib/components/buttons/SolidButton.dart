@@ -12,7 +12,12 @@ class SolidButton extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     if (color == null) {
-      color = Theme.of(context).colorScheme.primary;
+      color = Theme.of(context).colorScheme.tertiary;
+      textColor = Theme.of(context).colorScheme.onTertiary;
+    } else if (color == Theme.of(context).colorScheme.tertiaryContainer) {
+      textColor = Theme.of(context).colorScheme.onTertiaryContainer;
+    } else if (color == Theme.of(context).colorScheme.primary) {
+      textColor = Theme.of(context).colorScheme.onPrimary;
     } else if (color == Theme.of(context).colorScheme.secondary) {
       textColor = Theme.of(context).colorScheme.onSecondary;
     }
@@ -29,7 +34,7 @@ class SolidButton extends StatelessWidget{
           style: TextStyle(
               fontSize:16.0,
               fontWeight: FontWeight.w600,
-              color: textColor ?? Theme.of(context).colorScheme.onPrimary
+              color: textColor
           ),
           overflow: TextOverflow.fade,
           softWrap: false,

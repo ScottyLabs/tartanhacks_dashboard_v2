@@ -68,7 +68,7 @@ class _TeamsListState extends State<TeamsList> {
       Text("TEAM", style: Theme.of(context).textTheme.headline2),
       IconButton(
           icon: const Icon(Icons.email, size: 30.0),
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.tertiaryContainer,
           onPressed: () {
             Navigator.push(
               context,
@@ -81,10 +81,10 @@ class _TeamsListState extends State<TeamsList> {
   Widget mailIconSelect(bool read) {
     if (read) {
       return Icon(Icons.email,
-          color: Theme.of(context).colorScheme.secondary, size: 40.0);
+          color: Theme.of(context).colorScheme.tertiaryContainer, size: 40.0);
     } else {
       return Icon(Icons.mark_email_unread,
-          color: Theme.of(context).colorScheme.secondary, size: 40.0);
+          color: Theme.of(context).colorScheme.tertiaryContainer, size: 40.0);
     }
   }
 
@@ -110,6 +110,7 @@ class _TeamsListState extends State<TeamsList> {
     } else {
       return SolidButton(
           text: "Ask to join",
+          color: Theme.of(context).colorScheme.tertiaryContainer,
           onPressed: () async {
             bool success = await requestTeam(teamID, token);
             if (success) {
@@ -128,6 +129,7 @@ class _TeamsListState extends State<TeamsList> {
   Widget _buildTeamDetailsBtn(String teamID) {
     SolidButton btn = SolidButton(
         text: "Details",
+        color: Theme.of(context).colorScheme.tertiaryContainer,
         onPressed: () {
           Navigator.push(
               context,
@@ -149,7 +151,12 @@ class _TeamsListState extends State<TeamsList> {
     );
     return Card(
         margin: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 2.0),
+            borderRadius: BorderRadius.circular(4.0)
+        ),
         child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(

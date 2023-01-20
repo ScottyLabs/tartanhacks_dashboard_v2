@@ -183,7 +183,9 @@ class QREnlarged extends StatelessWidget {
       children: [
         Text(
           "YOUR QR CODE",
-          style: Theme.of(context).textTheme.headline1,
+          style: Theme.of(context).textTheme.headline1.copyWith(
+            color: Theme.of(context).primaryColorLight
+          ),
         ),
 
         const SizedBox(height: 8,),

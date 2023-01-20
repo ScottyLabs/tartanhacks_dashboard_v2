@@ -175,8 +175,8 @@ class _CreateTeamState extends State<CreateTeam> {
             context: context,
             builder: (_) => _inviteMessage()
           );
-        }, 
-        color: Theme.of(context).colorScheme.primary); 
+        }
+    );
   }
 
   @override
@@ -241,7 +241,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                 MaterialPageRoute(builder: (context) => ViewTeam())
                               );
                             },
-                            color: Theme.of(context).colorScheme.secondary
+                            color: Theme.of(context).colorScheme.tertiaryContainer
                           )
                       )
                   ]

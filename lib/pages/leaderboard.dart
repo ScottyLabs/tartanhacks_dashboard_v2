@@ -160,7 +160,7 @@ class _LeaderboardState extends State<Leaderboard> {
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onSecondary),
-                                color: Theme.of(context).colorScheme.secondary,
+                                color: Theme.of(context).colorScheme.tertiaryContainer,
                                 onPressed: _editNickname,
                               ),
                             ],
