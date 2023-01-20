@@ -8,7 +8,9 @@ import 'package:thdapp/pages/events/index.dart';
 import 'package:thdapp/pages/home.dart';
 import 'package:thdapp/pages/profile_page.dart';
 import 'package:thdapp/pages/project_submission.dart';
+import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/pages/view_team.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import '../../../theme_changer.dart';
 import './MenuButton.dart';
 
@@ -16,6 +18,7 @@ OverlayEntry menuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
   var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+  bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
   OverlayEntry entry;
 
   entry = OverlayEntry(
@@ -61,11 +64,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Schedule",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             EventsHomeScreen(),
-                                        )
+                                        ),
+                                            (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -74,11 +78,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Project",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             ProjSubmit(),
-                                        )
+                                        ),
+                                        (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -87,11 +92,10 @@ OverlayEntry menuOverlay(BuildContext context) {
                                   text: "Home",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            Home(),
-                                        )
+                                        MaterialPageRoute(builder: (context) => Home()),
+                                            (route) => false
                                     );
                                   },
                                 ),
@@ -121,14 +125,16 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Team",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                                  Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(builder: (context) =>
+                                    hasTeam ? MaterialPageRoute(builder: (context) =>
                                         ViewTeam(),
                                         settings: const RouteSettings(
                                           arguments: "",
                                         )
-                                    ),
+                                    ) : MaterialPageRoute(builder: (context) => TeamsList()),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),
@@ -137,11 +143,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Scan",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
                                           CheckIn(),
-                                      )
+                                      ),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),
@@ -150,11 +157,13 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 text: "Profile",
                                 onTap: () {
                                   entry.remove();
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
                                         settings: const RouteSettings(name: "profpage"),
-                                        builder: (context) => const ProfilePage()),
+                                        builder: (context) => const ProfilePage()
+                                    ),
+                                          (route) => route.isFirst
                                   );
                                 },
                               ),
