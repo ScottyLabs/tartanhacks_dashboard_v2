@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/api.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
@@ -85,7 +88,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildName() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Project Name"),
+      decoration: const InputDecoration(labelText: "Project Name"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: nameController,
       validator: (String value) {
@@ -103,7 +106,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildDesc() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Project Description"),
+      decoration: const InputDecoration(labelText: "Project Description"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: descController,
       validator: (String value) {
@@ -121,7 +124,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildGitHubURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Github Repository URL"),
+      decoration: const InputDecoration(labelText: "Github Repository URL"),
       style: Theme.of(context).textTheme.bodyText2,
       keyboardType: TextInputType.url,
       controller: githubController,
@@ -139,7 +142,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildPresURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Presentation URL"),
+      decoration: const InputDecoration(labelText: "Presentation URL"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: slidesController,
       keyboardType: TextInputType.url,
@@ -157,7 +160,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildVidURL() {
     return TextFormField(
-      decoration: formFieldStyle(context, "Video URL"),
+      decoration: const InputDecoration(labelText: "Video URL"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: videoController,
       keyboardType: TextInputType.url,
@@ -274,93 +277,66 @@ class _ProjSubmitState extends State<ProjSubmit> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body:  SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: screenHeight
-            ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const TopBar(),
-                  Stack(
-                    children: [
-                      Column(
-                          children:[
-                            SizedBox(height:screenHeight * 0.05),
-                            CustomPaint(
-                                size: Size(screenWidth, screenHeight * 0.75),
-                                painter: CurvedTop(
-                                    color1: Theme.of(context).colorScheme.secondaryVariant,
-                                    color2: Theme.of(context).colorScheme.primary,
-                                    reverse: true)
-                            ),
-                          ]
-                      ),
-                      Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: GradBox(
-                            width: screenWidth*0.9,
-                            height: screenHeight*0.75,
-                            padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                            child: Form(
-                                key: _formKey,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
-                                      const SizedBox(height:8),
-                                      _buildName(),
-                                      const SizedBox(height:8),
-                                      _buildDesc(),
-                                      const SizedBox(height:8),
-                                      _buildGitHubURL(),
-                                      const SizedBox(height:8),
-                                      _buildPresURL(),
-                                      const SizedBox(height:8),
-                                      _buildVidURL(),
-                                      const SizedBox(height:8),
-                                      _buildPresentingLive(),
-                                      SolidButton(
-                                          text: "Save",
-                                          onPressed: () {
-                                            if (!_formKey.currentState.validate()) {
-                                              return;
-                                            }
+    return DefaultPage(
+      reverse: true,
+      child:
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+              width: screenWidth*0.9,
+              height: screenHeight*0.75,
+              padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+              child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
+                        const SizedBox(height:8),
+                        _buildName(),
+                        const SizedBox(height:8),
+                        _buildDesc(),
+                        const SizedBox(height:8),
+                        _buildGitHubURL(),
+                        const SizedBox(height:8),
+                        _buildPresURL(),
+                        const SizedBox(height:8),
+                        _buildVidURL(),
+                        const SizedBox(height:8),
+                        _buildPresentingLive(),
+                        SolidButton(
+                            text: "Save",
+                            onPressed: () {
+                              if (!_formKey.currentState.validate()) {
+                                return;
+                              }
 
-                                            _formKey.currentState.save();
+                              _formKey.currentState.save();
 
-                                            submitDialog(context);
-                                          },
-                                      ),
-                                      SolidButton(
-                                          text: "Submit for Prizes",
-                                          onPressed: () {
-                                            if (hasProj) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) =>
-                                                    EnterPrizes(projId: projId, enteredPrizes: prizes,)),
-                                              );
-                                            } else {
-                                              errorDialog(context, "Error", "You do not have a project to enter!");
-                                            }
-                                          },
-                                      )
-                                    ],
-                                  )
-                                )
-                            )
-                          )
-                      )
-                    ],
+                              submitDialog(context);
+                            },
+                        ),
+                        SolidButton(
+                            text: "Submit for Prizes",
+                            onPressed: () {
+                              if (hasProj) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      EnterPrizes(projId: projId, enteredPrizes: prizes,)),
+                                );
+                              } else {
+                                errorDialog(context, "Error", "You do not have a project to enter!");
+                              }
+                            },
+                        )
+                      ],
+                    )
                   )
-                ],
               )
-          )
+            )
         )
     );
   }

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
 import 'models/check_in_item.dart';
 import 'models/profile.dart';
 import 'models/event.dart';
@@ -14,7 +15,6 @@ import 'models/lb_entry.dart';
 import 'models/prize.dart';
 import 'models/project.dart';
 import 'models/team.dart';
-import 'pages/custom_widgets.dart';
 import 'models/discord.dart';
 import 'package:http_parser/http_parser.dart';
 

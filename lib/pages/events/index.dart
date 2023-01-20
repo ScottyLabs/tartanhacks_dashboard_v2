@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/models/event.dart';
 import 'package:thdapp/pages/events/edit.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../custom_widgets.dart';
 import 'package:share/share.dart';
 
 class EventsHomeScreen extends StatefulWidget {
@@ -169,82 +172,64 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    return Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            TopBar(
-              isSponsor: isSponsor,
+    return DefaultPage(
+      isSponsor: isSponsor,
+      child:
+          //create new event button
+          Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            SolidButton(
+              text: viewPast ? "View Upcoming Events" : "View Past Events",
+              onPressed: () {
+                setState(() {
+                  viewPast = !viewPast;
+                });
+              },
             ),
-            Stack(
-              children: [
-                Column(children: [
-                  SizedBox(height: screenHeight * 0.05),
-                  CustomPaint(
-                      size: Size(screenWidth, screenHeight * 0.75),
-                      painter: CurvedTop(
-                          color1: Theme.of(context).colorScheme.primary,
-                          color2: Theme.of(context).colorScheme.secondaryVariant)),
-                ]),
-                //create new event button
-                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                  SolidButton(
-                    text: viewPast ? "View Upcoming Events" : "View Past Events",
-                    onPressed: () {
-                      setState(() {
-                        viewPast = !viewPast;
-                      });
+            const SizedBox(height: 5),
+            if (isAdmin)
+              GradBox(
+                width: screenWidth * 0.9,
+                height: 60,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditEventPage(null, editable: isAdmin,)),
+                  );
+                },
+                child: Text(
+                  "CREATE NEW EVENT",
+                  style: Theme.of(context).textTheme.headline2,
+                ),
+              ),
+            Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(25, 10, 25, 5),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
+                  child: FutureBuilder(
+                    future: getEvents(),
+                    builder: (context, eventsSnapshot) {
+                      if (eventsSnapshot.data == null ||
+                          eventsSnapshot.hasData == null) {
+                        return ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (BuildContext context, int index) {
+                            return const Center(child: CircularProgressIndicator());
+                          },
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return EventsCard(
+                              (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
+                        },
+                      );
                     },
                   ),
-                  const SizedBox(height: 5),
-                  if (isAdmin)
-                    GradBox(
-                      width: screenWidth * 0.9,
-                      height: 60,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditEventPage(null, editable: isAdmin,)),
-                        );
-                      },
-                      child: Text(
-                        "CREATE NEW EVENT",
-                        style: Theme.of(context).textTheme.headline2,
-                      ),
-                    ),
-                  Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.fromLTRB(25, 10, 25, 5),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
-                        child: FutureBuilder(
-                          future: getEvents(),
-                          builder: (context, eventsSnapshot) {
-                            if (eventsSnapshot.data == null ||
-                                eventsSnapshot.hasData == null) {
-                              return ListView.builder(
-                                itemCount: 1,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return const Center(child: CircularProgressIndicator());
-                                },
-                              );
-                            }
-                            return ListView.builder(
-                              itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return EventsCard(
-                                    (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
-                              },
-                            );
-                          },
-                        ),
-                      ))
-                ]),
-              ],
-            )
-          ],
-        )
+                ))
+          ]),
     );
   }
 }

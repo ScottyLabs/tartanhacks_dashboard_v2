@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/pages/bookmarks.dart';
-import 'custom_widgets.dart';
 import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
@@ -204,217 +207,194 @@ class _SponsorsState extends State<Sponsors> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: screenHeight),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(
-                      isSponsor: true,
-                    ),
-                    Stack(children: [
-                      Column(
-                        children: [
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.8),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant,
-                                  color2:
-                                      Theme.of(context).colorScheme.primary,
-                                  reverse: true)),
-                        ], // children
-                      ),
-                      Container(
-                          padding: EdgeInsets.fromLTRB(
-                              screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-                          height: screenHeight * 0.8,
-                          child: Column(children: [
-                            Container(
-                              alignment: Alignment.topLeft,
-                              //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+    return DefaultPage(
+      isSponsor: true,
+      reverse: true,
+      child:
+      Container(
+          padding: EdgeInsets.fromLTRB(
+              screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+          height: screenHeight * 0.8,
+          child: Column(children: [
+            Container(
+              alignment: Alignment.topLeft,
+              //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
 
-                              child: Text("Welcome to TartanHacks!",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1),
-                            ),
-                            const SizedBox(height: 10),
-                            ButtonBar(
-                                alignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SolidButton(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    child: Text(
-                                      "  Scan  ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary),
-                                    ),
-                                    onPressed: () async {
-                                      String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-                                      Profile isValid =
-                                          await getProfile(id, token);
-                                      if (isValid != null) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProfilePage(
-                                                    bookmarks: bookmarks,
-                                                  ),
-                                              settings: RouteSettings(
-                                                arguments: id,
-                                              )),
-                                        ).then((value) => getBookmarks());
-                                      } else {
-                                        errorDialog(context, "Error",
-                                            "Invalid user ID.");
-                                      }
-                                    },
+              child: Text("Welcome to TartanHacks!",
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1),
+            ),
+            const SizedBox(height: 10),
+            ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SolidButton(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary,
+                    child: Text(
+                      "  Scan  ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary),
+                    ),
+                    onPressed: () async {
+                      String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+                      Profile isValid =
+                          await getProfile(id, token);
+                      if (isValid != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProfilePage(
+                                    bookmarks: bookmarks,
                                   ),
-                                  SolidButton(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    child: Text(
-                                      " Bookmarks ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Bookmarks()),
-                                      );
-                                    },
-                                  ),
-                                ]),
-                            ButtonBar(
-                                alignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SolidButton(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary,
-                                    child: Text(
-                                      "  Discord Server  ",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headline2
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSecondary),
-                                    ),
-                                    onPressed: () {
-                                      discordVerifyDialog(context);
-                                    },
-                                  ),
-                                ]),
-                            const SizedBox(height: 10),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text("Search",
-                                    textAlign: TextAlign.left,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline3)),
-                            Row(children: [
-                              Expanded(
-                                child: TextField(
-                                  style:
-                                      Theme.of(context).textTheme.bodyText2,
-                                  enableSuggestions: false,
-                                  controller: myController,
-                                  textInputAction: TextInputAction.send,
-                                  onSubmitted: (value) {
-                                    search();
-                                  },
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              SolidButton(
-                                  onPressed: search,
-                                  child: Icon(Icons.subdirectory_arrow_left,
-                                      size: 30,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onPrimary)),
-                            ]),
-                            const SizedBox(height: 25),
-                            if (students != null && students.isNotEmpty)
-                              Expanded(
-                                  child: Container(
-                                      alignment: Alignment.bottomCenter,
-                                      child: ListView.builder(
-                                          itemCount: students.length,
-                                          itemBuilder:
-                                              (BuildContext context,
-                                                  int index) {
-                                            bool isBookmark = (bookmarks.isNotEmpty)
-                                                ? bookmarks.containsValue(
-                                                    studentIds[index])
-                                                : false;
-                                            return InfoTile(
-                                                name: (students[index] != null)
-                                                    ? students[index].firstName +
-                                                        " " +
-                                                        students[index]
-                                                            .lastName
-                                                    : "NULL",
-                                                team: (studentTeams[index] != null)
-                                                    ? studentTeams[index]
-                                                    : "No team",
-                                                bio: (students[index] != null)
-                                                    ? students[index].college +
-                                                        " c/o " +
-                                                        students[index]
-                                                            .graduationYear
-                                                            .toString()
-                                                    : "NULL",
-                                                participantId:
-                                                    studentIds[index],
-                                                bookmarkId:
-                                                    (bookmarks.isNotEmpty && bookmarks.containsValue(studentIds[index]))
-                                                        ? bookmarks.keys
-                                                            .firstWhere((k) =>
-                                                                bookmarks[k] ==
-                                                                studentIds[
-                                                                    index])
-                                                        : null,
-                                                isBookmark: isBookmark,
-                                                toggleFn: isBookmark
-                                                    ? removeBookmark
-                                                    : newBookmark,
-                                                bmMap: bookmarks,
-                                                updateBM: getBookmarks);
-                                          })))
-                            else
-                              Center(child: placeholder)
-                          ] //children
-                              ))
-                    ] // children
-                        ),
-                  ]))),
+                              settings: RouteSettings(
+                                arguments: id,
+                              )),
+                        ).then((value) => getBookmarks());
+                      } else {
+                        errorDialog(context, "Error",
+                            "Invalid user ID.");
+                      }
+                    },
+                  ),
+                  SolidButton(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary,
+                    child: Text(
+                      " Bookmarks ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                Bookmarks()),
+                      );
+                    },
+                  ),
+                ]),
+            ButtonBar(
+                alignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SolidButton(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary,
+                    child: Text(
+                      "  Discord Server  ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2
+                          .copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary),
+                    ),
+                    onPressed: () {
+                      discordVerifyDialog(context);
+                    },
+                  ),
+                ]),
+            const SizedBox(height: 10),
+            Container(
+                alignment: Alignment.centerLeft,
+                child: Text("Search",
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3)),
+            Row(children: [
+              Expanded(
+                child: TextField(
+                  style:
+                      Theme.of(context).textTheme.bodyText2,
+                  enableSuggestions: false,
+                  controller: myController,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (value) {
+                    search();
+                  },
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              SolidButton(
+                  onPressed: search,
+                  child: Icon(Icons.subdirectory_arrow_left,
+                      size: 30,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onPrimary)),
+            ]),
+            const SizedBox(height: 25),
+            if (students != null && students.isNotEmpty)
+              Expanded(
+                  child: Container(
+                      alignment: Alignment.bottomCenter,
+                      child: ListView.builder(
+                          itemCount: students.length,
+                          itemBuilder:
+                              (BuildContext context,
+                                  int index) {
+                            bool isBookmark = (bookmarks.isNotEmpty)
+                                ? bookmarks.containsValue(
+                                    studentIds[index])
+                                : false;
+                            return InfoTile(
+                                name: (students[index] != null)
+                                    ? students[index].firstName +
+                                        " " +
+                                        students[index]
+                                            .lastName
+                                    : "NULL",
+                                team: (studentTeams[index] != null)
+                                    ? studentTeams[index]
+                                    : "No team",
+                                bio: (students[index] != null)
+                                    ? students[index].college +
+                                        " c/o " +
+                                        students[index]
+                                            .graduationYear
+                                            .toString()
+                                    : "NULL",
+                                participantId:
+                                    studentIds[index],
+                                bookmarkId:
+                                    (bookmarks.isNotEmpty && bookmarks.containsValue(studentIds[index]))
+                                        ? bookmarks.keys
+                                            .firstWhere((k) =>
+                                                bookmarks[k] ==
+                                                studentIds[
+                                                    index])
+                                        : null,
+                                isBookmark: isBookmark,
+                                toggleFn: isBookmark
+                                    ? removeBookmark
+                                    : newBookmark,
+                                bmMap: bookmarks,
+                                updateBM: getBookmarks);
+                          })))
+            else
+              Center(child: placeholder)
+          ])
+      )
     );
   }
 }

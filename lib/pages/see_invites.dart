@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/background_shapes/CurvedTop.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/topbar/TopBar.dart';
 import 'team_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
@@ -170,69 +174,42 @@ Widget _buildInviteHeader() {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    return Scaffold(
-        body:  SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: GradBox(
+                  width: screenWidth*0.9,
+                  height: screenHeight*0.75,
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                            children:[
-                              SizedBox(height:screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context).colorScheme.secondaryVariant,
-                                      color2: Theme.of(context).colorScheme.primary,
-                                      reverse: true)
-                              ),
-                            ]
-                        ),
                         Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth*0.9,
-                                height: screenHeight*0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                          child: _buildInviteHeader()
-                                      ),
-                                      if (prefs == null)
-                                        const Center(child: CircularProgressIndicator())
-                                      else if (requestsList.isEmpty)
-                                        Text("No invites.", style: Theme.of(context).textTheme.bodyText2,)
-                                      else
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemCount: numRequests,
-                                          itemBuilder: (BuildContext context, int index){
-                                            return _buildRequests(index);
-                                          },
-                                        ),
-                                      )
-                                    ]
-                                )
-                            )
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: _buildInviteHeader()
+                        ),
+                        if (prefs == null)
+                          const Center(child: CircularProgressIndicator())
+                        else if (requestsList.isEmpty)
+                          Text("No invites.", style: Theme.of(context).textTheme.bodyText2,)
+                        else
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: numRequests,
+                            itemBuilder: (BuildContext context, int index){
+                              return _buildRequests(index);
+                            },
+                          ),
                         )
-                      ],
-                    )
-                  ],
-                )
-            )
-        )
+                      ]
+                  )
+              )
+          )
     );
   }
 }

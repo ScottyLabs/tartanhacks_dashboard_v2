@@ -45,27 +45,25 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 
 ThemeData genLightTheme (){
 
-  var primary = const Color(0xFFFFC738);
-  var primarytrans = const Color(0xFFDB4D20); // background curves gradient
-  var secondary = const Color(0xFFFFC738);
-  var secondarytrans = const Color(0xFFFFE8AC); // box gradient 2
-  var accent = const Color(0xFFDB4D20);
-  var surface = const Color(0xFFFFFFFF);
-  var background = const Color(0xFFFFFFFF);
+  var primary = const Color(0xFF6E9AFD);
+  var secondary = const Color(0xFF4200FF);
+  var accent = const Color(0xFFFEA801);
+  var surface = const Color(0xFFF7F1E2);
+  var surface2 = const Color(0xFF6E9AFD);
+  var background = const Color(0xFFF7F1E2);
 
   var shadow = const Color(0x30473F3C);
   ColorScheme cScheme = ColorScheme(
       primary: primary,
-      primaryVariant: secondarytrans,
       secondary: secondary,
-      secondaryVariant: primarytrans, // background curves gradient
-
+      tertiary: accent,
       surface: surface, //box gradient 1
-      background: secondarytrans, //box gradient 2
-      error: accent, //menu buttons
+      background: surface2, //box gradient 2
+      error: secondary, //menu buttons
       onPrimary: background,
       onSecondary: surface,
-      onSurface: accent,
+      onTertiary: surface,
+      onSurface: secondary,
       onBackground: shadow, //shadows
       onError: background,
       brightness: Brightness.light
@@ -73,7 +71,7 @@ ThemeData genLightTheme (){
   return baseTheme(
     cScheme: cScheme,
     background: background,
-    text: accent
+    text: secondary
   );
 }
 
@@ -93,12 +91,13 @@ ThemeData genDarkTheme (){
       primaryVariant: primarytrans,
       secondary: secondary,
       secondaryVariant: secondarytrans, // background curves gradient
-
+      tertiary: primary,
       surface: surface, //box gradient 1
       background: primarytrans, //box gradient 2
       error: surface, // menu buttons
       onPrimary: background,
       onSecondary: text,
+      onTertiary: background,
       onSurface: primary,
       onBackground: shadow, //shadows
       onError: primary,
