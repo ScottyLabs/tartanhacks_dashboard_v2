@@ -3,6 +3,7 @@ import 'package:charcode/charcode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/components/DefaultPage.dart';
@@ -11,6 +12,7 @@ import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/pages/team_api.dart';
 import 'package:thdapp/pages/teams_list.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 
@@ -29,23 +31,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   SharedPreferences prefs;
-  bool isAdmin = false;
-  String id;
   String token;
 
-  Profile userData;
-  Team userTeam;
   DiscordInfo discordInfo;
 
   void getData() async {
     prefs = await SharedPreferences.getInstance();
-
-    isAdmin = prefs.getBool('admin');
-    id = prefs.getString('id');
     token = prefs.getString('token');
 
-    userData = await getProfile(id, token);
-    userTeam = await getUserTeam(token);
     discordInfo = await getDiscordInfo(token);
 
     setState(() {});
@@ -55,6 +48,7 @@ class _HomeState extends State<Home> {
   initState() {
     super.initState();
     getData();
+    Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
   }
 
   _launchDiscord() async {
@@ -156,8 +150,14 @@ class _HomeState extends State<Home> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
+    Profile userData = Provider.of<UserInfoModel>(context).userProfile;
+    Team userTeam = Provider.of<UserInfoModel>(context).team;
+    Status status = Provider.of<UserInfoModel>(context).userInfoStatus;
+    bool hasTeam = Provider.of<UserInfoModel>(context).hasTeam;
+
     return DefaultPage(
-        child: (userData == null)
+        child: (status != Status.loaded)
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -318,7 +318,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  if (userTeam != null)
+                  if (hasTeam)
                     GradBox(
                       width: screenWidth * 0.9,
                       height: 60,

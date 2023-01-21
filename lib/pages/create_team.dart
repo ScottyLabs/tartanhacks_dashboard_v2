@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
@@ -26,25 +28,26 @@ class _CreateTeamState extends State<CreateTeam> {
 
   String token;
   SharedPreferences prefs;
-  Team team;
+
   String id;
-  bool noTeam = true;
+  bool hasTeam = false;
   void getData() async {
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     id = prefs.getString('id');
-    team = await getUserTeam(token);
-    if (team != null){ //if not on a team, redirects to the teams list page
+
+    hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+
+    if (hasTeam){
+      Team team = Provider.of<UserInfoModel>(context, listen: false).team;
       _teamName = team.name;
       _teamDesc = team.description;
       visibility = team.visible;
       teamNameController.text = _teamName;
       teamDescController.text = _teamDesc;
       buttonText = "Edit Team";
-      noTeam = false;
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -121,64 +124,6 @@ class _CreateTeamState extends State<CreateTeam> {
     );
   }
 
-  Widget _inviteMessage(){
-    TextEditingController inviteController = TextEditingController();
-    String emailInvite;
-
-    return AlertDialog(
-                  title: const Text('Send Invite'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        decoration: const InputDecoration(labelText: "email"),
-                        style: const TextStyle(color: Colors.black),
-                        controller: inviteController,
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return 'An email is required';
-                          }
-                          return null;
-                          },
-                          onSaved: (String value) {
-                            emailInvite = value;
-                            },
-                      ),
-                      Container( 
-                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SolidButton(
-                                onPressed: () => Navigator.pop(context, 'Cancel'),
-                                text: "Cancel"
-                              ),
-                              SolidButton(
-                              text: "Send",
-                              onPressed: () async {
-                                await requestTeamMember(emailInvite, token);
-                              }
-                            )
-                          ]
-                        )
-                      )
-                    ]
-                  )
-      );
-  }
-
-  Widget _inviteMem()  {
-    return SolidButton(
-        text: "INVITE NEW MEMBER", 
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => _inviteMessage()
-          );
-        }
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -202,26 +147,23 @@ class _CreateTeamState extends State<CreateTeam> {
                         .start,
                     children: [
                       Column(
-                          mainAxisAlignment: MainAxisAlignment
-                              .start,
-                          crossAxisAlignment: CrossAxisAlignment
-                              .start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const SizedBox(height: 15,),
                             Text("TEAM INFO", style:
                             Theme.of(context).textTheme.headline1),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 10),
                             Text("Basic Info", style:
                             Theme.of(context).textTheme.headline4),
                             // SizedBox(height:screenHeight*0.02),
                             // _buildName(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 15),
                             _buildTeamName(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 20),
                             _buildTeamDesc(),
-                            SizedBox(height:screenHeight*0.02),
+                            const SizedBox(height: 20),
                             _visible(),
-                            SizedBox(height:screenHeight*0.02),
-                            _inviteMem()
                           ],
                       ),
                       Container(
@@ -230,16 +172,23 @@ class _CreateTeamState extends State<CreateTeam> {
                           child: SolidButton(
                             text: buttonText,
                             onPressed: () async {
-                              if (noTeam) {
+                              if (!hasTeam) {
                                 await createTeam(_teamName, _teamDesc, visibility, token);
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ViewTeam(),
+                                      settings: const RouteSettings(
+                                        arguments: "",
+                                      )
+                                  ),
+                                );
                               } else {
                                 await editTeam(_teamName, _teamDesc, visibility, token);
+                                Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                                Navigator.pop(context);
                               }
                               await promoteToAdmin(id, token);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => ViewTeam())
-                              );
                             },
                             color: Theme.of(context).colorScheme.tertiaryContainer
                           )

@@ -233,6 +233,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                       style: Theme.of(context).textTheme.headline4,
                     ),
                     onPressed: () {
+                      Navigator.pop(context);
                       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProjSubmit()));
                     },
                   ),
