@@ -157,8 +157,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _editPicture() async {
     profilePicFile = null;
-    print(Image.network(userData.profilePicture) == null);
-    print("code changed!");
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -323,9 +321,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       0, 10, 0, 10),
                                   child: Row(
                                     children: [
-                                      // SolidButton(
-                                      //   text: "This is a test",
-                                      // ),
                                       //make stack with this and add a gesture detector as a child
                                       GestureDetector(
                                           onTap: (){
@@ -333,12 +328,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                           },
                                           child:
                                           ClipRRect(
-                                              borderRadius: BorderRadius
-                                                  .circular(10),
+                                            borderRadius: BorderRadius
+                                                .circular(10),
                                               child:
-                                              //does it need to be const?
-                                              Image.network(userData.profilePicture)
-                                          )
+                                                  AspectRatio(aspectRatio:1/1, child:
+                                                  Image.network(userData.profilePicture, fit: BoxFit.cover, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');}))),
                                       ),
                                       const SizedBox(width: 25),
                                       Expanded(
