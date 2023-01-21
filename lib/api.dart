@@ -1,3 +1,4 @@
+import 'dart:io' as io;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -15,6 +16,7 @@ import 'models/prize.dart';
 import 'models/project.dart';
 import 'models/team.dart';
 import 'models/discord.dart';
+import 'package:http_parser/http_parser.dart';
 
 SharedPreferences prefs;
 
@@ -671,3 +673,20 @@ Future<DiscordInfo> getDiscordInfo(String token) async {
     return null;
   }
 }
+
+Future<bool> uploadProfilePic(io.File profilePicFile, String token) async {
+  String url = baseUrl + "user/profile-picture";
+  var uri = Uri.parse(url);
+  var request = http.MultipartRequest("POST", uri);
+  request.files.add(http.MultipartFile.fromBytes("file", profilePicFile.readAsBytesSync(), filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
+  request.headers['x-access-token'] = token;
+  var response = await request.send();
+  if (response.statusCode == 200) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
