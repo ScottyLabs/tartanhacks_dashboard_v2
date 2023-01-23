@@ -253,7 +253,7 @@ class TeamMail extends StatelessWidget {
             color: Theme
                 .of(context)
                 .colorScheme
-                .tertiaryContainer,
+                .tertiary,
             onPressed: () {
               Navigator.push(
                 context,

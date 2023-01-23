@@ -3,6 +3,7 @@ import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
 import 'package:thdapp/components/text/GradText.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import '../api.dart';
 import '../models/user.dart';
 import '../components/background_shapes/CurvedBottom.dart';
@@ -23,7 +24,6 @@ class _LoginState extends State<Login> {
   final _passwordcontroller = TextEditingController();
 
   SharedPreferences prefs;
-  bool prefsLoaded = false;
 
   @override
   initState() {
@@ -42,20 +42,24 @@ class _LoginState extends State<Login> {
     OverlayEntry loading = loadingOverlay(context);
     Overlay.of(context).insert(loading);
     User logindata = await checkCredentials(email, password);
-    loading.remove();
     if (logindata != null) {
       if (logindata.company != null) {
+        loading.remove();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (ctxt) => Home()),
-        );
+        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+          loading.remove();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (ctxt) => Home()),
+          );
+        });
       }
     } else {
+      loading.remove();
       errorDialog(
           context, "Login Failure", "Your username or password is incorrect.");
     }
@@ -82,8 +86,6 @@ class _LoginState extends State<Login> {
         );
       }
     }
-
-    prefsLoaded = true;
   }
 
   @override

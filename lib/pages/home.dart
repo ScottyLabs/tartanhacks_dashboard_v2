@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   void getData() async {
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
 
     discordInfo = await getDiscordInfo(token);
 
@@ -48,7 +49,6 @@ class _HomeState extends State<Home> {
   initState() {
     super.initState();
     getData();
-    Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
   }
 
   _launchDiscord() async {
