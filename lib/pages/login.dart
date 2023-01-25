@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
@@ -44,6 +45,7 @@ class _LoginState extends State<Login> {
     User logindata = await checkCredentials(email, password);
     loading.remove();
     if (logindata != null) {
+      TextInput.finishAutofillContext();
       if (logindata.company != null) {
         Navigator.pushReplacement(
           context,
@@ -127,28 +129,35 @@ class _LoginState extends State<Login> {
                               color2: Theme.of(context)
                                   .colorScheme
                                   .secondaryVariant)),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                            controller: _emailcontroller,
-                            decoration: const InputDecoration(
-                              labelText: "Email",
-                            ),
-                            style: Theme.of(context).textTheme.bodyText2,
-                            keyboardType: TextInputType.visiblePassword,
-                            textInputAction: TextInputAction.next),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                          controller: _passwordcontroller,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: "Password",
+                      AutofillGroup(
+                          child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextField(
+                                controller: _emailcontroller,
+                                autofillHints: const [AutofillHints.email],
+                                decoration: const InputDecoration(
+                                  labelText: "Email",
+                                ),
+                                style: Theme.of(context).textTheme.bodyText2,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next),
                           ),
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextField(
+                              controller: _passwordcontroller,
+                              autofillHints: const [AutofillHints.password],
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: "Password",
+                              ),
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          )
+                        ],
+                      )),
                       const SizedBox(height: 10),
                       GradBox(
                           width: 150,
