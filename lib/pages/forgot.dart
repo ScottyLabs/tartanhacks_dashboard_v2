@@ -114,7 +114,7 @@ class _ForgotState extends State<Forgot>{
                           Text("Already have an account?",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Theme.of(context).colorScheme.primary
+                                color: Theme.of(context).colorScheme.onPrimary
                               )
                           ),
                           TextButton(
@@ -128,7 +128,7 @@ class _ForgotState extends State<Forgot>{
                               child: Text("Try Logging In",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Theme.of(context).colorScheme.secondary
+                                    color: Theme.of(context).colorScheme.tertiary
                                   )
                               )
                           ),

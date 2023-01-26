@@ -173,7 +173,7 @@ class _LoginState extends State<Login> {
                           child: Text("Forgot Password",
                               style: TextStyle(
                                   color:
-                                      Theme.of(context).colorScheme.primary))),
+                                      Theme.of(context).colorScheme.tertiary))),
                     ]))));
   }
 }
