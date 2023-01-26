@@ -112,9 +112,10 @@ class _ForgotState extends State<Forgot> {
                         children: [
                           Text("Already have an account?",
                               style: TextStyle(
-                                  fontSize: 14,
-                                  color:
-                                      Theme.of(context).colorScheme.primary)),
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onPrimary
+                              )
+                          ),
                           TextButton(
                               onPressed: () {
                                 Navigator.push(
@@ -125,10 +126,11 @@ class _ForgotState extends State<Forgot> {
                               },
                               child: Text("Try Logging In",
                                   style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary))),
+                                    fontSize: 14,
+                                    color: Theme.of(context).colorScheme.tertiary
+                                  )
+                              )
+                          ),
                         ],
                       ),
                       const SizedBox(height: 5)

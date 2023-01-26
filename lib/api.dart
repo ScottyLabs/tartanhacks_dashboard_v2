@@ -689,4 +689,21 @@ Future<bool> uploadProfilePic(io.File profilePicFile, String token) async {
   }
 }
 
+Future<bool> deleteProfilePic(String token) async {
+  String url = baseUrl + "user/profile-picture";
+  final http.Response response = await http.delete(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      "x-access-token": token
+    },
+  );
+  if (response.statusCode == 200) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 
