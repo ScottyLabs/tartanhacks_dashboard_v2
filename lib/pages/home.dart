@@ -295,18 +295,17 @@ class _HomeState extends State<Home> {
                                 Text("Discord Server",
                                     style:
                                         Theme.of(context).textTheme.headline4),
+                                Text(
+                                  "Join the official TartanHacks Discord!",
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  textAlign: TextAlign.center,
+                                ),
                                 SolidButton(
                                   text: "Go to Server",
                                   onPressed: () {
                                     _launchDiscord();
                                   },
                                 ),
-                                SolidButton(
-                                  text: "Get Verified",
-                                  onPressed: () {
-                                    discordVerifyDialog(context);
-                                  },
-                                )
                               ])),
                     ],
                     options: CarouselOptions(
