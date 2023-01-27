@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
   }
 
   void login(String email, String password) async {
-    OverlayEntry loading = loadingOverlay(context);
+    OverlayEntry loading = LoadingOverlay(context);
     Overlay.of(context).insert(loading);
     User logindata = await checkCredentials(email, password);
     if (logindata != null) {

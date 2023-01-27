@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () async{
-                OverlayEntry loading = loadingOverlay(context);
+                OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success = await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
@@ -176,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             text: "Delete Uploaded Picture",
                             onPressed: () async {
                               if (Image.network(userData.profilePicture) != null) {
-                                OverlayEntry loading = loadingOverlay(context);
+                                OverlayEntry loading = LoadingOverlay(context);
                                 Overlay.of(context).insert(loading);
                                 bool didUpload = await deleteProfilePic(token);
                                 if (!didUpload) {
@@ -231,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text("Save", style: Theme.of(context).textTheme.headline4,),
                     onPressed: () async {
                       if (profilePicFile != null) {
-                        OverlayEntry loading = loadingOverlay(context);
+                        OverlayEntry loading = LoadingOverlay(context);
                         Overlay.of(context).insert(loading);
                         bool didUpload = await uploadProfilePic(
                             profilePicFile, token);
