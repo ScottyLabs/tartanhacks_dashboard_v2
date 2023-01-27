@@ -15,6 +15,34 @@ class ProjSubmit extends StatefulWidget {
   _ProjSubmitState createState() => _ProjSubmitState();
 }
 
+class ProjSubmitTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String fieldName;
+  final bool isOptional;
+
+  const ProjSubmitTextField(this.controller, this.fieldName, {this.isOptional = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: fieldName + (isOptional ? " (optional)" : ""),
+        errorStyle: TextStyle(color: Theme.of(context).colorScheme.error)
+      ),
+      style: Theme.of(context).textTheme.bodyText2,
+      controller: controller,
+      validator: (String value) {
+        if (value.isEmpty && !isOptional) {
+          return '$fieldName is required';
+        }
+        return null;
+      },
+    );
+  }
+
+
+}
+
 class _ProjSubmitState extends State<ProjSubmit> {
 
   bool hasProj = false;
@@ -23,7 +51,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
   String _githubUrl = "";
   String _presUrl = "";
   String _vidUrl = "";
-  bool isPresenting = false;
+  bool isPresenting = true;
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController githubController = TextEditingController();
@@ -84,118 +112,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
     slidesController.dispose();
     videoController.dispose();
     super.dispose();
-  }
-
-  Widget _buildName() {
-    return TextFormField(
-      decoration: const InputDecoration(labelText: "Project Name"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: nameController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Project name is required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _projName = value;
-      },
-    );
-  }
-
-
-  Widget _buildDesc() {
-    return TextFormField(
-      decoration: const InputDecoration(labelText: "Project Description"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: descController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Project description is required';
-        }
-
-        return null;
-      },
-      onSaved: (String value) {
-        _projDesc = value;
-      },
-    );
-  }
-
-  Widget _buildGitHubURL() {
-    return TextFormField(
-      decoration: const InputDecoration(labelText: "Github Repository URL"),
-      style: Theme.of(context).textTheme.bodyText2,
-      keyboardType: TextInputType.url,
-      controller: githubController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'URL is Required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _githubUrl = value;
-      },
-    );
-  }
-
-  Widget _buildPresURL() {
-    return TextFormField(
-      decoration: const InputDecoration(labelText: "Presentation URL"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: slidesController,
-      keyboardType: TextInputType.url,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'URL is Required';
-        }
-        return null;
-      },
-      onSaved: (String value) {
-        _presUrl = value;
-      },
-    );
-  }
-
-  Widget _buildVidURL() {
-    return TextFormField(
-      decoration: const InputDecoration(labelText: "Video URL (optional)"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: videoController,
-      keyboardType: TextInputType.url,
-      onSaved: (String value) {
-        _vidUrl = value;
-      },
-    );
-  }
-
-  Widget _buildPresentingLive() {
-      return Container(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-        child: Column(
-            children: <Widget>[
-              const SizedBox(width: 20,),
-              Text('Presenting',
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headline4),
-              Text('Do you wish to present live at the expo? If not, you must submit a video.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2),
-              Switch(
-                activeColor: Theme.of(context).colorScheme.secondary,
-                activeTrackColor: Theme.of(context).colorScheme.onSurface,
-                inactiveTrackColor: Theme.of(context).colorScheme.surface,
-                value: isPresenting,
-                onChanged: (value) {
-                  setState(() {
-                    isPresenting = value;
-                  });
-                }
-              )
-            ]
-        )
-    );
   }
 
   void submitDialog (BuildContext context) {
@@ -292,15 +208,15 @@ class _ProjSubmitState extends State<ProjSubmit> {
                       children: [
                         Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
                         const SizedBox(height:16),
-                        _buildName(),
+                        ProjSubmitTextField(nameController, "Project Name"),
                         const SizedBox(height:8),
-                        _buildDesc(),
+                        ProjSubmitTextField(descController, "Project Description"),
                         const SizedBox(height:8),
-                        _buildGitHubURL(),
+                        ProjSubmitTextField(githubController, "GitHub Repository URL"),
                         const SizedBox(height:8),
-                        _buildPresURL(),
+                        ProjSubmitTextField(slidesController, "Presentation Slides URL"),
                         const SizedBox(height:8),
-                        _buildVidURL(),
+                        ProjSubmitTextField(videoController, "Video URL", isOptional: true),
                         const SizedBox(height:8),
                         SolidButton(
                             text: "Save",
