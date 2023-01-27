@@ -4,6 +4,7 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/loading/LoadingOverlay.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
@@ -45,6 +46,7 @@ class ProjSubmitTextField extends StatelessWidget {
 
 class _ProjSubmitState extends State<ProjSubmit> {
 
+  OverlayEntry loading;
   bool hasProj = false;
   String _projName = "";
   String _projDesc = "";
@@ -93,6 +95,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
       githubController.text = _githubUrl;
     }
 
+    if (loading != null) {
+      loading.remove();
+    }
+
     setState(() {
 
     });
@@ -102,6 +108,13 @@ class _ProjSubmitState extends State<ProjSubmit> {
   initState() {
     super.initState();
     getData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loading = LoadingOverlay(context);
+      setState(() {
+
+      });
+      Overlay.of(context).insert(loading);
+    });
   }
 
   @override
