@@ -234,7 +234,10 @@ class TeamMail extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: IconButton(
             icon: const Icon(Icons.email, size: 30.0),
-            color: Theme.of(context).colorScheme.tertiaryContainer,
+            color: Theme
+                .of(context)
+                .colorScheme
+                .tertiary,
             onPressed: () {
               Navigator.push(
                 context,
