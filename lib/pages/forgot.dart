@@ -30,7 +30,7 @@ class _ForgotState extends State<Forgot> {
   }
 
   void passwordRecovery(BuildContext context) async {
-    OverlayEntry loading = loadingOverlay(context);
+    OverlayEntry loading = LoadingOverlay(context);
     Overlay.of(context).insert(loading);
     bool success = await resetPassword(_emailcontroller.text);
     loading.remove();

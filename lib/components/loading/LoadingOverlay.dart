@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thdapp/components/loading/WhiteOverlayLight.dart';
 
-OverlayEntry loadingOverlay(BuildContext context) {
+OverlayEntry LoadingOverlay(BuildContext context) {
   final screenSize = MediaQuery.of(context).size;
   return OverlayEntry(
       builder: (context) => Positioned(
