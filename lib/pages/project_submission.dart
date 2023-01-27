@@ -160,16 +160,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   Widget _buildVidURL() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Video URL"),
+      decoration: const InputDecoration(labelText: "Video URL (optional)"),
       style: Theme.of(context).textTheme.bodyText2,
       controller: videoController,
       keyboardType: TextInputType.url,
-      validator: (String value) {
-        if (!isPresenting && value.isEmpty) {
-          return 'Video is required if not presenting live.';
-        }
-        return null;
-      },
       onSaved: (String value) {
         _vidUrl = value;
       },
@@ -282,20 +276,22 @@ class _ProjSubmitState extends State<ProjSubmit> {
       reverse: true,
       child:
         Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: GradBox(
+              alignment: Alignment.topCenter,
               width: screenWidth*0.9,
               height: screenHeight*0.75,
-              padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
               child: Form(
                   key: _formKey,
                   child: SingleChildScrollView(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
-                        const SizedBox(height:8),
+                        const SizedBox(height:16),
                         _buildName(),
                         const SizedBox(height:8),
                         _buildDesc(),
@@ -306,7 +302,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         const SizedBox(height:8),
                         _buildVidURL(),
                         const SizedBox(height:8),
-                        _buildPresentingLive(),
                         SolidButton(
                             text: "Save",
                             onPressed: () {
