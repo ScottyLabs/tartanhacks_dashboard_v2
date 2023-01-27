@@ -7,7 +7,6 @@ import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import '/models/member.dart';
 import 'see_invites.dart';
