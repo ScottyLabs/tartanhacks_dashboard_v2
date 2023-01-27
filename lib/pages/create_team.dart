@@ -7,12 +7,10 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
-import 'package:thdapp/models/user.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/team.dart';
 
 class TeamTextField extends StatelessWidget {
@@ -100,23 +98,6 @@ class _CreateTeamState extends State<CreateTeam> {
     teamDescController.dispose();
     inviteMemberController.dispose();
     super.dispose();
-  }
-
-  Widget _visible(){
-    return Row(
-      children: [
-        const Text("Team Visibility"),
-        Checkbox(
-          activeColor: Theme.of(context).colorScheme.secondary,
-          value: visibility,
-          onChanged: (bool newValue) {
-            setState(() {
-                  visibility = newValue; 
-            }); 
-          },
-        ),
-      ]
-    );
   }
 
   @override

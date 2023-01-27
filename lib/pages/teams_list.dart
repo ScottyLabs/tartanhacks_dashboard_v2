@@ -8,7 +8,6 @@ import '../providers/user_info_provider.dart';
 import 'create_team.dart';
 import 'view_team.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'team_api.dart';
 import 'see_invites.dart';
