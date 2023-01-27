@@ -39,7 +39,9 @@ class _QRPageState extends State<QRPage> {
                   IDCheckInHeader(_eventIDController),
                   QREnlarged(onPressed: () async {
                     final String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-                    _eventIDController.value = TextEditingValue(text: id);
+                    if (!["-1", "", null].contains(id)) {
+                      _eventIDController.value = TextEditingValue(text: id);
+                    }
                   },)
                 ],
               ))
