@@ -18,7 +18,7 @@ class HomeButton extends StatelessWidget {
             height: 55,
             padding: const EdgeInsets.all(0),
             child: Icon(Icons.home,
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
                 size: 35
             ),
             onTap: () {

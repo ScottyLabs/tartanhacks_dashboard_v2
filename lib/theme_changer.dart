@@ -105,7 +105,8 @@ ThemeData genDarkTheme (){
       onSecondary: background,
       onTertiary: background,
       onTertiaryContainer: text,
-      onSurface: text,
+      onSurface: altbuttons,
+      onSurfaceVariant: text,
       onBackground: shadow, //shadows
       onError: text,
       shadow: shadow,
