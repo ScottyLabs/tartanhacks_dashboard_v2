@@ -147,7 +147,13 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     context: context,
                     initialDate: startDate ?? DateTime.now(),
                     firstDate: startDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(2024),
+                    builder: (context, child) => Theme(
+                      data: Theme.of(context).copyWith(
+                          dialogBackgroundColor: Theme.of(context).colorScheme.background
+                      ),
+                      child: child
+                    )
                   );
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
@@ -179,7 +185,13 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     context: context,
                     initialDate: endDate ?? DateTime.now(),
                     firstDate: endDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(2024),
+                    builder: (context, child) => Theme(
+                        data: Theme.of(context).copyWith(
+                            dialogBackgroundColor: Theme.of(context).colorScheme.background
+                        ),
+                        child: child
+                    )
                   );
                   if (picked != null) {
                     _endDateController.value = TextEditingValue(

@@ -5,6 +5,7 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import '../components/loading/LoadingOverlay.dart';
 import '../providers/user_info_provider.dart';
 import 'create_team.dart';
 import 'view_team.dart';
@@ -257,8 +258,11 @@ class _TeamsListState extends State<TeamsList> {
                                     teams[index],
                                     hasReqested,
                                     () async {
+                                      OverlayEntry loading = LoadingOverlay(context);
+                                      Overlay.of(context).insert(loading);
                                       String token = Provider.of<UserInfoModel>(context, listen: false).token;
                                       bool success = await requestTeam(teamID, token);
+                                      loading.remove();
                                       if (success) {
                                         errorDialog(context, "Success", "A join request was sent to this team");
                                         requestedTeams.add(teamID);

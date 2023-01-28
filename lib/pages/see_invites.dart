@@ -128,7 +128,6 @@ class ViewInvites extends StatefulWidget {
 }
 
 class _ViewInvitesState extends State<ViewInvites> {
-
   List<dynamic> requestsList;
   Status fetchStatus = Status.notLoaded;
 
