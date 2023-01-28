@@ -1,15 +1,129 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import '../providers/user_info_provider.dart';
 import 'create_team.dart';
 import 'view_team.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'team_api.dart';
 import 'see_invites.dart';
+
+class TeamCreateBtn extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SolidButton(
+      text: "Create New Team",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CreateTeam()),
+        );
+      },
+    );
+  }
+}
+
+class TeamDetailsBtn extends StatelessWidget {
+  final Team team;
+
+  const TeamDetailsBtn(this.team);
+
+  @override
+  Widget build(BuildContext context) {
+    return SolidButton(
+      text: "Details",
+      onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ViewTeam(),
+            settings: RouteSettings(arguments: team.teamID))),
+    );
+  }
+}
+
+
+class TeamJoinBtn extends StatelessWidget {
+  final bool hasReqested;
+  final Function onJoinPressed;
+  
+  const TeamJoinBtn(this.hasReqested, this.onJoinPressed);
+  
+  @override
+  Widget build(BuildContext context) {
+    if (hasReqested) {
+      return SolidButton(
+        text: "Pending",
+        color: Colors.grey,
+        textColor: Colors.white,
+        onPressed: null,
+      );
+    } else {
+      return SolidButton(
+        text: "Ask to Join",
+        onPressed: onJoinPressed,
+      );
+    }
+  }
+}
+
+class TeamEntryCard extends StatelessWidget {
+  final Team team;
+  final bool hasRequested;
+  final Function onJoinPressed;
+
+  const TeamEntryCard(this.team, this.hasRequested, this.onJoinPressed);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(4),
+      color: Theme.of(context).colorScheme.background,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(team.name, style: Theme.of(context).textTheme.headline4),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TeamJoinBtn(hasRequested, onJoinPressed),
+                TeamDetailsBtn(team)
+              ],
+            )
+          ],
+        )
+      ),
+    );
+  }
+}
+
+class TeamHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("TEAM", style: Theme.of(context).textTheme.headline2),
+        IconButton(
+            icon: const Icon(Icons.email, size: 30.0),
+            color: Theme.of(context).colorScheme.tertiary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ViewInvites()),
+              );
+            })
+      ],
+    );
+  }
+}
 
 class TeamsList extends StatefulWidget {
   @override
@@ -17,156 +131,45 @@ class TeamsList extends StatefulWidget {
 }
 
 class _TeamsListState extends State<TeamsList> {
-  String token;
-  List<Team> teamInfos;
-  int numTeams;
-  final List<Map> _teamList = <Map>[];
-  List<Widget> teamWidgetList = <Widget>[];
-  List<dynamic> requestsList;
-  List requestedTeams = [];
+  List<Team> teams = [];
+  Set<String> requestedTeams = {};
+  Status fetchStatus = Status.notLoaded;
 
   @override
   initState() {
+    fetchData();
     super.initState();
-    getData();
   }
 
-  void getData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    teamInfos = await getTeams(token);
-    if (teamInfos == null) {
+  Future<void> fetchData() async {
+    String token = Provider.of<UserInfoModel>(context, listen: false).token;
+    teams = await getTeams(token);
+    if (teams == null) {
       errorDialog(context, 'Error',
           'We ran into an error while getting your team information. If the issue persists please contact a TartanHacks organizer.');
+      fetchStatus = Status.error;
+      return;
     }
-    numTeams = teamInfos.length;
-    _populateTeamList();
-    _buildTeamsList();
-    requestsList = await getUserMail(token);
-    requestedTeams = [];
-    for (var r in requestsList) {
-      if (r['type'] == "JOIN") {
-        requestedTeams.add(r['team']['_id']);
-      }
-    }
+    teams = teams.where((e) => e.visible).toList();
+    teams.sort((a, b) => a.name.compareTo(b.name));
+    List requestsList = await getUserMail(token);
+    requestedTeams = requestsList.map((e) => e['team']['_id'].toString()).toSet();
+    fetchStatus = Status.loaded;
     setState(() {});
-  }
 
-  bool read = true;
-
-  void _populateTeamList() {
-    for (int i = 0; i < teamInfos.length; i++) {
-      if (teamInfos[i].visible) {
-        _teamList.add(
-            {'teamID': teamInfos[i].teamID, 'teamName': teamInfos[i].name});
-      }
-    }
-  }
-
-  Widget _buildTeamHeader() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text("TEAM", style: Theme.of(context).textTheme.headline2),
-      IconButton(
-          icon: const Icon(Icons.email, size: 30.0),
-          color: Theme.of(context).colorScheme.tertiary,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ViewInvites()),
-            ).then((value) => getData());
-          })
-    ]);
-  }
-
-  Widget mailIconSelect(bool read) {
-    if (read) {
-      return Icon(Icons.email,
-          color: Theme.of(context).colorScheme.tertiaryContainer, size: 40.0);
-    } else {
-      return Icon(Icons.mark_email_unread,
-          color: Theme.of(context).colorScheme.tertiaryContainer, size: 40.0);
-    }
-  }
-
-  Widget _buildCreateTeamBtn() {
-    SolidButton btn = SolidButton(
-        text: "Create New Team",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateTeam()),
-          );
-        });
-    return btn;
-  }
-
-  Widget _buildTeamJoinBtn(String teamID) {
-    if (requestedTeams.contains(teamID)) {
-      return SolidButton(
-        text: "Pending response",
-        color: Colors.grey,
-        textColor: Colors.white,
-        onPressed: null,
+    // Reload user's team and redirect to ViewTeam page if user has a team
+    await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+    bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    if (hasTeam) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) =>
+          ViewTeam(),
+          settings: const RouteSettings(
+            arguments: ""
+          )
+        )
       );
-    } else {
-      return SolidButton(
-          text: "Ask to join",
-          onPressed: () async {
-            bool success = await requestTeam(teamID, token);
-            if (success) {
-              errorDialog(
-                  context, "Success", "A join request was sent to this team");
-              requestedTeams.add(teamID);
-              setState(() {});
-            } else {
-              errorDialog(context, "Error",
-                  "An error occurred with joining this team. Please try again.");
-            }
-          });
-    }
-  }
-
-  Widget _buildTeamDetailsBtn(String teamID) {
-    SolidButton btn = SolidButton(
-        text: "Details",
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ViewTeam(),
-                  settings: RouteSettings(
-                    arguments: teamID,
-                  )));
-        });
-    return btn;
-  }
-
-  Widget _buildTeamEntry(int index) {
-    String teamID = _teamList[index]['teamID'];
-    String teamName = _teamList[index]['teamName'];
-    Row btnRow = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [_buildTeamJoinBtn(teamID), _buildTeamDetailsBtn(teamID)],
-    );
-    return Card(
-        margin: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.background,
-        child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(teamName, style: Theme.of(context).textTheme.headline4),
-                const SizedBox(height: 8),
-                btnRow
-              ],
-            )));
-  }
-
-  void _buildTeamsList() {
-    for (int i = 0; i < numTeams; i++) {
-      teamWidgetList.add(_buildTeamEntry(i));
     }
   }
 
@@ -181,35 +184,62 @@ class _TeamsListState extends State<TeamsList> {
         child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-            child: GradBox(
-                width: screenWidth * 0.9,
-                height: screenHeight * 0.75,
-                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          //height: screenHeight*0.05,
-                          child: _buildTeamHeader()),
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          //height: screenHeight*0.2,
-                          child: _buildCreateTeamBtn()),
-                      if (teamInfos != null)
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: numTeams,
-                            itemBuilder: (BuildContext context, int index) {
-                              return _buildTeamEntry(index);
-                            },
-                          ),
-                        )
-                      else
-                        Center(
-                            child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.onSurface))
-                    ]))));
+            child: RefreshIndicator(
+              onRefresh: fetchData,
+              child: GradBox(
+                  width: screenWidth * 0.9,
+                  height: screenHeight * 0.75,
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: TeamHeader()),
+                        Container(
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: TeamCreateBtn()),
+                        if (fetchStatus == Status.error)
+                          const Center(
+                            child: Text("Error loading teams")
+                          )
+                        else if (fetchStatus == Status.loaded && teams.isEmpty)
+                          const Center(
+                            child: Text("No teams available")
+                          )
+                        else if (fetchStatus == Status.loaded)
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: teams.length,
+                              itemBuilder: (context, index) {
+                                Team team = teams[index];
+                                String teamID = team.teamID;
+                                bool hasReqested = requestedTeams.contains(teamID);
+                                return TeamEntryCard(
+                                    teams[index],
+                                    hasReqested,
+                                    () async {
+                                      String token = Provider.of<UserInfoModel>(context, listen: false).token;
+                                      bool success = await requestTeam(teamID, token);
+                                      if (success) {
+                                        errorDialog(context, "Success", "A join request was sent to this team");
+                                        requestedTeams.add(teamID);
+                                        setState(() {});
+                                      } else {
+                                        errorDialog(context, "Error", "An error occurred with joining this team. Please try again.");
+                                      }
+                                    }
+                                );
+                              },
+                            ),
+                          )
+                        else
+                          Center(
+                              child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.onSurface)
+                          )
+                      ])),
+            )));
   }
 }

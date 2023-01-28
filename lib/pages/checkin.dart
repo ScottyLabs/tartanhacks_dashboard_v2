@@ -251,61 +251,63 @@ class CheckInEventList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       itemCount: events.length,
       itemBuilder: (BuildContext context, int index) {
-    return CheckInEventListItem(
-      name: events[index].name,
-      points: events[index].points,
-      isChecked: editable ? false : hasCheckedIn[events[index].id],
-      enabled: events[index].enableSelfCheckIn,
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditCheckInItemPage(events[index])));
-      },
-      onCheck: () async {
-        String uid = "";
-        String checkInItemId = "";
-        if (isAdmin) {
-          checkInItemId = events[index].id;
-          uid = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-        } else {
-          uid = userID;
-          checkInItemId = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-        }
-        if (uid != null &&
-            uid != "" &&
-            checkInItemId != null &&
-            checkInItemId != "") {
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => const Center(
-                      child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  )));
-          try {
-            await model.checkInUser(checkInItemId, uid);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Checked in for " + events[index].name + "!"),
-            ));
-          } on Exception catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString().substring(11)),
-            ));
-          } finally {
-            Navigator.pop(context);
-            model.fetchCheckInItems();
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Invalid Scan, please try again."),
-          ));
-        }
-      },
-    );
+        return CheckInEventListItem(
+          name: events[index].name,
+          points: events[index].points,
+          isChecked: editable ? false : hasCheckedIn[events[index].id],
+          enabled: events[index].enableSelfCheckIn,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditCheckInItemPage(events[index])));
+          },
+          onCheck: () async {
+            String uid = "";
+            String checkInItemId = "";
+            if (isAdmin) {
+              checkInItemId = events[index].id;
+              uid = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+            } else {
+              uid = userID;
+              checkInItemId = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+            }
+            if (uid != null &&
+                uid != "" &&
+                checkInItemId != null &&
+                checkInItemId != "") {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const Center(
+                          child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      )));
+              try {
+                if (uid != "-1" && checkInItemId != "-1") {
+                  await model.checkInUser(checkInItemId, uid);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Checked in for " + events[index].name + "!"),
+                  ));
+                }
+              } on Exception catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Could not check in. Please ensure that the QR code is correct."),
+                ));
+              } finally {
+                Navigator.pop(context);
+                model.fetchCheckInItems();
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Invalid Scan, please try again."),
+              ));
+            }
+          },
+        );
       },
       separatorBuilder: (context, index) => const SizedBox(
-    height: 15,
+        height: 15,
       ),
     );
   }
@@ -388,18 +390,20 @@ class CheckInEventListItem extends StatelessWidget {
                                     onChanged: null,
                                   ),
                                 ),
-                          Text(
-                            isChecked
-                                ? "You are checked in - ${points}pts"
-                                : isAdmin
-                                    ? "Scan Users in - ${points}pts"
-                                    : enabled
-                                        ? "Click to Check in - ${points}pts"
-                                        : "Check in at venue - ${points}pts",
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: Theme.of(context).textTheme.bodyText2,
+                          Flexible(
+                            child: Text(
+                              isChecked
+                                  ? "You are checked in - ${points}pts"
+                                  : isAdmin
+                                      ? "Scan Users in - ${points}pts"
+                                      : enabled
+                                          ? "Click to Check in - ${points}pts"
+                                          : "Check in at venue - ${points}pts",
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
                           )
                         ],
                       ),

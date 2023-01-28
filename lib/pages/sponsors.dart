@@ -245,6 +245,7 @@ class _SponsorsState extends State<Sponsors> {
                     ),
                     onPressed: () async {
                       String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+                      if (["-1", "", null].contains(id)) return;
                       Profile isValid =
                           await getProfile(id, token);
                       if (isValid != null) {

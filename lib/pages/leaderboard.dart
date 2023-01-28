@@ -63,7 +63,7 @@ class _LeaderboardState extends State<Leaderboard> {
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () async {
-                OverlayEntry loading = loadingOverlay(context);
+                OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
                     await setDisplayName(_editNicknameController.text, token);

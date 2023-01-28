@@ -5,7 +5,7 @@ import '/models/team.dart';
 
 const baseUrl = "https://dev.backend.tartanhacks.com/";
 
-Future<bool> createTeam(
+Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {
   String url = baseUrl + "team/";
   Map<String, String> headers = {
@@ -20,10 +20,10 @@ Future<bool> createTeam(
       visibility.toString() +
       '}';
   final response = await http.post(url, headers: headers, body: body); //patch?
-  return (response.statusCode == 200);
+  return response;
 }
 
-Future<bool> editTeam(
+Future<http.Response> editTeam(
     String teamName, String description, bool visibility, String token) async {
   String url = baseUrl + "team/";
   Map<String, String> headers = {
@@ -38,7 +38,7 @@ Future<bool> editTeam(
       visibility.toString() +
       '}';
   final response = await http.patch(url, headers: headers, body: body); //patch?
-  return (response.statusCode == 200);
+  return response;
 }
 
 Future<bool> promoteToAdmin(String userID, String token) async {

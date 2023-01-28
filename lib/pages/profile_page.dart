@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // getting to the gallery
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class ProfilePage extends StatefulWidget {
   final Map bookmarks;
@@ -113,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: Theme.of(context).textTheme.headline4,
               ),
               onPressed: () async{
-                OverlayEntry loading = loadingOverlay(context);
+                OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success = await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
@@ -170,8 +171,28 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
+                      ButtonBar(alignment: MainAxisAlignment.center, children: [
+                        SolidButton(
+                            text: "Delete Uploaded Picture",
+                            onPressed: () async {
+                              if (Image.network(userData.profilePicture) != null) {
+                                OverlayEntry loading = LoadingOverlay(context);
+                                Overlay.of(context).insert(loading);
+                                bool didUpload = await deleteProfilePic(token);
+                                if (!didUpload) {
+                                  errorDialog(context, "Error",
+                                      "An error occurred. Please try again.");
+                                }
+                                else {
+                                  loading.remove();
+                                }
+                              }
+                            }
+                        )
+                      ]),
                       AspectRatio(aspectRatio: 1.0 / 1.0,
-                          child: profilePicFile != null ? Image.file(profilePicFile) : Image.network(userData.profilePicture, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');},)),
+                          child: profilePicFile != null ? Image.file(profilePicFile) : Container(color: Colors.black, child: Center(child:Text("No picture chosen", style: const TextStyle(color: Colors.white))))
+                      ),
                       ButtonBar(alignment: MainAxisAlignment.center,
                           children: [SolidButton(
                             text: "Gallery",
@@ -184,9 +205,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               onPressed: () {
                               _getImage(ImageSource.camera, setState);
                               }
-                            )
+                            ),
+                            SolidButton(
+                              text: "Crop",
+                              onPressed: () {
+                                _cropPicture(setState);
+                              }
+                            ),
                           ]
                       ),
+
                     ],
                   ),
                 ),
@@ -203,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text("Save", style: Theme.of(context).textTheme.headline4,),
                     onPressed: () async {
                       if (profilePicFile != null) {
-                        OverlayEntry loading = loadingOverlay(context);
+                        OverlayEntry loading = LoadingOverlay(context);
                         Overlay.of(context).insert(loading);
                         bool didUpload = await uploadProfilePic(
                             profilePicFile, token);
@@ -226,7 +254,23 @@ class _ProfilePageState extends State<ProfilePage> {
     ).then((value) => getData());
   }
 
- _getImage(ImageSource source, setState) async {
+ _cropPicture(setState) async {
+    if (profilePicFile != null) {
+      profilePicFile = await ImageCropper().cropImage(
+      sourcePath: profilePicFile != null ? profilePicFile.path: Uri.parse(userData.profilePicture).path,
+      aspectRatioPresets: [
+      CropAspectRatioPreset.square,
+      ],);
+      setState((){
+      });
+    }
+    else {
+      errorDialog(context, "Error", 'No file uploaded from phone');
+    }
+ }
+
+
+  _getImage(ImageSource source, setState) async {
     profilePicFile = await ImagePicker.pickImage(source: source);
     setState((){
     });
@@ -320,20 +364,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                   padding: const EdgeInsets.fromLTRB(
                                       0, 10, 0, 10),
                                   child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      //make stack with this and add a gesture detector as a child
                                       GestureDetector(
                                           onTap: (){
                                             _editPicture();
                                           },
                                           child:
+                                          AspectRatio(aspectRatio: 1/1, child:
                                           ClipRRect(
                                             borderRadius: BorderRadius
                                                 .circular(10),
                                               child:
-                                                  AspectRatio(aspectRatio:1/1, child:
-                                                  Image.network(userData.profilePicture, fit: BoxFit.cover, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');}))),
-                                      ),
+                                                Container(color: Colors.black, child: Center(child: userData.profilePicture != null ?
+                                                  Image.network(userData.profilePicture, fit: BoxFit.cover, errorBuilder:(BuildContext context, Object exception, StackTrace stackTrace) {return Image.asset('lib/logos/defaultpfp.PNG');}): Image.asset('lib/logos/defaultpfp.PNG')),
+                                          )
+                                          ),
+                                      )),
                                       const SizedBox(width: 25),
                                       Expanded(
                                           child: Column(

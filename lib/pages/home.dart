@@ -38,6 +38,7 @@ class _HomeState extends State<Home> {
   void getData() async {
     prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
+    Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
 
     discordInfo = await getDiscordInfo(token);
 
@@ -48,7 +49,6 @@ class _HomeState extends State<Home> {
   initState() {
     super.initState();
     getData();
-    Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
   }
 
   _launchDiscord() async {
@@ -295,18 +295,17 @@ class _HomeState extends State<Home> {
                                 Text("Discord Server",
                                     style:
                                         Theme.of(context).textTheme.headline4),
+                                Text(
+                                  "Join the official TartanHacks Discord!",
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  textAlign: TextAlign.center,
+                                ),
                                 SolidButton(
                                   text: "Go to Server",
                                   onPressed: () {
                                     _launchDiscord();
                                   },
                                 ),
-                                SolidButton(
-                                  text: "Get Verified",
-                                  onPressed: () {
-                                    discordVerifyDialog(context);
-                                  },
-                                )
                               ])),
                     ],
                     options: CarouselOptions(

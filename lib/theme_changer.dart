@@ -62,14 +62,16 @@ ThemeData genLightTheme (){
       surface: surface, //box gradient 1
       surfaceTint: surface2, //box gradient 2
       background: background,
-      error: secondary, //menu buttons
+      error: altbuttons,
+      errorContainer: secondary, //menu buttons
       onPrimary: background,
       onSecondary: surface,
       onTertiary: surface,
       onTertiaryContainer: surface,
       onSurface: secondary,
       onBackground: shadow, //shadows
-      onError: background,
+      onError: secondary,
+      onErrorContainer: background,
       shadow: shadow,
       brightness: Brightness.light
   );
@@ -100,7 +102,8 @@ ThemeData genDarkTheme (){
       surface: surface, //box gradient 1
       surfaceTint: surface2, //box gradient 2
       background: background,
-      error: primary, //menu buttons
+      error: buttons,
+      errorContainer: primary, //menu buttons
       onPrimary: text,
       onSecondary: background,
       onTertiary: background,
@@ -109,6 +112,7 @@ ThemeData genDarkTheme (){
       onSurfaceVariant: text,
       onBackground: shadow, //shadows
       onError: text,
+      onErrorContainer: text,
       shadow: shadow,
       brightness: Brightness.light
   );
