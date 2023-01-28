@@ -18,18 +18,18 @@ class MenuChoice extends StatelessWidget {
               RawMaterialButton(
                 onPressed: onTap,
                 elevation: 2.0,
-                fillColor: Theme.of(context).colorScheme.error,
+                fillColor: Theme.of(context).colorScheme.errorContainer,
                 child: Icon(
                   icon,
                   size: 40.0,
-                  color: Theme.of(context).colorScheme.onError,
+                  color: Theme.of(context).colorScheme.onErrorContainer,
                 ),
                 padding: const EdgeInsets.all(12),
                 shape: const CircleBorder(),
               ),
               Text(text,
                 style: Theme.of(context).textTheme.bodyText1.copyWith(
-                  color: Theme.of(context).colorScheme.error
+                  color: Theme.of(context).colorScheme.errorContainer
                 ),
               )
             ]
