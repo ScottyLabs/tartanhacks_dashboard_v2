@@ -29,7 +29,7 @@ class _SponsorsState extends State<Sponsors> {
   int searchResultCount;
   bool searchPressed;
 
-  Widget placeholder = const Text("Search for participants by name.");
+  Widget placeholder;
 
   SharedPreferences prefs;
   String token;
@@ -154,7 +154,10 @@ class _SponsorsState extends State<Sponsors> {
     studentIds = studentData[0];
     students = studentData[1];
     studentTeams = studentData[2];
-    placeholder = const Text("No results.");
+    placeholder = Text("No results.",
+        style: TextStyle(color: Theme.of(context)
+            .colorScheme
+            .onSecondary));
     setState(() {});
   }
 
@@ -232,7 +235,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .secondary,
+                        .tertiary,
                     child: Text(
                       "  Scan  ",
                       style: Theme.of(context)
@@ -269,7 +272,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .secondary,
+                        .tertiary,
                     child: Text(
                       " Bookmarks ",
                       style: Theme.of(context)
@@ -296,7 +299,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .secondary,
+                        .tertiary,
                     child: Text(
                       "  Discord Server  ",
                       style: Theme.of(context)
@@ -319,12 +322,16 @@ class _SponsorsState extends State<Sponsors> {
                     textAlign: TextAlign.left,
                     style: Theme.of(context)
                         .textTheme
-                        .headline3)),
+                        .headline3
+                        .copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onPrimary))),
             Row(children: [
               Expanded(
                 child: TextField(
-                  style:
-                      Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyText2
+                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   enableSuggestions: false,
                   controller: myController,
                   textInputAction: TextInputAction.send,
