@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
@@ -49,9 +50,9 @@ class TeamDetailsBtn extends StatelessWidget {
 class TeamJoinBtn extends StatelessWidget {
   final bool hasReqested;
   final Function onJoinPressed;
-  
+
   const TeamJoinBtn(this.hasReqested, this.onJoinPressed);
-  
+
   @override
   Widget build(BuildContext context) {
     if (hasReqested) {
@@ -134,7 +135,16 @@ class _TeamsListState extends State<TeamsList> {
   List<Team> teams = [];
   Set<String> requestedTeams = {};
   Status fetchStatus = Status.notLoaded;
+  //SEARCH CONTROLLER
+  TextEditingController searchController = TextEditingController();
 
+  void search() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token');
+
+    var searchResults = await teamSearch(token, searchController.text);
+
+  }
   @override
   initState() {
     fetchData();
@@ -200,6 +210,33 @@ class _TeamsListState extends State<TeamsList> {
                         Container(
                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: TeamCreateBtn()),
+                        Row(children: [
+                          Expanded(
+                            child: TextField(
+                              style:
+                              Theme.of(context).textTheme.bodyText2,
+                              enableSuggestions: false,
+                              controller: searchController,
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
+                                search(); //searches when ENTER pressed
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                              width: 10
+                          ),
+                          SolidButton(
+                              onPressed: search, //searches when button pressed
+                              child: Icon(Icons.subdirectory_arrow_left,
+                                  size: 30,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary)),
+                        ]),
+                        const SizedBox(
+                            height: 20
+                        ),
                         if (fetchStatus == Status.error)
                           const Center(
                             child: Text("Error loading teams")

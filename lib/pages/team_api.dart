@@ -233,3 +233,31 @@ Future<List<Team>> getTeams(String token) async {
   }
   return null;
 }
+
+//getStudents (in api) for the format of the request (particiants)
+//getTeam () for the mapping
+Future<List<Team>> teamSearch(String token, String query) async {
+  //this is from the swagger
+  String url = baseUrl + "/teams/search?name=" + query;
+
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  //copied from getTeams (above)
+  //print(token);
+
+  //look at swagger -H is the headers
+  final response = await http.get(url, headers: headers);
+  //print(response.body);
+  if (response.statusCode == 200) {
+    List<dynamic> teamStrings = List.from(jsonDecode(response.body));
+    List<Team> teamsList = [];
+    for (int i = 0; i < teamStrings.length; i++) {
+      teamsList.add(Team.fromJson(teamStrings[i]));
+    }
+    return teamsList;
+  }
+  return null;
+}
