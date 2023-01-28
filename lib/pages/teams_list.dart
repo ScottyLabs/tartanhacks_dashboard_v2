@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
@@ -139,7 +140,7 @@ class _TeamsListState extends State<TeamsList> {
 
   void search() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    String token = prefs.getString('token');
 
     var searchResults = await teamSearch(token, searchController.text);
 
@@ -234,7 +235,7 @@ class _TeamsListState extends State<TeamsList> {
                                       .onPrimary)),
                         ]),
                         const SizedBox(
-                            height: 50
+                            height: 20
                         ),
                         if (fetchStatus == Status.error)
                           const Center(
