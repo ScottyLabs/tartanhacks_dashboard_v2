@@ -1,54 +1,94 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/loading/LoadingOverlay.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 
 import 'team_api.dart';
 import 'view_team.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/team.dart';
+
+class TeamTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+
+  const TeamTextField(this.controller, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      decoration: InputDecoration(labelText: label),
+      style: Theme.of(context).textTheme.bodyText2,
+      controller: controller,
+      validator: (val) {
+        if (val == null || val.isEmpty) {
+          return "Cannot be empty";
+        } return null;
+      },
+    );
+  }
+}
+
+class IsVisibleCheckBox extends StatelessWidget {
+  final bool visibility;
+  final Function onTap;
+
+  const IsVisibleCheckBox(this.visibility, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        const Text("Team Visibility"),
+        Checkbox(
+          activeColor: Theme.of(context).colorScheme.secondary,
+          value: visibility,
+          onChanged: onTap,
+        )
+      ],
+    );
+  }
+}
+
+
+
 class CreateTeam extends StatefulWidget {
   @override
   _CreateTeamState createState() => _CreateTeamState();
 }
 
 class _CreateTeamState extends State<CreateTeam> {
-
-  String _teamName = "";
-  String _teamDesc = "";
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController yourNameController = TextEditingController();
   TextEditingController teamNameController = TextEditingController();
   TextEditingController teamDescController = TextEditingController();
   TextEditingController inviteMemberController = TextEditingController();
+
   bool visibility = true;
   String buttonText = "Create Team";
+  bool hasTeam = false;
 
-  String token;
-  SharedPreferences prefs;
-  Team team;
-  String id;
-  bool noTeam = true;
-  void getData() async {
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    id = prefs.getString('id');
-    team = await getUserTeam(token);
-    if (team != null){ //if not on a team, redirects to the teams list page
-      _teamName = team.name;
-      _teamDesc = team.description;
+  void getData() {
+    hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    if (hasTeam){
+      Team team = Provider.of<UserInfoModel>(context, listen: false).team;
       visibility = team.visible;
-      teamNameController.text = _teamName;
-      teamDescController.text = _teamDesc;
+      teamNameController.text = team.name;
+      teamDescController.text = team.description;
       buttonText = "Edit Team";
-      noTeam = false;
     }
-    setState(() {
-    });
   }
 
   @override
   initState() {
-    super.initState();
     getData();
+    super.initState();
   }
 
   @override
@@ -60,222 +100,98 @@ class _CreateTeamState extends State<CreateTeam> {
     super.dispose();
   }
 
-
-  Widget _buildTeamName() {
-    return TextFormField(
-      decoration: formFieldStyle(context, "Team Name"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText2,
-      controller: teamNameController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Your team name is required';
-        }
-        return null;
-      },
-      onChanged: (String value) {
-        _teamName = value;
-      },
-    );
-  }
-
-  Widget _buildTeamDesc() {
-    return TextFormField(
-      decoration: formFieldStyle(context, "Team Description"),
-      style: Theme
-          .of(context)
-          .textTheme
-          .bodyText2,
-      controller: teamDescController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Team description is required';
-        }
-
-        return null;
-      },
-      onChanged: (String value) {
-        _teamDesc = value;
-      },
-    );
-  }
-
-  Widget _visible(){
-    return Row(
-      children: [
-        const Text("Team Visibility"),
-        Checkbox(
-          activeColor: Theme.of(context).colorScheme.secondary,
-          value: visibility,
-          onChanged: (bool newValue) {
-            setState(() {
-                  visibility = newValue; 
-            }); 
-          },
-        ),
-      ]
-    );
-  }
-
-  Widget _inviteMessage(){
-    TextEditingController inviteController = TextEditingController();
-    String emailInvite;
-
-    return AlertDialog(
-                  title: const Text('Send Invite'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        decoration: formFieldStyle(context, "email"),
-                        style: const TextStyle(color: Colors.black),
-                        controller: inviteController,
-                        validator: (String value) {
-                          if (value.isEmpty) {
-                            return 'An email is required';
-                          }
-                          return null;
-                          },
-                          onSaved: (String value) {
-                            emailInvite = value;
-                            },
-                      ),
-                      Container( 
-                        padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SolidButton(
-                                onPressed: () => Navigator.pop(context, 'Cancel'),
-                                text: "Cancel"
-                              ),
-                              SolidButton(
-                              text: "Send",
-                              onPressed: () async {
-                                await requestTeamMember(emailInvite, token);
-                              }
-                            )
-                          ]
-                        )
-                      )
-                    ]
-                  )
-      );
-  }
-
-  Widget _inviteMem()  {
-    return SolidButton(
-        text: "INVITE NEW MEMBER", 
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => _inviteMessage()
-          );
-        }, 
-        color: Theme.of(context).colorScheme.primary); 
-  }
-
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.75,
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment
+                          .spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start,
                       children: [
                         Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(
-                                      screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .secondaryVariant,
-                                      color2: Theme
-                                          .of(context)
-                                          .colorScheme
-                                          .primary,
-                                      reverse: true)
-                              ),
-                            ]
+                              const SizedBox(height: 15,),
+                              Text("TEAM INFO", style:
+                              Theme.of(context).textTheme.headline1),
+                              const SizedBox(height: 10),
+                              Text("Basic Info", style:
+                              Theme.of(context).textTheme.headline4),
+                              const SizedBox(height: 15),
+                              TeamTextField(teamNameController, "Team Name"),
+                              const SizedBox(height: 20),
+                              TeamTextField(teamDescController, "Team Desc"),
+                              const SizedBox(height: 20),
+                              IsVisibleCheckBox(visibility, (val) {
+                                visibility = val;
+                                setState(() {});
+                              }),
+                            ],
                         ),
                         Container(
                             alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth * 0.9,
-                                height: screenHeight * 0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
-                                    children: [
-                                      Column(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text("TEAM INFO", style:
-                                            Theme.of(context).textTheme.headline1),
-                                            SizedBox(height:screenHeight*0.02),
-                                            Text("Basic Info", style:
-                                            Theme.of(context).textTheme.headline4),
-                                            // SizedBox(height:screenHeight*0.02),
-                                            // _buildName(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _buildTeamName(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _buildTeamDesc(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _visible(),
-                                            SizedBox(height:screenHeight*0.02),
-                                            _inviteMem()
-                                          ],
-                                        ),
-                                Container(
-                                    alignment: Alignment.center,
-                                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                                    child: SolidButton(
-                                      text: buttonText,
-                                      onPressed: () async {
-                                        if (noTeam) {
-                                          await createTeam(_teamName, _teamDesc, visibility, token);
-                                        } else {
-                                          await editTeam(_teamName, _teamDesc, visibility, token);
-                                        }
-                                        await promoteToAdmin(id, token);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => ViewTeam())
-                                        );
-                                      },
-                                      color: Theme.of(context).colorScheme.secondary
-                                    )
-                                )
-                            ]
-                          )
+                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                            child: SolidButton(
+                              text: buttonText,
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  OverlayEntry loading = LoadingOverlay(context);
+                                  Overlay.of(context).insert(loading);
+                                  String token = Provider.of<UserInfoModel>(context, listen: false).token;
+                                  String id = Provider.of<UserInfoModel>(context, listen: false).id;
+
+                                  String _teamName = teamNameController.text;
+                                  String _teamDesc = teamDescController.text;
+
+                                  Response response = hasTeam ? await editTeam(_teamName, _teamDesc, visibility, token)
+                                      : await createTeam(_teamName, _teamDesc, visibility, token);
+
+                                  if (response.statusCode != 200) {
+                                    loading.remove();
+                                    String errorMessage = jsonDecode(response.body)["message"] ?? "Failed to create team.";
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(errorMessage),
+                                    ));
+                                    return;
+                                  }
+
+                                  if (!hasTeam) await promoteToAdmin(id, token);
+                                  await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                                  loading.remove();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        ViewTeam(),
+                                        settings: const RouteSettings(
+                                          arguments: "",
+                                        )
+                                    ),
+                                  );
+                                }
+
+                              },
+                              color: Theme.of(context).colorScheme.tertiaryContainer
                             )
                         )
-                      ],
-                    )
-                  ],
+                    ]
+                  ),
                 )
             )
         )

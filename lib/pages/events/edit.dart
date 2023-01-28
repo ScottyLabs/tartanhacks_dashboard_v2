@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:thdapp/api.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/models/event.dart';
 import 'package:thdapp/pages/events/index.dart';
-import '../custom_widgets.dart';
 
 // HELPER FUNCTIONS
 int daysBetween(DateTime from, DateTime to) {
@@ -29,41 +31,21 @@ class EditEventPage extends StatelessWidget {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: screenHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
-                      children: [
-                        Column(children: [
-                          SizedBox(height: screenHeight * 0.05),
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.75),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant,
-                                  color2:
-                                  Theme.of(context).colorScheme.primary,
-                                  reverse: true)),
-                        ]),
-                        Container(
-                            alignment: Alignment.center,
-                            height: screenHeight * 0.78,
-                            padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                            child: GradBox(
-                              curvature: 20,
-                              padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                              child: EventItemForm(event, editable),
-                            ))
-                      ],
-                    )
-                  ],
-                ))));
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              height: screenHeight * 0.78,
+              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+              child: GradBox(
+                curvature: 20,
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                child: EventItemForm(event, editable),
+              )
+          )
+    );
   }
 }
 
@@ -96,7 +78,7 @@ class _EventFormState extends State<EventItemForm> {
                 style: TextStyle(color: Colors.white),
               ),
               style: TextButton.styleFrom(
-                foregroundColor: const Color.fromARGB(255, 255, 75, 43),
+                // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -261,7 +243,7 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: startDate ?? DateTime.now(),
                     firstDate: startDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(DateTime.now().year+1),
                   );
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
@@ -294,7 +276,7 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: endDate ?? DateTime.now(),
                     firstDate: endDate ?? DateTime.now(),
-                    lastDate: DateTime(2023),
+                    lastDate: DateTime(DateTime.now().year+1),
                   );
                   if (picked != null) {
                     _endDateController.value = TextEditingValue(
@@ -492,7 +474,8 @@ class EditEventDropDownFormField extends StatelessWidget {
         Expanded(
           flex: 8,
           child: DropdownButtonFormField(
-
+            style: Theme.of(context).textTheme.bodyText2,
+            dropdownColor: Theme.of(context).colorScheme.surface,
             onChanged: onChange,
             items: items,
             value: initial,

@@ -2,11 +2,13 @@ import 'package:flutter_smart_scan/flutter_smart_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/models/check_in_item.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
-import 'custom_widgets.dart';
 import '../theme_changer.dart';
 
 class CheckIn extends StatefulWidget {
@@ -29,62 +31,40 @@ class _CheckInState extends State<CheckIn> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: screenHeight),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(),
-                    Stack(
+    return DefaultPage(
+      reverse: true,
+      child:
+          Consumer<CheckInItemsModel>(
+            builder: (context, checkInItemsModel, child) {
+              var status =
+                  checkInItemsModel.checkInItemsStatus;
+              var checkInItemsList =
+                  checkInItemsModel.checkInItems;
+              if (status == Status.notLoaded ||
+                  checkInItemsList == null) {
+                checkInItemsModel.fetchCheckInItems();
+                return const Center(
+                    child: CircularProgressIndicator());
+              }
+              // Error
+              else if (status == Status.error) {
+                return const Center(
+                    child: Text("Error Loading Data"));
+              } else {
+                return Container(
+                    alignment: Alignment.center,
+                    height: screenHeight * 0.78,
+                    child: Column(
                       children: [
-                        Column(children: [
-                          SizedBox(height: screenHeight * 0.05),
-                          CustomPaint(
-                              size: Size(screenWidth, screenHeight * 0.75),
-                              painter: CurvedTop(
-                                  color1: Theme.of(context)
-                                      .colorScheme
-                                      .secondaryVariant,
-                                  color2:
-                                      Theme.of(context).colorScheme.primary,
-                                  reverse: true)),
-                        ]),
-                        Consumer<CheckInItemsModel>(
-                          builder: (context, checkInItemsModel, child) {
-                            var status =
-                                checkInItemsModel.checkInItemsStatus;
-                            var checkInItemsList =
-                                checkInItemsModel.checkInItems;
-                            if (status == Status.notLoaded ||
-                                checkInItemsList == null) {
-                              checkInItemsModel.fetchCheckInItems();
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            }
-                            // Error
-                            else if (status == Status.error) {
-                              return const Center(
-                                  child: Text("Error Loading Data"));
-                            } else {
-                              return Container(
-                                  alignment: Alignment.center,
-                                  height: screenHeight * 0.78,
-                                  child: Column(
-                                    children: [
-                                      Expanded(flex: 1, child: Header()),
-                                      Expanded(
-                                          flex: 2, child: CheckInEvents())
-                                    ],
-                                  ));
-                            }
-                          },
-                        )
+                        Expanded(flex: 1, child: Header()),
+                        Expanded(
+                            flex: 2, child: CheckInEvents())
                       ],
-                    )
-                  ],
-                ))));
+                    ));
+              }
+            },
+          )
+    );
   }
 }
 
@@ -271,61 +251,63 @@ class CheckInEventList extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       itemCount: events.length,
       itemBuilder: (BuildContext context, int index) {
-    return CheckInEventListItem(
-      name: events[index].name,
-      points: events[index].points,
-      isChecked: editable ? false : hasCheckedIn[events[index].id],
-      enabled: events[index].enableSelfCheckIn,
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EditCheckInItemPage(events[index])));
-      },
-      onCheck: () async {
-        String uid = "";
-        String checkInItemId = "";
-        if (isAdmin) {
-          checkInItemId = events[index].id;
-          uid = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-        } else {
-          uid = userID;
-          checkInItemId = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-        }
-        if (uid != null &&
-            uid != "" &&
-            checkInItemId != null &&
-            checkInItemId != "") {
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => const Center(
-                      child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  )));
-          try {
-            await model.checkInUser(checkInItemId, uid);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Checked in for " + events[index].name + "!"),
-            ));
-          } on Exception catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(e.toString().substring(11)),
-            ));
-          } finally {
-            Navigator.pop(context);
-            model.fetchCheckInItems();
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Invalid Scan, please try again."),
-          ));
-        }
-      },
-    );
+        return CheckInEventListItem(
+          name: events[index].name,
+          points: events[index].points,
+          isChecked: editable ? false : hasCheckedIn[events[index].id],
+          enabled: events[index].enableSelfCheckIn,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditCheckInItemPage(events[index])));
+          },
+          onCheck: () async {
+            String uid = "";
+            String checkInItemId = "";
+            if (isAdmin) {
+              checkInItemId = events[index].id;
+              uid = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+            } else {
+              uid = userID;
+              checkInItemId = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+            }
+            if (uid != null &&
+                uid != "" &&
+                checkInItemId != null &&
+                checkInItemId != "") {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => const Center(
+                          child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      )));
+              try {
+                if (uid != "-1" && checkInItemId != "-1") {
+                  await model.checkInUser(checkInItemId, uid);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Checked in for " + events[index].name + "!"),
+                  ));
+                }
+              } on Exception catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Could not check in. Please ensure that the QR code is correct."),
+                ));
+              } finally {
+                Navigator.pop(context);
+                model.fetchCheckInItems();
+              }
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Invalid Scan, please try again."),
+              ));
+            }
+          },
+        );
       },
       separatorBuilder: (context, index) => const SizedBox(
-    height: 15,
+        height: 15,
       ),
     );
   }
@@ -408,18 +390,20 @@ class CheckInEventListItem extends StatelessWidget {
                                     onChanged: null,
                                   ),
                                 ),
-                          Text(
-                            isChecked
-                                ? "You are checked in - ${points}pts"
-                                : isAdmin
-                                    ? "Scan Users in - ${points}pts"
-                                    : enabled
-                                        ? "Click to Check in - ${points}pts"
-                                        : "Check in at venue - ${points}pts",
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
-                            softWrap: false,
-                            style: Theme.of(context).textTheme.bodyText2,
+                          Flexible(
+                            child: Text(
+                              isChecked
+                                  ? "You are checked in - ${points}pts"
+                                  : isAdmin
+                                      ? "Scan Users in - ${points}pts"
+                                      : enabled
+                                          ? "Click to Check in - ${points}pts"
+                                          : "Check in at venue - ${points}pts",
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              softWrap: false,
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
                           )
                         ],
                       ),

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/loading/LoadingOverlay.dart';
+import 'package:thdapp/components/text/GradText.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import '../api.dart';
 import '../models/user.dart';
-import 'custom_widgets.dart';
 import '../components/background_shapes/CurvedBottom.dart';
 import 'home.dart';
 import 'forgot.dart';
@@ -20,7 +25,6 @@ class _LoginState extends State<Login> {
   final _passwordcontroller = TextEditingController();
 
   SharedPreferences prefs;
-  bool prefsLoaded = false;
 
   @override
   initState() {
@@ -36,23 +40,28 @@ class _LoginState extends State<Login> {
   }
 
   void login(String email, String password) async {
-    OverlayEntry loading = loadingOverlay(context);
+    OverlayEntry loading = LoadingOverlay(context);
     Overlay.of(context).insert(loading);
     User logindata = await checkCredentials(email, password);
-    loading.remove();
     if (logindata != null) {
+      TextInput.finishAutofillContext();
       if (logindata.company != null) {
+        loading.remove();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (ctxt) => Home()),
-        );
+        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+          loading.remove();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (ctxt) => Home()),
+          );
+        });
       }
     } else {
+      loading.remove();
       errorDialog(
           context, "Login Failure", "Your username or password is incorrect.");
     }
@@ -79,8 +88,6 @@ class _LoginState extends State<Login> {
         );
       }
     }
-
-    prefsLoaded = true;
   }
 
   @override
@@ -124,28 +131,35 @@ class _LoginState extends State<Login> {
                               color2: Theme.of(context)
                                   .colorScheme
                                   .secondaryVariant)),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                            controller: _emailcontroller,
-                            decoration: const InputDecoration(
-                              labelText: "Email",
-                            ),
-                            style: Theme.of(context).textTheme.bodyText2,
-                            keyboardType: TextInputType.visiblePassword,
-                            textInputAction: TextInputAction.next),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        child: TextField(
-                          controller: _passwordcontroller,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: "Password",
+                      AutofillGroup(
+                          child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextField(
+                                controller: _emailcontroller,
+                                autofillHints: const [AutofillHints.email],
+                                decoration: const InputDecoration(
+                                  labelText: "Email",
+                                ),
+                                style: Theme.of(context).textTheme.bodyText2,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next),
                           ),
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextField(
+                              controller: _passwordcontroller,
+                              autofillHints: const [AutofillHints.password],
+                              obscureText: true,
+                              decoration: const InputDecoration(
+                                labelText: "Password",
+                              ),
+                              style: Theme.of(context).textTheme.bodyText2,
+                            ),
+                          )
+                        ],
+                      )),
                       const SizedBox(height: 10),
                       GradBox(
                           width: 150,
@@ -170,7 +184,7 @@ class _LoginState extends State<Login> {
                           child: Text("Forgot Password",
                               style: TextStyle(
                                   color:
-                                      Theme.of(context).colorScheme.primary))),
+                                      Theme.of(context).colorScheme.tertiary))),
                     ]))));
   }
 }

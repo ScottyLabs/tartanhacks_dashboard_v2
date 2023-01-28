@@ -1,8 +1,10 @@
+import 'dart:io' as io;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/components/ErrorDialog.dart';
 import 'models/check_in_item.dart';
 import 'models/profile.dart';
 import 'models/event.dart';
@@ -13,8 +15,8 @@ import 'models/lb_entry.dart';
 import 'models/prize.dart';
 import 'models/project.dart';
 import 'models/team.dart';
-import 'pages/custom_widgets.dart';
 import 'models/discord.dart';
+import 'package:http_parser/http_parser.dart';
 
 SharedPreferences prefs;
 
@@ -671,3 +673,37 @@ Future<DiscordInfo> getDiscordInfo(String token) async {
     return null;
   }
 }
+
+Future<bool> uploadProfilePic(io.File profilePicFile, String token) async {
+  String url = baseUrl + "user/profile-picture";
+  var uri = Uri.parse(url);
+  var request = http.MultipartRequest("POST", uri);
+  request.files.add(http.MultipartFile.fromBytes("file", profilePicFile.readAsBytesSync(), filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
+  request.headers['x-access-token'] = token;
+  var response = await request.send();
+  if (response.statusCode == 200) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+Future<bool> deleteProfilePic(String token) async {
+  String url = baseUrl + "user/profile-picture";
+  final http.Response response = await http.delete(
+    Uri.parse(url),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      "x-access-token": token
+    },
+  );
+  if (response.statusCode == 200) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+

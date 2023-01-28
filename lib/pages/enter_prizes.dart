@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api.dart';
 import '../models/prize.dart';
@@ -100,74 +102,55 @@ class _EnterPrizesState extends State<EnterPrizes> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body:Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+        Column(
           children: [
-            TopBar(backflag: true),
-            Stack(
-              children: [
-                Column(
-                    children:[
-                      SizedBox(height:screenHeight * 0.05),
-                      CustomPaint(
-                          size: Size(screenWidth, screenHeight * 0.75),
-                          painter: CurvedTop(
-                              color1: Theme.of(context).colorScheme.secondaryVariant,
-                              color2: Theme.of(context).colorScheme.primary,
-                              reverse: true)
-                      ),
-                    ]
-                ),
-                Column(
+            Container(
+                height: screenHeight*0.15,
+                width: screenWidth,
+                padding: const EdgeInsets.fromLTRB(25, 10, 0, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        height: screenHeight*0.15,
-                        width: screenWidth,
-                        padding: const EdgeInsets.fromLTRB(25, 10, 0, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("ENTER FOR PRIZE",
-                              style: Theme.of(context).textTheme.headline1,
-                            ),
-                            Text("Scroll to see the full list.",
-                              style: Theme.of(context).textTheme.bodyText2,
-                            )
-                          ],
-                        )
+                    Text("ENTER FOR PRIZE",
+                      style: Theme.of(context).textTheme.headline1,
                     ),
-                    if (prizes == null)
-                      const SizedBox(
-                        height: 100,
-                        child: Center(child: CircularProgressIndicator())
-                      )
-                    else
-                    Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              maxHeight: screenHeight*0.65
-                          ),
-                          child: ListView.builder(
-                            itemCount: prizes.length,
-                            itemBuilder: (BuildContext context, int index){
-                              return PrizeCard(
-                                id: prizes[index].id,
-                                name: prizes[index].name,
-
-                                desc: prizes[index].description,
-                                entered: enteredPrizes.contains(prizes[index].id),
-                                entryFn: () => prizeDialog(prizes[index].id,),
-                              );
-                            },
-                          ),
-                        )
+                    Text("Scroll to see the full list.",
+                      style: Theme.of(context).textTheme.bodyText2,
                     )
                   ],
                 )
-              ],
+            ),
+            if (prizes == null)
+              const SizedBox(
+                height: 100,
+                child: Center(child: CircularProgressIndicator())
+              )
+            else
+            Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: screenHeight*0.65
+                  ),
+                  child: ListView.builder(
+                    itemCount: prizes.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return PrizeCard(
+                        id: prizes[index].id,
+                        name: prizes[index].name,
+
+                        desc: prizes[index].description,
+                        entered: enteredPrizes.contains(prizes[index].id),
+                        entryFn: () => prizeDialog(prizes[index].id,),
+                      );
+                    },
+                  ),
+                )
             )
           ],
         )

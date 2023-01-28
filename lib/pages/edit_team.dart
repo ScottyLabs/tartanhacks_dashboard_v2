@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
 
 class EditTeam extends StatefulWidget {
   @override
@@ -143,80 +145,54 @@ class _EditTeamState extends State<EditTeam> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    return Scaffold(
-        body:  SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: screenHeight
-            ),
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+              width: screenWidth*0.9,
+              height: screenHeight*0.75,
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TopBar(backflag: true),
-                  Stack(
-                    children: [
-                      Column(
-                          children:[
-                            SizedBox(height:screenHeight * 0.05),
-                            CustomPaint(
-                                size: Size(screenWidth, screenHeight * 0.75),
-                                painter: CurvedTop(
-                                    color1: Theme.of(context).colorScheme.secondaryVariant,
-                                    color2: Theme.of(context).colorScheme.primary,
-                                    reverse: true)
-                            ),
-                          ]
-                      ),
-                      Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: GradBox(
-                            width: screenWidth*0.9,
-                            height: screenHeight*0.75,
-                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                    //height: screenHeight*0.05,
-                                    child: _buildTeamHeader(read)
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                    //height: screenHeight*0.2,
-                                    child: _buildTeamDesc()
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                    //height: screenHeight*0.05,
-                                    child: SolidButton(
-                                        text: "EDIT TEAM NAME AND INFO"
-                                    )
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                    //height: screenHeight*0.1,
-                                    child: _buildTeamMembers()
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                    //height: screenHeight*0.1,
-                                    child: SolidButton(
-                                        text: "INVITE NEW MEMBER"
-                                    )
-                                  ),
-                                  _leaveTeamBtn()
-                              ]
-                            )
-                          )
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      //height: screenHeight*0.05,
+                      child: _buildTeamHeader(read)
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      //height: screenHeight*0.2,
+                      child: _buildTeamDesc()
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      //height: screenHeight*0.05,
+                      child: SolidButton(
+                          text: "EDIT TEAM NAME AND INFO"
                       )
-                    ],
-                  )
-                ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      //height: screenHeight*0.1,
+                      child: _buildTeamMembers()
+                    ),
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      //height: screenHeight*0.1,
+                      child: SolidButton(
+                          text: "INVITE NEW MEMBER"
+                      )
+                    ),
+                    _leaveTeamBtn()
+                ]
               )
-          )
+            )
         )
     );
   }

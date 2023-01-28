@@ -1,9 +1,126 @@
 import 'package:flutter/material.dart';
-import 'custom_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:thdapp/components/DefaultPage.dart';
+import 'package:thdapp/components/buttons/GradBox.dart';
+import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 import 'team_api.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '/models/team.dart';
 import 'view_team.dart';
+
+class AcceptButtonRow extends StatelessWidget {
+  final Function acceptOnPressed;
+  final Function declineOnPressed;
+
+  const AcceptButtonRow({this.acceptOnPressed, this.declineOnPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row (
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        const SizedBox(width: 20,),
+        SolidButton(
+          text: "Accept",
+          onPressed: acceptOnPressed,
+        ),
+        const SizedBox(width: 20,),
+        SolidButton(
+          text: "Decline",
+          onPressed: declineOnPressed,
+        )
+      ],
+    );
+  }
+}
+
+class NoAcceptButtonRow extends StatelessWidget {
+  final Function cancelOnPressed;
+
+  const NoAcceptButtonRow({this.cancelOnPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row (
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        SolidButton(
+          text: "Cancel",
+          onPressed: cancelOnPressed,
+        )
+      ],
+    );
+  }
+}
+
+class RequestCard extends StatelessWidget {
+  final dynamic request;
+  final Function(dynamic) removeRequest;
+
+  const RequestCard(this.request, this.removeRequest);
+  
+  bool checkAdmin(BuildContext context) {
+    bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    if (!hasTeam) return false;
+    Team team = Provider.of<UserInfoModel>(context, listen: false).team;
+    List<String> adminIds = team.admins.map((mem) => mem.id).toList();
+    String id = Provider.of<UserInfoModel>(context, listen: false).id;
+    return adminIds.contains(id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String requestType = request['type'];
+    bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    bool canAccept = (!hasTeam && requestType == "INVITE")
+        || (hasTeam && requestType == "JOIN" && checkAdmin(context));
+
+
+    String inviteInfo = hasTeam ? request['user']['email'] : request['team']['name'];
+    String requestID = request['_id'];
+    String token = Provider.of<UserInfoModel>(context, listen: false).token;
+
+    return Card(
+        margin: const EdgeInsets.all(12),
+        color: Theme.of(context).colorScheme.background,
+        child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(requestType, style: Theme.of(context).textTheme.headline3),
+                const SizedBox(height: 10),
+                Text(inviteInfo, style: Theme.of(context).textTheme.bodyText2),
+                const SizedBox(height: 8),
+                canAccept ? AcceptButtonRow(acceptOnPressed: () async {
+                  await acceptRequest(token, requestID);
+                  removeRequest(request);
+                  await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                  if (requestType == 'INVITE') {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ViewTeam(),
+                            settings: const RouteSettings(
+                              arguments: "",
+                            )
+                        ), (route) => route.isFirst);
+                  }
+                }, declineOnPressed: () async {
+                  await declineRequest(token, requestID);
+                  removeRequest(request);
+                }) : NoAcceptButtonRow(cancelOnPressed: () async {
+                  await cancelRequest(token, requestID);
+                  removeRequest(request);
+                })
+              ],
+            )
+        )
+    );
+  }
+}
+
 
 class ViewInvites extends StatefulWidget {
   @override
@@ -12,157 +129,34 @@ class ViewInvites extends StatefulWidget {
 
 class _ViewInvitesState extends State<ViewInvites> {
 
-  bool isAdmin = false;
-  bool isMember = false;
-  String teamID = "";
-  Team team;
-  String token;
-  String memberID;
-  int numRequests;
-  List<Widget> requestsWidgetList = <Widget>[];
   List<dynamic> requestsList;
-  List<Widget> requestWidgetList = <Widget>[];
-  SharedPreferences prefs;
-  bool checkAdmin(String id){
-    return team.admins.map((e) => e.id).toList().contains(id);
+  Status fetchStatus = Status.notLoaded;
+
+  Future<void> fetchData() async {
+    String token = Provider.of<UserInfoModel>(context, listen: false).token;
+    bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    List<dynamic> fetchedList;
+    if (hasTeam) {
+      fetchedList = await getTeamMail(token);
+    } else {
+      fetchedList = await getUserMail(token);
+    }
+    setState(() {
+      fetchStatus = fetchedList == null ? Status.error : Status.loaded;
+      requestsList = fetchedList;
+    });
   }
 
-  void getData() async {
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    memberID = prefs.getString('id');
-    isAdmin = prefs.getBool('admin');
-    team = await getUserTeam(token);
-    if (team == null){ 
-        requestsList = await getUserMail(token);
-        numRequests = requestsList.length;
-        _buildInvitesList();
-    } else {
-        requestsList = await getTeamMail(token);
-        numRequests = requestsList.length;
-        _buildInvitesList();
-    }
-    
+  void removeRequest(dynamic request) {
     setState(() {
+      requestsList.remove(request);
     });
   }
 
   @override
   initState() {
+    fetchData();
     super.initState();
-    getData();
-  }
-
-
-void _buildInvitesList(){
-  requestWidgetList = [];
-  for(int i = 0; i < requestsList.length; i++){
-    requestWidgetList.add(_buildRequests(i));
-  }
-}
-
-void _remRequest(String requestID) {
-    for (var r in requestsList) {
-      if (r['_id'] == requestID) {
-        requestsList.remove(r);
-        numRequests -= 1;
-        return;
-      }
-    }
-}
-
-Widget _buildInviteHeader() {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text("INVITES", style: Theme.of(context).textTheme.headline1)
-        ]
-    );
-  }
-
- Widget _requestResponses(String requestType, String requestID){
-     if ((team == null && requestType == "INVITE") ||
-     (team != null && requestType == "JOIN")) {
-         return Row (
-             mainAxisAlignment: MainAxisAlignment.end,
-             children: [
-                const SizedBox(width: 20),
-                 SolidButton(
-                          text: "Accept",
-                          onPressed: () async {
-                            await acceptRequest(token, requestID);
-                            _remRequest(requestID);
-                            _buildInvitesList();
-                            setState(() {
-
-                            });
-                            if (requestType == 'INVITE') {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => ViewTeam()));
-                            }
-                          }
-                ),
-                const SizedBox(width: 20),
-                SolidButton(
-                    text: "Decline",
-                    onPressed: () async {
-                        await declineRequest(token, requestID);
-                        _remRequest(requestID);
-                        _buildInvitesList();
-                        setState(() {
-
-                        });
-                    }
-                )
-             ]
-         );
-    } else {
-         return Row (
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-                 SolidButton(
-                          text: "Cancel",
-                          onPressed: () async {
-                            await cancelRequest(token, requestID);
-                            _remRequest(requestID);
-                            _buildInvitesList();
-                            setState(() {
-
-                            });
-                          }
-                    )
-            ]
-        );
-     }
- }
-  Widget _buildRequests(int index){
-    String requestType = requestsList[index]['type'];
-    String inviteInfo;
-    if (team != null){
-        inviteInfo = requestsList[index]['user']['email'];
-    } else {
-        inviteInfo = requestsList[index]['team']['name'];
-    }
-    String requestID = requestsList[index]['_id'];
-    Row btnRow = _requestResponses(requestType, requestID);
-    return Card(
-        margin: const EdgeInsets.all(12),
-        color: Theme.of(context).colorScheme.background,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(requestType, style: Theme.of(context).textTheme.headline3),
-              const SizedBox(height: 10),
-              Text(inviteInfo, style: Theme.of(context).textTheme.bodyText2),
-              const SizedBox(height: 8),
-              btnRow
-            ],
-          )
-      )
-    );
   }
 
   @override
@@ -170,69 +164,52 @@ Widget _buildInviteHeader() {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    return Scaffold(
-        body:  SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ConstrainedBox(
-                constraints: BoxConstraints(
-                    maxHeight: screenHeight
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const TopBar(backflag: true),
-                    Stack(
-                      children: [
-                        Column(
-                            children:[
-                              SizedBox(height:screenHeight * 0.05),
-                              CustomPaint(
-                                  size: Size(screenWidth, screenHeight * 0.75),
-                                  painter: CurvedTop(
-                                      color1: Theme.of(context).colorScheme.secondaryVariant,
-                                      color2: Theme.of(context).colorScheme.primary,
-                                      reverse: true)
+    return DefaultPage(
+      backflag: true,
+      reverse: true,
+      child:
+          Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+              child: RefreshIndicator(
+                onRefresh: fetchData,
+                child: GradBox(
+                    width: screenWidth*0.9,
+                    height: screenHeight*0.75,
+                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("INVITES", style: Theme.of(context).textTheme.headline1)
+                                  ]
+                              )
+                          ),
+                          if (fetchStatus == Status.loaded && requestsList.isNotEmpty)
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: requestsList.length,
+                                itemBuilder: (context, index) {
+                                  return RequestCard(requestsList[index], removeRequest);
+                                },
                               ),
-                            ]
-                        ),
-                        Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            child: GradBox(
-                                width: screenWidth*0.9,
-                                height: screenHeight*0.75,
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                          child: _buildInviteHeader()
-                                      ),
-                                      if (prefs == null)
-                                        const Center(child: CircularProgressIndicator())
-                                      else if (requestsList.isEmpty)
-                                        Text("No invites.", style: Theme.of(context).textTheme.bodyText2,)
-                                      else
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemCount: numRequests,
-                                          itemBuilder: (BuildContext context, int index){
-                                            return _buildRequests(index);
-                                          },
-                                        ),
-                                      )
-                                    ]
-                                )
                             )
-                        )
-                      ],
+                          else if (fetchStatus == Status.loaded && requestsList.isEmpty)
+                            Text("No invites", style: Theme.of(context).textTheme.bodyText2,)
+                          else if (fetchStatus == Status.error)
+                              Text("Error loading invites", style: Theme.of(context).textTheme.bodyText2,)
+                          else
+                            const Center(child: CircularProgressIndicator())
+                        ]
                     )
-                  ],
-                )
-            )
-        )
+                ),
+              )
+          )
     );
   }
 }
