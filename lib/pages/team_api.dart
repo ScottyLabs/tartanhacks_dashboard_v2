@@ -89,14 +89,15 @@ Future<List<dynamic>> getTeamMail(String token) async {
   return null;
 }
 
-Future<void> acceptRequest(String token, String requestID) async {
+Future<bool> acceptRequest(String token, String requestID) async {
   String url =
       baseUrl + "requests/accept/" + requestID;
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  await http.post(url, headers: headers);
+  http.Response response = await http.post(url, headers: headers);
+  return response.statusCode == 200;
 }
 
 Future<void> cancelRequest(String token, String requestID) async {
@@ -116,7 +117,10 @@ Future<void> declineRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  await http.post(url, headers: headers);
+  print(url);
+  print(headers.toString());
+  http.Response response = await http.post(url, headers: headers);
+  print(response.body);
 }
 
 Future<List<dynamic>> getUserMail(String token) async {
@@ -143,7 +147,7 @@ Future<void> inviteTeamMember(String userEmail, String token) async {
   await http.post(url, headers: headers, body: body);
 }
 
-Future<void> leaveTeam(String token) async {
+Future<bool> leaveTeam(String token) async {
   const url = baseUrl + "team/leave";
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -151,9 +155,7 @@ Future<void> leaveTeam(String token) async {
   };
   var body = json.encode({});
   final response = await http.post(url, headers: headers, body: body);
-  if (response.statusCode == 200) {
-    return;
-  }
+  return response.statusCode == 200;
 }
 
 Future<bool> requestTeam(String teamID, String token) async {

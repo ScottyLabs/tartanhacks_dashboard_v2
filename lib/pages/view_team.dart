@@ -13,6 +13,40 @@ import 'see_invites.dart';
 import 'teams_list.dart';
 import 'create_team.dart';
 
+void showConfirmDialog(BuildContext context, String message, Function onConfirm) {
+  showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text("Confirmation",
+              style: Theme.of(context).textTheme.headline1),
+          content: Text(
+              message,
+              style: Theme.of(context).textTheme.bodyText2),
+          actions: [
+            TextButton(
+              child: Text(
+                "Cancel",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                "OK",
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              onPressed: onConfirm,
+            ),
+          ]
+        );
+      }
+  );
+}
+
 class InviteMembersBtn extends StatelessWidget {
   final Team team;
 
@@ -93,21 +127,34 @@ class LeaveJoinTeamBtn extends StatelessWidget {
     return SolidButton(
         text: buttonText,
         onPressed: () async {
-          if (isAdmin && adminIds.length == 1) {
-            errorDialog(
-                context,
-                "Error",
-                "You cannot leave the team if "
-                    "you are the only admin. You must promote someone else to admin "
-                    "before leaving.");
-          } else {
-            await leaveTeam(token);
-            Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => TeamsList()),
+          // Can only leave if you are the last person on the team or not an admin
+          bool canLeave = team.members.length == 1 || !isAdmin;
+          if (!canLeave) {
+            errorDialog(context, "Cannot Leave Team",
+                "You must promote someone else to an admin before you leave the team"
             );
+            return;
           }
+
+          showConfirmDialog(
+            context,
+            "Are you sure want to leave your team? Your team information may be "
+                "lost if you are the only member left.",
+              () async {
+                bool success = await leaveTeam(token);
+                if (!success) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Error leaving team."),
+                  ));
+                  return;
+                }
+                await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => TeamsList())
+                );
+              }
+          );
         },
         color: Theme.of(context).colorScheme.secondary);
   }
@@ -127,78 +174,42 @@ class MemberListElement extends StatelessWidget {
     String nameStr = mem.name;
     bool isMemAdmin = adminIds.contains(id);
 
-    // Show promotion dialog
-    void promoteConfirm(String id) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          String token =
-              Provider.of<UserInfoModel>(context, listen: false).token;
-          return AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            title: Text("Confirmation",
-                style: Theme.of(context).textTheme.headline1),
-            content: Text(
-                "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
-                style: Theme.of(context).textTheme.bodyText2),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  "Cancel",
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: Text(
-                  "OK",
-                  style: Theme.of(context).textTheme.headline4,
-                ),
-                onPressed: () {
-                  promoteToAdmin(id, token).then((_) {
-                    Navigator.of(context).pop();
-                    Provider.of<UserInfoModel>(context, listen: false)
-                        .fetchUserInfo();
-                  });
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     return Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: nameStr + "  ",
-                      style: Theme.of(context).textTheme.bodyText2),
-                  if (isMemAdmin)
-                    WidgetSpan(
-                        child: Icon(Icons.star,
-                            size: 20,
-                            color: Theme.of(context).colorScheme.tertiary))
-                ])),
-                Text(emailStr, style: Theme.of(context).textTheme.bodyText2)
-              ]),
-          if (isAdmin && !isMemAdmin)
-            SolidButton(
-              text: "Promote",
-              color: Theme.of(context).colorScheme.secondary,
-              onPressed: () {
-                promoteConfirm(id);
-              },
-            )
+              Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: nameStr + "  ",
+                          style: Theme.of(context).textTheme.bodyText2),
+                      if (isMemAdmin)
+                        WidgetSpan(
+                            child: Icon(Icons.star,
+                                size: 20,
+                                color: Theme.of(context).colorScheme.tertiary))
+                    ])),
+                    Text(emailStr, style: Theme.of(context).textTheme.bodyText2)
+                  ]),
+              if (isAdmin && !isMemAdmin)
+              SolidButton(
+                text: "Promote",
+                color: Theme.of(context).colorScheme.secondary,
+                onPressed: () {
+                  showConfirmDialog(context, "Are you sure you want to promote this member to an admin? You will no longer be an admin.", () {
+                    String token = Provider.of<UserInfoModel>(context, listen: false).token;
+                    promoteToAdmin(id, token).then((_) {
+                      Navigator.of(context).pop();
+                      Provider.of<UserInfoModel>(context, listen: false)
+                          .fetchUserInfo();
+                    });
+                  });
+                },
+              )
         ]));
   }
 }
@@ -255,8 +266,7 @@ class TeamHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         height: 50,
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text("TEAM", style: Theme.of(context).textTheme.headline1),
           isAdmin ? TeamMail() : Container()
         ]));

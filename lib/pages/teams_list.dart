@@ -164,7 +164,7 @@ class _TeamsListState extends State<TeamsList> {
     teams = teams.where((e) => e.visible).toList();
     teams.sort((a, b) => a.name.compareTo(b.name));
     List requestsList = await getUserMail(token);
-    requestedTeams = requestsList.map((e) => e['team']['_id'].toString()).toSet();
+    requestedTeams = requestsList?.map((e) => e['team']['_id'].toString())?.toSet() ?? {};
     fetchStatus = Status.loaded;
     setState(() {});
 
