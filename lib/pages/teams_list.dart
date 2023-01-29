@@ -5,6 +5,7 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/loading/ListRefreshable.dart';
 import '../components/loading/LoadingOverlay.dart';
 import '../providers/user_info_provider.dart';
 import 'create_team.dart';
@@ -239,13 +240,13 @@ class _TeamsListState extends State<TeamsList> {
                             height: 20
                         ),
                         if (fetchStatus == Status.error)
-                          const Center(
-                            child: Text("Error loading teams")
-                          )
+                          ListRefreshable(child: const Center(
+                              child: Text("Error loading teams")
+                          ),)
                         else if (fetchStatus == Status.loaded && teams.isEmpty)
-                          const Center(
-                            child: Text("No teams available")
-                          )
+                          ListRefreshable(child: const Center(
+                              child: Text("No teams available")
+                            ))
                         else if (fetchStatus == Status.loaded)
                           Expanded(
                             child: ListView.builder(
