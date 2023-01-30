@@ -149,6 +149,7 @@ class _TeamsListState extends State<TeamsList> {
     } else {
       teams = await getTeams(token);
     }
+    teams.sort((a, b) => a.name.compareTo(b.name));
 
     fetchStatus = Status.loaded;
     setState(() { });
@@ -204,7 +205,10 @@ class _TeamsListState extends State<TeamsList> {
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: RefreshIndicator(
-              onRefresh: fetchData,
+              onRefresh: (){
+                searchController.clear();
+                return fetchData();
+              },
               child: GradBox(
                   width: screenWidth * 0.9,
                   height: screenHeight * 0.75,
@@ -236,7 +240,13 @@ class _TeamsListState extends State<TeamsList> {
                               width: 10
                           ),
                           SolidButton(
-                              onPressed: search,
+                              onPressed: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                                search();
+                              },
                               child: Icon(Icons.subdirectory_arrow_left,
                                   size: 30,
                                   color: Theme.of(context)
