@@ -69,7 +69,7 @@ ThemeData genLightTheme (){
       onTertiary: surface,
       onTertiaryContainer: surface,
       onSurface: secondary,
-      onBackground: shadow, //shadows
+      onBackground: secondary,
       onError: secondary,
       onErrorContainer: background,
       shadow: shadow,
@@ -110,7 +110,7 @@ ThemeData genDarkTheme (){
       onTertiaryContainer: text,
       onSurface: altbuttons,
       onSurfaceVariant: text,
-      onBackground: shadow, //shadows
+      onBackground: text,
       onError: text,
       onErrorContainer: text,
       shadow: shadow,
