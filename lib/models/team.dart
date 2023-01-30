@@ -37,19 +37,4 @@ class Team {
         description: parsedJson["description"]
     );
   }
-
-  factory Team.fromJsonSearch(Map<String, dynamic> parsedJson) {
-    // var parsedJson = jsonDecode(parseString);
-    String adminID = parsedJson["admin"];
-    List<Member> adminList = [];
-    List<Member> memberList = [];
-    return Team(
-        teamID:  parsedJson["_id"],
-        visible: parsedJson["visible"],
-        admins: adminList,
-        name: parsedJson["name"],
-        members: memberList,
-        description: parsedJson["description"]
-    );
-  }
 }
