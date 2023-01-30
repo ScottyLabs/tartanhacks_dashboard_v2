@@ -140,7 +140,9 @@ class _Bookmarks extends State<Bookmarks> {
                                 alignment: Alignment.center,
                                 child: Text(
                                     "No bookmarks.",
-                                    style: Theme.of(context).textTheme.headline3)
+                                    style: Theme.of(context).textTheme.headline3
+                                    .copyWith(color: Theme.of(context).colorScheme.onPrimary)
+                                )
                             )
                         )
                         else
@@ -223,7 +225,7 @@ class BookmarkInfo extends StatelessWidget {
                   child: Icon(
                     Icons.bookmark,
                     size: 50.0,
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                   padding: const EdgeInsets.all(12),
                   shape: const CircleBorder(),

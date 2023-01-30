@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/loading/ListRefreshable.dart';
+import '../components/loading/LoadingOverlay.dart';
 import '../providers/user_info_provider.dart';
 import 'create_team.dart';
 import 'view_team.dart';
@@ -49,9 +52,9 @@ class TeamDetailsBtn extends StatelessWidget {
 class TeamJoinBtn extends StatelessWidget {
   final bool hasReqested;
   final Function onJoinPressed;
-  
+
   const TeamJoinBtn(this.hasReqested, this.onJoinPressed);
-  
+
   @override
   Widget build(BuildContext context) {
     if (hasReqested) {
@@ -134,7 +137,24 @@ class _TeamsListState extends State<TeamsList> {
   List<Team> teams = [];
   Set<String> requestedTeams = {};
   Status fetchStatus = Status.notLoaded;
+  TextEditingController searchController = TextEditingController();
 
+  void search() async {
+    fetchStatus = Status.notLoaded;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token');
+
+    if (searchController.text != "") {
+      teams = await teamSearch(token, searchController.text);
+    } else {
+      teams = await getTeams(token);
+    }
+    teams.sort((a, b) => a.name.compareTo(b.name));
+
+    fetchStatus = Status.loaded;
+    setState(() { });
+
+  }
   @override
   initState() {
     fetchData();
@@ -153,7 +173,7 @@ class _TeamsListState extends State<TeamsList> {
     teams = teams.where((e) => e.visible).toList();
     teams.sort((a, b) => a.name.compareTo(b.name));
     List requestsList = await getUserMail(token);
-    requestedTeams = requestsList.map((e) => e['team']['_id'].toString()).toSet();
+    requestedTeams = requestsList?.map((e) => e['team']['_id'].toString())?.toSet() ?? {};
     fetchStatus = Status.loaded;
     setState(() {});
 
@@ -185,7 +205,10 @@ class _TeamsListState extends State<TeamsList> {
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: RefreshIndicator(
-              onRefresh: fetchData,
+              onRefresh: (){
+                searchController.clear();
+                return fetchData();
+              },
               child: GradBox(
                   width: screenWidth * 0.9,
                   height: screenHeight * 0.75,
@@ -200,14 +223,47 @@ class _TeamsListState extends State<TeamsList> {
                         Container(
                             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: TeamCreateBtn()),
+                        Row(children: [
+                          Expanded(
+                            child: TextField(
+                              style:
+                              Theme.of(context).textTheme.bodyText2,
+                              enableSuggestions: false,
+                              controller: searchController,
+                              textInputAction: TextInputAction.send,
+                              onSubmitted: (value) {
+                                search(); //searches when ENTER pressed
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                              width: 10
+                          ),
+                          SolidButton(
+                              onPressed: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                                search();
+                              },
+                              child: Icon(Icons.subdirectory_arrow_left,
+                                  size: 30,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary)),
+                        ]),
+                        const SizedBox(
+                            height: 20
+                        ),
                         if (fetchStatus == Status.error)
-                          const Center(
-                            child: Text("Error loading teams")
-                          )
+                          ListRefreshable(child: const Center(
+                              child: Text("Error loading teams")
+                          ),)
                         else if (fetchStatus == Status.loaded && teams.isEmpty)
-                          const Center(
-                            child: Text("No teams available")
-                          )
+                          ListRefreshable(child: const Center(
+                              child: Text("No teams available")
+                            ))
                         else if (fetchStatus == Status.loaded)
                           Expanded(
                             child: ListView.builder(
@@ -220,8 +276,11 @@ class _TeamsListState extends State<TeamsList> {
                                     teams[index],
                                     hasReqested,
                                     () async {
+                                      OverlayEntry loading = LoadingOverlay(context);
+                                      Overlay.of(context).insert(loading);
                                       String token = Provider.of<UserInfoModel>(context, listen: false).token;
                                       bool success = await requestTeam(teamID, token);
+                                      loading.remove();
                                       if (success) {
                                         errorDialog(context, "Success", "A join request was sent to this team");
                                         requestedTeams.add(teamID);

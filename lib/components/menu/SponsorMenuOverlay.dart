@@ -60,11 +60,11 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
                                   text: "Home",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             Sponsors(),
-                                        )
+                                        ), (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -73,11 +73,11 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
                                   text: "Schedule",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             EventsHomeScreen(),
-                                        )
+                                        ), (route) => route.isFirst
                                     );
                                   },
                                 ),
@@ -86,11 +86,11 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
                                   text: "Bookmarks",
                                   onTap: () {
                                     entry.remove();
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) =>
                                             Bookmarks(),
-                                        )
+                                        ), (route) => route.isFirst
                                     );
                                   },
                                 ),

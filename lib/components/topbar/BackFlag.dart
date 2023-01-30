@@ -27,7 +27,7 @@ class BackFlag extends StatelessWidget {
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
-                            color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
+                            color: darken(Theme.of(context).colorScheme.shadow, 0.01),
                             offset: const Offset(3.0, 0),
                           ),
                         ],
@@ -41,7 +41,7 @@ class BackFlag extends StatelessWidget {
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
-                            color: darken(Theme.of(context).colorScheme.onBackground, 0.01),
+                            color: darken(Theme.of(context).colorScheme.shadow, 0.01),
                             offset: const Offset(3.0, 0),
                           ),
                         ],

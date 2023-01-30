@@ -368,7 +368,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     children: [
                                       GestureDetector(
                                           onTap: (){
-                                            _editPicture();
+                                            if (isSelf) {
+                                              _editPicture();
+                                            }
                                           },
                                           child:
                                           AspectRatio(aspectRatio: 1/1, child:

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/components/loading/ListRefreshable.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
 import 'team_api.dart';
 import '/models/team.dart';
@@ -94,19 +95,26 @@ class RequestCard extends StatelessWidget {
                 Text(inviteInfo, style: Theme.of(context).textTheme.bodyText2),
                 const SizedBox(height: 8),
                 canAccept ? AcceptButtonRow(acceptOnPressed: () async {
-                  await acceptRequest(token, requestID);
-                  removeRequest(request);
+                  bool success = await acceptRequest(token, requestID);
+                  if (!success) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Error accepting invite. "
+                          "Please request for the invite to be resent."),
+                    ));
+                    removeRequest(request);
+                  }
                   await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
                   if (requestType == 'INVITE') {
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ViewTeam(),
+                            builder: (ctx) => ViewTeam(),
                             settings: const RouteSettings(
                               arguments: "",
                             )
                         ), (route) => route.isFirst);
                   }
+                  removeRequest(request);
                 }, declineOnPressed: () async {
                   await declineRequest(token, requestID);
                   removeRequest(request);
@@ -128,7 +136,6 @@ class ViewInvites extends StatefulWidget {
 }
 
 class _ViewInvitesState extends State<ViewInvites> {
-
   List<dynamic> requestsList;
   Status fetchStatus = Status.notLoaded;
 
@@ -200,9 +207,9 @@ class _ViewInvitesState extends State<ViewInvites> {
                               ),
                             )
                           else if (fetchStatus == Status.loaded && requestsList.isEmpty)
-                            Text("No invites", style: Theme.of(context).textTheme.bodyText2,)
+                            ListRefreshable(child: Text("No invites", style: Theme.of(context).textTheme.bodyText2,))
                           else if (fetchStatus == Status.error)
-                              Text("Error loading invites", style: Theme.of(context).textTheme.bodyText2,)
+                            ListRefreshable(child: Text("Error loading invites", style: Theme.of(context).textTheme.bodyText2,))
                           else
                             const Center(child: CircularProgressIndicator())
                         ]
