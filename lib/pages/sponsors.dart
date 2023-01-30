@@ -150,7 +150,8 @@ class _SponsorsState extends State<Sponsors> {
     placeholderText = null;
     setState(() {});
 
-    var studentData = await getStudents(token, query: myController.text);
+    String query = myController.text == "" ? '\u00A0' : myController.text;
+    var studentData = await getStudents(token, query: query);
     studentIds = studentData[0];
     students = studentData[1];
     studentTeams = studentData[2];
@@ -226,92 +227,95 @@ class _SponsorsState extends State<Sponsors> {
                       .headline1),
             ),
             const SizedBox(height: 10),
-            ButtonBar(
-                alignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SolidButton(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .tertiaryContainer,
-                    child: Text(
-                      "  Scan  ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2
-                          .copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SolidButton(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .tertiaryContainer,
+                      child: Text(
+                        "  Scan  ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            .copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer),
+                      ),
+                      onPressed: () async {
+                        String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+                        if (["-1", "", null].contains(id)) return;
+                        Profile isValid =
+                        await getProfile(id, token);
+                        if (isValid != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ProfilePage(
+                                      bookmarks: bookmarks,
+                                    ),
+                                settings: RouteSettings(
+                                  arguments: id,
+                                )),
+                          ).then((value) => getBookmarks());
+                        } else {
+                          errorDialog(context, "Error",
+                              "Invalid user ID.");
+                        }
+                      },
                     ),
-                    onPressed: () async {
-                      String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-                      if (["-1", "", null].contains(id)) return;
-                      Profile isValid =
-                          await getProfile(id, token);
-                      if (isValid != null) {
+                    SolidButton(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .tertiaryContainer,
+                      child: Text(
+                        " Bookmarks ",
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            .copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiaryContainer),
+                      ),
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  ProfilePage(
-                                    bookmarks: bookmarks,
-                                  ),
-                              settings: RouteSettings(
-                                arguments: id,
-                              )),
-                        ).then((value) => getBookmarks());
-                      } else {
-                        errorDialog(context, "Error",
-                            "Invalid user ID.");
-                      }
-                    },
+                                  Bookmarks()),
+                        );
+                      },
+                    )
+                  ],
+                ),
+                SolidButton(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .tertiaryContainer,
+                  child: Text(
+                    "  Discord Server  ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline2
+                        .copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onTertiaryContainer),
                   ),
-                  SolidButton(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .tertiaryContainer,
-                    child: Text(
-                      " Bookmarks ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2
-                          .copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                Bookmarks()),
-                      );
-                    },
-                  ),
-                ]),
-            ButtonBar(
-                alignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SolidButton(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .tertiaryContainer,
-                    child: Text(
-                      "  Discord Server  ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline2
-                          .copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer),
-                    ),
-                    onPressed: () {
-                      discordVerifyDialog(context);
-                    },
-                  ),
-                ]),
+                  onPressed: () {
+                    discordVerifyDialog(context);
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: 10),
             Container(
                 alignment: Alignment.centerLeft,
@@ -354,7 +358,13 @@ class _SponsorsState extends State<Sponsors> {
                 width: 10,
               ),
               SolidButton(
-                  onPressed: search,
+                  onPressed: (){
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+                    search();
+                  },
                   child: Icon(Icons.subdirectory_arrow_left,
                       size: 30,
                       color: Theme.of(context)
