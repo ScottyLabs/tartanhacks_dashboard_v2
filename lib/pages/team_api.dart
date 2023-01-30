@@ -255,7 +255,7 @@ Future<List<Team>> teamSearch(String token, String query) async {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
     List<Team> teamsList = [];
     for (int i = 0; i < teamStrings.length; i++) {
-      teamsList.add(Team.fromJson(teamStrings[i]));
+      teamsList.add(Team.fromJsonSearch(teamStrings[i]));
     }
     return teamsList;
   }
