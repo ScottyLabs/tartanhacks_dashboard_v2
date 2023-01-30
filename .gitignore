@@ -135,6 +135,7 @@ dist
 .pub-cache/
 .pub/
 /build/
+pubspec.lock
 
 # Web related
 lib/V1/generated_plugin_registrant.dart

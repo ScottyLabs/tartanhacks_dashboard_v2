@@ -29,7 +29,7 @@ class _SponsorsState extends State<Sponsors> {
   int searchResultCount;
   bool searchPressed;
 
-  Widget placeholder;
+  String placeholderText = "Search for participants by name.";
 
   SharedPreferences prefs;
   String token;
@@ -147,17 +147,14 @@ class _SponsorsState extends State<Sponsors> {
     studentIds = [];
     students = [];
     studentTeams = [];
-    placeholder = const CircularProgressIndicator();
+    placeholderText = null;
     setState(() {});
 
     var studentData = await getStudents(token, query: myController.text);
     studentIds = studentData[0];
     students = studentData[1];
     studentTeams = studentData[2];
-    placeholder = Text("No results.",
-        style: TextStyle(color: Theme.of(context)
-            .colorScheme
-            .onSecondary));
+    placeholderText = "No results.";
     setState(() {});
   }
 
@@ -235,7 +232,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .tertiary,
+                        .tertiaryContainer,
                     child: Text(
                       "  Scan  ",
                       style: Theme.of(context)
@@ -244,7 +241,7 @@ class _SponsorsState extends State<Sponsors> {
                           .copyWith(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .onSecondary),
+                                  .onTertiaryContainer),
                     ),
                     onPressed: () async {
                       String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
@@ -272,7 +269,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .tertiary,
+                        .tertiaryContainer,
                     child: Text(
                       " Bookmarks ",
                       style: Theme.of(context)
@@ -281,7 +278,7 @@ class _SponsorsState extends State<Sponsors> {
                           .copyWith(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .onSecondary),
+                                  .onTertiaryContainer),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -299,7 +296,7 @@ class _SponsorsState extends State<Sponsors> {
                   SolidButton(
                     color: Theme.of(context)
                         .colorScheme
-                        .tertiary,
+                        .tertiaryContainer,
                     child: Text(
                       "  Discord Server  ",
                       style: Theme.of(context)
@@ -308,7 +305,7 @@ class _SponsorsState extends State<Sponsors> {
                           .copyWith(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .onSecondary),
+                                  .onTertiaryContainer),
                     ),
                     onPressed: () {
                       discordVerifyDialog(context);
@@ -320,18 +317,31 @@ class _SponsorsState extends State<Sponsors> {
                 alignment: Alignment.centerLeft,
                 child: Text("Search",
                     textAlign: TextAlign.left,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        .copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onPrimary))),
+                    style: Theme.of(context).textTheme.headline3
+                        .copyWith(color: Theme.of(context).colorScheme.onPrimary))),
             Row(children: [
               Expanded(
                 child: TextField(
                   style: Theme.of(context).textTheme.bodyText2
-                          .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
+                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
+                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary.withAlpha(87)),
+                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                    ),
+                    errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
+                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                    ),
+                  ),
                   enableSuggestions: false,
                   controller: myController,
                   textInputAction: TextInputAction.send,
@@ -400,7 +410,11 @@ class _SponsorsState extends State<Sponsors> {
                                 updateBM: getBookmarks);
                           })))
             else
-              Center(child: placeholder)
+              Center(child:
+                placeholderText != null
+                  ? Text(placeholderText, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),)
+                  : const CircularProgressIndicator()
+              )
           ])
       )
     );
