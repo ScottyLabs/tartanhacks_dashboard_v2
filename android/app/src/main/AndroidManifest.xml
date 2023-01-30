@@ -40,11 +40,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
-        <string name="asset_statements" translatable="false">
-            [{
-            \"include\": \"https://tartanhacks.com/.well-known/assetlinks.json\"
-            }]
-        </string>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
