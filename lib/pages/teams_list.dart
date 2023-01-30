@@ -137,14 +137,22 @@ class _TeamsListState extends State<TeamsList> {
   List<Team> teams = [];
   Set<String> requestedTeams = {};
   Status fetchStatus = Status.notLoaded;
-  //SEARCH CONTROLLER
   TextEditingController searchController = TextEditingController();
 
   void search() async {
+    fetchStatus = Status.notLoaded;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token');
 
-    var searchResults = await teamSearch(token, searchController.text);
+    if (searchController.text != "") {
+      teams = await teamSearch(token, searchController.text);
+    } else {
+      teams = await getTeams(token);
+    }
+    teams.sort((a, b) => a.name.compareTo(b.name));
+
+    fetchStatus = Status.loaded;
+    setState(() { });
 
   }
   @override
@@ -197,7 +205,10 @@ class _TeamsListState extends State<TeamsList> {
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: RefreshIndicator(
-              onRefresh: fetchData,
+              onRefresh: (){
+                searchController.clear();
+                return fetchData();
+              },
               child: GradBox(
                   width: screenWidth * 0.9,
                   height: screenHeight * 0.75,
@@ -229,7 +240,13 @@ class _TeamsListState extends State<TeamsList> {
                               width: 10
                           ),
                           SolidButton(
-                              onPressed: search, //searches when button pressed
+                              onPressed: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                                search();
+                              },
                               child: Icon(Icons.subdirectory_arrow_left,
                                   size: 30,
                                   color: Theme.of(context)
