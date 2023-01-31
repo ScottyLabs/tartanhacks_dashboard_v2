@@ -181,6 +181,12 @@ class _HomeState extends State<Home> {
                             const SizedBox(height: 8),
                             CountdownTimer(
                               endTime: 1675549800000,
+                              endWidget: Text("Time's up!",
+                                  style: TextStyle(
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context).colorScheme.tertiary)
+                              ),
                               textStyle: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold,
