@@ -51,6 +51,11 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
+      } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        loading.remove();
+        errorDialog(context, "Unconfirmed", "Your participant account has not been "
+            "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+            "after you've been confirmed.");
       } else {
         Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
           loading.remove();
@@ -76,16 +81,26 @@ class _LoginState extends State<Login> {
     }
 
     if (prefs.get('email') != null) {
-      if (prefs.get('company') != null) {
+      User logindata = await checkCredentials(prefs.get('email'), prefs.get('password'));
+      if (logindata == null) {
+        Provider.of<UserInfoModel>(context, listen: false).reset();
+        prefs.clear();
+      } else if (logindata.company != null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
+      } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        errorDialog(context, "Unconfirmed", "Your participant account has not been "
+            "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+            "after you've been confirmed.");
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (ctxt) => Home()),
-        );
+        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (ctxt) => Home()),
+          );
+        });
       }
     }
   }
