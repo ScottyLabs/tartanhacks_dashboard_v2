@@ -53,11 +53,7 @@ class _HomeState extends State<Home> {
 
   _launchDiscord() async {
     String url = discordInfo.link;
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      errorDialog(context, "Error", 'Could not launch Discord Server.');
-    }
+    launch(url);
   }
 
   void discordVerifyDialog(BuildContext context) {
