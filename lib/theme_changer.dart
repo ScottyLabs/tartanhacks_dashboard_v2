@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
   return ThemeData(
-      fontFamily: 'Aktiv Grotesk',
+      fontFamily: 'Futura Md BT',
       colorScheme: cScheme,
       scaffoldBackgroundColor: background,
       accentColor: text,

@@ -11,7 +11,7 @@ void main() => runApp(
     MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CheckInItemsModel()),
-          ChangeNotifierProvider(create: (_) => ThemeChanger(darkTheme)),
+          ChangeNotifierProvider(create: (_) => ThemeChanger(lightTheme)),
           ChangeNotifierProvider(create: (context) => UserInfoModel())
         ],
       child: MyApp()
