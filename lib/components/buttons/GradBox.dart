@@ -29,6 +29,7 @@ class GradBox extends StatelessWidget{
               end: Alignment.bottomRight,
               colors: !reverse ? [color1, color2] : [color2, color1],
             ),
+            // border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1),
             borderRadius: BorderRadius.circular(curvature),
             boxShadow: [BoxShadow(
                 color: shadow,

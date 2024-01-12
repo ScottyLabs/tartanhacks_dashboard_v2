@@ -26,7 +26,7 @@ class SolidButton extends StatelessWidget{
         style: ButtonStyle(
             foregroundColor: MaterialStateProperty.all(color),
             backgroundColor: MaterialStateProperty.all(color),
-            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.secondaryVariant),
+            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.shadow),
             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
             elevation: MaterialStateProperty.all(5)
         ),

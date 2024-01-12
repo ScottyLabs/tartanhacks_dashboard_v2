@@ -126,7 +126,7 @@ class _LoginState extends State<Login> {
                               color1: Theme.of(context).colorScheme.primary,
                               color2: Theme.of(context)
                                   .colorScheme
-                                  .secondaryVariant),
+                                  .secondary),
                         ),
                         Container(
                             height: screenHeight * 0.3,
@@ -134,8 +134,8 @@ class _LoginState extends State<Login> {
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                             child: _themeProvider.getTheme == lightTheme
-                                ? Image.asset("lib/logos/thLogoDark.png")
-                                : Image.asset("lib/logos/thLogoDark.png"))
+                                ? Image.asset("lib/logos/thLogoLight.png")
+                                : Image.asset("lib/logos/thLogoLight.png"))
                       ]),
                       Container(
                           alignment: Alignment.center,
@@ -199,7 +199,7 @@ class _LoginState extends State<Login> {
                           child: Text("Forgot Password",
                               style: TextStyle(
                                   color:
-                                      Theme.of(context).colorScheme.tertiary))),
+                                      Theme.of(context).colorScheme.tertiaryContainer))),
                     ]))));
   }
 }

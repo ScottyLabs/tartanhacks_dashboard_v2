@@ -23,12 +23,12 @@ class BackFlag extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
-                            color: darken(Theme.of(context).colorScheme.shadow, 0.01),
-                            offset: const Offset(3.0, 0),
+                            color: Theme.of(context).colorScheme.tertiary,
+                            offset: const Offset(4.0, 0),
                           ),
                         ],
                       )
@@ -37,12 +37,12 @@ class BackFlag extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(0, 0, 22, 0),
                       child: DecoratedIcon(Icons.arrow_back_ios_rounded,
                         size: 25,
-                        color: Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         shadows: [
                           BoxShadow(
                             blurRadius: 6.0,
-                            color: darken(Theme.of(context).colorScheme.shadow, 0.01),
-                            offset: const Offset(3.0, 0),
+                            color: Theme.of(context).colorScheme.tertiary,
+                            offset: const Offset(4.0, 0),
                           ),
                         ],
                       )

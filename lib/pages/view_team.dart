@@ -156,7 +156,7 @@ class LeaveJoinTeamBtn extends StatelessWidget {
               }
           );
         },
-        color: Theme.of(context).colorScheme.secondary);
+        color: Theme.of(context).colorScheme.tertiaryContainer);
   }
 }
 
@@ -191,7 +191,7 @@ class MemberListElement extends StatelessWidget {
                         WidgetSpan(
                             child: Icon(Icons.star,
                                 size: 20,
-                                color: Theme.of(context).colorScheme.tertiary))
+                                color: Theme.of(context).colorScheme.tertiaryContainer))
                     ])),
                     Text(emailStr, style: Theme.of(context).textTheme.bodyText2)
                   ]),
@@ -247,7 +247,7 @@ class TeamMail extends StatelessWidget {
             color: Theme
                 .of(context)
                 .colorScheme
-                .tertiary,
+                .tertiaryContainer,
             onPressed: () {
               Navigator.push(
                 context,

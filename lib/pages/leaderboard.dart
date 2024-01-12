@@ -159,7 +159,7 @@ class _LeaderboardState extends State<Leaderboard> {
                                 child: Icon(Icons.edit,
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .onSecondary),
+                                        .onTertiaryContainer),
                                 color: Theme.of(context).colorScheme.tertiaryContainer,
                                 onPressed: _editNickname,
                               ),

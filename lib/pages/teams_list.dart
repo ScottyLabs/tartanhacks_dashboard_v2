@@ -116,7 +116,7 @@ class TeamHeader extends StatelessWidget {
         Text("TEAM", style: Theme.of(context).textTheme.headline2),
         IconButton(
             icon: const Icon(Icons.email, size: 30.0),
-            color: Theme.of(context).colorScheme.tertiary,
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             onPressed: () {
               Navigator.push(
                 context,
@@ -240,6 +240,7 @@ class _TeamsListState extends State<TeamsList> {
                               width: 10
                           ),
                           SolidButton(
+                              color: Theme.of(context).colorScheme.tertiary,
                               onPressed: () {
                                 FocusScopeNode currentFocus = FocusScope.of(context);
                                 if (!currentFocus.hasPrimaryFocus) {
@@ -251,7 +252,7 @@ class _TeamsListState extends State<TeamsList> {
                                   size: 30,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .onPrimary)),
+                                      .onTertiary)),
                         ]),
                         const SizedBox(
                             height: 20

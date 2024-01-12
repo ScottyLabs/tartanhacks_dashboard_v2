@@ -84,14 +84,14 @@ ThemeData genLightTheme (){
 
 ThemeData genDarkTheme (){
 
-  var primary = const Color(0xFF4200FF);
-  var secondary = const Color(0xFF0085FF);
-  var buttons = const Color(0xFFFEA801);
-  var altbuttons = const Color(0xFF4200FF);
-  var surface = const Color(0xFF65676C);
-  var surface2 = const Color(0xFF866CF1);
+  var primary = const Color(0xFF1028F1);
+  var secondary = const Color(0xFF735FFF);
+  var buttons = const Color(0xFFFF7AA5);
+  var altbuttons = const Color(0xFFF2DC00);
+  var surface = const Color(0xFF9F97DE);
+  var surface2 = const Color(0xFF3A45F6);
   var background = const Color(0xFF000000);
-  var shadow = const Color(0xFF866CF1);
+  var shadow = const Color(0xFF1028F1);
   var text = const Color(0xFFF7F1E2);
 
   ColorScheme cScheme = ColorScheme(
@@ -105,10 +105,10 @@ ThemeData genDarkTheme (){
       error: buttons,
       errorContainer: primary, //menu buttons
       onPrimary: text,
-      onSecondary: background,
+      onSecondary: text,
       onTertiary: background,
-      onTertiaryContainer: text,
-      onSurface: altbuttons,
+      onTertiaryContainer: background,
+      onSurface: text,
       onSurfaceVariant: text,
       onBackground: text,
       onError: text,

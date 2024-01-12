@@ -12,7 +12,7 @@ class CurvedBottom extends CustomPainter {
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors:[color1, color2],
+        colors:[color2, color1],
       ).createShader(Rect.fromLTRB(0, 0, size.width, size.height));
     var path = Path();
     double curveOffset = size.height * (3/5);

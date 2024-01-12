@@ -72,8 +72,8 @@ class _ForgotState extends State<Forgot> {
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                             child: _themeProvider.getTheme == lightTheme
-                                ? Image.asset("lib/logos/thLogoDark.png")
-                                : Image.asset("lib/logos/thLogoDark.png"))
+                                ? Image.asset("lib/logos/thLogoLight.png")
+                                : Image.asset("lib/logos/thLogoLight.png"))
                       ]),
                       Container(
                           alignment: Alignment.center,
@@ -113,7 +113,7 @@ class _ForgotState extends State<Forgot> {
                           Text("Already have an account?",
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Theme.of(context).colorScheme.onPrimary
+                                color: Theme.of(context).colorScheme.onBackground
                               )
                           ),
                           TextButton(
@@ -127,7 +127,7 @@ class _ForgotState extends State<Forgot> {
                               child: Text("Try Logging In",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Theme.of(context).colorScheme.tertiary
+                                    color: Theme.of(context).colorScheme.tertiaryContainer
                                   )
                               )
                           ),
