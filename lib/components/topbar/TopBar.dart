@@ -31,7 +31,7 @@ class TopBar extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: SafeArea(
                   child: TextLogo(
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSecondary,
                       width: screenWidth * 0.65,
                       height: screenHeight * 0.10))),
           if (backflag)

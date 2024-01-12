@@ -45,14 +45,14 @@ ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
 
 ThemeData genLightTheme (){
 
-  var primary = const Color(0xFF6E9AFD);
-  var secondary = const Color(0xFF4200FF);
-  var buttons = const Color(0xFFFEA801);
-  var altbuttons = const Color(0xFF9C79F0);
-  var surface = const Color(0xFFF7F1E2);
+  var primary = const Color(0xFF1B1818);
+  var secondary = const Color(0xFF1B1818);
+  var buttons = const Color(0xFF1B1818);
+  var altbuttons = const Color(0xFF1028F1);
+  var surface = const Color(0xFFE8EAEF);
   var surface2 = const Color(0xFFA8C2fE);
-  var background = const Color(0xFFF7F1E2);
-  var shadow = const Color(0xFF866CF1);
+  var background = const Color(0xFFFFFFFF);
+  var shadow = const Color(0xFF1028F1);
 
   ColorScheme cScheme = ColorScheme(
       primary: primary,
@@ -65,7 +65,7 @@ ThemeData genLightTheme (){
       error: altbuttons,
       errorContainer: secondary, //menu buttons
       onPrimary: background,
-      onSecondary: surface,
+      onSecondary: background,
       onTertiary: surface,
       onTertiaryContainer: surface,
       onSurface: secondary,

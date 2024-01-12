@@ -76,6 +76,7 @@ class IDCheckInHeader extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: SolidButton(
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             onPressed: () async {
               FocusScope.of(context).unfocus();
               String snackBarText = "";
@@ -160,7 +161,7 @@ class IDCheckInHeader extends StatelessWidget {
             },
             child: Icon(
               Icons.keyboard_return_rounded,
-              color: Theme.of(context).colorScheme.onPrimary,
+              color: Theme.of(context).colorScheme.onTertiaryContainer,
             ),
           ),
         )

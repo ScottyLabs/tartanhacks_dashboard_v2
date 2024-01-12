@@ -23,8 +23,8 @@ class TextLogo extends StatelessWidget {
               SizedBox(
                   height: height,
                   width: min(width*0.20, 50),
-                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
-                      : Image.asset("lib/logos/thLogoLight.png")
+                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight_small.png")
+                      : Image.asset("lib/logos/thLogoLight_small.png")
               ),
               Text(" Tartanhacks ",
                   style: TextStyle(
