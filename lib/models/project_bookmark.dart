@@ -8,13 +8,11 @@ class ProjectBookmark {
   final String createdAt;
 
   ProjectBookmark({
-    this.bookmarkId,
-    this.bookmarkType,
-
-    this.projectData, // json data format
-
-    this.description,
-    this.createdAt,
+    required this.bookmarkId,
+    required this.bookmarkType,
+    required this.projectData, // stringified JSON
+    required this.description,
+    required this.createdAt,
   });
 
   factory ProjectBookmark.fromJson(Map<String, dynamic> parsedJson) {

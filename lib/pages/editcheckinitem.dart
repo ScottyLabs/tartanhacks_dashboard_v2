@@ -16,7 +16,7 @@ int daysBetween(DateTime from, DateTime to) {
   return (to.difference(from).inHours / 24).round();
 }
 
-double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
 // MAIN WIDGET
 class EditCheckInItemPage extends StatelessWidget {
@@ -31,20 +31,17 @@ class EditCheckInItemPage extends StatelessWidget {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-          Container(
-              alignment: Alignment.center,
-              height: screenHeight * 0.78,
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-              child: GradBox(
-                curvature: 20,
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                child: CheckInItemForm(checkInItem),
-              )
-          )
-    );
+        backflag: true,
+        reverse: true,
+        child: Container(
+            alignment: Alignment.center,
+            height: screenHeight * 0.78,
+            padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+            child: GradBox(
+              curvature: 20,
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: CheckInItemForm(checkInItem),
+            )));
   }
 }
 
@@ -59,9 +56,13 @@ class CheckInItemForm extends StatefulWidget {
 
 class _CheckInItemFormState extends State<CheckInItemForm> {
   final _formKey = GlobalKey<FormState>();
-  final List<String> accessLevels = ["ALL", "SPONSORS_ONLY",
-    "PARTICIPANTS_ONLY", "ADMINS_ONLY"];
-  
+  final List<String> accessLevels = [
+    "ALL",
+    "SPONSORS_ONLY",
+    "PARTICIPANTS_ONLY",
+    "ADMINS_ONLY"
+  ];
+
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
   final _startDateController = TextEditingController();
@@ -85,26 +86,32 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
     super.initState();
 
     CheckInItem item = widget.checkInItem;
-    if (item!=null) {
+    if (item != null) {
       _nameController.value = TextEditingValue(text: widget.checkInItem.name);
-      _descController.value = TextEditingValue(text: widget.checkInItem.description);
-      _pointsController.value = TextEditingValue(text: widget.checkInItem.points.toString());
+      _descController.value =
+          TextEditingValue(text: widget.checkInItem.description);
+      _pointsController.value =
+          TextEditingValue(text: widget.checkInItem.points.toString());
 
-      startDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.startTime);
+      startDate =
+          DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.startTime);
       endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.endTime);
       startTime = TimeOfDay.fromDateTime(startDate);
       endTime = TimeOfDay.fromDateTime(endDate);
 
-      _startDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
-      _startTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
-      _endDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
-      _endTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+      _startDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+      _startTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+      _endDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+      _endTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
       newItem = false;
       enableSelfCheckIn = item.enableSelfCheckIn;
       accessLevel = item.accessLevel;
-    }
-    else {
+    } else {
       newItem = true;
       enableSelfCheckIn = false;
       accessLevel = accessLevels[0];
@@ -113,7 +120,6 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
   @override
   Widget build(BuildContext context) {
-
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return SingleChildScrollView(
       child: Form(
@@ -122,12 +128,16 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-
-                widget.checkInItem == null ? "NEW CHECKIN ITEM"
-                    : editable ? "EDIT CHECKIN ITEM" : "EVENT DETAILS",
+                widget.checkInItem == null
+                    ? "NEW CHECKIN ITEM"
+                    : editable
+                        ? "EDIT CHECKIN ITEM"
+                        : "EVENT DETAILS",
                 style: Theme.of(context).textTheme.headline1,
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
 
               // Form Fields
               EditCheckInFormField(
@@ -144,36 +154,32 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
                   final DateTime picked = await showDatePicker(
-                    context: context,
-                    initialDate: startDate ?? DateTime.now(),
-                    firstDate: startDate ?? DateTime.now(),
-                    lastDate: DateTime(2024),
-                    builder: (context, child) => Theme(
-                      data: Theme.of(context).copyWith(
-                          dialogBackgroundColor: Theme.of(context).colorScheme.background
-                      ),
-                      child: child
-                    )
-                  );
+                      context: context,
+                      initialDate: startDate ?? DateTime.now(),
+                      firstDate: startDate ?? DateTime.now(),
+                      lastDate: DateTime(2024),
+                      builder: (context, child) => Theme(
+                          data: Theme.of(context).copyWith(
+                              dialogBackgroundColor:
+                                  Theme.of(context).colorScheme.background),
+                          child: child));
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked)
-                    );
+                        text: DateFormat.yMMMd('en_US').format(picked));
 
                     startDate = picked;
                   }
                 },
               ),
               EditCheckInFormField(
-
                 label: "End Date",
                 controller: _endDateController,
                 validator: (val) {
                   if (val == null || val.isEmpty) {
                     return 'Cannot be empty';
                   }
-                  if (startDate!=null) {
-                    if (daysBetween(startDate, endDate)<0) {
+                  if (startDate != null) {
+                    if (daysBetween(startDate, endDate) < 0) {
                       return 'End date must be after start date';
                     }
                   }
@@ -182,55 +188,47 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
                   final DateTime picked = await showDatePicker(
-                    context: context,
-                    initialDate: endDate ?? DateTime.now(),
-                    firstDate: endDate ?? DateTime.now(),
-                    lastDate: DateTime(2024),
-                    builder: (context, child) => Theme(
-                        data: Theme.of(context).copyWith(
-                            dialogBackgroundColor: Theme.of(context).colorScheme.background
-                        ),
-                        child: child
-                    )
-                  );
+                      context: context,
+                      initialDate: endDate ?? DateTime.now(),
+                      firstDate: endDate ?? DateTime.now(),
+                      lastDate: DateTime(2024),
+                      builder: (context, child) => Theme(
+                          data: Theme.of(context).copyWith(
+                              dialogBackgroundColor:
+                                  Theme.of(context).colorScheme.background),
+                          child: child));
                   if (picked != null) {
                     _endDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked)
-                    );
+                        text: DateFormat.yMMMd('en_US').format(picked));
                     endDate = picked;
                   }
                 },
               ),
 
               EditCheckInFormField(
-                label: "Start Time",
-                controller: _startTimeController,
-                onTap: () async {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  TimeOfDay picked = await showTimePicker(
-                      context: context,
+                  label: "Start Time",
+                  controller: _startTimeController,
+                  onTap: () async {
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    TimeOfDay picked = await showTimePicker(
+                        context: context,
+                        initialTime: startTime ?? TimeOfDay.now());
+                    if (picked != null) {
+                      _startTimeController.value =
+                          TextEditingValue(text: picked.format(context));
 
-                      initialTime: startTime ?? TimeOfDay.now()
-                  );
-                  if (picked != null) {
-                    _startTimeController.value = TextEditingValue(
-                        text: picked.format(context)
-                    );
-
-                    startTime = picked;
-                  }
-                }
-              ),
+                      startTime = picked;
+                    }
+                  }),
               EditCheckInFormField(
-
                   label: "End Time",
                   controller: _endTimeController,
                   validator: (val) {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
                     }
-                    if (startDate!=null) {
-                      if (daysBetween(startDate, endDate)==0) {
+                    if (startDate != null) {
+                      if (daysBetween(startDate, endDate) == 0) {
                         if (toDouble(startTime) > toDouble(endTime)) {
                           return 'End time must be after start time';
                         }
@@ -242,16 +240,13 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     FocusScope.of(context).requestFocus(FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
-                        initialTime: endTime ?? TimeOfDay.now()
-                    );
+                        initialTime: endTime ?? TimeOfDay.now());
                     if (picked != null) {
-                      _endTimeController.value = TextEditingValue(
-                          text: picked.format(context)
-                      );
+                      _endTimeController.value =
+                          TextEditingValue(text: picked.format(context));
                       endTime = picked;
                     }
-                  }
-              ),
+                  }),
 
               EditCheckInFormField(
                 label: "Points",
@@ -261,95 +256,122 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
               // Dropdown menus
 
-              if (editable) EditCheckInDropDownFormField(
-                  items: accessLevels.asMap().map((i, label) =>
-                      MapEntry(i, DropdownMenuItem(
-                        value: label,
-                        child: Text(label),
-                      ))).values.toList(),
-                label: "Access levels",
-                initial: accessLevel,
-                onChange: (val) {
+              if (editable)
+                EditCheckInDropDownFormField(
+                  items: accessLevels
+                      .asMap()
+                      .map((i, label) => MapEntry(
+                          i,
+                          DropdownMenuItem(
+                            value: label,
+                            child: Text(label),
+                          )))
+                      .values
+                      .toList(),
+                  label: "Access levels",
+                  initial: accessLevel,
+                  onChange: (val) {
                     setState(() {
                       accessLevel = val;
                     });
-                },
-              ),
-              if (editable) const SizedBox(height: 15,),
+                  },
+                ),
+              if (editable)
+                const SizedBox(
+                  height: 15,
+                ),
 
               // Active toggle
-              if (editable) Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Self Check In Allowed",
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontWeight: FontWeight.bold
+              if (editable)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Self Check In Allowed",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium
+                          .copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
-                  Transform.scale(
-                    scale: 1.5,
-                    child: Checkbox(
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        side: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-
-                        value: enableSelfCheckIn,
-                        onChanged: (val){
-                          setState(() {
-                            enableSelfCheckIn = val;
-                          });
-                        }),
-                  )
-                ],
-              ),
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Checkbox(
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          side: BorderSide(
+                              color: Theme.of(context).colorScheme.primary,
+                              width: 2),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          value: enableSelfCheckIn,
+                          onChanged: (val) {
+                            setState(() {
+                              enableSelfCheckIn = val;
+                            });
+                          }),
+                    )
+                  ],
+                ),
 
               // Submit button
 
-              if (editable) SizedBox(
-                width: double.infinity,
-                child: SolidButton(
-                  text: "CONFIRM",
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      DateTime startDateTime = DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute);
-                      DateTime endDateTime = DateTime(endDate.year, endDate.month, endDate.day, endTime.hour, endTime.minute);
+              if (editable)
+                SizedBox(
+                  width: double.infinity,
+                  child: SolidButton(
+                    text: "CONFIRM",
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        DateTime startDateTime = DateTime(
+                            startDate.year,
+                            startDate.month,
+                            startDate.day,
+                            startTime.hour,
+                            startTime.minute);
+                        DateTime endDateTime = DateTime(
+                            endDate.year,
+                            endDate.month,
+                            endDate.day,
+                            endTime.hour,
+                            endTime.minute);
 
-                      CheckInItemDTO updatedItem = CheckInItemDTO(
-                          name: _nameController.text,
-                          description: _descController.text,
-                          accessLevel: accessLevel,
-                          startTime: startDateTime.toUtc().microsecondsSinceEpoch,
-                          endTime: endDateTime.toUtc().microsecondsSinceEpoch,
-                          enableSelfCheckIn: enableSelfCheckIn,
-                          points: int.tryParse(_pointsController.text)
-                      );
+                        CheckInItemDTO updatedItem = CheckInItemDTO(
+                            name: _nameController.text,
+                            description: _descController.text,
+                            accessLevel: accessLevel,
+                            startTime:
+                                startDateTime.toUtc().microsecondsSinceEpoch,
+                            endTime: endDateTime.toUtc().microsecondsSinceEpoch,
+                            enableSelfCheckIn: enableSelfCheckIn,
+                            points: int.tryParse(_pointsController.text));
 
-                      // TODO maybe add some loading indicator?
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => const Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              )));
-                      if (newItem) {
-                        await Provider.of<CheckInItemsModel>(context, listen: false).addCheckInItem(updatedItem);
-                      } else {
-                        await Provider.of<CheckInItemsModel>(context, listen: false).editCheckInItem(updatedItem, widget.checkInItem.id);
+                        // TODO maybe add some loading indicator?
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => const Center(
+                                    child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )));
+                        if (newItem) {
+                          await Provider.of<CheckInItemsModel>(context,
+                                  listen: false)
+                              .addCheckInItem(updatedItem);
+                        } else {
+                          await Provider.of<CheckInItemsModel>(context,
+                                  listen: false)
+                              .editCheckInItem(
+                                  updatedItem, widget.checkInItem.id);
+                        }
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       }
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15,)
-
+              const SizedBox(
+                height: 15,
+              )
             ],
           )),
     );
@@ -364,18 +386,15 @@ class EditCheckInFormField extends StatelessWidget {
 
   final Function validator;
 
-  const EditCheckInFormField({
-    this.controller,
-    this.label,
-    this.keyboardType = TextInputType.text,
-
-    this.onTap,
-    this.validator
-  });
+  const EditCheckInFormField(
+      {required this.controller,
+      required this.label,
+      required this.onTap,
+      required this.validator,
+      this.keyboardType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
-
     var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,24 +403,24 @@ class EditCheckInFormField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           onTap: onTap,
-
           enabled: editable,
-          validator: validator ?? (val) {
-            if (val == null || val.isEmpty) {
-              return 'Cannot be empty';
-            }
-            return null;
-          },
+          validator: validator ??
+              (val) {
+                if (val == null || val.isEmpty) {
+                  return 'Cannot be empty';
+                }
+                return null;
+              },
           enableSuggestions: false,
-          inputFormatters: keyboardType == TextInputType.number ? [
-            FilteringTextInputFormatter.digitsOnly
-          ] : [],
-          decoration: InputDecoration(
-              labelText: label
-          ),
-          style: Theme.of(context).textTheme.bodyText2,
+          inputFormatters: keyboardType == TextInputType.number
+              ? [FilteringTextInputFormatter.digitsOnly]
+              : [],
+          decoration: InputDecoration(labelText: label),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: 15,)
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
   }
@@ -414,7 +433,11 @@ class EditCheckInDropDownFormField extends StatelessWidget {
 
   final Function onChange;
 
-  const EditCheckInDropDownFormField({this.items, this.label, this.initial, this.onChange});
+  const EditCheckInDropDownFormField(
+      {required this.items,
+      required this.label,
+      required this.initial,
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -425,16 +448,18 @@ class EditCheckInDropDownFormField extends StatelessWidget {
           flex: 5,
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-              fontWeight: FontWeight.bold
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(width: 10,),
+        const SizedBox(
+          width: 10,
+        ),
         Expanded(
           flex: 8,
           child: DropdownButtonFormField(
-
             onChanged: onChange,
             items: items,
             value: initial,
@@ -444,8 +469,3 @@ class EditCheckInDropDownFormField extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

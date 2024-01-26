@@ -5,10 +5,10 @@ class Member {
   final String email;
 
   Member({
-    this.id,
-    this.isAdmin,
-    this.name,
-    this.email,
+    required this.id,
+    required this.isAdmin,
+    required this.name,
+    required this.email,
   });
 
   factory Member.fromJson(Map<String, dynamic> parsedJson, String adminID) {

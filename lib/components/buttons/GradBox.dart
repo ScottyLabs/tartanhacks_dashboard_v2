@@ -6,11 +6,20 @@ class GradBox extends StatelessWidget{
   final double curvature;
   final Widget child;
   final bool reverse;
-  final EdgeInsets padding;
-  final Function onTap;
-  final Alignment alignment;
-  const GradBox({this.width, this.height, this.child, this.reverse=false,
-    this.padding, this.onTap, this.alignment, this.curvature=25});
+  final EdgeInsets? padding;
+  final void Function()? onTap;
+  final Alignment? alignment;
+
+  const GradBox({
+    required this.width, 
+    required this.height, 
+    required this.child, 
+    this.reverse=false,
+    this.padding, 
+    this.onTap, 
+    this.alignment, 
+    this.curvature=25
+  });
 
   @override
   Widget build(BuildContext context) {

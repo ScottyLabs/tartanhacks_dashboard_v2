@@ -71,16 +71,14 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   }
 
   String formatDate(String unixDate) {
-    var date =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('EEE dd MMM').format(date);
     return formattedDate.toUpperCase();
   }
 
   String getTime(String unixDate) {
-    var date =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
+    var date = DateTime.fromMillisecondsSinceEpoch(int.parse(unixDate) * 1000);
     date = date.toLocal();
     String formattedDate = DateFormat('hh:mm a').format(date);
     return formattedDate;
@@ -177,59 +175,63 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
       child:
           //create new event button
           Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            SolidButton(
-              text: viewPast ? "View Upcoming Events" : "View Past Events",
-              onPressed: () {
-                setState(() {
-                  viewPast = !viewPast;
-                });
-              },
+        SolidButton(
+          text: viewPast ? "View Upcoming Events" : "View Past Events",
+          onPressed: () {
+            setState(() {
+              viewPast = !viewPast;
+            });
+          },
+        ),
+        const SizedBox(height: 5),
+        if (isAdmin)
+          GradBox(
+            width: screenWidth * 0.9,
+            height: 60,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EditEventPage(
+                          null,
+                          editable: isAdmin,
+                        )),
+              );
+            },
+            child: Text(
+              "CREATE NEW EVENT",
+              style: Theme.of(context).textTheme.headline2,
             ),
-            const SizedBox(height: 5),
-            if (isAdmin)
-              GradBox(
-                width: screenWidth * 0.9,
-                height: 60,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditEventPage(null, editable: isAdmin,)),
+          ),
+        Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(25, 10, 25, 5),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
+              child: FutureBuilder(
+                future: getEvents(),
+                builder: (context, eventsSnapshot) {
+                  if (eventsSnapshot.data == null ||
+                      eventsSnapshot.hasData == null) {
+                    return ListView.builder(
+                      itemCount: 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: (eventsSnapshot.data[viewPast ? 1 : 0]).length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return EventsCard(
+                          (eventsSnapshot.data[viewPast ? 1 : 0])[index],
+                          isAdmin);
+                    },
                   );
                 },
-                child: Text(
-                  "CREATE NEW EVENT",
-                  style: Theme.of(context).textTheme.headline2,
-                ),
               ),
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.fromLTRB(25, 10, 25, 5),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: screenHeight * 0.6),
-                  child: FutureBuilder(
-                    future: getEvents(),
-                    builder: (context, eventsSnapshot) {
-                      if (eventsSnapshot.data == null ||
-                          eventsSnapshot.hasData == null) {
-                        return ListView.builder(
-                          itemCount: 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            return const Center(child: CircularProgressIndicator());
-                          },
-                        );
-                      }
-                      return ListView.builder(
-                        itemCount: (eventsSnapshot.data[viewPast?1:0]).length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return EventsCard(
-                              (eventsSnapshot.data[viewPast?1:0])[index], isAdmin);
-                        },
-                      );
-                    },
-                  ),
-                ))
-          ]),
+            ))
+      ]),
     );
   }
 }
@@ -298,13 +300,13 @@ class EventsCard extends StatelessWidget {
           title: Text("Confirmation",
               style: Theme.of(context).textTheme.headline1),
           content: Text("Are you sure you want to delete this event?",
-              style: Theme.of(context).textTheme.bodyText2),
+              style: Theme.of(context).textTheme.bodyMedium),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             TextButton(
               child: Text(
                 "Cancel",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -313,7 +315,7 @@ class EventsCard extends StatelessWidget {
             TextButton(
               child: Text(
                 "OK",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () {
                 deleteEvent(event.id);
@@ -364,7 +366,7 @@ class EventsCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: screenWidth*0.5,
+                      width: screenWidth * 0.5,
                       height: 160,
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,31 +374,31 @@ class EventsCard extends StatelessWidget {
                           children: [
                             Text(
                               event.description,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                             if (event.platform == 'IN_PERSON')
                               Text(
                                 "IN PERSON: " + event.location,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 overflow: TextOverflow.ellipsis,
                               )
                             else
-                                Text(
-                                  "${event.platform}:",
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                            if(event.platformUrl!="")
+                              Text(
+                                "${event.platform}:",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            if (event.platformUrl != "")
                               SolidButton(
-                                    child: Icon(Icons.link,
-                                        color:
+                                child: Icon(Icons.link,
+                                    color:
                                         Theme.of(context).colorScheme.onPrimary,
-                                        size: 35),
-                                    onPressed: () {
-                                      _launchLink(context);
-                                    },
+                                    size: 35),
+                                onPressed: () {
+                                  _launchLink(context);
+                                },
                               ),
                             if (isAdmin)
                               Row(
@@ -409,7 +411,10 @@ class EventsCard extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  EditEventPage(event, editable: isAdmin,)),
+                                                  EditEventPage(
+                                                    event,
+                                                    editable: isAdmin,
+                                                  )),
                                         );
                                       },
                                     ),
@@ -418,7 +423,9 @@ class EventsCard extends StatelessWidget {
                                     ),
                                     SolidButton(
                                       text: "Delete",
-                                      color: Theme.of(context).colorScheme.tertiaryContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer,
                                       onPressed: () => confirmDialog(context),
                                     ),
                                   ])
@@ -429,8 +436,10 @@ class EventsCard extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            EditEventPage(event, editable: isAdmin,)),
+                                        builder: (context) => EditEventPage(
+                                              event,
+                                              editable: isAdmin,
+                                            )),
                                   );
                                 },
                               ),
@@ -446,7 +455,8 @@ class EventsCard extends StatelessWidget {
                               height: 160,
                               child: Container(
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                       borderRadius: BorderRadius.circular(10)),
                                   alignment: Alignment.center,
                                   child: Text(
@@ -458,17 +468,14 @@ class EventsCard extends StatelessWidget {
                                           .textTheme
                                           .headline2
                                           .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onPrimary),
                                       textAlign: TextAlign.center)))
-                        ]
-                    )
+                        ])
                   ],
                 )
               ],
-            )
-        )
-    );
+            )));
   }
 }

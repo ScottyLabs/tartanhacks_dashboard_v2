@@ -13,38 +13,36 @@ import 'see_invites.dart';
 import 'teams_list.dart';
 import 'create_team.dart';
 
-void showConfirmDialog(BuildContext context, String message, Function onConfirm) {
+void showConfirmDialog(
+    BuildContext context, String message, Function onConfirm) {
   showDialog(
       context: context,
       builder: (ctx) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text("Confirmation",
-              style: Theme.of(context).textTheme.headline1),
-          content: Text(
-              message,
-              style: Theme.of(context).textTheme.bodyText2),
-          actions: [
-            TextButton(
-              child: Text(
-                "Cancel",
-                style: Theme.of(context).textTheme.headline4,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            title: Text("Confirmation",
+                style: Theme.of(context).textTheme.headline1),
+            content:
+                Text(message, style: Theme.of(context).textTheme.bodyMedium),
+            actions: [
+              TextButton(
+                child: Text(
+                  "Cancel",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(
-                "OK",
-                style: Theme.of(context).textTheme.headline4,
+              TextButton(
+                child: Text(
+                  "OK",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                onPressed: onConfirm,
               ),
-              onPressed: onConfirm,
-            ),
-          ]
-        );
-      }
-  );
+            ]);
+      });
 }
 
 class InviteMembersBtn extends StatelessWidget {
@@ -62,7 +60,7 @@ class InviteMembersBtn extends StatelessWidget {
       title: Text('Send Invite', style: Theme.of(context).textTheme.headline1),
       content: TextFormField(
         decoration: const InputDecoration(labelText: "email"),
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
         keyboardType: TextInputType.emailAddress,
         controller: inviteController,
         validator: (String value) {
@@ -79,7 +77,7 @@ class InviteMembersBtn extends StatelessWidget {
         TextButton(
           child: Text(
             "Cancel",
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
           onPressed: () {
             Navigator.of(context).pop();
@@ -88,7 +86,7 @@ class InviteMembersBtn extends StatelessWidget {
         TextButton(
           child: Text(
             "Send",
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
           onPressed: () async {
             Navigator.of(context).pop();
@@ -131,30 +129,26 @@ class LeaveJoinTeamBtn extends StatelessWidget {
           bool canLeave = team.members.length == 1 || !isAdmin;
           if (!canLeave) {
             errorDialog(context, "Cannot Leave Team",
-                "You must promote someone else to an admin before you leave the team"
-            );
+                "You must promote someone else to an admin before you leave the team");
             return;
           }
 
           showConfirmDialog(
-            context,
-            "Are you sure want to leave your team? Your team information may be "
-                "lost if you are the only member left.",
-              () async {
-                bool success = await leaveTeam(token);
-                if (!success) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Error leaving team."),
-                  ));
-                  return;
-                }
-                await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => TeamsList())
-                );
-              }
-          );
+              context,
+              "Are you sure want to leave your team? Your team information may be "
+              "lost if you are the only member left.", () async {
+            bool success = await leaveTeam(token);
+            if (!success) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Error leaving team."),
+              ));
+              return;
+            }
+            await Provider.of<UserInfoModel>(context, listen: false)
+                .fetchUserInfo();
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => TeamsList()));
+          });
         },
         color: Theme.of(context).colorScheme.tertiaryContainer);
   }
@@ -178,38 +172,43 @@ class MemberListElement extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                        text: TextSpan(children: [
-                      TextSpan(
-                          text: nameStr + "  ",
-                          style: Theme.of(context).textTheme.bodyText2),
-                      if (isMemAdmin)
-                        WidgetSpan(
-                            child: Icon(Icons.star,
-                                size: 20,
-                                color: Theme.of(context).colorScheme.tertiaryContainer))
-                    ])),
-                    Text(emailStr, style: Theme.of(context).textTheme.bodyText2)
-                  ]),
-              if (isAdmin && !isMemAdmin)
-              SolidButton(
-                text: "Promote",
-                color: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  showConfirmDialog(context, "Are you sure you want to promote this member to an admin? You will no longer be an admin.", () {
-                    String token = Provider.of<UserInfoModel>(context, listen: false).token;
-                    promoteToAdmin(id, token).then((_) {
-                      Navigator.of(context).pop();
-                      Provider.of<UserInfoModel>(context, listen: false)
-                          .fetchUserInfo();
-                    });
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                RichText(
+                    text: TextSpan(children: [
+                  TextSpan(
+                      text: nameStr + "  ",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  if (isMemAdmin)
+                    WidgetSpan(
+                        child: Icon(Icons.star,
+                            size: 20,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiaryContainer))
+                ])),
+                Text(emailStr, style: Theme.of(context).textTheme.bodyMedium)
+              ]),
+          if (isAdmin && !isMemAdmin)
+            SolidButton(
+              text: "Promote",
+              color: Theme.of(context).colorScheme.secondary,
+              onPressed: () {
+                showConfirmDialog(context,
+                    "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
+                    () {
+                  String token =
+                      Provider.of<UserInfoModel>(context, listen: false).token;
+                  promoteToAdmin(id, token).then((_) {
+                    Navigator.of(context).pop();
+                    Provider.of<UserInfoModel>(context, listen: false)
+                        .fetchUserInfo();
                   });
-                },
-              )
+                });
+              },
+            )
         ]));
   }
 }
@@ -227,7 +226,8 @@ class TeamMembersList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Team Members", style: Theme.of(context).textTheme.headline4),
+          Text("Team Members",
+              style: Theme.of(context).textTheme.headlineMedium),
           Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: team.members
@@ -244,10 +244,7 @@ class TeamMail extends StatelessWidget {
         alignment: Alignment.centerRight,
         child: IconButton(
             icon: const Icon(Icons.email, size: 30.0),
-            color: Theme
-                .of(context)
-                .colorScheme
-                .tertiaryContainer,
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             onPressed: () {
               Navigator.push(
                 context,
@@ -266,7 +263,8 @@ class TeamHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
         height: 50,
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text("TEAM", style: Theme.of(context).textTheme.headline1),
           isAdmin ? TeamMail() : Container()
         ]));
@@ -284,9 +282,10 @@ class TeamDesc extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(team.name ?? "", style: Theme.of(context).textTheme.headline4),
+          Text(team.name ?? "",
+              style: Theme.of(context).textTheme.headlineMedium),
           Text(team.description ?? "",
-              style: Theme.of(context).textTheme.bodyText2)
+              style: Theme.of(context).textTheme.bodyMedium)
         ]);
   }
 }

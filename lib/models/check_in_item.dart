@@ -10,17 +10,18 @@ class CheckInItem {
   final int endTime;
   final String event; //objectid
 
-  CheckInItem(
-      {this.points,
-      this.accessLevel,
-      this.active,
-        this.enableSelfCheckIn,
-      this.id,
-      this.name,
-      this.description,
-      this.startTime,
-      this.endTime,
-      this.event});
+  CheckInItem({
+    required this.points,
+    required this.accessLevel,
+    required this.active,
+    required this.enableSelfCheckIn,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.event
+  });
 
   factory CheckInItem.fromJson(Map<String, dynamic> parsedJson) {
     return CheckInItem(
@@ -47,14 +48,15 @@ class CheckInItemDTO {
   final String accessLevel;
   final bool enableSelfCheckIn;
 
-  CheckInItemDTO(
-        {this.points,
-        this.accessLevel,
-        this.name,
-        this.description,
-        this.startTime,
-        this.endTime,
-        this.enableSelfCheckIn});
+  CheckInItemDTO({
+    required this.points,
+    required this.accessLevel,
+    required this.name,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.enableSelfCheckIn
+  });
 
   CheckInItemDTO.fromCheckInItem(CheckInItem item):
       name = item.name,

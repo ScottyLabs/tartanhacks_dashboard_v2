@@ -17,8 +17,8 @@ class UserInfoModel with ChangeNotifier {
   String _token = "";
   String _uid = "";
 
-  Profile userProfile;
-  Team team;
+  Profile? userProfile;
+  Team? team;
   bool hasTeam = false;
   bool isAdmin = false;
 
@@ -34,9 +34,9 @@ class UserInfoModel with ChangeNotifier {
   Future<void> fetchUserInfo() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    _token = prefs.getString("token");
-    _uid = prefs.getString("id");
-    isAdmin = prefs.getBool("admin");
+    _token = prefs.getString("token")!;
+    _uid = prefs.getString("id")!;
+    isAdmin = prefs.getBool("admin")!;
     if (_status == Status.notLoaded) {
       _status = Status.fetching;
     }

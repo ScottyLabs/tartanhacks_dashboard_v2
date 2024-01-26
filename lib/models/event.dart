@@ -13,17 +13,17 @@ class Event {
   final String platformUrl;
 
   Event({
-    this.id,
-    this.platform,
-    this.active,
-    this.name,
-    this.description,
-    this.startTime,
-    this.endTime,
-    this.location,
-    this.lat,
-    this.lng,
-    this.platformUrl
+    required this.id,
+    required this.platform,
+    required this.active,
+    required this.name,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.location,
+    required this.lat,
+    required this.lng,
+    required this.platformUrl
   });
 
   factory Event.fromJson(Map<String, dynamic> parsedJson) {
@@ -53,14 +53,15 @@ class EventDTO {
   final String location;
   final String platformUrl;
 
-  EventDTO(
-      {this.name,
-        this.description,
-        this.startTime,
-        this.endTime,
-        this.platform,
-        this.platformUrl,
-        this.location});
+  EventDTO({
+    required this.name,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.platform,
+    required this.platformUrl,
+    required this.location
+  });
 
   EventDTO.fromEventItem(Event item):
         name = item.name,

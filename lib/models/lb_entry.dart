@@ -4,7 +4,12 @@ class LBEntry {
   final String displayName;
   final int rank;
 
-  LBEntry({this.user, this.totalPoints, this.displayName, this.rank});
+  LBEntry({
+    required this.user, 
+    required this.totalPoints, 
+    required this.displayName, 
+    required this.rank
+  });
 
   factory LBEntry.fromJson(Map<String, dynamic> parsedJson) {
     return LBEntry(

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 
 class MenuButton extends StatelessWidget {
-  final Function onTap;
-  final IconData icon;
+  final void Function()? onTap;
+  final IconData? icon;
 
   const MenuButton({this.onTap, this.icon});
   @override

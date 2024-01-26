@@ -9,7 +9,12 @@ class DefaultPage extends StatelessWidget {
   final bool backflag;
   final bool isSponsor;
 
-  const DefaultPage({this.child, this.reverse=true, this.backflag=false, this.isSponsor=false});
+  const DefaultPage({ 
+    required Widget this.child, 
+    this.reverse=true, 
+    this.backflag=false, 
+    this.isSponsor=false
+  });
 
   @override
   Widget build(BuildContext context) {

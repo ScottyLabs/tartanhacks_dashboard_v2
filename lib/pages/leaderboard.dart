@@ -44,14 +44,14 @@ class _LeaderboardState extends State<Leaderboard> {
               style: Theme.of(context).textTheme.headline1),
           content: TextField(
             controller: _editNicknameController,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             TextButton(
               child: Text(
                 "Cancel",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
@@ -60,7 +60,7 @@ class _LeaderboardState extends State<Leaderboard> {
             TextButton(
               child: Text(
                 "Save",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () async {
                 OverlayEntry loading = LoadingOverlay(context);
@@ -83,13 +83,13 @@ class _LeaderboardState extends State<Leaderboard> {
                         title: Text("Success",
                             style: Theme.of(context).textTheme.headline1),
                         content: Text("Nickname has been changed.",
-                            style: Theme.of(context).textTheme.bodyText2),
+                            style: Theme.of(context).textTheme.bodyMedium),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
                           TextButton(
                             child: Text(
                               "OK",
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             onPressed: () {
                               Navigator.of(context)
@@ -154,13 +154,16 @@ class _LeaderboardState extends State<Leaderboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("YOUR POSITION:",
-                                  style: Theme.of(context).textTheme.headline3),
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                               SolidButton(
                                 child: Icon(Icons.edit,
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onTertiaryContainer),
-                                color: Theme.of(context).colorScheme.tertiaryContainer,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer,
                                 onPressed: _editNickname,
                               ),
                             ],
@@ -185,21 +188,21 @@ class _LeaderboardState extends State<Leaderboard> {
                                   style: Theme.of(context).textTheme.headline1),
                               Text(
                                 "Scroll to see the whole board!",
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Expanded(
                                   child: Container(
-                                    alignment: Alignment.center,
-                                    child: ListView.builder(
-                                      itemCount: lbData.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return LBRow(
-                                            place: lbData[index].rank,
-                                            name: lbData[index].displayName,
-                                            points: lbData[index].totalPoints);
-                                      },
-                                    ),
+                                alignment: Alignment.center,
+                                child: ListView.builder(
+                                  itemCount: lbData.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return LBRow(
+                                        place: lbData[index].rank,
+                                        name: lbData[index].displayName,
+                                        points: lbData[index].totalPoints);
+                                  },
+                                ),
                               ))
                             ]))
                   ],
@@ -212,7 +215,7 @@ class LBRow extends StatelessWidget {
   final String name;
   final int points;
 
-  const LBRow({this.place, this.name, this.points});
+  const LBRow({required this.place, required this.name, required this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +238,7 @@ class LBRow extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   "$points pts",
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ))
           ],
         ));

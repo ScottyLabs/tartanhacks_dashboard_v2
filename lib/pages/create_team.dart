@@ -23,12 +23,13 @@ class TeamTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(labelText: label),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: controller,
       validator: (val) {
         if (val == null || val.isEmpty) {
           return "Cannot be empty";
-        } return null;
+        }
+        return null;
       },
     );
   }
@@ -55,8 +56,6 @@ class IsVisibleCheckBox extends StatelessWidget {
   }
 }
 
-
-
 class CreateTeam extends StatefulWidget {
   @override
   _CreateTeamState createState() => _CreateTeamState();
@@ -76,7 +75,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   void getData() {
     hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
-    if (hasTeam){
+    if (hasTeam) {
       Team team = Provider.of<UserInfoModel>(context, listen: false).team;
       visibility = team.visible;
       teamNameController.text = team.name;
@@ -106,10 +105,9 @@ class _CreateTeamState extends State<CreateTeam> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-        Container(
+        backflag: true,
+        reverse: true,
+        child: Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: GradBox(
@@ -119,82 +117,93 @@ class _CreateTeamState extends State<CreateTeam> {
                 child: Form(
                   key: _formKey,
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment
-                          .spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment
-                          .start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 15,),
-                              Text("TEAM INFO", style:
-                              Theme.of(context).textTheme.headline1),
-                              const SizedBox(height: 10),
-                              Text("Basic Info", style:
-                              Theme.of(context).textTheme.headline4),
-                              const SizedBox(height: 15),
-                              TeamTextField(teamNameController, "Team Name"),
-                              const SizedBox(height: 20),
-                              TeamTextField(teamDescController, "Team Desc"),
-                              const SizedBox(height: 20),
-                              IsVisibleCheckBox(visibility, (val) {
-                                visibility = val;
-                                setState(() {});
-                              }),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            Text("TEAM INFO",
+                                style: Theme.of(context).textTheme.headline1),
+                            const SizedBox(height: 10),
+                            Text("Basic Info",
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium),
+                            const SizedBox(height: 15),
+                            TeamTextField(teamNameController, "Team Name"),
+                            const SizedBox(height: 20),
+                            TeamTextField(teamDescController, "Team Desc"),
+                            const SizedBox(height: 20),
+                            IsVisibleCheckBox(visibility, (val) {
+                              visibility = val;
+                              setState(() {});
+                            }),
+                          ],
                         ),
                         Container(
                             alignment: Alignment.center,
                             padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                             child: SolidButton(
-                              text: buttonText,
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  OverlayEntry loading = LoadingOverlay(context);
-                                  Overlay.of(context).insert(loading);
-                                  String token = Provider.of<UserInfoModel>(context, listen: false).token;
-                                  String id = Provider.of<UserInfoModel>(context, listen: false).id;
+                                text: buttonText,
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    OverlayEntry loading =
+                                        LoadingOverlay(context);
+                                    Overlay.of(context).insert(loading);
+                                    String token = Provider.of<UserInfoModel>(
+                                            context,
+                                            listen: false)
+                                        .token;
+                                    String id = Provider.of<UserInfoModel>(
+                                            context,
+                                            listen: false)
+                                        .id;
 
-                                  String _teamName = teamNameController.text;
-                                  String _teamDesc = teamDescController.text;
+                                    String _teamName = teamNameController.text;
+                                    String _teamDesc = teamDescController.text;
 
-                                  Response response = hasTeam ? await editTeam(_teamName, _teamDesc, visibility, token)
-                                      : await createTeam(_teamName, _teamDesc, visibility, token);
+                                    Response response = hasTeam
+                                        ? await editTeam(_teamName, _teamDesc,
+                                            visibility, token)
+                                        : await createTeam(_teamName, _teamDesc,
+                                            visibility, token);
 
-                                  if (response.statusCode != 200) {
+                                    if (response.statusCode != 200) {
+                                      loading.remove();
+                                      String errorMessage = jsonDecode(
+                                              response.body)["message"] ??
+                                          "Failed to create team.";
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(errorMessage),
+                                      ));
+                                      return;
+                                    }
+
+                                    if (!hasTeam)
+                                      await promoteToAdmin(id, token);
+                                    await Provider.of<UserInfoModel>(context,
+                                            listen: false)
+                                        .fetchUserInfo();
                                     loading.remove();
-                                    String errorMessage = jsonDecode(response.body)["message"] ?? "Failed to create team.";
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      content: Text(errorMessage),
-                                    ));
-                                    return;
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ViewTeam(),
+                                          settings: const RouteSettings(
+                                            arguments: "",
+                                          )),
+                                    );
                                   }
-
-                                  if (!hasTeam) await promoteToAdmin(id, token);
-                                  await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
-                                  loading.remove();
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        ViewTeam(),
-                                        settings: const RouteSettings(
-                                          arguments: "",
-                                        )
-                                    ),
-                                  );
-                                }
-
-                              },
-                              color: Theme.of(context).colorScheme.tertiaryContainer
-                            )
-                        )
-                    ]
-                  ),
-                )
-            )
-        )
-    );
+                                },
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer))
+                      ]),
+                ))));
   }
 }

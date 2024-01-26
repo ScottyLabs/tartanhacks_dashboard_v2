@@ -10,17 +10,18 @@ class Project{
   final List prizes; //objectid
   final bool presentingVirtually;
 
-  Project(
-      {this.id,
-      this.name,
-      this.desc,
-      this.event,
-      this.url,
-      this.slides,
-      this.video,
-      this.team,
-      this.prizes,
-      this.presentingVirtually});
+  Project({
+    required this.id,
+    required this.name,
+    required this.desc,
+    required this.event,
+    required this.url,
+    required this.slides,
+    required this.video,
+    required this.team,
+    required this.prizes,
+    required this.presentingVirtually
+  });
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
     Project project = Project(

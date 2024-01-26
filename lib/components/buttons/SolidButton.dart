@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class SolidButton extends StatelessWidget{
+class SolidButton extends StatelessWidget {
   String text;
-  Function onPressed;
+  void Function() onPressed;
   Widget child;
-  Color color;
+  Color? color;
   Color textColor;
 
-  SolidButton({this.text, this.onPressed, this.child, this.color, this.textColor});
+  SolidButton(
+      {required this.text,
+      required this.onPressed,
+      required this.child,
+      this.color,
+      required this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -26,19 +31,20 @@ class SolidButton extends StatelessWidget{
         style: ButtonStyle(
             foregroundColor: MaterialStateProperty.all(color),
             backgroundColor: MaterialStateProperty.all(color),
-            shadowColor: MaterialStateProperty.all(Theme.of(context).colorScheme.shadow),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            elevation: MaterialStateProperty.all(5)
-        ),
-        child: child ?? Text(text,
-          style: TextStyle(
-              fontSize:16.0,
-              fontWeight: FontWeight.w600,
-              color: textColor
-          ),
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        )
-    );
+            shadowColor:
+                MaterialStateProperty.all(Theme.of(context).colorScheme.shadow),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+            elevation: MaterialStateProperty.all(5)),
+        child: child ??
+            Text(
+              text,
+              style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w600,
+                  color: textColor),
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ));
   }
 }

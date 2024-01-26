@@ -4,7 +4,11 @@ class CurvedTop extends CustomPainter {
   Color color1;
   Color color2;
   bool reverse;
-  CurvedTop({this.color1, this.color2, this.reverse = false});
+  CurvedTop({
+    required this.color1, 
+    required this.color2, 
+    this.reverse = false
+  });
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()

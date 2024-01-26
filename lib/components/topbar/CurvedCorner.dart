@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CurvedCorner extends CustomPainter {
   Color color;
-  CurvedCorner({this.color});
+  CurvedCorner({ required this.color });
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()

@@ -64,7 +64,7 @@ class _ForgotState extends State<Forgot> {
                               color1: Theme.of(context).colorScheme.primary,
                               color2: Theme.of(context)
                                   .colorScheme
-                                  .secondaryVariant),
+                                  .secondaryContainer),
                         ),
                         Container(
                             height: screenHeight * 0.3,
@@ -89,7 +89,7 @@ class _ForgotState extends State<Forgot> {
                           decoration: const InputDecoration(
                             labelText: "Email",
                           ),
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: false,
                         ),
@@ -112,10 +112,10 @@ class _ForgotState extends State<Forgot> {
                         children: [
                           Text("Already have an account?",
                               style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onBackground
-                              )
-                          ),
+                                  fontSize: 14,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground)),
                           TextButton(
                               onPressed: () {
                                 Navigator.push(
@@ -126,11 +126,10 @@ class _ForgotState extends State<Forgot> {
                               },
                               child: Text("Try Logging In",
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).colorScheme.tertiaryContainer
-                                  )
-                              )
-                          ),
+                                      fontSize: 14,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer))),
                         ],
                       ),
                       const SizedBox(height: 5)

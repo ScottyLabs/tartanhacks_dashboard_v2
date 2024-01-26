@@ -21,16 +21,16 @@ class ProjSubmitTextField extends StatelessWidget {
   final String fieldName;
   final bool isOptional;
 
-  const ProjSubmitTextField(this.controller, this.fieldName, {this.isOptional = false});
+  const ProjSubmitTextField(this.controller, this.fieldName,
+      {this.isOptional = false});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: fieldName + (isOptional ? " (optional)" : ""),
-        errorStyle: TextStyle(color: Theme.of(context).colorScheme.error)
-      ),
-      style: Theme.of(context).textTheme.bodyText2,
+          labelText: fieldName + (isOptional ? " (optional)" : ""),
+          errorStyle: TextStyle(color: Theme.of(context).colorScheme.error)),
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: controller,
       validator: (String value) {
         if (value.isEmpty && !isOptional) {
@@ -40,12 +40,9 @@ class ProjSubmitTextField extends StatelessWidget {
       },
     );
   }
-
-
 }
 
 class _ProjSubmitState extends State<ProjSubmit> {
-
   OverlayEntry loading;
   bool hasProj = false;
   String _projName = "";
@@ -99,9 +96,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
       loading.remove();
     }
 
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -110,15 +105,13 @@ class _ProjSubmitState extends State<ProjSubmit> {
     getData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loading = LoadingOverlay(context);
-      setState(() {
-
-      });
+      setState(() {});
       Overlay.of(context).insert(loading);
     });
   }
 
   @override
-  void dispose(){
+  void dispose() {
     nameController.dispose();
     descController.dispose();
     githubController.dispose();
@@ -127,16 +120,35 @@ class _ProjSubmitState extends State<ProjSubmit> {
     super.dispose();
   }
 
-  void submitDialog (BuildContext context) {
+  void submitDialog(BuildContext context) {
     Future proj;
 
-    if(team == null){
+    if (team == null) {
       errorDialog(context, "Error", "You are not in a team!");
       return;
-    } else if (projId != null){
-      proj = editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    } else if (projId != null) {
+      proj = editProject(
+          context,
+          nameController.text,
+          descController.text,
+          slidesController.text,
+          videoController.text,
+          githubController.text,
+          isPresenting,
+          projId,
+          token);
     } else {
-      proj = newProject(context, nameController.text, descController.text, team.teamID, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+      proj = newProject(
+          context,
+          nameController.text,
+          descController.text,
+          team.teamID,
+          slidesController.text,
+          videoController.text,
+          githubController.text,
+          isPresenting,
+          projId,
+          token);
     }
     showDialog(
       context: context,
@@ -147,17 +159,20 @@ class _ProjSubmitState extends State<ProjSubmit> {
             if (snapshot.hasData) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: Text("Success", style: Theme.of(context).textTheme.headline1),
-                content: Text("Project info was saved.", style: Theme.of(context).textTheme.bodyText2),
+                title: Text("Success",
+                    style: Theme.of(context).textTheme.headline1),
+                content: Text("Project info was saved.",
+                    style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => ProjSubmit()));
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => ProjSubmit()));
                     },
                   ),
                 ],
@@ -165,13 +180,15 @@ class _ProjSubmitState extends State<ProjSubmit> {
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: Text("Error", style: Theme.of(context).textTheme.headline1),
-                content: Text("Project info failed to save. Please try again.", style: Theme.of(context).textTheme.bodyText2),
+                title:
+                    Text("Error", style: Theme.of(context).textTheme.headline1),
+                content: Text("Project info failed to save. Please try again.",
+                    style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -182,12 +199,12 @@ class _ProjSubmitState extends State<ProjSubmit> {
             }
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              title: Text("Processing...", style: Theme.of(context).textTheme.headline1),
+              title: Text("Processing...",
+                  style: Theme.of(context).textTheme.headline1),
               content: Container(
                   alignment: Alignment.center,
                   height: 70,
-                  child: const CircularProgressIndicator()
-              ),
+                  child: const CircularProgressIndicator()),
             );
           },
         );
@@ -202,67 +219,70 @@ class _ProjSubmitState extends State<ProjSubmit> {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      reverse: true,
-      child:
-        Container(
+        reverse: true,
+        child: Container(
             alignment: Alignment.topCenter,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: GradBox(
-              alignment: Alignment.topCenter,
-              width: screenWidth*0.9,
-              height: screenHeight*0.75,
-              padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-              child: Form(
-                  key: _formKey,
-                  child: SingleChildScrollView(
-                    child: Column(
+                alignment: Alignment.topCenter,
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.75,
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+                child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                        child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("PROJECT SUBMISSION", style: Theme.of(context).textTheme.headline2),
-                        const SizedBox(height:16),
+                        Text("PROJECT SUBMISSION",
+                            style: Theme.of(context).textTheme.headline2),
+                        const SizedBox(height: 16),
                         ProjSubmitTextField(nameController, "Project Name"),
-                        const SizedBox(height:8),
-                        ProjSubmitTextField(descController, "Project Description"),
-                        const SizedBox(height:8),
-                        ProjSubmitTextField(githubController, "GitHub Repository URL"),
-                        const SizedBox(height:8),
-                        ProjSubmitTextField(slidesController, "Presentation Slides URL"),
-                        const SizedBox(height:8),
-                        ProjSubmitTextField(videoController, "Video URL", isOptional: true),
-                        const SizedBox(height:8),
+                        const SizedBox(height: 8),
+                        ProjSubmitTextField(
+                            descController, "Project Description"),
+                        const SizedBox(height: 8),
+                        ProjSubmitTextField(
+                            githubController, "GitHub Repository URL"),
+                        const SizedBox(height: 8),
+                        ProjSubmitTextField(
+                            slidesController, "Presentation Slides URL"),
+                        const SizedBox(height: 8),
+                        ProjSubmitTextField(videoController, "Video URL",
+                            isOptional: true),
+                        const SizedBox(height: 8),
                         SolidButton(
-                            text: "Save",
-                            onPressed: () {
-                              if (!_formKey.currentState.validate()) {
-                                return;
-                              }
+                          text: "Save",
+                          onPressed: () {
+                            if (!_formKey.currentState.validate()) {
+                              return;
+                            }
 
-                              _formKey.currentState.save();
+                            _formKey.currentState.save();
 
-                              submitDialog(context);
-                            },
+                            submitDialog(context);
+                          },
                         ),
                         SolidButton(
-                            text: "Submit for Prizes",
-                            onPressed: () {
-                              if (hasProj) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      EnterPrizes(projId: projId, enteredPrizes: prizes,)),
-                                );
-                              } else {
-                                errorDialog(context, "Error", "You do not have a project to enter!");
-                              }
-                            },
+                          text: "Submit for Prizes",
+                          onPressed: () {
+                            if (hasProj) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EnterPrizes(
+                                          projId: projId,
+                                          enteredPrizes: prizes,
+                                        )),
+                              );
+                            } else {
+                              errorDialog(context, "Error",
+                                  "You do not have a project to enter!");
+                            }
+                          },
                         )
                       ],
-                    )
-                  )
-              )
-            )
-        )
-    );
+                    ))))));
   }
 }

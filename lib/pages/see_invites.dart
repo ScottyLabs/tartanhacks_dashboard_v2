@@ -13,19 +13,24 @@ class AcceptButtonRow extends StatelessWidget {
   final Function acceptOnPressed;
   final Function declineOnPressed;
 
-  const AcceptButtonRow({this.acceptOnPressed, this.declineOnPressed});
+  const AcceptButtonRow(
+      {required this.acceptOnPressed, required this.declineOnPressed});
 
   @override
   Widget build(BuildContext context) {
-    return Row (
+    return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const SizedBox(width: 20,),
+        const SizedBox(
+          width: 20,
+        ),
         SolidButton(
           text: "Accept",
           onPressed: acceptOnPressed,
         ),
-        const SizedBox(width: 20,),
+        const SizedBox(
+          width: 20,
+        ),
         SolidButton(
           text: "Decline",
           onPressed: declineOnPressed,
@@ -38,11 +43,11 @@ class AcceptButtonRow extends StatelessWidget {
 class NoAcceptButtonRow extends StatelessWidget {
   final Function cancelOnPressed;
 
-  const NoAcceptButtonRow({this.cancelOnPressed});
+  const NoAcceptButtonRow({required this.cancelOnPressed});
 
   @override
   Widget build(BuildContext context) {
-    return Row (
+    return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         SolidButton(
@@ -59,7 +64,7 @@ class RequestCard extends StatelessWidget {
   final Function(dynamic) removeRequest;
 
   const RequestCard(this.request, this.removeRequest);
-  
+
   bool checkAdmin(BuildContext context) {
     bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
     if (!hasTeam) return false;
@@ -73,11 +78,11 @@ class RequestCard extends StatelessWidget {
   Widget build(BuildContext context) {
     String requestType = request['type'];
     bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
-    bool canAccept = (!hasTeam && requestType == "INVITE")
-        || (hasTeam && requestType == "JOIN" && checkAdmin(context));
+    bool canAccept = (!hasTeam && requestType == "INVITE") ||
+        (hasTeam && requestType == "JOIN" && checkAdmin(context));
 
-
-    String inviteInfo = hasTeam ? request['user']['email'] : request['team']['name'];
+    String inviteInfo =
+        hasTeam ? request['user']['email'] : request['team']['name'];
     String requestID = request['_id'];
     String token = Provider.of<UserInfoModel>(context, listen: false).token;
 
@@ -90,45 +95,47 @@ class RequestCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(requestType, style: Theme.of(context).textTheme.headline3),
+                Text(requestType,
+                    style: Theme.of(context).textTheme.displaySmall),
                 const SizedBox(height: 10),
-                Text(inviteInfo, style: Theme.of(context).textTheme.bodyText2),
+                Text(inviteInfo, style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 8),
-                canAccept ? AcceptButtonRow(acceptOnPressed: () async {
-                  bool success = await acceptRequest(token, requestID);
-                  if (!success) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Error accepting invite. "
-                          "Please request for the invite to be resent."),
-                    ));
-                    removeRequest(request);
-                  }
-                  await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
-                  if (requestType == 'INVITE') {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (ctx) => ViewTeam(),
-                            settings: const RouteSettings(
-                              arguments: "",
-                            )
-                        ), (route) => route.isFirst);
-                  }
-                  removeRequest(request);
-                }, declineOnPressed: () async {
-                  await declineRequest(token, requestID);
-                  removeRequest(request);
-                }) : NoAcceptButtonRow(cancelOnPressed: () async {
-                  await cancelRequest(token, requestID);
-                  removeRequest(request);
-                })
+                canAccept
+                    ? AcceptButtonRow(acceptOnPressed: () async {
+                        bool success = await acceptRequest(token, requestID);
+                        if (!success) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Error accepting invite. "
+                                "Please request for the invite to be resent."),
+                          ));
+                          removeRequest(request);
+                        }
+                        await Provider.of<UserInfoModel>(context, listen: false)
+                            .fetchUserInfo();
+                        if (requestType == 'INVITE') {
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => ViewTeam(),
+                                  settings: const RouteSettings(
+                                    arguments: "",
+                                  )),
+                              (route) => route.isFirst);
+                        }
+                        removeRequest(request);
+                      }, declineOnPressed: () async {
+                        await declineRequest(token, requestID);
+                        removeRequest(request);
+                      })
+                    : NoAcceptButtonRow(cancelOnPressed: () async {
+                        await cancelRequest(token, requestID);
+                        removeRequest(request);
+                      })
               ],
-            )
-        )
-    );
+            )));
   }
 }
-
 
 class ViewInvites extends StatefulWidget {
   @override
@@ -172,52 +179,58 @@ class _ViewInvitesState extends State<ViewInvites> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-          Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: RefreshIndicator(
-                onRefresh: fetchData,
-                child: GradBox(
-                    width: screenWidth*0.9,
-                    height: screenHeight*0.75,
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("INVITES", style: Theme.of(context).textTheme.headline1)
-                                  ]
-                              )
-                          ),
-                          if (fetchStatus == Status.loaded && requestsList.isNotEmpty)
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: requestsList.length,
-                                itemBuilder: (context, index) {
-                                  return RequestCard(requestsList[index], removeRequest);
-                                },
-                              ),
-                            )
-                          else if (fetchStatus == Status.loaded && requestsList.isEmpty)
-                            ListRefreshable(child: Text("No invites", style: Theme.of(context).textTheme.bodyText2,))
-                          else if (fetchStatus == Status.error)
-                            ListRefreshable(child: Text("Error loading invites", style: Theme.of(context).textTheme.bodyText2,))
-                          else
-                            const Center(child: CircularProgressIndicator())
-                        ]
-                    )
-                ),
-              )
-          )
-    );
+        backflag: true,
+        reverse: true,
+        child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: RefreshIndicator(
+              onRefresh: fetchData,
+              child: GradBox(
+                  width: screenWidth * 0.9,
+                  height: screenHeight * 0.75,
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("INVITES",
+                                      style:
+                                          Theme.of(context).textTheme.headline1)
+                                ])),
+                        if (fetchStatus == Status.loaded &&
+                            requestsList.isNotEmpty)
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: requestsList.length,
+                              itemBuilder: (context, index) {
+                                return RequestCard(
+                                    requestsList[index], removeRequest);
+                              },
+                            ),
+                          )
+                        else if (fetchStatus == Status.loaded &&
+                            requestsList.isEmpty)
+                          ListRefreshable(
+                              child: Text(
+                            "No invites",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ))
+                        else if (fetchStatus == Status.error)
+                          ListRefreshable(
+                              child: Text(
+                            "Error loading invites",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ))
+                        else
+                          const Center(child: CircularProgressIndicator())
+                      ])),
+            )));
   }
 }
-

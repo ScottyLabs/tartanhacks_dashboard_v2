@@ -77,10 +77,10 @@ class _SponsorsState extends State<Sponsors> {
                   children: [
                     Text(
                         "When you join our Discord server, you'll be prompted to enter the following verification code by the Discord Bot running the server. This code will expire in 10 minutes.\n",
-                        style: Theme.of(context).textTheme.bodyText2),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     Text(
                       snapshot.data.code,
-                      style: Theme.of(context).textTheme.headline3,
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
                     )
                   ],
@@ -89,7 +89,7 @@ class _SponsorsState extends State<Sponsors> {
                   TextButton(
                     child: Text(
                       "COPY",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Clipboard.setData(
@@ -99,7 +99,7 @@ class _SponsorsState extends State<Sponsors> {
                   TextButton(
                     child: Text(
                       "GO TO SERVER",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       _launchDiscord();
@@ -110,16 +110,16 @@ class _SponsorsState extends State<Sponsors> {
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: Text("Error",
-                    style: Theme.of(context).textTheme.headline1),
+                title:
+                    Text("Error", style: Theme.of(context).textTheme.headline1),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
-                    style: Theme.of(context).textTheme.bodyText2),
+                    style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -209,225 +209,206 @@ class _SponsorsState extends State<Sponsors> {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      isSponsor: true,
-      reverse: true,
-      child:
-      Container(
-          padding: EdgeInsets.fromLTRB(
-              screenWidth * 0.08, 0, screenWidth * 0.08, 0),
-          height: screenHeight * 0.8,
-          child: Column(children: [
-            Container(
-              alignment: Alignment.topLeft,
-              //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
+        isSponsor: true,
+        reverse: true,
+        child: Container(
+            padding: EdgeInsets.fromLTRB(
+                screenWidth * 0.08, 0, screenWidth * 0.08, 0),
+            height: screenHeight * 0.8,
+            child: Column(children: [
+              Container(
+                alignment: Alignment.topLeft,
+                //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
 
-              child: Text("Welcome to TartanHacks!",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline1),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    SolidButton(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .tertiaryContainer,
-                      child: Text(
-                        "  Scan  ",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2
-                            .copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer),
+                child: Text("Welcome to TartanHacks!",
+                    style: Theme.of(context).textTheme.headline1),
+              ),
+              const SizedBox(height: 10),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SolidButton(
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        child: Text(
+                          "  Scan  ",
+                          style: Theme.of(context).textTheme.headline2.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer),
+                        ),
+                        onPressed: () async {
+                          String id = await FlutterBarcodeScanner.scanBarcode(
+                              '#ff6666', 'Cancel', true, ScanMode.QR);
+                          if (["-1", "", null].contains(id)) return;
+                          Profile isValid = await getProfile(id, token);
+                          if (isValid != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                        bookmarks: bookmarks,
+                                      ),
+                                  settings: RouteSettings(
+                                    arguments: id,
+                                  )),
+                            ).then((value) => getBookmarks());
+                          } else {
+                            errorDialog(context, "Error", "Invalid user ID.");
+                          }
+                        },
                       ),
-                      onPressed: () async {
-                        String id = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
-                        if (["-1", "", null].contains(id)) return;
-                        Profile isValid =
-                        await getProfile(id, token);
-                        if (isValid != null) {
+                      SolidButton(
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        child: Text(
+                          " Bookmarks ",
+                          style: Theme.of(context).textTheme.headline2.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer),
+                        ),
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfilePage(
-                                      bookmarks: bookmarks,
-                                    ),
-                                settings: RouteSettings(
-                                  arguments: id,
-                                )),
-                          ).then((value) => getBookmarks());
-                        } else {
-                          errorDialog(context, "Error",
-                              "Invalid user ID.");
-                        }
-                      },
+                                builder: (context) => Bookmarks()),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                  SolidButton(
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    child: Text(
+                      "  Discord Server  ",
+                      style: Theme.of(context).textTheme.headline2.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onTertiaryContainer),
                     ),
-                    SolidButton(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .tertiaryContainer,
-                      child: Text(
-                        " Bookmarks ",
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline2
-                            .copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiaryContainer),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Bookmarks()),
-                        );
-                      },
-                    )
-                  ],
+                    onPressed: () {
+                      discordVerifyDialog(context);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Search",
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.displaySmall.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary))),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                    style: Theme.of(context).textTheme.bodyMedium.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary),
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15.0))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15.0))),
+                      disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withAlpha(87)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15.0))),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2.0,
+                              color: Theme.of(context).colorScheme.onPrimary),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15.0))),
+                    ),
+                    enableSuggestions: false,
+                    controller: myController,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (value) {
+                      search();
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
                 ),
                 SolidButton(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .tertiaryContainer,
-                  child: Text(
-                    "  Discord Server  ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        .copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onTertiaryContainer),
-                  ),
-                  onPressed: () {
-                    discordVerifyDialog(context);
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Container(
-                alignment: Alignment.centerLeft,
-                child: Text("Search",
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.headline3
-                        .copyWith(color: Theme.of(context).colorScheme.onPrimary))),
-            Row(children: [
-              Expanded(
-                child: TextField(
-                  style: Theme.of(context).textTheme.bodyText2
-                    .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
-                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
-                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary.withAlpha(87)),
-                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                    ),
-                    errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
-                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                    ),
-                  ),
-                  enableSuggestions: false,
-                  controller: myController,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (value) {
-                    search();
-                  },
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              SolidButton(
-                  onPressed: (){
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-                    if (!currentFocus.hasPrimaryFocus) {
-                      currentFocus.unfocus();
-                    }
-                    search();
-                  },
-                  child: Icon(Icons.subdirectory_arrow_left,
-                      size: 30,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onPrimary)),
-            ]),
-            const SizedBox(height: 25),
-            if (students != null && students.isNotEmpty)
-              Expanded(
-                  child: Container(
-                      alignment: Alignment.bottomCenter,
-                      child: ListView.builder(
-                          itemCount: students.length,
-                          itemBuilder:
-                              (BuildContext context,
-                                  int index) {
-                            bool isBookmark = (bookmarks.isNotEmpty)
-                                ? bookmarks.containsValue(
-                                    studentIds[index])
-                                : false;
-                            return InfoTile(
-                                name: (students[index] != null)
-                                    ? students[index].firstName +
-                                        " " +
-                                        students[index]
-                                            .lastName
-                                    : "NULL",
-                                team: (studentTeams[index] != null)
-                                    ? studentTeams[index]
-                                    : "No team",
-                                bio: (students[index] != null)
-                                    ? students[index].college +
-                                        " c/o " +
-                                        students[index]
-                                            .graduationYear
-                                            .toString()
-                                    : "NULL",
-                                participantId:
-                                    studentIds[index],
-                                bookmarkId:
-                                    (bookmarks.isNotEmpty && bookmarks.containsValue(studentIds[index]))
-                                        ? bookmarks.keys
-                                            .firstWhere((k) =>
-                                                bookmarks[k] ==
-                                                studentIds[
-                                                    index])
-                                        : null,
-                                isBookmark: isBookmark,
-                                toggleFn: isBookmark
-                                    ? removeBookmark
-                                    : newBookmark,
-                                bmMap: bookmarks,
-                                updateBM: getBookmarks);
-                          })))
-            else
-              Center(child:
-                placeholderText != null
-                  ? Text(placeholderText, style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),)
-                  : const CircularProgressIndicator()
-              )
-          ])
-      )
-    );
+                    onPressed: () {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+                      search();
+                    },
+                    child: Icon(Icons.subdirectory_arrow_left,
+                        size: 30,
+                        color: Theme.of(context).colorScheme.onPrimary)),
+              ]),
+              const SizedBox(height: 25),
+              if (students != null && students.isNotEmpty)
+                Expanded(
+                    child: Container(
+                        alignment: Alignment.bottomCenter,
+                        child: ListView.builder(
+                            itemCount: students.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              bool isBookmark = (bookmarks.isNotEmpty)
+                                  ? bookmarks.containsValue(studentIds[index])
+                                  : false;
+                              return InfoTile(
+                                  name: (students[index] != null)
+                                      ? students[index].firstName +
+                                          " " +
+                                          students[index].lastName
+                                      : "NULL",
+                                  team: (studentTeams[index] != null)
+                                      ? studentTeams[index]
+                                      : "No team",
+                                  bio: (students[index] != null)
+                                      ? students[index].college +
+                                          " c/o " +
+                                          students[index]
+                                              .graduationYear
+                                              .toString()
+                                      : "NULL",
+                                  participantId: studentIds[index],
+                                  bookmarkId: (bookmarks.isNotEmpty &&
+                                          bookmarks
+                                              .containsValue(studentIds[index]))
+                                      ? bookmarks.keys.firstWhere((k) =>
+                                          bookmarks[k] == studentIds[index])
+                                      : null,
+                                  isBookmark: isBookmark,
+                                  toggleFn:
+                                      isBookmark ? removeBookmark : newBookmark,
+                                  bmMap: bookmarks,
+                                  updateBM: getBookmarks);
+                            })))
+              else
+                Center(
+                    child: placeholderText != null
+                        ? Text(
+                            placeholderText,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary),
+                          )
+                        : const CircularProgressIndicator())
+            ])));
   }
 }
 
@@ -444,15 +425,15 @@ class InfoTile extends StatelessWidget {
   final Function updateBM;
 
   const InfoTile(
-      {this.name,
-      this.team,
-      this.bio,
-      this.participantId,
-      this.bookmarkId,
-      this.isBookmark,
-      this.toggleFn,
-      this.bmMap,
-      this.updateBM});
+      {required this.name,
+      required this.team,
+      required this.bio,
+      required this.participantId,
+      required this.bookmarkId,
+      required this.isBookmark,
+      required this.toggleFn,
+      required this.bmMap,
+      required this.updateBM});
 
   @override
   Widget build(BuildContext context) {
@@ -494,17 +475,17 @@ class InfoTile extends StatelessWidget {
                         Text(
                           name,
                           textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.headline4,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         Text(
                           team,
                           textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         Text(
                           bio,
                           textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ]),
                 ),

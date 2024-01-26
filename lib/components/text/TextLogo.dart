@@ -9,7 +9,7 @@ class TextLogo extends StatelessWidget {
   final double width;
   final double height;
 
-  const TextLogo({this.color, this.width, this.height});
+  const TextLogo({ required this.color, required this.width, required this.height });
 
   @override
   Widget build(BuildContext context) {

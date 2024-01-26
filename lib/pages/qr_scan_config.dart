@@ -11,27 +11,21 @@ class ScanConfigPage extends StatelessWidget {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-          Container(
-              alignment: Alignment.center,
-              height: screenHeight * 0.78,
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ScanConfigBox()
-                ],
-              )
-          )
-    );
+        backflag: true,
+        reverse: true,
+        child: Container(
+            alignment: Alignment.center,
+            height: screenHeight * 0.78,
+            padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [ScanConfigBox()],
+            )));
   }
 }
 
 class ScanConfigBox extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return GradBox(
@@ -47,62 +41,76 @@ class ScanConfigBox extends StatelessWidget {
             style: Theme.of(context).textTheme.headline2,
             textAlign: TextAlign.left,
           ),
-          const SizedBox(height: 40,),
+          const SizedBox(
+            height: 40,
+          ),
           Text(
             "Check In Item",
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.displaySmall,
           ),
-          const SizedBox(height: 15,),
-          DropdownButtonFormField(items: [DropdownMenuItem(
-            child: Text("Ctrl+F - Working with your team",
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-          )], onChanged: (value) {  },),
-          const SizedBox(height: 25,),
+          const SizedBox(
+            height: 15,
+          ),
+          DropdownButtonFormField(
+            items: [
+              DropdownMenuItem(
+                child: Text(
+                  "Ctrl+F - Working with your team",
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              )
+            ],
+            onChanged: (value) {},
+          ),
+          const SizedBox(
+            height: 25,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "View History",
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               Transform.scale(
                 scale: 1.5,
                 child: Checkbox(
                     side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
+                        color: Theme.of(context).colorScheme.primary, width: 2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     value: false,
-                    onChanged: (val){}),
+                    onChanged: (val) {}),
               )
             ],
           ),
-          const SizedBox(height: 25,),
+          const SizedBox(
+            height: 25,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "Self-checkin",
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               Transform.scale(
                 scale: 1.5,
                 child: Checkbox(
                     side: BorderSide(
-                        color: Theme.of(context).colorScheme.primary,
-                        width: 2),
+                        color: Theme.of(context).colorScheme.primary, width: 2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                     value: false,
-                    onChanged: (val){}),
+                    onChanged: (val) {}),
               )
             ],
           ),
-          const SizedBox(height: 40,),
+          const SizedBox(
+            height: 40,
+          ),
           Align(
             alignment: Alignment.center,
             child: SizedBox(
@@ -110,7 +118,7 @@ class ScanConfigBox extends StatelessWidget {
               width: 160,
               child: SolidButton(
                 text: "Confirm",
-                onPressed: (){},
+                onPressed: () {},
               ),
             ),
           )
@@ -119,4 +127,3 @@ class ScanConfigBox extends StatelessWidget {
     );
   }
 }
-

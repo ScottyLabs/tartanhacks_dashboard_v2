@@ -7,10 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/components/DefaultPage.dart';
-import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/pages/team_api.dart';
 import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,7 +35,7 @@ class _HomeState extends State<Home> {
 
   void getData() async {
     prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    token = prefs.getString('token') as String;
     Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
 
     discordInfo = await getDiscordInfo(token);
@@ -75,10 +73,10 @@ class _HomeState extends State<Home> {
                   children: [
                     Text(
                         "When you join our Discord server, you'll be prompted to enter the following verification code by the Discord Bot running the server. This code will expire in 10 minutes.\n",
-                        style: Theme.of(context).textTheme.bodyText2),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     Text(
-                      snapshot.data.code,
-                      style: Theme.of(context).textTheme.headline3,
+                      snapshot.data.hashCode.toString(),
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
                     )
                   ],
@@ -87,17 +85,17 @@ class _HomeState extends State<Home> {
                   TextButton(
                     child: Text(
                       "COPY",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: snapshot.data.code));
+                      Clipboard.setData(ClipboardData(
+                          text: snapshot.data.hashCode.toString()));
                     },
                   ),
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -112,12 +110,12 @@ class _HomeState extends State<Home> {
                     Text("Error", style: Theme.of(context).textTheme.headline1),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
-                    style: Theme.of(context).textTheme.bodyText2),
+                    style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -181,12 +179,14 @@ class _HomeState extends State<Home> {
                                   style: TextStyle(
                                       fontSize: 24.0,
                                       fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.tertiary)
-                              ),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary)),
                               textStyle: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.tertiary),
+                                  color:
+                                      Theme.of(context).colorScheme.tertiary),
                             ),
                           ])),
                   SizedBox(height: screenHeight * 0.08),
@@ -219,11 +219,12 @@ class _HomeState extends State<Home> {
                                         userData.lastName +
                                         "!",
                                     textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
                                   "Welcome to TartanHacks!",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.center,
                                 ),
                                 SolidButton(
@@ -256,13 +257,14 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text("Swag Points",
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
                                     "Points Earned: " +
                                         userData.totalPoints.toString(),
                                     style:
-                                        Theme.of(context).textTheme.bodyText2),
+                                        Theme.of(context).textTheme.bodyMedium),
                                 SolidButton(
                                   text: "Leaderboard",
                                   onPressed: () {
@@ -294,11 +296,12 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text("Discord Server",
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
                                   "Join the official TartanHacks Discord!",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.center,
                                 ),
                                 SolidButton(

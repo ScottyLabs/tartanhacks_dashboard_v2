@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class CurvedBottom extends CustomPainter {
   Color color1;
   Color color2;
-  CurvedBottom({this.color1, this.color2});
+  CurvedBottom({
+    required this.color1, 
+    required this.color2
+  });
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()

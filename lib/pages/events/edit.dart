@@ -16,14 +16,14 @@ int daysBetween(DateTime from, DateTime to) {
   return (to.difference(from).inHours / 24).round();
 }
 
-double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
 // MAIN WIDGET
 class EditEventPage extends StatelessWidget {
   final Event event;
   final bool editable;
 
-  const EditEventPage(this.event, {this.editable=false});
+  const EditEventPage(this.event, {this.editable = false});
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +32,17 @@ class EditEventPage extends StatelessWidget {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-          Container(
-              alignment: Alignment.center,
-              height: screenHeight * 0.78,
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-              child: GradBox(
-                curvature: 20,
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                child: EventItemForm(event, editable),
-              )
-          )
-    );
+        backflag: true,
+        reverse: true,
+        child: Container(
+            alignment: Alignment.center,
+            height: screenHeight * 0.78,
+            padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+            child: GradBox(
+              curvature: 20,
+              padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+              child: EventItemForm(event, editable),
+            )));
   }
 }
 
@@ -60,7 +57,6 @@ class EventItemForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventItemForm> {
-
   void _showDialog(String response, String title, bool result) {
     // flutter defined function
     showDialog(
@@ -78,15 +74,14 @@ class _EventFormState extends State<EventItemForm> {
                 style: TextStyle(color: Colors.white),
               ),
               style: TextButton.styleFrom(
-                // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
-              ),
+                  // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
+                  ),
               onPressed: () {
                 Navigator.of(context).pop();
-                if(result == true){
+                if (result == true) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => EventsHomeScreen()),
+                    MaterialPageRoute(builder: (context) => EventsHomeScreen()),
                   );
                 }
               },
@@ -96,29 +91,54 @@ class _EventFormState extends State<EventItemForm> {
       },
     );
   }
+
   void addData(Map<String, Object> newEvent) async {
-    bool result = await addEvent(newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], newEvent["location"], 0, 0, newEvent["platform"], newEvent["platformUrl"]);
+    bool result = await addEvent(
+        newEvent["name"],
+        newEvent["description"],
+        newEvent["startTime"],
+        newEvent["endTime"],
+        newEvent["location"],
+        0,
+        0,
+        newEvent["platform"],
+        newEvent["platformUrl"]);
 
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
-    }else{
+    } else {
       _showDialog('There was an error. Please try again.', 'Error.', result);
     }
   }
 
   void editData(Map<String, Object> newEvent) async {
-    bool result = await editEvent(newEvent["id"], newEvent["name"], newEvent["description"], newEvent["startTime"], newEvent["endTime"], newEvent["location"], 0, 0, newEvent["platform"], newEvent["platformUrl"]);
+    bool result = await editEvent(
+        newEvent["id"],
+        newEvent["name"],
+        newEvent["description"],
+        newEvent["startTime"],
+        newEvent["endTime"],
+        newEvent["location"],
+        0,
+        0,
+        newEvent["platform"],
+        newEvent["platformUrl"]);
 
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
-    }else{
+    } else {
       _showDialog('There was an error. Please try again.', 'Error.', result);
     }
   }
 
   final _formKey = GlobalKey<FormState>();
-  final List<String> platforms = ["IN_PERSON", "ZOOM",
-    "HOPIN", "DISCORD", "OTHER"];
+  final List<String> platforms = [
+    "IN_PERSON",
+    "ZOOM",
+    "HOPIN",
+    "DISCORD",
+    "OTHER"
+  ];
 
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
@@ -143,7 +163,7 @@ class _EventFormState extends State<EventItemForm> {
     super.initState();
 
     Event item = widget.event;
-    if (item!=null) {
+    if (item != null) {
       _nameController.value = TextEditingValue(text: widget.event.name);
       _descController.value = TextEditingValue(text: widget.event.description);
       _linkController.value = TextEditingValue(text: widget.event.platformUrl);
@@ -154,15 +174,18 @@ class _EventFormState extends State<EventItemForm> {
       startTime = TimeOfDay.fromDateTime(startDate);
       endTime = TimeOfDay.fromDateTime(endDate);
 
-      _startDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
-      _startTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
-      _endDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
-      _endTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+      _startDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+      _startTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+      _endDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+      _endTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
       newItem = false;
       platform = item.platform;
-    }
-    else {
+    } else {
       newItem = true;
       platform = platforms[0];
     }
@@ -178,12 +201,16 @@ class _EventFormState extends State<EventItemForm> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-
-                widget.event == null ? "NEW EVENT"
-                    : editable ? "EDIT EVENT" : "EVENT DETAILS",
+                widget.event == null
+                    ? "NEW EVENT"
+                    : editable
+                        ? "EDIT EVENT"
+                        : "EVENT DETAILS",
                 style: Theme.of(context).textTheme.headline1,
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
 
               // Form Fields
               EditEventFormField(
@@ -196,21 +223,29 @@ class _EventFormState extends State<EventItemForm> {
                 controller: _descController,
                 editable: editable,
               ),
-              if (editable) EditEventDropDownFormField(
-                items: platforms.asMap().map((i, label) =>
-                    MapEntry(i, DropdownMenuItem(
-                      value: label,
-                      child: Text(label),
-                    ))).values.toList(),
-                label: "Platform",
-                initial: platform,
-                onChange: (val) {
-                  setState(() {
-                    platform = val;
-                  });
-                },
+              if (editable)
+                EditEventDropDownFormField(
+                  items: platforms
+                      .asMap()
+                      .map((i, label) => MapEntry(
+                          i,
+                          DropdownMenuItem(
+                            value: label,
+                            child: Text(label),
+                          )))
+                      .values
+                      .toList(),
+                  label: "Platform",
+                  initial: platform,
+                  onChange: (val) {
+                    setState(() {
+                      platform = val;
+                    });
+                  },
+                ),
+              const SizedBox(
+                height: 20,
               ),
-              const SizedBox(height: 20,),
               EditEventFormField(
                 label: "Location",
                 controller: _locController,
@@ -243,19 +278,17 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: startDate ?? DateTime.now(),
                     firstDate: startDate ?? DateTime.now(),
-                    lastDate: DateTime(DateTime.now().year+1),
+                    lastDate: DateTime(DateTime.now().year + 1),
                   );
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked)
-                    );
+                        text: DateFormat.yMMMd('en_US').format(picked));
 
                     startDate = picked;
                   }
                 },
               ),
               EditEventFormField(
-
                 label: "End Date",
                 controller: _endDateController,
                 editable: editable,
@@ -263,8 +296,8 @@ class _EventFormState extends State<EventItemForm> {
                   if (val == null || val.isEmpty) {
                     return 'Cannot be empty';
                   }
-                  if (startDate!=null) {
-                    if (daysBetween(startDate, endDate)<0) {
+                  if (startDate != null) {
+                    if (daysBetween(startDate, endDate) < 0) {
                       return 'End date must be after start date';
                     }
                   }
@@ -276,12 +309,11 @@ class _EventFormState extends State<EventItemForm> {
                     context: context,
                     initialDate: endDate ?? DateTime.now(),
                     firstDate: endDate ?? DateTime.now(),
-                    lastDate: DateTime(DateTime.now().year+1),
+                    lastDate: DateTime(DateTime.now().year + 1),
                   );
                   if (picked != null) {
                     _endDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked)
-                    );
+                        text: DateFormat.yMMMd('en_US').format(picked));
                     endDate = picked;
                   }
                 },
@@ -295,20 +327,15 @@ class _EventFormState extends State<EventItemForm> {
                     FocusScope.of(context).requestFocus(FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
-
-                        initialTime: startTime ?? TimeOfDay.now()
-                    );
+                        initialTime: startTime ?? TimeOfDay.now());
                     if (picked != null) {
-                      _startTimeController.value = TextEditingValue(
-                          text: picked.format(context)
-                      );
+                      _startTimeController.value =
+                          TextEditingValue(text: picked.format(context));
 
                       startTime = picked;
                     }
-                  }
-              ),
+                  }),
               EditEventFormField(
-
                   label: "End Time",
                   controller: _endTimeController,
                   editable: editable,
@@ -316,8 +343,8 @@ class _EventFormState extends State<EventItemForm> {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
                     }
-                    if (startDate!=null) {
-                      if (daysBetween(startDate, endDate)==0) {
+                    if (startDate != null) {
+                      if (daysBetween(startDate, endDate) == 0) {
                         if (toDouble(startTime) > toDouble(endTime)) {
                           return 'End time must be after start time';
                         }
@@ -329,68 +356,85 @@ class _EventFormState extends State<EventItemForm> {
                     FocusScope.of(context).requestFocus(FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
-                        initialTime: endTime ?? TimeOfDay.now()
-                    );
+                        initialTime: endTime ?? TimeOfDay.now());
                     if (picked != null) {
-                      _endTimeController.value = TextEditingValue(
-                          text: picked.format(context)
-                      );
+                      _endTimeController.value =
+                          TextEditingValue(text: picked.format(context));
                       endTime = picked;
                     }
-                  }
-              ),
+                  }),
 
               // Dropdown menus
 
-
-              if (editable) const SizedBox(height: 15,),
+              if (editable)
+                const SizedBox(
+                  height: 15,
+                ),
 
               // Submit button
 
-              if (editable) SizedBox(
-                width: double.infinity,
-                child: SolidButton(
-                  text: "CONFIRM",
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      DateTime startDateTime = DateTime(startDate.year, startDate.month, startDate.day, startTime.hour, startTime.minute);
-                      DateTime endDateTime = DateTime(endDate.year, endDate.month, endDate.day, endTime.hour, endTime.minute);
+              if (editable)
+                SizedBox(
+                  width: double.infinity,
+                  child: SolidButton(
+                    text: "CONFIRM",
+                    onPressed: () async {
+                      if (_formKey.currentState.validate()) {
+                        DateTime startDateTime = DateTime(
+                            startDate.year,
+                            startDate.month,
+                            startDate.day,
+                            startTime.hour,
+                            startTime.minute);
+                        DateTime endDateTime = DateTime(
+                            endDate.year,
+                            endDate.month,
+                            endDate.day,
+                            endTime.hour,
+                            endTime.minute);
 
-
-                      // TODO maybe add some loading indicator?
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => const Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                              )));
-                      if (newItem) {
-                        addData({"name": _nameController.text,
-                          "description": _descController.text,
-                          "startTime": startDateTime.toUtc().microsecondsSinceEpoch,
-                          "endTime": endDateTime.toUtc().microsecondsSinceEpoch,
-                          "platform": platform,
-                          "platformUrl": _linkController.text,
-                          "location": _locController.text});
-                      } else {
-                        editData({
-                          "id": widget.event.id,
-                          "name": _nameController.text,
-                          "description": _descController.text,
-                          "startTime": startDateTime.toUtc().microsecondsSinceEpoch,
-                          "endTime": endDateTime.toUtc().microsecondsSinceEpoch,
-                          "platform": platform,
-                          "platformUrl": _linkController.text,
-                          "location": _locController.text});
+                        // TODO maybe add some loading indicator?
+                        showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) => const Center(
+                                    child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )));
+                        if (newItem) {
+                          addData({
+                            "name": _nameController.text,
+                            "description": _descController.text,
+                            "startTime":
+                                startDateTime.toUtc().microsecondsSinceEpoch,
+                            "endTime":
+                                endDateTime.toUtc().microsecondsSinceEpoch,
+                            "platform": platform,
+                            "platformUrl": _linkController.text,
+                            "location": _locController.text
+                          });
+                        } else {
+                          editData({
+                            "id": widget.event.id,
+                            "name": _nameController.text,
+                            "description": _descController.text,
+                            "startTime":
+                                startDateTime.toUtc().microsecondsSinceEpoch,
+                            "endTime":
+                                endDateTime.toUtc().microsecondsSinceEpoch,
+                            "platform": platform,
+                            "platformUrl": _linkController.text,
+                            "location": _locController.text
+                          });
+                        }
+                        Navigator.pop(context);
                       }
-                      Navigator.pop(context);
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15,)
-
+              const SizedBox(
+                height: 15,
+              )
             ],
           )),
     );
@@ -405,18 +449,16 @@ class EditEventFormField extends StatelessWidget {
   final bool editable;
   final Function validator;
 
-  const EditEventFormField({
-    this.controller,
-    this.label,
-    this.keyboardType = TextInputType.text,
-    this.onTap,
-    this.editable,
-    this.validator
-  });
+  const EditEventFormField(
+      {required this.controller,
+      required this.label,
+      required this.onTap,
+      required this.editable,
+      required this.validator,
+      this.keyboardType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -424,24 +466,24 @@ class EditEventFormField extends StatelessWidget {
           controller: controller,
           keyboardType: keyboardType,
           onTap: onTap,
-
           enabled: editable,
-          validator: validator ?? (val) {
-            if (val == null || val.isEmpty) {
-              return 'Cannot be empty';
-            }
-            return null;
-          },
+          validator: validator ??
+              (val) {
+                if (val == null || val.isEmpty) {
+                  return 'Cannot be empty';
+                }
+                return null;
+              },
           enableSuggestions: false,
-          inputFormatters: keyboardType == TextInputType.number ? [
-            FilteringTextInputFormatter.digitsOnly
-          ] : [],
-          decoration: InputDecoration(
-              labelText: label
-          ),
-          style: Theme.of(context).textTheme.bodyText2,
+          inputFormatters: keyboardType == TextInputType.number
+              ? [FilteringTextInputFormatter.digitsOnly]
+              : [],
+          decoration: InputDecoration(labelText: label),
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: 15,)
+        const SizedBox(
+          height: 15,
+        )
       ],
     );
   }
@@ -454,7 +496,11 @@ class EditEventDropDownFormField extends StatelessWidget {
 
   final Function onChange;
 
-  const EditEventDropDownFormField({this.items, this.label, this.initial, this.onChange});
+  const EditEventDropDownFormField(
+      {required this.items,
+      required this.label,
+      required this.initial,
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {
@@ -465,16 +511,19 @@ class EditEventDropDownFormField extends StatelessWidget {
           flex: 5,
           child: Text(
             label,
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontWeight: FontWeight.bold
-            ),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                .copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        const SizedBox(width: 10,),
+        const SizedBox(
+          width: 10,
+        ),
         Expanded(
           flex: 8,
           child: DropdownButtonFormField(
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
             dropdownColor: Theme.of(context).colorScheme.surface,
             onChanged: onChange,
             items: items,
@@ -485,8 +534,3 @@ class EditEventDropDownFormField extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

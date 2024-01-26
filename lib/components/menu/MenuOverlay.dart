@@ -19,7 +19,7 @@ OverlayEntry menuOverlay(BuildContext context) {
   final screenWidth = mqData.size.width;
   var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
-  OverlayEntry entry;
+  late OverlayEntry entry;
 
   entry = OverlayEntry(
       builder: (context) => GestureDetector(

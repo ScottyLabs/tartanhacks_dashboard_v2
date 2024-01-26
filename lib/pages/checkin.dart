@@ -32,39 +32,31 @@ class _CheckInState extends State<CheckIn> {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      reverse: true,
-      child:
-          Consumer<CheckInItemsModel>(
-            builder: (context, checkInItemsModel, child) {
-              var status =
-                  checkInItemsModel.checkInItemsStatus;
-              var checkInItemsList =
-                  checkInItemsModel.checkInItems;
-              if (status == Status.notLoaded ||
-                  checkInItemsList == null) {
-                checkInItemsModel.fetchCheckInItems();
-                return const Center(
-                    child: CircularProgressIndicator());
-              }
-              // Error
-              else if (status == Status.error) {
-                return const Center(
-                    child: Text("Error Loading Data"));
-              } else {
-                return Container(
-                    alignment: Alignment.center,
-                    height: screenHeight * 0.78,
-                    child: Column(
-                      children: [
-                        Expanded(flex: 1, child: Header()),
-                        Expanded(
-                            flex: 2, child: CheckInEvents())
-                      ],
-                    ));
-              }
-            },
-          )
-    );
+        reverse: true,
+        child: Consumer<CheckInItemsModel>(
+          builder: (context, checkInItemsModel, child) {
+            var status = checkInItemsModel.checkInItemsStatus;
+            var checkInItemsList = checkInItemsModel.checkInItems;
+            if (status == Status.notLoaded || checkInItemsList == null) {
+              checkInItemsModel.fetchCheckInItems();
+              return const Center(child: CircularProgressIndicator());
+            }
+            // Error
+            else if (status == Status.error) {
+              return const Center(child: Text("Error Loading Data"));
+            } else {
+              return Container(
+                  alignment: Alignment.center,
+                  height: screenHeight * 0.78,
+                  child: Column(
+                    children: [
+                      Expanded(flex: 1, child: Header()),
+                      Expanded(flex: 2, child: CheckInEvents())
+                    ],
+                  ));
+            }
+          },
+        ));
   }
 }
 
@@ -105,7 +97,7 @@ class QRHeader extends StatelessWidget {
             height: 30,
             child: Text(
               "Get Checked In",
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   decoration: TextDecoration.underline,
                   fontSize: 16),
@@ -156,7 +148,7 @@ class PointsHeader extends StatelessWidget {
         ),
         Text(
           "Points earned:",
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         Text(
           "$points pts",
@@ -183,7 +175,7 @@ class AdminHeader extends StatelessWidget {
         ),
         Text(
           "Admin Dashboard",
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         )
       ],
     );
@@ -216,14 +208,15 @@ class CheckInEvents extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         ?.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
                   onTap: () => {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const EditCheckInItemPage(null)))
+                            builder: (context) =>
+                                const EditCheckInItemPage(null)))
                   },
                   curvature: 12,
                 ),
@@ -267,10 +260,12 @@ class CheckInEventList extends StatelessWidget {
             String checkInItemId = "";
             if (isAdmin) {
               checkInItemId = events[index].id;
-              uid = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+              uid = await FlutterBarcodeScanner.scanBarcode(
+                  '#ff6666', 'Cancel', true, ScanMode.QR);
             } else {
               uid = userID;
-              checkInItemId = await FlutterBarcodeScanner.scanBarcode('#ff6666', 'Cancel', true, ScanMode.QR);
+              checkInItemId = await FlutterBarcodeScanner.scanBarcode(
+                  '#ff6666', 'Cancel', true, ScanMode.QR);
             }
             if (uid != null &&
                 uid != "" &&
@@ -292,7 +287,8 @@ class CheckInEventList extends StatelessWidget {
                 }
               } on Exception catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Could not check in. Please ensure that the QR code is correct."),
+                  content: Text(
+                      "Could not check in. Please ensure that the QR code is correct."),
                 ));
               } finally {
                 Navigator.pop(context);
@@ -323,12 +319,12 @@ class CheckInEventListItem extends StatelessWidget {
   final int points;
 
   const CheckInEventListItem(
-      {this.name,
-      this.isChecked,
-      this.enabled,
-      this.onTap,
-      this.onCheck,
-      this.points});
+      {required this.name,
+      required this.isChecked,
+      required this.enabled,
+      required this.onTap,
+      required this.onCheck,
+      required this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -402,7 +398,7 @@ class CheckInEventListItem extends StatelessWidget {
                               overflow: TextOverflow.fade,
                               maxLines: 1,
                               softWrap: false,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           )
                         ],

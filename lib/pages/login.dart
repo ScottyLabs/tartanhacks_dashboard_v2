@@ -51,13 +51,15 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-      // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-      //   loading.remove();
-      //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
-      //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-      //       "after you've been confirmed.");
+        // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        //   loading.remove();
+        //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
+        //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+        //       "after you've been confirmed.");
       } else {
-        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+        Provider.of<UserInfoModel>(context, listen: false)
+            .fetchUserInfo()
+            .then((_) {
           loading.remove();
           Navigator.pushReplacement(
             context,
@@ -80,8 +82,11 @@ class _LoginState extends State<Login> {
       _themeProvider.setTheme(lightTheme);
     }
 
-    if (prefs.get('email') != null) {
-      User logindata = await checkCredentials(prefs.get('email'), prefs.get('password'));
+    String? email = prefs.getString('email');
+    String? pwd = prefs.getString('password');
+
+    if (email != null && pwd != null) {
+      User logindata = await checkCredentials(email, pwd);
       if (logindata == null) {
         Provider.of<UserInfoModel>(context, listen: false).reset();
         prefs.clear();
@@ -90,12 +95,14 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-      // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-      //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
-      //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-      //       "after you've been confirmed.");
+        // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
+        //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+        //       "after you've been confirmed.");
       } else {
-        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+        Provider.of<UserInfoModel>(context, listen: false)
+            .fetchUserInfo()
+            .then((_) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (ctxt) => Home()),
@@ -124,9 +131,7 @@ class _LoginState extends State<Login> {
                           size: Size(screenWidth, screenHeight * 0.45),
                           painter: CurvedBottom(
                               color1: Theme.of(context).colorScheme.primary,
-                              color2: Theme.of(context)
-                                  .colorScheme
-                                  .secondary),
+                              color2: Theme.of(context).colorScheme.secondary),
                         ),
                         Container(
                             height: screenHeight * 0.3,
@@ -145,7 +150,7 @@ class _LoginState extends State<Login> {
                               color1: Theme.of(context).colorScheme.primary,
                               color2: Theme.of(context)
                                   .colorScheme
-                                  .secondaryVariant)),
+                                  .secondaryContainer)),
                       AutofillGroup(
                           child: Column(
                         children: [
@@ -157,7 +162,7 @@ class _LoginState extends State<Login> {
                                 decoration: const InputDecoration(
                                   labelText: "Email",
                                 ),
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next),
                           ),
@@ -170,7 +175,7 @@ class _LoginState extends State<Login> {
                               decoration: const InputDecoration(
                                 labelText: "Password",
                               ),
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           )
                         ],
@@ -198,8 +203,9 @@ class _LoginState extends State<Login> {
                           },
                           child: Text("Forgot Password",
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.tertiaryContainer))),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryContainer))),
                     ]))));
   }
 }

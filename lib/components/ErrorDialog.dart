@@ -7,12 +7,12 @@ void errorDialog(context, String title, String response) {
       return AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(title, style: Theme.of(context).textTheme.headline1),
-        content: Text(response, style: Theme.of(context).textTheme.bodyText2),
+        content: Text(response, style: Theme.of(context).textTheme.bodyMedium),
         actions: <Widget>[
           TextButton(
             child: Text(
               "OK",
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             onPressed: () {
               Navigator.of(context).pop();

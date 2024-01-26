@@ -14,7 +14,7 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
   final screenWidth = mqData.size.width;
 
   var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-  OverlayEntry entry;
+  late OverlayEntry entry;
 
   entry = OverlayEntry(
       builder: (context) => GestureDetector(
@@ -22,109 +22,96 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
           onTap: () {
             entry.remove();
           },
-          child: Stack(
-              alignment: Alignment.topRight,
-              children:[
-                CustomPaint(
-                    size: mqData.size,
-                    painter: WhiteOverlay()
-                ),
-                Column(
-                    children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children:[
-                            Container(
-                                width: screenWidth/4,
-                                alignment: Alignment.topRight,
-                                padding: const EdgeInsets.fromLTRB(0, 25, 17, 0),
-                                child: MenuButton(
-                                  onTap: () {
-                                    entry.remove();
-                                  },
-                                  icon: Icons.close,
-                                )
-                            ),
-                          ]
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                          alignment: Alignment.topRight,
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children:[
-                                MenuChoice(
-                                  icon: Icons.person,
-                                  text: "Home",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            Sponsors(),
-                                        ), (route) => route.isFirst
-                                    );
-                                  },
+          child: Stack(alignment: Alignment.topRight, children: [
+            CustomPaint(size: mqData.size, painter: WhiteOverlay()),
+            Column(children: [
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                        width: screenWidth / 4,
+                        alignment: Alignment.topRight,
+                        padding: const EdgeInsets.fromLTRB(0, 25, 17, 0),
+                        child: MenuButton(
+                          onTap: () {
+                            entry.remove();
+                          },
+                          icon: Icons.close,
+                        )),
+                  ]),
+              const SizedBox(height: 10),
+              Container(
+                  alignment: Alignment.topRight,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MenuChoice(
+                          icon: Icons.person,
+                          text: "Home",
+                          onTap: () {
+                            entry.remove();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Sponsors(),
                                 ),
-                                MenuChoice(
-                                  icon: Icons.schedule,
-                                  text: "Schedule",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            EventsHomeScreen(),
-                                        ), (route) => route.isFirst
-                                    );
-                                  },
+                                (route) => route.isFirst);
+                          },
+                        ),
+                        MenuChoice(
+                          icon: Icons.schedule,
+                          text: "Schedule",
+                          onTap: () {
+                            entry.remove();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EventsHomeScreen(),
                                 ),
-                                MenuChoice(
-                                  icon: Icons.bookmark_outline,
-                                  text: "Bookmarks",
-                                  onTap: () {
-                                    entry.remove();
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(builder: (context) =>
-                                            Bookmarks(),
-                                        ), (route) => route.isFirst
-                                    );
-                                  },
+                                (route) => route.isFirst);
+                          },
+                        ),
+                        MenuChoice(
+                          icon: Icons.bookmark_outline,
+                          text: "Bookmarks",
+                          onTap: () {
+                            entry.remove();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Bookmarks(),
                                 ),
-
-                                _themeProvider.getTheme==lightTheme ?
-                                MenuChoice(
-                                  icon: Icons.mode_night,
-                                  text: "Dark",
-                                  onTap: () {
-                                    _themeProvider.setTheme(darkTheme);
-                                    setThemePref("dark", entry, context);
-                                  },
-                                ) :
-                                MenuChoice(
-                                  icon: Icons.wb_sunny,
-                                  text: "Light",
-                                  onTap: () {
-                                    _themeProvider.setTheme(lightTheme);
-                                    setThemePref("light", entry, context);
-                                  },
-                                ),
-                                MenuChoice(
-                                  icon: Icons.logout,
-                                  text: "Logout",
-                                  onTap: () {logOut(entry, context);},
-                                ),
-                              ]
-                          )
-                      )
-                    ]
-                )
-              ]
-          )
-      )
-  );
+                                (route) => route.isFirst);
+                          },
+                        ),
+                        _themeProvider.getTheme == lightTheme
+                            ? MenuChoice(
+                                icon: Icons.mode_night,
+                                text: "Dark",
+                                onTap: () {
+                                  _themeProvider.setTheme(darkTheme);
+                                  setThemePref("dark", entry, context);
+                                },
+                              )
+                            : MenuChoice(
+                                icon: Icons.wb_sunny,
+                                text: "Light",
+                                onTap: () {
+                                  _themeProvider.setTheme(lightTheme);
+                                  setThemePref("light", entry, context);
+                                },
+                              ),
+                        MenuChoice(
+                          icon: Icons.logout,
+                          text: "Logout",
+                          onTap: () {
+                            logOut(entry, context);
+                          },
+                        ),
+                      ]))
+            ])
+          ])));
   return entry;
 }

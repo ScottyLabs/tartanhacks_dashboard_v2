@@ -10,7 +10,7 @@ import './TextLogo.dart';
 class TopBar extends StatelessWidget {
   final bool backflag;
   final bool isSponsor;
-  const TopBar({this.backflag = false, this.isSponsor = false});
+  const TopBar({ this.backflag = false, this.isSponsor = false });
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);

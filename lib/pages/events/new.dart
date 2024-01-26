@@ -12,7 +12,6 @@ class NewEventScreen extends StatefulWidget {
 }
 
 class _NewEventScreenState extends State<NewEventScreen> {
-
   String _eventName = "";
   String _eventDesc = "";
   String _eventUrl = "";
@@ -23,7 +22,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   int _endTime = 0;
   DateTime pickedDate = DateTime.now();
   TimeOfDay pickedTime = TimeOfDay.now();
-  
+
   TextEditingController nameController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -34,7 +33,13 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   var dropdownValue = 'IN_PERSON';
 
-  final List<String> _dropdownItems = ['IN_PERSON', "ZOOM", "DISCORD", "HOPIN", "OTHER"];
+  final List<String> _dropdownItems = [
+    'IN_PERSON',
+    "ZOOM",
+    "DISCORD",
+    "HOPIN",
+    "OTHER"
+  ];
 
   TimeOfDay selectedStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay selectedEndTime = const TimeOfDay(hour: 00, minute: 00);
@@ -42,7 +47,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose(){
+  void dispose() {
     nameController.dispose();
     descController.dispose();
     locationController.dispose();
@@ -54,34 +59,38 @@ class _NewEventScreenState extends State<NewEventScreen> {
   }
 
   void saveData() async {
-    bool result = await addEvent(_eventName, _eventDesc, _startTime, _endTime, _location, 0, 0, _platform, _eventUrl);
+    bool result = await addEvent(_eventName, _eventDesc, _startTime, _endTime,
+        _location, 0, 0, _platform, _eventUrl);
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
-    }else{
+    } else {
       _showDialog('There was an error. Please try again.', 'Error.', result);
     }
   }
 
-  void updateDate(){
+  void updateDate() {
     DateTime combined = DateTime(pickedDate.year, pickedDate.month,
         pickedDate.day, pickedTime.hour, pickedTime.minute);
     setState(() {
-      _startTime = (combined.millisecondsSinceEpoch/1000).round();
-      _endTime = (combined.add(Duration(minutes: _duration)).millisecondsSinceEpoch/1000).round();
+      _startTime = (combined.millisecondsSinceEpoch / 1000).round();
+      _endTime =
+          (combined.add(Duration(minutes: _duration)).millisecondsSinceEpoch /
+                  1000)
+              .round();
     });
   }
 
-  bool dateInRange(DateTime d, DateTime start, DateTime end){
+  bool dateInRange(DateTime d, DateTime start, DateTime end) {
     return start.isBefore(d) && end.isAfter(d);
   }
 
   Future pickDate(BuildContext context) async {
-    DateTime sDate = DateTime(DateTime.now().year-5);
-    DateTime eDate = DateTime(DateTime.now().year+5);
+    DateTime sDate = DateTime(DateTime.now().year - 5);
+    DateTime eDate = DateTime(DateTime.now().year + 5);
     final DateTime picked = await showDatePicker(
       context: context,
-      initialDate: dateInRange(pickedDate, sDate, eDate) ? pickedDate
-          : DateTime.now(),
+      initialDate:
+          dateInRange(pickedDate, sDate, eDate) ? pickedDate : DateTime.now(),
       firstDate: sDate,
       lastDate: eDate,
     );
@@ -125,16 +134,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 style: TextStyle(color: Colors.white),
               ),
               style: TextButton.styleFrom(
-                // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
-              ),
+                  // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
+                  ),
               onPressed: () {
-
                 Navigator.of(context).pop();
-                if(result == true){
+                if (result == true) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => EventsHomeScreen()),
+                    MaterialPageRoute(builder: (context) => EventsHomeScreen()),
                   );
                 }
               },
@@ -148,7 +155,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   Widget _buildName() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Event Name"),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: nameController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -162,11 +169,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-
   Widget _buildDesc() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Event Description"),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: descController,
       validator: (String value) {
         if (value.isEmpty) {
@@ -184,7 +190,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   Widget _buildLocation() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Location"),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: locationController,
       validator: (String value) {
         if (value.isEmpty && _platform == "IN_PERSON") {
@@ -201,7 +207,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   Widget _buildEventURL() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Event Link"),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       keyboardType: TextInputType.url,
       controller: linkController,
       validator: (String value) {
@@ -218,42 +224,40 @@ class _NewEventScreenState extends State<NewEventScreen> {
 
   Widget _buildDate() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Date"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: dateController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Date is Required';
-        }
-        return null;
-      },
-      onTap: () {
-        pickDate(context);
-      }
-    );
+        decoration: const InputDecoration(labelText: "Date"),
+        style: Theme.of(context).textTheme.bodyMedium,
+        controller: dateController,
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Date is Required';
+          }
+          return null;
+        },
+        onTap: () {
+          pickDate(context);
+        });
   }
 
   Widget _buildTime() {
     return TextFormField(
-      decoration: const InputDecoration(labelText: "Time"),
-      style: Theme.of(context).textTheme.bodyText2,
-      controller: timeController,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Time is Required';
-        }
-        return null;
-      },
-      onTap: () {
-        pickTime(context);
-      }
-    );
+        decoration: const InputDecoration(labelText: "Time"),
+        style: Theme.of(context).textTheme.bodyMedium,
+        controller: timeController,
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Time is Required';
+          }
+          return null;
+        },
+        onTap: () {
+          pickTime(context);
+        });
   }
 
   Widget _buildDuration() {
     return TextFormField(
       decoration: const InputDecoration(labelText: "Duration (min)"),
-      style: Theme.of(context).textTheme.bodyText2,
+      style: Theme.of(context).textTheme.bodyMedium,
       controller: durationController,
       keyboardType: TextInputType.number,
       validator: (String value) {
@@ -269,15 +273,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
     );
   }
 
-  Widget _meetingPlatformDropdown(width){
+  Widget _meetingPlatformDropdown(width) {
     return Center(
       child: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primaryVariant,
-            borderRadius: BorderRadius.circular(5)
-        ),
+            borderRadius: BorderRadius.circular(5)),
         padding: const EdgeInsets.only(left: 5, right: 5),
-        height: width*0.06,
+        height: width * 0.06,
         width: width * 0.4,
         child: DropdownButton<String>(
           isExpanded: true,
@@ -292,13 +295,18 @@ class _NewEventScreenState extends State<NewEventScreen> {
           },
           underline: const SizedBox(),
           value: dropdownValue,
-          items: _dropdownItems.map<DropdownMenuItem<String>>((String val){return DropdownMenuItem<String>(value: val, child: Text(val, style: Theme.of(context).textTheme.bodyText2,));}).toList()
-          ,
+          items: _dropdownItems.map<DropdownMenuItem<String>>((String val) {
+            return DropdownMenuItem<String>(
+                value: val,
+                child: Text(
+                  val,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ));
+          }).toList(),
         ),
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -307,56 +315,55 @@ class _NewEventScreenState extends State<NewEventScreen> {
     final screenWidth = mqData.size.width;
 
     return DefaultPage(
-      backflag: true,
-      reverse: true,
-      child:
-          Container(
+        backflag: true,
+        reverse: true,
+        child: Container(
             //color: Colors.black,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-              child: GradBox(
-                  width: screenWidth*0.9,
-                  height: screenHeight*0.75,
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  child: Form(
-                      key: _formKey,
-                      child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text("CREATE NEW EVENT", style: Theme.of(context).textTheme.headline2),
-                              const SizedBox(height:45),
-                              _buildName(),
-                              const SizedBox(height:16),
-                              _buildDesc(),
-                              const SizedBox(height:16),
-                              Center(child: Text("Meeting Platform", style: Theme.of(context).textTheme.headline4)),
-                              const SizedBox(height:5),
-                              _meetingPlatformDropdown(screenWidth),
-                              const SizedBox(height:16),
-                              _buildLocation(),
-                              const SizedBox(height:16),
-                              _buildEventURL(),
-                              const SizedBox(height:16),
-                              _buildDate(),
-                              const SizedBox(height:16),
-                              _buildTime(),
-                              const SizedBox(height:16),
-                              _buildDuration(),
-                              const SizedBox(height:16),
-                              Center(
-                                child: SolidButton(
-                                  text: "Save information",
-                                  onPressed: saveData,
-                                ),
-                              ),
-                            ],
-                          )
-                      )
-                  )
-              )
-          )
-    );
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+            child: GradBox(
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.75,
+                padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text("CREATE NEW EVENT",
+                            style: Theme.of(context).textTheme.headline2),
+                        const SizedBox(height: 45),
+                        _buildName(),
+                        const SizedBox(height: 16),
+                        _buildDesc(),
+                        const SizedBox(height: 16),
+                        Center(
+                            child: Text("Meeting Platform",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium)),
+                        const SizedBox(height: 5),
+                        _meetingPlatformDropdown(screenWidth),
+                        const SizedBox(height: 16),
+                        _buildLocation(),
+                        const SizedBox(height: 16),
+                        _buildEventURL(),
+                        const SizedBox(height: 16),
+                        _buildDate(),
+                        const SizedBox(height: 16),
+                        _buildTime(),
+                        const SizedBox(height: 16),
+                        _buildDuration(),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: SolidButton(
+                            text: "Save information",
+                            onPressed: saveData,
+                          ),
+                        ),
+                      ],
+                    ))))));
   }
 }
