@@ -94,15 +94,15 @@ class _EventFormState extends State<EventItemForm> {
 
   void addData(Map<String, Object> newEvent) async {
     bool result = await addEvent(
-        newEvent["name"],
-        newEvent["description"],
-        newEvent["startTime"],
-        newEvent["endTime"],
-        newEvent["location"],
+        newEvent["name"] as String,
+        newEvent["description"] as String,
+        newEvent["startTime"] as int,
+        newEvent["endTime"] as int,
+        newEvent["location"] as String,
         0,
         0,
-        newEvent["platform"],
-        newEvent["platformUrl"]);
+        newEvent["platform"] as String,
+        newEvent["platformUrl"] as String);
 
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
@@ -113,16 +113,16 @@ class _EventFormState extends State<EventItemForm> {
 
   void editData(Map<String, Object> newEvent) async {
     bool result = await editEvent(
-        newEvent["id"],
-        newEvent["name"],
-        newEvent["description"],
-        newEvent["startTime"],
-        newEvent["endTime"],
-        newEvent["location"],
+        newEvent["id"] as String,
+        newEvent["name"] as String,
+        newEvent["description"] as String,
+        newEvent["startTime"] as int,
+        newEvent["endTime"] as int,
+        newEvent["location"] as String,
         0,
         0,
-        newEvent["platform"],
-        newEvent["platformUrl"]);
+        newEvent["platform"] as String,
+        newEvent["platformUrl"] as String);
 
     if (result == true) {
       _showDialog('Your event was successfully saved!', 'Success', result);
@@ -149,14 +149,14 @@ class _EventFormState extends State<EventItemForm> {
   final _endDateController = TextEditingController();
   final _endTimeController = TextEditingController();
 
-  bool newItem;
-  String platform;
+  late bool newItem;
+  late String platform;
 
-  DateTime startDate;
-  DateTime endDate;
+  late DateTime startDate;
+  late DateTime endDate;
 
-  TimeOfDay startTime;
-  TimeOfDay endTime;
+  late TimeOfDay startTime;
+  late TimeOfDay endTime;
 
   @override
   void initState() {
@@ -245,8 +245,8 @@ class _EventFormState extends State<EventItemForm> {
                 label: "Location",
                 controller: _locController,
                 editable: editable,
-                validator: (String value) {
-                  if (value.isEmpty && platform == "IN_PERSON") {
+                validator: (value) {
+                  if (value == null || value.isEmpty && platform == "IN_PERSON") {
                     return "Location is required";
                   }
                   return null;
@@ -256,8 +256,8 @@ class _EventFormState extends State<EventItemForm> {
                 label: "Event URL",
                 controller: _linkController,
                 editable: editable,
-                validator: (String value) {
-                  if (value.isEmpty && platform != "IN_PERSON") {
+                validator: (value) {
+                  if (value ==  null || value.isEmpty && platform != "IN_PERSON") {
                     return "URL is required";
                   }
                   return null;
@@ -269,14 +269,14 @@ class _EventFormState extends State<EventItemForm> {
                 editable: editable,
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  final DateTime picked = await showDatePicker(
+                  final DateTime? picked = await showDatePicker(
                     context: context,
                     initialDate: startDate ?? DateTime.now(),
                     firstDate: startDate ?? DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 1),
                   );
                   _startDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked));
+                      text: DateFormat.yMMMd('en_US').format(picked!));
 
                   startDate = picked;
                                 },
@@ -296,14 +296,14 @@ class _EventFormState extends State<EventItemForm> {
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  final DateTime picked = await showDatePicker(
+                  final DateTime? picked = await showDatePicker(
                     context: context,
                     initialDate: endDate ?? DateTime.now(),
                     firstDate: endDate ?? DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 1),
                   );
                   _endDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked));
+                      text: DateFormat.yMMMd('en_US').format(picked!));
                   endDate = picked;
                                 },
               ),
@@ -314,11 +314,11 @@ class _EventFormState extends State<EventItemForm> {
                   editable: editable,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    TimeOfDay picked = await showTimePicker(
+                    TimeOfDay? picked = await showTimePicker(
                         context: context,
                         initialTime: startTime ?? TimeOfDay.now());
                     _startTimeController.value =
-                        TextEditingValue(text: picked.format(context));
+                        TextEditingValue(text: picked!.format(context));
 
                     startTime = picked;
                                     }),
@@ -339,11 +339,11 @@ class _EventFormState extends State<EventItemForm> {
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    TimeOfDay picked = await showTimePicker(
+                    TimeOfDay? picked = await showTimePicker(
                         context: context,
                         initialTime: endTime ?? TimeOfDay.now());
                     _endTimeController.value =
-                        TextEditingValue(text: picked.format(context));
+                        TextEditingValue(text: picked!.format(context));
                     endTime = picked;
                                     }),
 
@@ -362,7 +362,7 @@ class _EventFormState extends State<EventItemForm> {
                   child: SolidButton(
                     text: "CONFIRM",
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState!.validate()) {
                         DateTime startDateTime = DateTime(
                             startDate.year,
                             startDate.month,
@@ -428,9 +428,9 @@ class EditEventFormField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final TextInputType keyboardType;
-  final Function onTap;
+  final void Function()? onTap;
   final bool editable;
-  final Function validator;
+  final String? Function(String?)? validator;
 
   const EditEventFormField(
       {required this.controller,
@@ -477,7 +477,7 @@ class EditEventDropDownFormField extends StatelessWidget {
   final String label;
   final String initial;
 
-  final Function onChange;
+  final void Function(dynamic) onChange;
 
   const EditEventDropDownFormField(
       {required this.items,
@@ -497,7 +497,7 @@ class EditEventDropDownFormField extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                .copyWith(fontWeight: FontWeight.bold),
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(
