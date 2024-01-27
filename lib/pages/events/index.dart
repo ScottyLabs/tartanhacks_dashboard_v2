@@ -17,7 +17,7 @@ class EventsHomeScreen extends StatefulWidget {
 }
 
 class _EventsHomeScreenState extends State<EventsHomeScreen> {
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   bool isAdmin = false;
 
@@ -35,7 +35,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
 
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    isAdmin = prefs.getBool("admin");
+    isAdmin = prefs.getBool("admin")!;
     isSponsor = prefs.getString("company") != null;
     setState(() {});
   }
@@ -158,7 +158,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
       color: const Color.fromARGB(255, 37, 130, 242),
       onPressed: () {
         String text = 'Join ${data.name} at ' '${data.zoom_link}';
-        final RenderBox box = context.findRenderObject();
+        final RenderBox box = context.findRenderObject() as RenderBox;
         Share.share(text,
             sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
       },
@@ -219,12 +219,14 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                       },
                     );
                   }
+
+                  var data = eventsSnapshot.data as dynamic;
+
                   return ListView.builder(
-                    itemCount: (eventsSnapshot.data[viewPast ? 1 : 0]).length,
+                    itemCount: (data[viewPast ? 1 : 0]).length,
                     itemBuilder: (BuildContext context, int index) {
                       return EventsCard(
-                          (eventsSnapshot.data[viewPast ? 1 : 0])[index],
-                          isAdmin);
+                          (data[viewPast ? 1 : 0])[index], isAdmin);
                     },
                   );
                 },
@@ -459,12 +461,11 @@ class EventsCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10)),
                                   alignment: Alignment.center,
                                   child: Text(
-                                      "${getTime((event.startTime).toString())}\n${formatDate(
-                                              (event.startTime).toString())}",
+                                      "${getTime((event.startTime).toString())}\n${formatDate((event.startTime).toString())}",
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayMedium
-                                          .copyWith(
+                                          ?.copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .onPrimary),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GradBox extends StatelessWidget{
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final double curvature;
   final Widget child;
   final bool reverse;
@@ -11,8 +11,8 @@ class GradBox extends StatelessWidget{
   final Alignment? alignment;
 
   const GradBox({
-    required this.width, 
-    required this.height, 
+    this.width,
+    this.height,
     required this.child, 
     this.reverse=false,
     this.padding, 
