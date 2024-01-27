@@ -15,20 +15,25 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
-  List<LBEntry> lbData;
-  int selfRank;
-  Profile userData;
-  String token;
+  List<LBEntry> lbData = [];
+  int selfRank = 0;
+  String displayName = "";
+  int totalPoints = 0;
+  String token = "";
+  bool loading = true;
   final TextEditingController _editNicknameController = TextEditingController();
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    String id = prefs.getString('id');
+    token = prefs.getString('token') ?? "";
+    String id = prefs.getString('id') ?? "";
 
     lbData = await getLeaderboard();
     selfRank = await getSelfRank(token);
-    userData = await getProfile(id, token);
+    Profile userData = await getProfile(id, token);
+    totalPoints = userData.totalPoints;
+    displayName = userData.displayName;
+    loading = false;
     setState(() {});
   }
 
@@ -66,7 +71,7 @@ class _LeaderboardState extends State<Leaderboard> {
                 OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
-                    await setDisplayName(_editNicknameController.text, token);
+                    await setDisplayName(_editNicknameController.text, token) ?? false;
                 loading.remove();
 
                 if (success) {
@@ -129,7 +134,7 @@ class _LeaderboardState extends State<Leaderboard> {
 
     return DefaultPage(
         backflag: true,
-        child: (userData == null)
+        child: (loading)
             ? const Center(child: CircularProgressIndicator())
             : Container(
                 alignment: Alignment.center,
@@ -167,8 +172,8 @@ class _LeaderboardState extends State<Leaderboard> {
                           ),
                           LBRow(
                               place: selfRank,
-                              name: userData.displayName,
-                              points: userData.totalPoints),
+                              name: displayName,
+                              points: totalPoints),
                         ],
                       ),
                     ),
