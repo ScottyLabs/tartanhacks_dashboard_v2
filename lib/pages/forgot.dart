@@ -15,7 +15,7 @@ class Forgot extends StatefulWidget {
 }
 
 class _ForgotState extends State<Forgot> {
-  TextEditingController _emailcontroller;
+  late TextEditingController _emailcontroller;
 
   @override
   void initState() {
