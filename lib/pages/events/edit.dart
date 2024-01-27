@@ -435,9 +435,8 @@ class EditEventFormField extends StatelessWidget {
   const EditEventFormField(
       {required this.controller,
       required this.label,
-      required this.onTap,
-      required this.editable,
-      required this.validator,
+        this.onTap,
+      required this.editable, this.validator,
       this.keyboardType = TextInputType.text});
 
   @override
