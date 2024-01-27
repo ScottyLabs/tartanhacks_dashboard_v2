@@ -149,7 +149,7 @@ class _SponsorsState extends State<Sponsors> {
     studentIds = [];
     students = [];
     studentTeams = [];
-    placeholderText = null;
+    placeholderText = "";
     setState(() {});
 
     String query = myController.text == "" ? '\u00A0' : myController.text;
