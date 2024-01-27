@@ -32,8 +32,8 @@ class ProjSubmitTextField extends StatelessWidget {
           errorStyle: TextStyle(color: Theme.of(context).colorScheme.error)),
       style: Theme.of(context).textTheme.bodyMedium,
       controller: controller,
-      validator: (String value) {
-        if (value.isEmpty && !isOptional) {
+      validator: (value) {
+        if (value != null && value.isEmpty && !isOptional) {
           return '$fieldName is required';
         }
         return null;
@@ -43,7 +43,7 @@ class ProjSubmitTextField extends StatelessWidget {
 }
 
 class _ProjSubmitState extends State<ProjSubmit> {
-  OverlayEntry loading;
+  OverlayEntry? loading;
   bool hasProj = false;
   String _projName = "";
   String _projDesc = "";
@@ -59,19 +59,18 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String id;
-  String token;
-  String projId;
+  String id = "";
+  String token = " ";
+  String projId = " ";
   List prizes = [];
-  Team team;
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    id = prefs.getString('id');
-    token = prefs.getString('token');
+    id = prefs.getString('id') ?? "";
+    token = prefs.getString('token') ?? "";
 
-    team = await getUserTeam(token);
+    Team team = await getUserTeam(token);
 
     Project proj = await getProject(id, token);
     hasProj = true;
@@ -90,7 +89,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
     videoController.text = _vidUrl;
     githubController.text = _githubUrl;
   
-    loading.remove();
+    loading?.remove();
   
     setState(() {});
   }
@@ -102,7 +101,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loading = LoadingOverlay(context);
       setState(() {});
-      Overlay.of(context).insert(loading);
+      Overlay.of(context).insert(loading!);
     });
   }
 
@@ -234,11 +233,11 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         SolidButton(
                           text: "Save",
                           onPressed: () {
-                            if (!_formKey.currentState.validate()) {
+                            if (!_formKey.currentState!.validate()) {
                               return;
                             }
 
-                            _formKey.currentState.save();
+                            _formKey.currentState?.save();
 
                             submitDialog(context);
                           },
