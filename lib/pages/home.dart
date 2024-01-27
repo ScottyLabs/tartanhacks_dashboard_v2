@@ -28,13 +28,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  SharedPreferences prefs;
-  String token;
+  String token = "";
 
-  DiscordInfo discordInfo;
+  DiscordInfo discordInfo = DiscordInfo(code: "0", expiry: "0", link: "0");
 
   void getData() async {
-    prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token') as String;
     Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
 
@@ -145,8 +144,7 @@ class _HomeState extends State<Home> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    Profile userData = Provider.of<UserInfoModel>(context).userProfile;
-    Team userTeam = Provider.of<UserInfoModel>(context).team;
+    Profile? userData = Provider.of<UserInfoModel>(context).userProfile;
     Status status = Provider.of<UserInfoModel>(context).userInfoStatus;
     bool hasTeam = Provider.of<UserInfoModel>(context).hasTeam;
 
@@ -210,7 +208,7 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                    "Hi ${userData.firstName} ${userData.lastName}!",
+                                    "Hi ${userData?.firstName} ${userData?.lastName}!",
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
@@ -254,7 +252,7 @@ class _HomeState extends State<Home> {
                                         .textTheme
                                         .headlineMedium),
                                 Text(
-                                    "Points Earned: ${userData.totalPoints}",
+                                    "Points Earned: ${userData?.totalPoints}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 SolidButton(
