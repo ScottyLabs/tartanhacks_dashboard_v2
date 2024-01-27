@@ -21,8 +21,6 @@ class _LoginState extends State<Login> {
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
 
-  SharedPreferences prefs;
-
   @override
   initState() {
     super.initState();
@@ -54,7 +52,7 @@ class _LoginState extends State<Login> {
       }
 
   checkLogInStatus() async {
-    prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('theme') == "light") {
       var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
