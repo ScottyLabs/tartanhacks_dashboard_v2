@@ -75,7 +75,7 @@ class TeamJoinBtn extends StatelessWidget {
 class TeamEntryCard extends StatelessWidget {
   final Team team;
   final bool hasRequested;
-  final Function onJoinPressed;
+  final void Function() onJoinPressed;
 
   const TeamEntryCard(this.team, this.hasRequested, this.onJoinPressed);
 
@@ -141,7 +141,7 @@ class _TeamsListState extends State<TeamsList> {
   void search() async {
     fetchStatus = Status.notLoaded;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
+    String token = prefs.getString('token') ?? "";
 
     if (searchController.text != "") {
       teams = await teamSearch(token, searchController.text);
