@@ -62,6 +62,7 @@ class OldBookmarks extends StatelessWidget {
                         // },
                         activeTrackColor: const Color(0xFFF6C744),
                         activeColor: const Color(0xFFF68F44),
+                        onChanged: (bool value) {  },
                       ),
                     ]),
                     Container(
