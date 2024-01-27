@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 
 class SolidButton extends StatelessWidget {
-  String text;
-  void Function() onPressed;
-  Widget child;
+  String? text;
+  void Function()? onPressed;
+  Widget? child;
   Color? color;
-  Color textColor;
+  Color? textColor;
 
   SolidButton(
-      {required this.text,
-      required this.onPressed,
-      required this.child,
+      {this.text, this.onPressed, this.child,
       this.color,
-      required this.textColor});
+        this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,7 @@ class SolidButton extends StatelessWidget {
             elevation: MaterialStateProperty.all(5)),
         child: child ??
             Text(
-              text,
+              text!,
               style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.w600,

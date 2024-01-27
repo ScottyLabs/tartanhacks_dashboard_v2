@@ -50,7 +50,7 @@ class TeamDetailsBtn extends StatelessWidget {
 
 class TeamJoinBtn extends StatelessWidget {
   final bool hasReqested;
-  final Function onJoinPressed;
+  final void Function() onJoinPressed;
 
   const TeamJoinBtn(this.hasReqested, this.onJoinPressed);
 
