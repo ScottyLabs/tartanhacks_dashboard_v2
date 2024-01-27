@@ -7,7 +7,7 @@ const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {
-  String url = "${baseUrl}team/";
+  Uri url = Uri.parse("${baseUrl}team/");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -19,7 +19,7 @@ Future<http.Response> createTeam(
 
 Future<http.Response> editTeam(
     String teamName, String description, bool visibility, String token) async {
-  String url = "${baseUrl}team/";
+  Uri url = Uri.parse("${baseUrl}team/");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -30,8 +30,8 @@ Future<http.Response> editTeam(
 }
 
 Future<bool> promoteToAdmin(String userID, String token) async {
-  String url =
-      "${baseUrl}team/promote/$userID";
+  Uri url =
+      Uri.parse("${baseUrl}team/promote/$userID");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -51,16 +51,16 @@ Future<Team> getUserTeam(String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
   if (response.statusCode == 200) {
     var parsedJson = jsonDecode(response.body);
     if (response.body.contains("You are not in a team!")) {
-      return null;
+      throw Error();
     }
     Team team = Team.fromJson(parsedJson);
     return team;
   }
-  return null;
+  throw Error();
 }
 
 Future<List<dynamic>> getTeamMail(String token) async {
@@ -69,12 +69,12 @@ Future<List<dynamic>> getTeamMail(String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     return data;
   }
-  return null;
+  throw Error();
 }
 
 Future<bool> acceptRequest(String token, String requestID) async {
@@ -84,7 +84,7 @@ Future<bool> acceptRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  http.Response response = await http.post(url, headers: headers);
+  http.Response response = await http.post(Uri.parse(url), headers: headers);
   return response.statusCode == 200;
 }
 
@@ -95,7 +95,7 @@ Future<void> cancelRequest(String token, String requestID) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  await http.post(url, headers: headers);
+  await http.post(Uri.parse(url), headers: headers);
 }
 
 Future<void> declineRequest(String token, String requestID) async {
@@ -107,7 +107,7 @@ Future<void> declineRequest(String token, String requestID) async {
   };
   print(url);
   print(headers.toString());
-  http.Response response = await http.post(url, headers: headers);
+  http.Response response = await http.post(Uri.parse(url), headers: headers);
   print(response.body);
 }
 
@@ -117,12 +117,12 @@ Future<List<dynamic>> getUserMail(String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     return data;
   }
-  return null;
+  throw Error();
 }
 
 Future<void> inviteTeamMember(String userEmail, String token) async {
@@ -132,7 +132,7 @@ Future<void> inviteTeamMember(String userEmail, String token) async {
     "x-access-token": token
   };
   var body = json.encode({'email': userEmail});
-  await http.post(url, headers: headers, body: body);
+  await http.post(Uri.parse(url), headers: headers, body: body);
 }
 
 Future<bool> leaveTeam(String token) async {
@@ -142,7 +142,7 @@ Future<bool> leaveTeam(String token) async {
     "x-access-token": token
   };
   var body = json.encode({});
-  final response = await http.post(url, headers: headers, body: body);
+  final response = await http.post(Uri.parse(url), headers: headers, body: body);
   return response.statusCode == 200;
 }
 
@@ -153,7 +153,7 @@ Future<bool> requestTeam(String teamID, String token) async {
     "x-access-token": token
   };
   var body = json.encode({});
-  final response = await http.post(url, headers: headers, body: body);
+  final response = await http.post(Uri.parse(url), headers: headers, body: body);
   if (response.statusCode == 200) {
     return true;
   }
@@ -167,7 +167,7 @@ Future<bool> requestTeamMember(String email, String token) async {
     "x-access-token": token
   };
   String body = '{"email":"$email"}';
-  final response = await http.post(url, headers: headers, body: body);
+  final response = await http.post(Uri.parse(url), headers: headers, body: body);
   if (response.statusCode == 200) {
     return true;
   }
@@ -183,7 +183,7 @@ Future<void> updateTeamInfo(
   };
   var body = json
       .encode({"name": name, "description": description, "visible": visible});
-  await http.patch(url, headers: headers, body: body); //patch?
+  await http.patch(Uri.parse(url), headers: headers, body: body); //patch?
 }
 
 Future<Team> getTeamInfo(String teamId, String token) async {
@@ -193,14 +193,14 @@ Future<Team> getTeamInfo(String teamId, String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
 
   if (response.statusCode == 200) {
     var data = jsonDecode(response.body);
     Team team = Team.fromJson(data);
     return team;
   }
-  return null;
+  throw Error();
 }
 
 Future<List<Team>> getTeams(String token) async {
@@ -211,7 +211,7 @@ Future<List<Team>> getTeams(String token) async {
     "x-access-token": token
   };
   print(token);
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
   print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
@@ -221,7 +221,7 @@ Future<List<Team>> getTeams(String token) async {
     }
     return teamsList;
   }
-  return null;
+  throw Error();
 }
 
 //getStudents (in api) for the format of the request (particiants)
@@ -239,7 +239,7 @@ Future<List<Team>> teamSearch(String token, String query) async {
   //print(token);
 
   //look at swagger -H is the headers
-  final response = await http.get(url, headers: headers);
+  final response = await http.get(Uri.parse(url), headers: headers);
   //print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
@@ -249,5 +249,5 @@ Future<List<Team>> teamSearch(String token, String query) async {
     }
     return teamsList;
   }
-  return null;
+  throw Error();
 }

@@ -41,7 +41,7 @@ class AcceptButtonRow extends StatelessWidget {
 }
 
 class NoAcceptButtonRow extends StatelessWidget {
-  final Function cancelOnPressed;
+  final void Function()? cancelOnPressed;
 
   const NoAcceptButtonRow({required this.cancelOnPressed});
 
@@ -65,21 +65,22 @@ class RequestCard extends StatelessWidget {
 
   const RequestCard(this.request, this.removeRequest);
 
-  bool checkAdmin(BuildContext context) {
+  bool? checkAdmin(BuildContext context) {
     bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
     if (!hasTeam) return false;
-    Team team = Provider.of<UserInfoModel>(context, listen: false).team;
-    List<String> adminIds = team.admins.map((mem) => mem.id).toList();
+    Team? team = Provider.of<UserInfoModel>(context, listen: false).team;
+    List<String>? adminIds = team?.admins.map((mem) => mem.id).toList();
     String id = Provider.of<UserInfoModel>(context, listen: false).id;
-    return adminIds.contains(id);
+    return adminIds?.contains(id);
   }
 
   @override
   Widget build(BuildContext context) {
     String requestType = request['type'];
     bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
+    bool? checkAdminResult = checkAdmin(context);
     bool canAccept = (!hasTeam && requestType == "INVITE") ||
-        (hasTeam && requestType == "JOIN" && checkAdmin(context));
+        (hasTeam && requestType == "JOIN" && checkAdminResult!=null && checkAdminResult);
 
     String inviteInfo =
         hasTeam ? request['user']['email'] : request['team']['name'];
@@ -143,7 +144,7 @@ class ViewInvites extends StatefulWidget {
 }
 
 class _ViewInvitesState extends State<ViewInvites> {
-  List<dynamic> requestsList;
+  List<dynamic> requestsList = [];
   Status fetchStatus = Status.notLoaded;
 
   Future<void> fetchData() async {

@@ -14,7 +14,7 @@ import 'teams_list.dart';
 import 'create_team.dart';
 
 void showConfirmDialog(
-    BuildContext context, String message, Function onConfirm) {
+    BuildContext context, String message, void Function()? onConfirm) {
   showDialog(
       context: context,
       builder: (ctx) {
@@ -63,8 +63,8 @@ class InviteMembersBtn extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyMedium,
         keyboardType: TextInputType.emailAddress,
         controller: inviteController,
-        validator: (String value) {
-          if (value.isEmpty) {
+        validator: (value) {
+          if (value == null || value.isEmpty) {
             return 'An email is required';
           }
           return null;
@@ -361,7 +361,7 @@ class BrowseTeamView extends StatelessWidget {
       future: getTeamInfo(teamId, token),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          Team team = snapshot.data;
+          Team team = snapshot.data as Team; // TODO: this is sus please check.
           String id = Provider.of<UserInfoModel>(context).id;
           List<String> adminIds = team.admins.map((mem) => mem.id).toList();
           bool isAdmin = adminIds.contains(id);
