@@ -184,7 +184,7 @@ class _EventFormState extends State<EventItemForm> {
 
     newItem = false;
     platform = item.platform;
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -246,10 +246,11 @@ class _EventFormState extends State<EventItemForm> {
                 controller: _locController,
                 editable: editable,
                 validator: (value) {
-                  if (value == null || value.isEmpty && platform == "IN_PERSON") {
+                  if (value == null ||
+                      value.isEmpty && platform == "IN_PERSON") {
                     return "Location is required";
                   }
-                  return null;
+                  throw Error();
                 },
               ),
               EditEventFormField(
@@ -257,10 +258,11 @@ class _EventFormState extends State<EventItemForm> {
                 controller: _linkController,
                 editable: editable,
                 validator: (value) {
-                  if (value ==  null || value.isEmpty && platform != "IN_PERSON") {
+                  if (value == null ||
+                      value.isEmpty && platform != "IN_PERSON") {
                     return "URL is required";
                   }
-                  return null;
+                  throw Error();
                 },
               ),
               EditEventFormField(
@@ -279,7 +281,7 @@ class _EventFormState extends State<EventItemForm> {
                       text: DateFormat.yMMMd('en_US').format(picked!));
 
                   startDate = picked;
-                                },
+                },
               ),
               EditEventFormField(
                 label: "End Date",
@@ -292,7 +294,7 @@ class _EventFormState extends State<EventItemForm> {
                   if (daysBetween(startDate, endDate) < 0) {
                     return 'End date must be after start date';
                   }
-                                  return null;
+                  throw Error();
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -305,7 +307,7 @@ class _EventFormState extends State<EventItemForm> {
                   _endDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
                   endDate = picked;
-                                },
+                },
               ),
 
               EditEventFormField(
@@ -321,7 +323,7 @@ class _EventFormState extends State<EventItemForm> {
                         TextEditingValue(text: picked!.format(context));
 
                     startTime = picked;
-                                    }),
+                  }),
               EditEventFormField(
                   label: "End Time",
                   controller: _endTimeController,
@@ -335,7 +337,7 @@ class _EventFormState extends State<EventItemForm> {
                         return 'End time must be after start time';
                       }
                     }
-                                      return null;
+                    throw Error();
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -345,7 +347,7 @@ class _EventFormState extends State<EventItemForm> {
                     _endTimeController.value =
                         TextEditingValue(text: picked!.format(context));
                     endTime = picked;
-                                    }),
+                  }),
 
               // Dropdown menus
 
@@ -435,8 +437,9 @@ class EditEventFormField extends StatelessWidget {
   const EditEventFormField(
       {required this.controller,
       required this.label,
-        this.onTap,
-      required this.editable, this.validator,
+      this.onTap,
+      required this.editable,
+      this.validator,
       this.keyboardType = TextInputType.text});
 
   @override
@@ -454,7 +457,7 @@ class EditEventFormField extends StatelessWidget {
                 if (val == null || val.isEmpty) {
                   return 'Cannot be empty';
                 }
-                return null;
+                throw Error();
               },
           enableSuggestions: false,
           inputFormatters: keyboardType == TextInputType.number
