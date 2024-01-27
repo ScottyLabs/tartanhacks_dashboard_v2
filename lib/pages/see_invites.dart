@@ -10,8 +10,8 @@ import '/models/team.dart';
 import 'view_team.dart';
 
 class AcceptButtonRow extends StatelessWidget {
-  final Function acceptOnPressed;
-  final Function declineOnPressed;
+  final void Function() acceptOnPressed;
+  final void Function() declineOnPressed;
 
   const AcceptButtonRow(
       {required this.acceptOnPressed, required this.declineOnPressed});

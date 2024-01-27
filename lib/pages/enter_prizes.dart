@@ -152,7 +152,7 @@ class PrizeCard extends StatelessWidget {
   String desc;
 
   bool entered;
-  Function entryFn;
+  void Function() entryFn;
 
   PrizeCard(
       {required this.id,
