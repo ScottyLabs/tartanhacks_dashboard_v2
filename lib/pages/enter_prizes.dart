@@ -17,23 +17,22 @@ class EnterPrizes extends StatefulWidget {
 }
 
 class _EnterPrizesState extends State<EnterPrizes> {
-  SharedPreferences prefs;
-  bool isAdmin;
-  String id;
-  String token;
-  String projId;
+  late bool isAdmin;
+  late String id;
+  late String token;
+  late String projId;
 
-  List<Prize> prizes;
-  List enteredPrizes;
+  late List<Prize> prizes;
+  late List enteredPrizes;
 
-  _EnterPrizesState({required this.projId, required this.enteredPrizes});
+   _EnterPrizesState({required this.projId, required this.enteredPrizes});
 
   void getData() async {
-    prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    isAdmin = prefs.getBool('admin');
-    id = prefs.getString('id');
-    token = prefs.getString('token');
+    isAdmin = prefs.getBool('admin') ?? false;
+    id = prefs.getString('id') ?? "";
+    token = prefs.getString('token') ?? "";
 
     prizes = await getPrizes();
 
