@@ -22,7 +22,7 @@ class LoadingScreen extends StatelessWidget {
                   child: Image.asset("lib/logos/thLogoDark.png")),
               Text(
                 "Tartanhacks",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
               Text(
                 "by Scottylabs",

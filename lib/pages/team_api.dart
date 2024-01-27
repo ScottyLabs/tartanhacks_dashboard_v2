@@ -7,43 +7,31 @@ const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {
-  String url = baseUrl + "team/";
+  String url = "${baseUrl}team/";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = '{"name": "' +
-      teamName +
-      '","description": "' +
-      description +
-      '","visible": ' +
-      visibility.toString() +
-      '}';
+  String body = '{"name": "$teamName","description": "$description","visible": $visibility}';
   final response = await http.post(url, headers: headers, body: body); //patch?
   return response;
 }
 
 Future<http.Response> editTeam(
     String teamName, String description, bool visibility, String token) async {
-  String url = baseUrl + "team/";
+  String url = "${baseUrl}team/";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = '{"name": "' +
-      teamName +
-      '","description": "' +
-      description +
-      '","visible": ' +
-      visibility.toString() +
-      '}';
+  String body = '{"name": "$teamName","description": "$description","visible": $visibility}';
   final response = await http.patch(url, headers: headers, body: body); //patch?
   return response;
 }
 
 Future<bool> promoteToAdmin(String userID, String token) async {
   String url =
-      baseUrl + "team/promote/" + userID;
+      "${baseUrl}team/promote/$userID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -57,7 +45,7 @@ Future<bool> promoteToAdmin(String userID, String token) async {
 }
 
 Future<Team> getUserTeam(String token) async {
-  String url = baseUrl + "user/team";
+  String url = "${baseUrl}user/team";
 
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -76,7 +64,7 @@ Future<Team> getUserTeam(String token) async {
 }
 
 Future<List<dynamic>> getTeamMail(String token) async {
-  String url = baseUrl + "requests/team";
+  String url = "${baseUrl}requests/team";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -91,7 +79,7 @@ Future<List<dynamic>> getTeamMail(String token) async {
 
 Future<bool> acceptRequest(String token, String requestID) async {
   String url =
-      baseUrl + "requests/accept/" + requestID;
+      "${baseUrl}requests/accept/$requestID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -102,7 +90,7 @@ Future<bool> acceptRequest(String token, String requestID) async {
 
 Future<void> cancelRequest(String token, String requestID) async {
   String url =
-      baseUrl + "requests/cancel/" + requestID;
+      "${baseUrl}requests/cancel/$requestID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -112,7 +100,7 @@ Future<void> cancelRequest(String token, String requestID) async {
 
 Future<void> declineRequest(String token, String requestID) async {
   String url =
-      baseUrl + "requests/cancel/" + requestID;
+      "${baseUrl}requests/cancel/$requestID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -124,7 +112,7 @@ Future<void> declineRequest(String token, String requestID) async {
 }
 
 Future<List<dynamic>> getUserMail(String token) async {
-  String url = baseUrl + "requests/user";
+  String url = "${baseUrl}requests/user";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -138,7 +126,7 @@ Future<List<dynamic>> getUserMail(String token) async {
 }
 
 Future<void> inviteTeamMember(String userEmail, String token) async {
-  const url = baseUrl + "team/invite";
+  const url = "${baseUrl}team/invite";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -148,7 +136,7 @@ Future<void> inviteTeamMember(String userEmail, String token) async {
 }
 
 Future<bool> leaveTeam(String token) async {
-  const url = baseUrl + "team/leave";
+  const url = "${baseUrl}team/leave";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -159,7 +147,7 @@ Future<bool> leaveTeam(String token) async {
 }
 
 Future<bool> requestTeam(String teamID, String token) async {
-  String url = baseUrl + "team/join/" + teamID;
+  String url = "${baseUrl}team/join/$teamID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -173,12 +161,12 @@ Future<bool> requestTeam(String teamID, String token) async {
 }
 
 Future<bool> requestTeamMember(String email, String token) async {
-  String url = baseUrl + "team/invite";
+  String url = "${baseUrl}team/invite";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = '{"email":"' + email + '"}';
+  String body = '{"email":"$email"}';
   final response = await http.post(url, headers: headers, body: body);
   if (response.statusCode == 200) {
     return true;
@@ -188,7 +176,7 @@ Future<bool> requestTeamMember(String email, String token) async {
 
 Future<void> updateTeamInfo(
     String name, String description, bool visible, String token) async {
-  String url = baseUrl + "team/";
+  String url = "${baseUrl}team/";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -199,7 +187,7 @@ Future<void> updateTeamInfo(
 }
 
 Future<Team> getTeamInfo(String teamId, String token) async {
-  String url = baseUrl + "team/" + teamId;
+  String url = "${baseUrl}team/$teamId";
 
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -216,7 +204,7 @@ Future<Team> getTeamInfo(String teamId, String token) async {
 }
 
 Future<List<Team>> getTeams(String token) async {
-  String url = baseUrl + "teams";
+  String url = "${baseUrl}teams";
 
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -240,7 +228,7 @@ Future<List<Team>> getTeams(String token) async {
 //getTeam () for the mapping
 Future<List<Team>> teamSearch(String token, String query) async {
   //this is from the swagger
-  String url = baseUrl + "/teams/search?name=" + query;
+  String url = "$baseUrl/teams/search?name=$query";
 
   Map<String, String> headers = {
     "Content-type": "application/json",

@@ -86,37 +86,31 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
     super.initState();
 
     CheckInItem item = widget.checkInItem;
-    if (item != null) {
-      _nameController.value = TextEditingValue(text: widget.checkInItem.name);
-      _descController.value =
-          TextEditingValue(text: widget.checkInItem.description);
-      _pointsController.value =
-          TextEditingValue(text: widget.checkInItem.points.toString());
+    _nameController.value = TextEditingValue(text: widget.checkInItem.name);
+    _descController.value =
+        TextEditingValue(text: widget.checkInItem.description);
+    _pointsController.value =
+        TextEditingValue(text: widget.checkInItem.points.toString());
 
-      startDate =
-          DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.startTime);
-      endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.endTime);
-      startTime = TimeOfDay.fromDateTime(startDate);
-      endTime = TimeOfDay.fromDateTime(endDate);
+    startDate =
+        DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.startTime);
+    endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.endTime);
+    startTime = TimeOfDay.fromDateTime(startDate);
+    endTime = TimeOfDay.fromDateTime(endDate);
 
-      _startDateController.value =
-          TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
-      _startTimeController.value =
-          TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
-      _endDateController.value =
-          TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
-      _endTimeController.value =
-          TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+    _startDateController.value =
+        TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+    _startTimeController.value =
+        TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+    _endDateController.value =
+        TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+    _endTimeController.value =
+        TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
-      newItem = false;
-      enableSelfCheckIn = item.enableSelfCheckIn;
-      accessLevel = item.accessLevel;
-    } else {
-      newItem = true;
-      enableSelfCheckIn = false;
-      accessLevel = accessLevels[0];
+    newItem = false;
+    enableSelfCheckIn = item.enableSelfCheckIn;
+    accessLevel = item.accessLevel;
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +127,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     : editable
                         ? "EDIT CHECKIN ITEM"
                         : "EVENT DETAILS",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
               const SizedBox(
                 height: 20,
@@ -163,13 +157,11 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                               dialogBackgroundColor:
                                   Theme.of(context).colorScheme.background),
                           child: child));
-                  if (picked != null) {
-                    _startDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked));
+                  _startDateController.value = TextEditingValue(
+                      text: DateFormat.yMMMd('en_US').format(picked));
 
-                    startDate = picked;
-                  }
-                },
+                  startDate = picked;
+                                },
               ),
               EditCheckInFormField(
                 label: "End Date",
@@ -178,12 +170,10 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   if (val == null || val.isEmpty) {
                     return 'Cannot be empty';
                   }
-                  if (startDate != null) {
-                    if (daysBetween(startDate, endDate) < 0) {
-                      return 'End date must be after start date';
-                    }
+                  if (daysBetween(startDate, endDate) < 0) {
+                    return 'End date must be after start date';
                   }
-                  return null;
+                                  return null;
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -197,12 +187,10 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                               dialogBackgroundColor:
                                   Theme.of(context).colorScheme.background),
                           child: child));
-                  if (picked != null) {
-                    _endDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked));
-                    endDate = picked;
-                  }
-                },
+                  _endDateController.value = TextEditingValue(
+                      text: DateFormat.yMMMd('en_US').format(picked));
+                  endDate = picked;
+                                },
               ),
 
               EditCheckInFormField(
@@ -213,13 +201,11 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     TimeOfDay picked = await showTimePicker(
                         context: context,
                         initialTime: startTime ?? TimeOfDay.now());
-                    if (picked != null) {
-                      _startTimeController.value =
-                          TextEditingValue(text: picked.format(context));
+                    _startTimeController.value =
+                        TextEditingValue(text: picked.format(context));
 
-                      startTime = picked;
-                    }
-                  }),
+                    startTime = picked;
+                                    }),
               EditCheckInFormField(
                   label: "End Time",
                   controller: _endTimeController,
@@ -227,26 +213,22 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
                     }
-                    if (startDate != null) {
-                      if (daysBetween(startDate, endDate) == 0) {
-                        if (toDouble(startTime) > toDouble(endTime)) {
-                          return 'End time must be after start time';
-                        }
+                    if (daysBetween(startDate, endDate) == 0) {
+                      if (toDouble(startTime) > toDouble(endTime)) {
+                        return 'End time must be after start time';
                       }
                     }
-                    return null;
+                                      return null;
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
                         initialTime: endTime ?? TimeOfDay.now());
-                    if (picked != null) {
-                      _endTimeController.value =
-                          TextEditingValue(text: picked.format(context));
-                      endTime = picked;
-                    }
-                  }),
+                    _endTimeController.value =
+                        TextEditingValue(text: picked.format(context));
+                    endTime = picked;
+                                    }),
 
               EditCheckInFormField(
                 label: "Points",

@@ -13,7 +13,7 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
 
-  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+  var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   late OverlayEntry entry;
 
   entry = OverlayEntry(
@@ -86,12 +86,12 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
                                 (route) => route.isFirst);
                           },
                         ),
-                        _themeProvider.getTheme == lightTheme
+                        themeProvider.getTheme == lightTheme
                             ? MenuChoice(
                                 icon: Icons.mode_night,
                                 text: "Dark",
                                 onTap: () {
-                                  _themeProvider.setTheme(darkTheme);
+                                  themeProvider.setTheme(darkTheme);
                                   setThemePref("dark", entry, context);
                                 },
                               )
@@ -99,7 +99,7 @@ OverlayEntry sponsorMenuOverlay(BuildContext context) {
                                 icon: Icons.wb_sunny,
                                 text: "Light",
                                 onTap: () {
-                                  _themeProvider.setTheme(lightTheme);
+                                  themeProvider.setTheme(lightTheme);
                                   setThemePref("light", entry, context);
                                 },
                               ),

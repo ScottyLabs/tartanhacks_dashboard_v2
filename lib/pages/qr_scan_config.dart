@@ -38,7 +38,7 @@ class ScanConfigBox extends StatelessWidget {
         children: [
           Text(
             "SCAN CONFIG",
-            style: Theme.of(context).textTheme.headline2,
+            style: Theme.of(context).textTheme.displayMedium,
             textAlign: TextAlign.left,
           ),
           const SizedBox(

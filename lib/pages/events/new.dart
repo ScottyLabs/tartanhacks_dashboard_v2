@@ -94,7 +94,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
       firstDate: sDate,
       lastDate: eDate,
     );
-    if (picked != null && picked != pickedDate) {
+    if (picked != pickedDate) {
       setState(() {
         pickedDate = picked;
         dateController.text = DateFormat.yMMMd().format(pickedDate);
@@ -108,7 +108,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
       context: context,
       initialTime: pickedTime,
     );
-    if (picked != null && picked != pickedTime) {
+    if (picked != pickedTime) {
       setState(() {
         pickedTime = picked;
         timeController.text = pickedTime.format(context);
@@ -129,10 +129,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             TextButton(
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white),
-              ),
               style: TextButton.styleFrom(
                   // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
                   ),
@@ -145,6 +141,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   );
                 }
               },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -277,7 +277,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
     return Center(
       child: Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryVariant,
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(5)),
         padding: const EdgeInsets.only(left: 5, right: 5),
         height: width * 0.06,
@@ -333,7 +333,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text("CREATE NEW EVENT",
-                            style: Theme.of(context).textTheme.headline2),
+                            style: Theme.of(context).textTheme.displayMedium),
                         const SizedBox(height: 45),
                         _buildName(),
                         const SizedBox(height: 16),

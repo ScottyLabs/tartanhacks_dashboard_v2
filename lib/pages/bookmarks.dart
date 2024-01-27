@@ -35,7 +35,7 @@ class _Bookmarks extends State<Bookmarks> {
         // return object of type Dialog
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          title: Text("Confirm", style: Theme.of(context).textTheme.headline1),
+          title: Text("Confirm", style: Theme.of(context).textTheme.displayLarge),
           content: Text("Are you sure you want to delete this bookmark?",
               style: Theme.of(context).textTheme.bodyMedium),
           actions: <Widget>[
@@ -97,7 +97,7 @@ class _Bookmarks extends State<Bookmarks> {
                     padding: EdgeInsets.fromLTRB(
                         screenWidth * 0.08, 0, screenWidth * 0.08, 0),
                     child: Text("BOOKMARKS",
-                        style: Theme.of(context).textTheme.headline2),
+                        style: Theme.of(context).textTheme.displayMedium),
                   ),
                   Container(
                     alignment: Alignment.topLeft,
@@ -107,47 +107,41 @@ class _Bookmarks extends State<Bookmarks> {
                         style: TextStyle(fontSize: screenHeight * 0.02)),
                   ),
                   const SizedBox(height: 5),
-                  if (participantBookmarks != null)
-                    Expanded(
-                        child: (participantBookmarks.isNotEmpty)
-                            ? Container(
-                                padding: EdgeInsets.fromLTRB(screenWidth * 0.05,
-                                    0, screenWidth * 0.05, 0),
-                                alignment: Alignment.topCenter,
-                                child: ListView.builder(
-                                  itemCount: participantBookmarks.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return BookmarkInfo(
-                                      bmID: participantBookmarks[index]
-                                          .bookmarkId,
-                                      data: participantBookmarks[index]
-                                          .participantData,
-                                      team: "ScottyLabs",
-                                      bio: "[Bio]",
-                                      remove: removeBookmark,
-                                      bmMap: bookmarksMap,
-                                      refresh: getData,
-                                    );
-                                  },
-                                ))
-                            : Container(
-                                padding: EdgeInsets.fromLTRB(screenWidth * 0.05,
-                                    0, screenWidth * 0.05, 0),
-                                alignment: Alignment.center,
-                                child: Text("No bookmarks.",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displaySmall
-                                        ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onPrimary))))
-                  else
-                    Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: const CircularProgressIndicator())
+                  Expanded(
+                      child: (participantBookmarks.isNotEmpty)
+                          ? Container(
+                              padding: EdgeInsets.fromLTRB(screenWidth * 0.05,
+                                  0, screenWidth * 0.05, 0),
+                              alignment: Alignment.topCenter,
+                              child: ListView.builder(
+                                itemCount: participantBookmarks.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) {
+                                  return BookmarkInfo(
+                                    bmID: participantBookmarks[index]
+                                        .bookmarkId,
+                                    data: participantBookmarks[index]
+                                        .participantData,
+                                    team: "ScottyLabs",
+                                    bio: "[Bio]",
+                                    remove: removeBookmark,
+                                    bmMap: bookmarksMap,
+                                    refresh: getData,
+                                  );
+                                },
+                              ))
+                          : Container(
+                              padding: EdgeInsets.fromLTRB(screenWidth * 0.05,
+                                  0, screenWidth * 0.05, 0),
+                              alignment: Alignment.center,
+                              child: Text("No bookmarks.",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displaySmall
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary))))
                 ]))
           ], // children
         ));
@@ -187,7 +181,7 @@ class BookmarkInfo extends StatelessWidget {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(data.firstName + " " + data.lastName,
+                    Text("${data.firstName} ${data.lastName}",
                         style: Theme.of(context).textTheme.headlineMedium),
                     Text(team, style: Theme.of(context).textTheme.bodyMedium),
                     /*Text(
@@ -218,13 +212,13 @@ class BookmarkInfo extends StatelessWidget {
               },
               elevation: 2.0,
               fillColor: Theme.of(context).colorScheme.primary,
+              padding: const EdgeInsets.all(12),
+              shape: const CircleBorder(),
               child: Icon(
                 Icons.bookmark,
                 size: 50.0,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-              padding: const EdgeInsets.all(12),
-              shape: const CircleBorder(),
             ),
           ])),
     );

@@ -10,15 +10,15 @@ ThemeData baseTheme(
       scaffoldBackgroundColor: background,
       secondaryHeaderColor: text,
       textTheme: TextTheme(
-        headline1:
+        displayLarge:
             TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: text),
-        headline2:
+        displayMedium:
             TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: text),
         displaySmall:
             TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: text),
         headlineMedium:
             TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: text),
-        bodyText1: TextStyle(
+        bodyLarge: TextStyle(
             fontSize: 14.0, fontWeight: FontWeight.w600, color: background),
         bodyMedium: TextStyle(fontSize: 16.0, color: text),
       ),

@@ -21,7 +21,7 @@ void showConfirmDialog(
         return AlertDialog(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             title: Text("Confirmation",
-                style: Theme.of(context).textTheme.headline1),
+                style: Theme.of(context).textTheme.displayLarge),
             content:
                 Text(message, style: Theme.of(context).textTheme.bodyMedium),
             actions: [
@@ -35,11 +35,11 @@ void showConfirmDialog(
                 },
               ),
               TextButton(
+                onPressed: onConfirm,
                 child: Text(
                   "OK",
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                onPressed: onConfirm,
               ),
             ]);
       });
@@ -57,7 +57,7 @@ class InviteMembersBtn extends StatelessWidget {
 
     return AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: Text('Send Invite', style: Theme.of(context).textTheme.headline1),
+      title: Text('Send Invite', style: Theme.of(context).textTheme.displayLarge),
       content: TextFormField(
         decoration: const InputDecoration(labelText: "email"),
         style: Theme.of(context).textTheme.bodyMedium,
@@ -164,7 +164,7 @@ class MemberListElement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String id = mem.id;
-    String emailStr = "(" + mem.email + ")";
+    String emailStr = "(${mem.email})";
     String nameStr = mem.name;
     bool isMemAdmin = adminIds.contains(id);
 
@@ -179,7 +179,7 @@ class MemberListElement extends StatelessWidget {
                 RichText(
                     text: TextSpan(children: [
                   TextSpan(
-                      text: nameStr + "  ",
+                      text: "$nameStr  ",
                       style: Theme.of(context).textTheme.bodyMedium),
                   if (isMemAdmin)
                     WidgetSpan(
@@ -265,7 +265,7 @@ class TeamHeader extends StatelessWidget {
         height: 50,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text("TEAM", style: Theme.of(context).textTheme.headline1),
+          Text("TEAM", style: Theme.of(context).textTheme.displayLarge),
           isAdmin ? TeamMail() : Container()
         ]));
   }
@@ -342,8 +342,8 @@ class OwnTeamView extends StatelessWidget {
           )
         : const Center(
             child: Padding(
-            child: CircularProgressIndicator(),
             padding: EdgeInsets.symmetric(vertical: 50),
+            child: CircularProgressIndicator(),
           ));
   }
 }
@@ -387,18 +387,18 @@ class BrowseTeamView extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(
             child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 50),
               child: Text(
                 "Could not load team data",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
-              padding: const EdgeInsets.symmetric(vertical: 50),
             ),
           );
         } else {
           return const Center(
               child: Padding(
-            child: CircularProgressIndicator(),
             padding: EdgeInsets.symmetric(vertical: 50),
+            child: CircularProgressIndicator(),
           ));
         }
       },

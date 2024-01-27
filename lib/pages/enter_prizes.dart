@@ -48,7 +48,7 @@ class _EnterPrizesState extends State<EnterPrizes> {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text("Confirmation",
-              style: Theme.of(context).textTheme.headline1),
+              style: Theme.of(context).textTheme.displayLarge),
           content: Text(
               "Are you sure you want to enter for this prize? This action cannot be undone.",
               style: Theme.of(context).textTheme.bodyMedium),
@@ -113,7 +113,7 @@ class _EnterPrizesState extends State<EnterPrizes> {
                   children: [
                     Text(
                       "ENTER FOR PRIZE",
-                      style: Theme.of(context).textTheme.headline1,
+                      style: Theme.of(context).textTheme.displayLarge,
                     ),
                     Text(
                       "Scroll to see the full list.",
@@ -121,31 +121,26 @@ class _EnterPrizesState extends State<EnterPrizes> {
                     )
                   ],
                 )),
-            if (prizes == null)
-              const SizedBox(
-                  height: 100,
-                  child: Center(child: CircularProgressIndicator()))
-            else
-              Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: screenHeight * 0.65),
-                    child: ListView.builder(
-                      itemCount: prizes.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return PrizeCard(
-                          id: prizes[index].id,
-                          name: prizes[index].name,
-                          desc: prizes[index].description,
-                          entered: enteredPrizes.contains(prizes[index].id),
-                          entryFn: () => prizeDialog(
-                            prizes[index].id,
-                          ),
-                        );
-                      },
-                    ),
-                  ))
+            Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: screenHeight * 0.65),
+                  child: ListView.builder(
+                    itemCount: prizes.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return PrizeCard(
+                        id: prizes[index].id,
+                        name: prizes[index].name,
+                        desc: prizes[index].description,
+                        entered: enteredPrizes.contains(prizes[index].id),
+                        entryFn: () => prizeDialog(
+                          prizes[index].id,
+                        ),
+                      );
+                    },
+                  ),
+                ))
           ],
         ));
   }
@@ -181,7 +176,7 @@ class PrizeCard extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.displayMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

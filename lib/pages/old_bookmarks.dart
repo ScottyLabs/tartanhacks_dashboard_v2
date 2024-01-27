@@ -51,7 +51,7 @@ class OldBookmarks extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(
                             screenWidth * 0.08, 0, screenWidth * 0.08, 0),
                         child: Text("BOOKMARKS",
-                            style: Theme.of(context).textTheme.headline2),
+                            style: Theme.of(context).textTheme.displayMedium),
                       ),
                       Switch(
                         value: isProjects,
@@ -136,13 +136,13 @@ class BookmarkInfo extends StatelessWidget {
               onPressed: null,
               elevation: 2.0,
               fillColor: Theme.of(context).colorScheme.primary,
+              padding: const EdgeInsets.all(12),
+              shape: const CircleBorder(),
               child: Icon(
                 Icons.bookmark,
                 size: 50.0,
                 color: Theme.of(context).colorScheme.background,
               ),
-              padding: const EdgeInsets.all(12),
-              shape: const CircleBorder(),
             ),
           ])),
     );
@@ -156,7 +156,7 @@ void viewMorePopup(context, String title, String response) {
     builder: (BuildContext context) {
       // return object of type Dialog
       return AlertDialog(
-        title: Text(title, style: Theme.of(context).textTheme.headline1),
+        title: Text(title, style: Theme.of(context).textTheme.displayLarge),
         content: Text(response, style: Theme.of(context).textTheme.bodyMedium),
         actions: <Widget>[
           // usually buttons at the bottom of the dialog

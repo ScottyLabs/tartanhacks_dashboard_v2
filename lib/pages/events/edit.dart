@@ -69,10 +69,6 @@ class _EventFormState extends State<EventItemForm> {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             TextButton(
-              child: const Text(
-                "OK",
-                style: TextStyle(color: Colors.white),
-              ),
               style: TextButton.styleFrom(
                   // foregroundColor: const Color.fromARGB(255, 255, 75, 43),
                   ),
@@ -85,6 +81,10 @@ class _EventFormState extends State<EventItemForm> {
                   );
                 }
               },
+              child: const Text(
+                "OK",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
@@ -163,33 +163,28 @@ class _EventFormState extends State<EventItemForm> {
     super.initState();
 
     Event item = widget.event;
-    if (item != null) {
-      _nameController.value = TextEditingValue(text: widget.event.name);
-      _descController.value = TextEditingValue(text: widget.event.description);
-      _linkController.value = TextEditingValue(text: widget.event.platformUrl);
-      _locController.value = TextEditingValue(text: widget.event.location);
+    _nameController.value = TextEditingValue(text: widget.event.name);
+    _descController.value = TextEditingValue(text: widget.event.description);
+    _linkController.value = TextEditingValue(text: widget.event.platformUrl);
+    _locController.value = TextEditingValue(text: widget.event.location);
 
-      startDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.startTime);
-      endDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.endTime);
-      startTime = TimeOfDay.fromDateTime(startDate);
-      endTime = TimeOfDay.fromDateTime(endDate);
+    startDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.startTime);
+    endDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.endTime);
+    startTime = TimeOfDay.fromDateTime(startDate);
+    endTime = TimeOfDay.fromDateTime(endDate);
 
-      _startDateController.value =
-          TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
-      _startTimeController.value =
-          TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
-      _endDateController.value =
-          TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
-      _endTimeController.value =
-          TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
+    _startDateController.value =
+        TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate));
+    _startTimeController.value =
+        TextEditingValue(text: DateFormat.Hm('en_US').format(startDate));
+    _endDateController.value =
+        TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate));
+    _endTimeController.value =
+        TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
-      newItem = false;
-      platform = item.platform;
-    } else {
-      newItem = true;
-      platform = platforms[0];
+    newItem = false;
+    platform = item.platform;
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +201,7 @@ class _EventFormState extends State<EventItemForm> {
                     : editable
                         ? "EDIT EVENT"
                         : "EVENT DETAILS",
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
               const SizedBox(
                 height: 20,
@@ -280,13 +275,11 @@ class _EventFormState extends State<EventItemForm> {
                     firstDate: startDate ?? DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 1),
                   );
-                  if (picked != null) {
-                    _startDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked));
+                  _startDateController.value = TextEditingValue(
+                      text: DateFormat.yMMMd('en_US').format(picked));
 
-                    startDate = picked;
-                  }
-                },
+                  startDate = picked;
+                                },
               ),
               EditEventFormField(
                 label: "End Date",
@@ -296,12 +289,10 @@ class _EventFormState extends State<EventItemForm> {
                   if (val == null || val.isEmpty) {
                     return 'Cannot be empty';
                   }
-                  if (startDate != null) {
-                    if (daysBetween(startDate, endDate) < 0) {
-                      return 'End date must be after start date';
-                    }
+                  if (daysBetween(startDate, endDate) < 0) {
+                    return 'End date must be after start date';
                   }
-                  return null;
+                                  return null;
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -311,12 +302,10 @@ class _EventFormState extends State<EventItemForm> {
                     firstDate: endDate ?? DateTime.now(),
                     lastDate: DateTime(DateTime.now().year + 1),
                   );
-                  if (picked != null) {
-                    _endDateController.value = TextEditingValue(
-                        text: DateFormat.yMMMd('en_US').format(picked));
-                    endDate = picked;
-                  }
-                },
+                  _endDateController.value = TextEditingValue(
+                      text: DateFormat.yMMMd('en_US').format(picked));
+                  endDate = picked;
+                                },
               ),
 
               EditEventFormField(
@@ -328,13 +317,11 @@ class _EventFormState extends State<EventItemForm> {
                     TimeOfDay picked = await showTimePicker(
                         context: context,
                         initialTime: startTime ?? TimeOfDay.now());
-                    if (picked != null) {
-                      _startTimeController.value =
-                          TextEditingValue(text: picked.format(context));
+                    _startTimeController.value =
+                        TextEditingValue(text: picked.format(context));
 
-                      startTime = picked;
-                    }
-                  }),
+                    startTime = picked;
+                                    }),
               EditEventFormField(
                   label: "End Time",
                   controller: _endTimeController,
@@ -343,26 +330,22 @@ class _EventFormState extends State<EventItemForm> {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
                     }
-                    if (startDate != null) {
-                      if (daysBetween(startDate, endDate) == 0) {
-                        if (toDouble(startTime) > toDouble(endTime)) {
-                          return 'End time must be after start time';
-                        }
+                    if (daysBetween(startDate, endDate) == 0) {
+                      if (toDouble(startTime) > toDouble(endTime)) {
+                        return 'End time must be after start time';
                       }
                     }
-                    return null;
+                                      return null;
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
                     TimeOfDay picked = await showTimePicker(
                         context: context,
                         initialTime: endTime ?? TimeOfDay.now());
-                    if (picked != null) {
-                      _endTimeController.value =
-                          TextEditingValue(text: picked.format(context));
-                      endTime = picked;
-                    }
-                  }),
+                    _endTimeController.value =
+                        TextEditingValue(text: picked.format(context));
+                    endTime = picked;
+                                    }),
 
               // Dropdown menus
 

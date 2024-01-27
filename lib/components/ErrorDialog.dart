@@ -6,7 +6,7 @@ void errorDialog(context, String title, String response) {
     builder: (BuildContext context) {
       return AlertDialog(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(title, style: Theme.of(context).textTheme.headline1),
+        title: Text(title, style: Theme.of(context).textTheme.displayLarge),
         content: Text(response, style: Theme.of(context).textTheme.bodyMedium),
         actions: <Widget>[
           TextButton(

@@ -67,7 +67,7 @@ class _HomeState extends State<Home> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Verification Code",
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title:
-                    Text("Error", style: Theme.of(context).textTheme.headline1),
+                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
                     style: Theme.of(context).textTheme.bodyMedium),
@@ -127,7 +127,7 @@ class _HomeState extends State<Home> {
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text("Verifying...",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               content: Container(
                   alignment: Alignment.center,
                   height: 70,
@@ -171,7 +171,7 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("HACKING TIME LEFT",
-                                style: Theme.of(context).textTheme.headline1),
+                                style: Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 8),
                             CountdownTimer(
                               endTime: 1675549800000,
@@ -196,11 +196,8 @@ class _HomeState extends State<Home> {
                       alignment: Alignment.bottomCenter,
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: Text(
-                        "Swipe to see all the places where\n" +
-                            String.fromCharCode($larr) +
-                            "the hacking is happening" +
-                            String.fromCharCode(($rarr)),
-                        style: Theme.of(context).textTheme.bodyText1,
+                        "Swipe to see all the places where\n${String.fromCharCode($larr)}the hacking is happening${String.fromCharCode(($rarr))}",
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       )),
                   CarouselSlider(
@@ -213,11 +210,7 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                    "Hi " +
-                                        userData.firstName +
-                                        " " +
-                                        userData.lastName +
-                                        "!",
+                                    "Hi ${userData.firstName} ${userData.lastName}!",
                                     textAlign: TextAlign.center,
                                     style: Theme.of(context)
                                         .textTheme
@@ -261,8 +254,7 @@ class _HomeState extends State<Home> {
                                         .textTheme
                                         .headlineMedium),
                                 Text(
-                                    "Points Earned: " +
-                                        userData.totalPoints.toString(),
+                                    "Points Earned: ${userData.totalPoints}",
                                     style:
                                         Theme.of(context).textTheme.bodyMedium),
                                 SolidButton(
@@ -333,7 +325,7 @@ class _HomeState extends State<Home> {
                       },
                       child: Text(
                         "VIEW YOUR PROJECT",
-                        style: Theme.of(context).textTheme.headline2,
+                        style: Theme.of(context).textTheme.displayMedium,
                       ),
                     )
                   else
@@ -348,7 +340,7 @@ class _HomeState extends State<Home> {
                       },
                       child: Text(
                         "JOIN A TEAM",
-                        style: Theme.of(context).textTheme.headline2,
+                        style: Theme.of(context).textTheme.displayMedium,
                       ),
                     )
                 ],

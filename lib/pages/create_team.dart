@@ -128,7 +128,7 @@ class _CreateTeamState extends State<CreateTeam> {
                               height: 15,
                             ),
                             Text("TEAM INFO",
-                                style: Theme.of(context).textTheme.headline1),
+                                style: Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 10),
                             Text("Basic Info",
                                 style:
@@ -163,13 +163,13 @@ class _CreateTeamState extends State<CreateTeam> {
                                             listen: false)
                                         .id;
 
-                                    String _teamName = teamNameController.text;
-                                    String _teamDesc = teamDescController.text;
+                                    String teamName = teamNameController.text;
+                                    String teamDesc = teamDescController.text;
 
                                     Response response = hasTeam
-                                        ? await editTeam(_teamName, _teamDesc,
+                                        ? await editTeam(teamName, teamDesc,
                                             visibility, token)
-                                        : await createTeam(_teamName, _teamDesc,
+                                        : await createTeam(teamName, teamDesc,
                                             visibility, token);
 
                                     if (response.statusCode != 200) {
@@ -184,8 +184,9 @@ class _CreateTeamState extends State<CreateTeam> {
                                       return;
                                     }
 
-                                    if (!hasTeam)
+                                    if (!hasTeam) {
                                       await promoteToAdmin(id, token);
+                                    }
                                     await Provider.of<UserInfoModel>(context,
                                             listen: false)
                                         .fetchUserInfo();

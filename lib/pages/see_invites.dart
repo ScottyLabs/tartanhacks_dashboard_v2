@@ -202,7 +202,7 @@ class _ViewInvitesState extends State<ViewInvites> {
                                 children: [
                                   Text("INVITES",
                                       style:
-                                          Theme.of(context).textTheme.headline1)
+                                          Theme.of(context).textTheme.displayLarge)
                                 ])),
                         if (fetchStatus == Status.loaded &&
                             requestsList.isNotEmpty)

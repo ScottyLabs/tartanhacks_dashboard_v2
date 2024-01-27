@@ -71,7 +71,7 @@ class _SponsorsState extends State<Sponsors> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Verification Code",
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -111,7 +111,7 @@ class _SponsorsState extends State<Sponsors> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title:
-                    Text("Error", style: Theme.of(context).textTheme.headline1),
+                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
                     style: Theme.of(context).textTheme.bodyMedium),
@@ -131,7 +131,7 @@ class _SponsorsState extends State<Sponsors> {
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text("Verifying...",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               content: Container(
                   alignment: Alignment.center,
                   height: 70,
@@ -221,7 +221,7 @@ class _SponsorsState extends State<Sponsors> {
                 //padding: EdgeInsets.fromLTRB(35, 0, 10, 0),
 
                 child: Text("Welcome to TartanHacks!",
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Theme.of(context).textTheme.displayLarge),
               ),
               const SizedBox(height: 10),
               Column(
@@ -235,7 +235,7 @@ class _SponsorsState extends State<Sponsors> {
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           "  Scan  ",
-                          style: Theme.of(context).textTheme.headline2.copyWith(
+                          style: Theme.of(context).textTheme.displayMedium.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onTertiaryContainer),
@@ -245,27 +245,23 @@ class _SponsorsState extends State<Sponsors> {
                               '#ff6666', 'Cancel', true, ScanMode.QR);
                           if (["-1", "", null].contains(id)) return;
                           Profile isValid = await getProfile(id, token);
-                          if (isValid != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ProfilePage(
-                                        bookmarks: bookmarks,
-                                      ),
-                                  settings: RouteSettings(
-                                    arguments: id,
-                                  )),
-                            ).then((value) => getBookmarks());
-                          } else {
-                            errorDialog(context, "Error", "Invalid user ID.");
-                          }
-                        },
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                      bookmarks: bookmarks,
+                                    ),
+                                settings: RouteSettings(
+                                  arguments: id,
+                                )),
+                          ).then((value) => getBookmarks());
+                                                },
                       ),
                       SolidButton(
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           " Bookmarks ",
-                          style: Theme.of(context).textTheme.headline2.copyWith(
+                          style: Theme.of(context).textTheme.displayMedium.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onTertiaryContainer),
@@ -284,7 +280,7 @@ class _SponsorsState extends State<Sponsors> {
                     color: Theme.of(context).colorScheme.tertiaryContainer,
                     child: Text(
                       "  Discord Server  ",
-                      style: Theme.of(context).textTheme.headline2.copyWith(
+                      style: Theme.of(context).textTheme.displayMedium.copyWith(
                           color: Theme.of(context)
                               .colorScheme
                               .onTertiaryContainer),
@@ -360,7 +356,7 @@ class _SponsorsState extends State<Sponsors> {
                         color: Theme.of(context).colorScheme.onPrimary)),
               ]),
               const SizedBox(height: 25),
-              if (students != null && students.isNotEmpty)
+              if (students.isNotEmpty)
                 Expanded(
                     child: Container(
                         alignment: Alignment.bottomCenter,
@@ -458,13 +454,13 @@ class InfoTile extends StatelessWidget {
                   },
                   elevation: 2.0,
                   fillColor: Theme.of(context).colorScheme.primary,
+                  padding: const EdgeInsets.all(12),
+                  shape: const CircleBorder(),
                   child: Icon(
                     Icons.person,
                     size: 30.0,
                     color: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  padding: const EdgeInsets.all(12),
-                  shape: const CircleBorder(),
                 ),
                 SizedBox(
                   width: 180,

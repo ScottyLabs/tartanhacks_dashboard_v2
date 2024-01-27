@@ -15,11 +15,11 @@ class MenuButton extends StatelessWidget {
             width: 55,
             height: 55,
             padding: const EdgeInsets.all(0),
+            onTap: onTap,
             child: Icon(icon ?? Icons.menu,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
                 size: 35
-            ),
-            onTap: onTap
+            )
         )
     );
   }

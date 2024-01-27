@@ -112,7 +112,7 @@ class TeamHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("TEAM", style: Theme.of(context).textTheme.headline2),
+        Text("TEAM", style: Theme.of(context).textTheme.displayMedium),
         IconButton(
             icon: const Icon(Icons.email, size: 30.0),
             color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -163,17 +163,11 @@ class _TeamsListState extends State<TeamsList> {
   Future<void> fetchData() async {
     String token = Provider.of<UserInfoModel>(context, listen: false).token;
     teams = await getTeams(token);
-    if (teams == null) {
-      errorDialog(context, 'Error',
-          'We ran into an error while getting your team information. If the issue persists please contact a TartanHacks organizer.');
-      fetchStatus = Status.error;
-      return;
-    }
     teams = teams.where((e) => e.visible).toList();
     teams.sort((a, b) => a.name.compareTo(b.name));
     List requestsList = await getUserMail(token);
     requestedTeams =
-        requestsList?.map((e) => e['team']['_id'].toString())?.toSet() ?? {};
+        requestsList.map((e) => e['team']['_id'].toString()).toSet() ?? {};
     fetchStatus = Status.loaded;
     setState(() {});
 

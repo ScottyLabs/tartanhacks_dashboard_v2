@@ -82,7 +82,7 @@ class IDCheckInHeader extends StatelessWidget {
               String id = eventIDController.text;
               var model =
                   Provider.of<CheckInItemsModel>(context, listen: false);
-              if (id != null && id != "") {
+              if (id != "") {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
                   if (!contains) {
@@ -196,7 +196,7 @@ class QREnlarged extends StatelessWidget {
           "YOUR QR CODE",
           style: Theme.of(context)
               .textTheme
-              .headline1
+              .displayLarge
               .copyWith(color: Theme.of(context).primaryColorLight),
         ),
 
@@ -215,7 +215,7 @@ class QREnlarged extends StatelessWidget {
                 data: id,
                 version: QrVersions.auto,
                 foregroundColor: isLight
-                    ? Theme.of(context).accentColor
+                    ? Theme.of(context).colorScheme.secondary
                     : Theme.of(context).colorScheme.onPrimary,
               ),
             )),

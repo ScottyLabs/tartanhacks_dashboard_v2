@@ -10,7 +10,7 @@ class DefaultPage extends StatelessWidget {
   final bool isSponsor;
 
   const DefaultPage({ 
-    required Widget this.child, 
+    required this.child, 
     this.reverse=true, 
     this.backflag=false, 
     this.isSponsor=false

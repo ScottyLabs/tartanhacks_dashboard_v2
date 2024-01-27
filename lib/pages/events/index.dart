@@ -200,7 +200,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
             },
             child: Text(
               "CREATE NEW EVENT",
-              style: Theme.of(context).textTheme.headline2,
+              style: Theme.of(context).textTheme.displayMedium,
             ),
           ),
         Container(
@@ -211,8 +211,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
               child: FutureBuilder(
                 future: getEvents(),
                 builder: (context, eventsSnapshot) {
-                  if (eventsSnapshot.data == null ||
-                      eventsSnapshot.hasData == null) {
+                  if (eventsSnapshot.data == null) {
                     return ListView.builder(
                       itemCount: 1,
                       itemBuilder: (BuildContext context, int index) {
@@ -260,7 +259,7 @@ class PlaceHolder extends StatelessWidget {
                           width: screenWidth * 0.5,
                           child: Text(
                             "Loading",
-                            style: Theme.of(context).textTheme.headline2,
+                            style: Theme.of(context).textTheme.displayMedium,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           )),
@@ -298,7 +297,7 @@ class EventsCard extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text("Confirmation",
-              style: Theme.of(context).textTheme.headline1),
+              style: Theme.of(context).textTheme.displayLarge),
           content: Text("Are you sure you want to delete this event?",
               style: Theme.of(context).textTheme.bodyMedium),
           actions: <Widget>[
@@ -356,7 +355,7 @@ class EventsCard extends StatelessWidget {
               children: [
                 Text(
                   event.name,
-                  style: Theme.of(context).textTheme.headline2,
+                  style: Theme.of(context).textTheme.displayMedium,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -380,7 +379,7 @@ class EventsCard extends StatelessWidget {
                             ),
                             if (event.platform == 'IN_PERSON')
                               Text(
-                                "IN PERSON: " + event.location,
+                                "IN PERSON: ${event.location}",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 overflow: TextOverflow.ellipsis,
                               )
@@ -460,13 +459,11 @@ class EventsCard extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(10)),
                                   alignment: Alignment.center,
                                   child: Text(
-                                      getTime((event.startTime).toString()) +
-                                          "\n" +
-                                          formatDate(
-                                              (event.startTime).toString()),
+                                      "${getTime((event.startTime).toString())}\n${formatDate(
+                                              (event.startTime).toString())}",
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline2
+                                          .displayMedium
                                           .copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme

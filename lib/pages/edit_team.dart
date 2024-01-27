@@ -57,7 +57,7 @@ class _EditTeamState extends State<EditTeam> {
 
   Widget _buildTeamHeader(bool read) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text("TEAM", style: Theme.of(context).textTheme.headline2),
+      Text("TEAM", style: Theme.of(context).textTheme.displayMedium),
       mailIconSelect(read)
     ]);
   }
@@ -73,7 +73,7 @@ class _EditTeamState extends State<EditTeam> {
   }
 
   Widget _buildMember(int member) {
-    String emailStr = "(" + _teamMembers[member]['email'] + ")";
+    String emailStr = "${"(" + _teamMembers[member]['email']})";
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

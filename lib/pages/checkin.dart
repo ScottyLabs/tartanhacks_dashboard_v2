@@ -37,7 +37,7 @@ class _CheckInState extends State<CheckIn> {
           builder: (context, checkInItemsModel, child) {
             var status = checkInItemsModel.checkInItemsStatus;
             var checkInItemsList = checkInItemsModel.checkInItems;
-            if (status == Status.notLoaded || checkInItemsList == null) {
+            if (status == Status.notLoaded) {
               checkInItemsModel.fetchCheckInItems();
               return const Center(child: CircularProgressIndicator());
             }
@@ -116,7 +116,7 @@ class QRHeader extends StatelessWidget {
                   data: id,
                   version: QrVersions.auto,
                   foregroundColor: isLight
-                      ? Theme.of(context).accentColor
+                      ? Theme.of(context).colorScheme.secondary
                       : Theme.of(context).colorScheme.onPrimary,
                 )),
           )
@@ -141,7 +141,7 @@ class PointsHeader extends StatelessWidget {
         ),
         Text(
           "CHECKIN",
-          style: Theme.of(context).textTheme.headline1,
+          style: Theme.of(context).textTheme.displayLarge,
         ),
         const SizedBox(
           height: 2,
@@ -152,7 +152,7 @@ class PointsHeader extends StatelessWidget {
         ),
         Text(
           "$points pts",
-          style: Theme.of(context).textTheme.headline2,
+          style: Theme.of(context).textTheme.displayMedium,
         )
       ],
     );
@@ -168,7 +168,7 @@ class AdminHeader extends StatelessWidget {
       children: [
         Text(
           "CHECKIN",
-          style: Theme.of(context).textTheme.headline1,
+          style: Theme.of(context).textTheme.displayLarge,
         ),
         const SizedBox(
           height: 2,
@@ -203,14 +203,6 @@ class CheckInEvents extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: GradBox(
-                  child: Text(
-                    "NEW CHECKIN ITEM",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
                   onTap: () => {
                     Navigator.push(
                         context,
@@ -219,6 +211,14 @@ class CheckInEvents extends StatelessWidget {
                                 const EditCheckInItemPage(null)))
                   },
                   curvature: 12,
+                  child: Text(
+                    "NEW CHECKIN ITEM",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
                 ),
               )
           ],
@@ -267,9 +267,7 @@ class CheckInEventList extends StatelessWidget {
               checkInItemId = await FlutterBarcodeScanner.scanBarcode(
                   '#ff6666', 'Cancel', true, ScanMode.QR);
             }
-            if (uid != null &&
-                uid != "" &&
-                checkInItemId != null &&
+            if (uid != "" &&
                 checkInItemId != "") {
               showDialog(
                   context: context,
@@ -282,10 +280,10 @@ class CheckInEventList extends StatelessWidget {
                 if (uid != "-1" && checkInItemId != "-1") {
                   await model.checkInUser(checkInItemId, uid);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Checked in for " + events[index].name + "!"),
+                    content: Text("Checked in for ${events[index].name}!"),
                   ));
                 }
-              } on Exception catch (e) {
+              } on Exception {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
                       "Could not check in. Please ensure that the QR code is correct."),
@@ -350,7 +348,7 @@ class CheckInEventListItem extends StatelessWidget {
                     softWrap: false,
                     style: Theme.of(context)
                         .textTheme
-                        .headline1
+                        .displayLarge
                         ?.copyWith(fontSize: 23),
                   ),
                   InkWell(
@@ -417,6 +415,7 @@ class CheckInEventListItem extends StatelessWidget {
           Expanded(
             flex: 20,
             child: SolidButton(
+              onPressed: onTap,
               child: FittedBox(
                 child: Text(
                   editable ? "Edit\nItem" : "View\nItem",
@@ -429,7 +428,6 @@ class CheckInEventListItem extends StatelessWidget {
                   maxLines: 2,
                 ),
               ),
-              onPressed: onTap,
             ),
           )
         ],

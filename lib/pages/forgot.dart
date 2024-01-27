@@ -48,7 +48,7 @@ class _ForgotState extends State<Forgot> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+    var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -71,7 +71,7 @@ class _ForgotState extends State<Forgot> {
                             width: screenWidth,
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                            child: _themeProvider.getTheme == lightTheme
+                            child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))
                       ]),

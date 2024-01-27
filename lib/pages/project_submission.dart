@@ -74,28 +74,24 @@ class _ProjSubmitState extends State<ProjSubmit> {
     team = await getUserTeam(token);
 
     Project proj = await getProject(id, token);
-    if (proj != null) {
-      hasProj = true;
-      projId = proj.id;
-      _projName = proj.name;
-      _projDesc = proj.desc;
-      _githubUrl = proj.url;
-      _presUrl = proj.slides;
-      _vidUrl = proj.video;
-      isPresenting = proj.presentingVirtually;
-      prizes = proj.prizes;
+    hasProj = true;
+    projId = proj.id;
+    _projName = proj.name;
+    _projDesc = proj.desc;
+    _githubUrl = proj.url;
+    _presUrl = proj.slides;
+    _vidUrl = proj.video;
+    isPresenting = proj.presentingVirtually;
+    prizes = proj.prizes;
 
-      nameController.text = _projName;
-      descController.text = _projDesc;
-      slidesController.text = _presUrl;
-      videoController.text = _vidUrl;
-      githubController.text = _githubUrl;
-    }
-
-    if (loading != null) {
-      loading.remove();
-    }
-
+    nameController.text = _projName;
+    descController.text = _projDesc;
+    slidesController.text = _presUrl;
+    videoController.text = _vidUrl;
+    githubController.text = _githubUrl;
+  
+    loading.remove();
+  
     setState(() {});
   }
 
@@ -123,33 +119,16 @@ class _ProjSubmitState extends State<ProjSubmit> {
   void submitDialog(BuildContext context) {
     Future proj;
 
-    if (team == null) {
-      errorDialog(context, "Error", "You are not in a team!");
-      return;
-    } else if (projId != null) {
-      proj = editProject(
-          context,
-          nameController.text,
-          descController.text,
-          slidesController.text,
-          videoController.text,
-          githubController.text,
-          isPresenting,
-          projId,
-          token);
-    } else {
-      proj = newProject(
-          context,
-          nameController.text,
-          descController.text,
-          team.teamID,
-          slidesController.text,
-          videoController.text,
-          githubController.text,
-          isPresenting,
-          projId,
-          token);
-    }
+  proj = editProject(
+      context,
+      nameController.text,
+      descController.text,
+      slidesController.text,
+      videoController.text,
+      githubController.text,
+      isPresenting,
+      projId,
+      token);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -160,7 +139,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Success",
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Text("Project info was saved.",
                     style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
@@ -181,7 +160,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title:
-                    Text("Error", style: Theme.of(context).textTheme.headline1),
+                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
                 content: Text("Project info failed to save. Please try again.",
                     style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
@@ -200,7 +179,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text("Processing...",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               content: Container(
                   alignment: Alignment.center,
                   height: 70,
@@ -236,7 +215,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("PROJECT SUBMISSION",
-                            style: Theme.of(context).textTheme.headline2),
+                            style: Theme.of(context).textTheme.displayMedium),
                         const SizedBox(height: 16),
                         ProjSubmitTextField(nameController, "Project Name"),
                         const SizedBox(height: 8),

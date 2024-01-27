@@ -41,7 +41,7 @@ class _LeaderboardState extends State<Leaderboard> {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text("Enter New Nickname",
-              style: Theme.of(context).textTheme.headline1),
+              style: Theme.of(context).textTheme.displayLarge),
           content: TextField(
             controller: _editNicknameController,
             style: Theme.of(context).textTheme.bodyMedium,
@@ -69,41 +69,38 @@ class _LeaderboardState extends State<Leaderboard> {
                     await setDisplayName(_editNicknameController.text, token);
                 loading.remove();
 
-                if (success == null) {
-                  errorDialog(
-                      context, "Error", "An error occurred. Please try again.");
-                } else if (success) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      // return object of type Dialog
-                      return AlertDialog(
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        title: Text("Success",
-                            style: Theme.of(context).textTheme.headline1),
-                        content: Text("Nickname has been changed.",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        actions: <Widget>[
-                          // usually buttons at the bottom of the dialog
-                          TextButton(
-                            child: Text(
-                              "OK",
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .popUntil(ModalRoute.withName("leaderboard"));
-                            },
+                if (success) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    // return object of type Dialog
+                    return AlertDialog(
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      title: Text("Success",
+                          style: Theme.of(context).textTheme.displayLarge),
+                      content: Text("Nickname has been changed.",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      actions: <Widget>[
+                        // usually buttons at the bottom of the dialog
+                        TextButton(
+                          child: Text(
+                            "OK",
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
-                        ],
-                      );
-                    },
-                  );
-                } else {
-                  errorDialog(context, "Nickname taken",
-                      "Please try a different name.");
-                }
+                          onPressed: () {
+                            Navigator.of(context)
+                                .popUntil(ModalRoute.withName("leaderboard"));
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                errorDialog(context, "Nickname taken",
+                    "Please try a different name.");
+              }
               },
             ),
           ],
@@ -157,14 +154,14 @@ class _LeaderboardState extends State<Leaderboard> {
                                   style:
                                       Theme.of(context).textTheme.displaySmall),
                               SolidButton(
-                                child: Icon(Icons.edit,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onTertiaryContainer),
                                 color: Theme.of(context)
                                     .colorScheme
                                     .tertiaryContainer,
                                 onPressed: _editNickname,
+                                child: Icon(Icons.edit,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onTertiaryContainer),
                               ),
                             ],
                           ),
@@ -185,7 +182,7 @@ class _LeaderboardState extends State<Leaderboard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("LEADERBOARD",
-                                  style: Theme.of(context).textTheme.headline1),
+                                  style: Theme.of(context).textTheme.displayLarge),
                               Text(
                                 "Scroll to see the whole board!",
                                 style: Theme.of(context).textTheme.bodyMedium,
@@ -229,7 +226,7 @@ class LBRow extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 place.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
             ),
             Expanded(child: SolidButton(text: name, onPressed: null)),

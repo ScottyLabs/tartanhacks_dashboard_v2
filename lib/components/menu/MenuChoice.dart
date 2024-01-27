@@ -19,13 +19,13 @@ class MenuChoice extends StatelessWidget {
                 onPressed: onTap,
                 elevation: 2.0,
                 fillColor: Theme.of(context).colorScheme.errorContainer,
+                padding: const EdgeInsets.all(12),
+                shape: const CircleBorder(),
                 child: Icon(
                   icon,
                   size: 40.0,
                   color: Theme.of(context).colorScheme.onErrorContainer,
                 ),
-                padding: const EdgeInsets.all(12),
-                shape: const CircleBorder(),
               ),
               Text(text,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
