@@ -71,15 +71,15 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
   final _endTimeController = TextEditingController();
   final _pointsController = TextEditingController();
 
-  bool enableSelfCheckIn;
-  bool newItem;
-  String accessLevel;
+  late bool enableSelfCheckIn;
+  late bool newItem;
+  late String accessLevel;
 
-  DateTime startDate;
-  DateTime endDate;
+  late DateTime startDate;
+  late DateTime endDate;
 
-  TimeOfDay startTime;
-  TimeOfDay endTime;
+  late TimeOfDay startTime;
+  late TimeOfDay endTime;
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
   @override
   Widget build(BuildContext context) {
-    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
+    bool editable = Provider.of<CheckInItemsModel>(context).isAdmin ?? false;
     return SingleChildScrollView(
       child: Form(
           key: _formKey,
@@ -136,18 +136,18 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
               // Form Fields
               EditCheckInFormField(
                 label: "Name",
-                controller: _nameController,
+                controller: _nameController, onTap: () {  }, validator: (String? val) {  },
               ),
               EditCheckInFormField(
                 label: "Description",
-                controller: _descController,
+                controller: _descController, onTap: () {  }, validator: (String? val) {  },
               ),
               EditCheckInFormField(
                 label: "Start Date",
                 controller: _startDateController,
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  final DateTime picked = await showDatePicker(
+                  final DateTime? picked = await showDatePicker(
                       context: context,
                       initialDate: startDate ?? DateTime.now(),
                       firstDate: startDate ?? DateTime.now(),
@@ -158,10 +158,10 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                                   Theme.of(context).colorScheme.background),
                           child: child));
                   _startDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked));
+                      text: DateFormat.yMMMd('en_US').format(picked!));
 
-                  startDate = picked;
-                                },
+                  startDate = picked!;
+                                }, validator: (String? val) {  },
               ),
               EditCheckInFormField(
                 label: "End Date",
@@ -177,7 +177,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
-                  final DateTime picked = await showDatePicker(
+                  final DateTime? picked = await showDatePicker(
                       context: context,
                       initialDate: endDate ?? DateTime.now(),
                       firstDate: endDate ?? DateTime.now(),
@@ -188,7 +188,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                                   Theme.of(context).colorScheme.background),
                           child: child));
                   _endDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked));
+                      text: DateFormat.yMMMd('en_US').format(picked!));
                   endDate = picked;
                                 },
               ),
@@ -198,14 +198,14 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   controller: _startTimeController,
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    TimeOfDay picked = await showTimePicker(
+                    TimeOfDay? picked = await showTimePicker(
                         context: context,
                         initialTime: startTime ?? TimeOfDay.now());
                     _startTimeController.value =
-                        TextEditingValue(text: picked.format(context));
+                        TextEditingValue(text: picked!.format(context));
 
                     startTime = picked;
-                                    }),
+                                    }, validator: (String? val) {  },),
               EditCheckInFormField(
                   label: "End Time",
                   controller: _endTimeController,
@@ -222,18 +222,18 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
-                    TimeOfDay picked = await showTimePicker(
+                    TimeOfDay? picked = await showTimePicker(
                         context: context,
                         initialTime: endTime ?? TimeOfDay.now());
                     _endTimeController.value =
-                        TextEditingValue(text: picked.format(context));
+                        TextEditingValue(text: picked!.format(context));
                     endTime = picked;
                                     }),
 
               EditCheckInFormField(
                 label: "Points",
                 controller: _pointsController,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.number, onTap: () {  }, validator: (String? value) {  },
               ),
 
               // Dropdown menus
@@ -273,7 +273,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium
-                          .copyWith(fontWeight: FontWeight.bold),
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Transform.scale(
                       scale: 1.5,
@@ -288,7 +288,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                           value: enableSelfCheckIn,
                           onChanged: (val) {
                             setState(() {
-                              enableSelfCheckIn = val;
+                              enableSelfCheckIn = val!;
                             });
                           }),
                     )
@@ -303,7 +303,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   child: SolidButton(
                     text: "CONFIRM",
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState!.validate()) {
                         DateTime startDateTime = DateTime(
                             startDate.year,
                             startDate.month,
@@ -325,7 +325,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                                 startDateTime.toUtc().microsecondsSinceEpoch,
                             endTime: endDateTime.toUtc().microsecondsSinceEpoch,
                             enableSelfCheckIn: enableSelfCheckIn,
-                            points: int.tryParse(_pointsController.text));
+                            points: int.tryParse(_pointsController.text) ?? 0);
 
                         // TODO maybe add some loading indicator?
                         showDialog(
@@ -364,9 +364,9 @@ class EditCheckInFormField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final TextInputType keyboardType;
-  final Function onTap;
+  final void Function()? onTap;
 
-  final Function validator;
+  final String? Function(String?)? validator;
 
   const EditCheckInFormField(
       {required this.controller,
@@ -433,7 +433,7 @@ class EditCheckInDropDownFormField extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                .copyWith(fontWeight: FontWeight.bold),
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(
