@@ -51,17 +51,16 @@ class ScanConfigBox extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          DropdownButtonFormField(
-            items: [
-              DropdownMenuItem(
-                child: Text(
-                  "Ctrl+F - Working with your team",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              )
-            ],
-            onChanged: (value) {},
-          ),
+          // DropdownButtonFormField(
+          //   items: [
+          //     DropdownMenuItem(
+          //       child: Text(
+          //         "Ctrl+F - Working with your team",
+          //         style: Theme.of(context).textTheme.bodyMedium,
+          //       ),
+          //     )
+          //   ], onChanged: (value) {  },
+          // ),
           const SizedBox(
             height: 25,
           ),
