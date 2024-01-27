@@ -19,26 +19,25 @@ class Sponsors extends StatefulWidget {
 }
 
 class _SponsorsState extends State<Sponsors> {
-  String myName;
-  List studentIds;
-  List students; // bunch of Profiles
-  List studentTeams;
-  Map bookmarks; // dictionary of participant id : actual bookmark id
-  DiscordInfo discordInfo;
+  String myName = "";
+  List studentIds = [];
+  List students = []; // bunch of Profiles
+  List studentTeams = [];
+  Map bookmarks = {}; // dictionary of participant id : actual bookmark id
+  DiscordInfo discordInfo = DiscordInfo(code: "", expiry: "", link: "");
 
-  int searchResultCount;
-  bool searchPressed;
+  int searchResultCount = 0;
+  bool searchPressed = false;
 
   String placeholderText = "Search for participants by name.";
 
-  SharedPreferences prefs;
-  String token;
+  String token = "";
 
   final myController = TextEditingController();
 
   void getData() async {
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') ?? "";
     bookmarks = await getBookmarkIdsList(token);
     discordInfo = await getDiscordInfo(token);
     setState(() {});
@@ -68,6 +67,9 @@ class _SponsorsState extends State<Sponsors> {
           future: discordCode,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+
+              DiscordInfo discordInfo = snapshot.data as DiscordInfo;
+
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Verification Code",
@@ -79,7 +81,7 @@ class _SponsorsState extends State<Sponsors> {
                         "When you join our Discord server, you'll be prompted to enter the following verification code by the Discord Bot running the server. This code will expire in 10 minutes.\n",
                         style: Theme.of(context).textTheme.bodyMedium),
                     Text(
-                      snapshot.data.code,
+                      discordInfo.code,
                       style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
                     )
@@ -93,7 +95,7 @@ class _SponsorsState extends State<Sponsors> {
                     ),
                     onPressed: () {
                       Clipboard.setData(
-                          ClipboardData(text: snapshot.data.code));
+                          ClipboardData(text: discordInfo.code));
                     },
                   ),
                   TextButton(
@@ -176,7 +178,7 @@ class _SponsorsState extends State<Sponsors> {
 
   void newBookmark(String bookmarkId, String participantId) async {
     prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    token = prefs.getString('token') ?? "";
     String newBookmarkId = await addBookmark(token, participantId);
     bookmarks[newBookmarkId] = participantId;
     setState(() {});
@@ -184,7 +186,7 @@ class _SponsorsState extends State<Sponsors> {
 
   void removeBookmark(String bookmarkId, String participantId) async {
     prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    token = prefs.getString('token') ?? "";
     bookmarks.remove(bookmarkId);
     deleteBookmark(token, bookmarkId);
     setState(() {});
@@ -235,7 +237,7 @@ class _SponsorsState extends State<Sponsors> {
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           "  Scan  ",
-                          style: Theme.of(context).textTheme.displayMedium.copyWith(
+                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onTertiaryContainer),
@@ -261,7 +263,7 @@ class _SponsorsState extends State<Sponsors> {
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           " Bookmarks ",
-                          style: Theme.of(context).textTheme.displayMedium.copyWith(
+                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onTertiaryContainer),
@@ -280,7 +282,7 @@ class _SponsorsState extends State<Sponsors> {
                     color: Theme.of(context).colorScheme.tertiaryContainer,
                     child: Text(
                       "  Discord Server  ",
-                      style: Theme.of(context).textTheme.displayMedium.copyWith(
+                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
                           color: Theme.of(context)
                               .colorScheme
                               .onTertiaryContainer),
@@ -296,12 +298,12 @@ class _SponsorsState extends State<Sponsors> {
                   alignment: Alignment.centerLeft,
                   child: Text("Search",
                       textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.displaySmall.copyWith(
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary))),
               Row(children: [
                 Expanded(
                   child: TextField(
-                    style: Theme.of(context).textTheme.bodyMedium.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary),
                     decoration: InputDecoration(
                       enabledBorder: OutlineInputBorder(
