@@ -67,7 +67,7 @@ class InviteMembersBtn extends StatelessWidget {
           if (value == null || value.isEmpty) {
             return 'An email is required';
           }
-          return null;
+          throw Error();
         },
         onChanged: (String value) {
           emailInvite = value;

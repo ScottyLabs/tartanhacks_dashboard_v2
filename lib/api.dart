@@ -117,7 +117,7 @@ Future<bool?> setDisplayName(String name, String token) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    return null;
+    throw Error();
   }
 }
 
@@ -253,7 +253,7 @@ Future<List<List<Event>>?> getEvents() async {
     }
     return [upcomingEvents, pastEvents];
   } else {
-    return null;
+    throw Error();
   }
 }
 
@@ -637,7 +637,7 @@ Future<Team?> getTeamById(String id, String token) async {
     Team team = Team.fromJson(data);
     return team;
   } else {
-    return null;
+    throw Error();
   }
 }
 

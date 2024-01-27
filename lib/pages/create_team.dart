@@ -29,7 +29,7 @@ class TeamTextField extends StatelessWidget {
         if (val == null || val.isEmpty) {
           return "Cannot be empty";
         }
-        return null;
+        throw Error();
       },
     );
   }
@@ -37,7 +37,7 @@ class TeamTextField extends StatelessWidget {
 
 class IsVisibleCheckBox extends StatelessWidget {
   final bool visibility;
-  final void Function(bool?) onTap;
+  final void Function(dynamic) onTap;
 
   const IsVisibleCheckBox(this.visibility, this.onTap);
 
@@ -150,7 +150,7 @@ class _CreateTeamState extends State<CreateTeam> {
                             child: SolidButton(
                                 text: buttonText,
                                 onPressed: () async {
-                                  if (_formKey.currentState?.validate() ?? false) {
+                                  if (_formKey.currentState!.validate()) {
                                     OverlayEntry loading =
                                         LoadingOverlay(context);
                                     Overlay.of(context).insert(loading);

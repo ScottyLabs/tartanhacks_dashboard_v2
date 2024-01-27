@@ -36,7 +36,7 @@ class ProjSubmitTextField extends StatelessWidget {
         if (value != null && value.isEmpty && !isOptional) {
           return '$fieldName is required';
         }
-        return null;
+        throw Error();
       },
     );
   }
@@ -90,6 +90,12 @@ class _ProjSubmitState extends State<ProjSubmit> {
       videoController.text = _vidUrl;
       githubController.text = _githubUrl;
     }
+
+    nameController.text = _projName;
+    descController.text = _projDesc;
+    slidesController.text = _presUrl;
+    videoController.text = _vidUrl;
+    githubController.text = _githubUrl;
 
     loading?.remove();
 
