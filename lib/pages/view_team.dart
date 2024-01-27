@@ -53,7 +53,7 @@ class InviteMembersBtn extends StatelessWidget {
   // Show invitation dialog
   Widget _inviteMessage(BuildContext context) {
     TextEditingController inviteController = TextEditingController();
-    String emailInvite;
+    String emailInvite = "";
 
     return AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -308,28 +308,28 @@ class EditTeamButton extends StatelessWidget {
 class OwnTeamView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Team team = Provider.of<UserInfoModel>(context).team;
+    Team? team = Provider.of<UserInfoModel>(context).team;
     String id = Provider.of<UserInfoModel>(context).id;
     Status status = Provider.of<UserInfoModel>(context).userInfoStatus;
-    List<String> adminIds = team.admins.map((mem) => mem.id).toList();
-    bool isAdmin = adminIds.contains(id);
+    List<String>? adminIds = team?.admins.map((mem) => mem.id).toList();
+    bool? isAdmin = adminIds?.contains(id);
 
     return status == Status.loaded
         ? Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TeamHeader(isAdmin),
+              TeamHeader(isAdmin!),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      child: TeamDesc(team)),
+                      child: TeamDesc(team!)),
                   isAdmin ? EditTeamButton() : Container(),
                   Container(
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      child: TeamMembersList(team, isAdmin, adminIds)),
+                      child: TeamMembersList(team, isAdmin, adminIds!)),
                   if (isAdmin && team.members.length < 4)
                     InviteMembersBtn(team),
                   const SizedBox(
@@ -415,7 +415,7 @@ class ViewTeam extends StatelessWidget {
 
     String teamId = "";
     if (ModalRoute.of(context) != null) {
-      teamId = ModalRoute.of(context).settings.arguments as String;
+      teamId = ModalRoute.of(context)?.settings.arguments as String;
     }
 
     return DefaultPage(
