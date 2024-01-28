@@ -16,14 +16,14 @@ class CheckInItemsModel with ChangeNotifier {
   String _token = "";
   String _uid = "";
 
-  late List<CheckInItem>? _list;
+  List<CheckInItem> _list = [];
   late Map<String, bool>? hasCheckedIn;
 
   late bool? isAdmin;
   late int? points;
 
   Status get checkInItemsStatus => _status;
-  List get checkInItems => _list!;
+  List get checkInItems => _list;
   String get userID => _uid;
 
   void handleException(e) {
@@ -86,7 +86,7 @@ class CheckInItemsModel with ChangeNotifier {
 
   void reset() {
     _status = Status.notLoaded;
-    _list = null;
+    _list = [];
     _uid = "";
     hasCheckedIn = null;
     notifyListeners();

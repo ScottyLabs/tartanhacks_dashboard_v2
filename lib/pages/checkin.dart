@@ -186,8 +186,9 @@ class CheckInEvents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<CheckInItemsModel>(context);
-    var editable = model.isAdmin ??  false;
-    List<CheckInItem> checkInItemsList = model.checkInItems as List<CheckInItem>;
+    var editable = model.isAdmin ?? false;
+    List<CheckInItem> checkInItemsList =
+        model.checkInItems as List<CheckInItem>;
     return RefreshIndicator(
       onRefresh: model.fetchCheckInItems,
       child: Padding(
@@ -247,7 +248,8 @@ class CheckInEventList extends StatelessWidget {
         return CheckInEventListItem(
           name: events[index].name,
           points: events[index].points,
-          isChecked: editable ? false : (hasCheckedIn?[events[index].id] ?? false),
+          isChecked:
+              editable ? false : (hasCheckedIn?[events[index].id] ?? false),
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
             Navigator.push(
@@ -267,8 +269,7 @@ class CheckInEventList extends StatelessWidget {
               checkInItemId = await FlutterBarcodeScanner.scanBarcode(
                   '#ff6666', 'Cancel', true, ScanMode.QR);
             }
-            if (uid != "" &&
-                checkInItemId != "") {
+            if (uid != "" && checkInItemId != "") {
               showDialog(
                   context: context,
                   barrierDismissible: false,
