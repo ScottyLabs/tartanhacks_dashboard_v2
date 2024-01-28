@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
@@ -108,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
-                    await setDisplayName(_editNicknameController.text, token);
+                    await setDisplayName(_editNicknameController.text, token) ?? false;
                 loading.remove();
 
                 if (success) {
@@ -187,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       AspectRatio(
                           aspectRatio: 1.0 / 1.0,
                           child: profilePicFile != null
-                              ? Image.file(profilePicFile)
+                              ? Image.file(profilePicFile as File)
                               : Container(
                                   color: Colors.black,
                                   child: const Center(
@@ -291,7 +293,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final screenWidth = mqData.size.width;
 
     if (ModalRoute.of(context) != null) {
-      id = ModalRoute.of(context).settings.arguments as String;
+      id = ModalRoute.of(context)?.settings.arguments as String;
     }
 
     return DefaultPage(
@@ -319,19 +321,19 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (!isSelf)
                           Expanded(
                               child: IconButton(
-                                  icon: widget.bookmarks.containsValue(id)
+                                  icon: widget.bookmarks!.containsValue(id)
                                       ? const Icon(Icons.bookmark)
                                       : const Icon(Icons.bookmark_outline),
                                   color: Theme.of(context).colorScheme.primary,
                                   iconSize: 40.0,
                                   onPressed: () async {
-                                    if (widget.bookmarks.containsValue(id)) {
-                                      String bmId = widget.bookmarks.keys
+                                    if (widget.bookmarks!.containsValue(id)) {
+                                      String bmId = widget.bookmarks?.keys
                                           .firstWhere(
                                               (k) => widget.bookmarks[k] == id,
                                               orElse: () => null);
                                       deleteBookmark(token, bmId);
-                                      widget.bookmarks.remove(bmId);
+                                      widget.bookmarks?.remove(bmId);
                                     } else {
                                       String bmId =
                                           await addBookmark(token, id);
