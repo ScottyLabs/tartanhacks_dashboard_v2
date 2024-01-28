@@ -36,7 +36,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
   getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     isAdmin = prefs.getBool("admin")!;
-    isSponsor = prefs.getString("company") != null;
+    isSponsor = false; // prefs.getString("company") != "";
     setState(() {});
   }
 
