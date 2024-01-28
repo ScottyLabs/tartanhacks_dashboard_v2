@@ -185,7 +185,8 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       daysBetween(startDate!, endDate!) < 0) {
                     return 'End date must be after start date';
                   }
-                  return null;
+
+                  throw Error();
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -236,7 +237,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                         return 'End time must be after start time';
                       }
                     }
-                    return null;
+                    throw Error();
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -411,7 +412,8 @@ class EditCheckInFormField extends StatelessWidget {
                 if (val == null || val.isEmpty) {
                   return 'Cannot be empty';
                 }
-                return null;
+
+                throw Error();
               },
           enableSuggestions: false,
           inputFormatters: keyboardType == TextInputType.number

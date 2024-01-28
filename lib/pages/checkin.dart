@@ -6,6 +6,7 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/models/check_in_item.dart';
+import 'package:thdapp/models/old/json-classes.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
@@ -209,7 +210,7 @@ class CheckInEvents extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const EditCheckInItemPage(null)))
+                                const EditCheckInItemPage()))
                   },
                   curvature: 12,
                   child: Text(
@@ -240,7 +241,7 @@ class CheckInEventList extends StatelessWidget {
     bool editable = model.isAdmin ?? false;
     String userID = model.userID;
     bool isAdmin = editable;
-    var hasCheckedIn = model.hasCheckedIn;
+    var hasCheckedIn = model.hasCheckedIn as Map<String, bool>;
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       itemCount: events.length,
@@ -248,8 +249,7 @@ class CheckInEventList extends StatelessWidget {
         return CheckInEventListItem(
           name: events[index].name,
           points: events[index].points,
-          isChecked:
-              editable ? false : (hasCheckedIn?[events[index].id] ?? false),
+          isChecked: editable ? false : hasCheckedIn[events[index].id] as bool,
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
             Navigator.push(
@@ -314,7 +314,7 @@ class CheckInEventListItem extends StatelessWidget {
 
   final bool enabled;
   final Function onCheck;
-  final void Function()? onTap;
+  final void Function() onTap;
   final int points;
 
   const CheckInEventListItem(
@@ -327,7 +327,7 @@ class CheckInEventListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool editable = Provider.of<CheckInItemsModel>(context).isAdmin ?? false;
+    var editable = Provider.of<CheckInItemsModel>(context).isAdmin ?? false;
     bool isAdmin = editable;
     return IntrinsicHeight(
       child: Row(
