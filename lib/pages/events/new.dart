@@ -87,14 +87,15 @@ class _NewEventScreenState extends State<NewEventScreen> {
   Future pickDate(BuildContext context) async {
     DateTime sDate = DateTime(DateTime.now().year - 5);
     DateTime eDate = DateTime(DateTime.now().year + 5);
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
       context: context,
       initialDate:
           dateInRange(pickedDate, sDate, eDate) ? pickedDate : DateTime.now(),
       firstDate: sDate,
       lastDate: eDate,
     );
-    if (picked != pickedDate) {
+
+    if (picked != null && picked != pickedDate) {
       setState(() {
         pickedDate = picked;
         dateController.text = DateFormat.yMMMd().format(pickedDate);
@@ -104,11 +105,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
   }
 
   Future pickTime(BuildContext context) async {
-    final TimeOfDay picked = await showTimePicker(
+    final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: pickedTime,
     );
-    if (picked != pickedTime) {
+
+    if (picked != null && picked != pickedTime) {
       setState(() {
         pickedTime = picked;
         timeController.text = pickedTime.format(context);
@@ -157,11 +159,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
       decoration: const InputDecoration(labelText: "Event Name"),
       style: Theme.of(context).textTheme.bodyMedium,
       controller: nameController,
-      validator: (String value) {
-        if (value.isEmpty) {
+      validator: (value) {
+        if (value == null || value.isEmpty) {
           return 'Project name is required';
         }
-        return null;
+
+        throw Error();
       },
       onChanged: (String value) {
         _eventName = value;
@@ -174,12 +177,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
       decoration: const InputDecoration(labelText: "Event Description"),
       style: Theme.of(context).textTheme.bodyMedium,
       controller: descController,
-      validator: (String value) {
-        if (value.isEmpty) {
+      validator: (value) {
+        if (value == null || value.isEmpty) {
           return 'Project description is required';
         }
 
-        return null;
+        throw Error();
       },
       onChanged: (String value) {
         _eventDesc = value;
@@ -192,11 +195,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
       decoration: const InputDecoration(labelText: "Location"),
       style: Theme.of(context).textTheme.bodyMedium,
       controller: locationController,
-      validator: (String value) {
-        if (value.isEmpty && _platform == "IN_PERSON") {
+      validator: (value) {
+        if (value == null || value.isEmpty && _platform == "IN_PERSON") {
           return "Location is required";
         }
-        return null;
+
+        throw Error();
       },
       onChanged: (String value) {
         _location = value;
@@ -210,11 +214,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
       style: Theme.of(context).textTheme.bodyMedium,
       keyboardType: TextInputType.url,
       controller: linkController,
-      validator: (String value) {
-        if (value.isEmpty && _platform != "IN_PERSON") {
+      validator: (value) {
+        if (value == null || value.isEmpty && _platform != "IN_PERSON") {
           return "URL is required";
         }
-        return null;
+        throw Error();
       },
       onChanged: (String value) {
         _eventUrl = value;
@@ -227,11 +231,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
         decoration: const InputDecoration(labelText: "Date"),
         style: Theme.of(context).textTheme.bodyMedium,
         controller: dateController,
-        validator: (String value) {
-          if (value.isEmpty) {
+        validator: (value) {
+          if (value == null || value.isEmpty) {
             return 'Date is Required';
           }
-          return null;
+          throw Error();
         },
         onTap: () {
           pickDate(context);
@@ -243,11 +247,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
         decoration: const InputDecoration(labelText: "Time"),
         style: Theme.of(context).textTheme.bodyMedium,
         controller: timeController,
-        validator: (String value) {
-          if (value.isEmpty) {
+        validator: (value) {
+          if (value == null || value.isEmpty) {
             return 'Time is Required';
           }
-          return null;
+          throw Error();
         },
         onTap: () {
           pickTime(context);
@@ -260,11 +264,12 @@ class _NewEventScreenState extends State<NewEventScreen> {
       style: Theme.of(context).textTheme.bodyMedium,
       controller: durationController,
       keyboardType: TextInputType.number,
-      validator: (String value) {
-        if (value.isEmpty) {
+      validator: (value) {
+        if (value == null || value.isEmpty) {
           return 'Duration is Required';
         }
-        return null;
+
+        throw Error();
       },
       onChanged: (String value) {
         _duration = int.parse(value);
@@ -287,11 +292,13 @@ class _NewEventScreenState extends State<NewEventScreen> {
           iconEnabledColor: Theme.of(context).colorScheme.primary,
           icon: const Icon(Icons.arrow_drop_down),
           iconSize: 25,
-          onChanged: (String val) {
-            setState(() {
-              _platform = val;
-              dropdownValue = val;
-            });
+          onChanged: (val) {
+            if (val != null) {
+              setState(() {
+                _platform = val;
+                dropdownValue = val;
+              });
+            }
           },
           underline: const SizedBox(),
           value: dropdownValue,
