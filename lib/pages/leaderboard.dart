@@ -71,41 +71,42 @@ class _LeaderboardState extends State<Leaderboard> {
                 OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
-                    await setDisplayName(_editNicknameController.text, token) ?? false;
+                    await setDisplayName(_editNicknameController.text, token) ??
+                        false;
                 loading.remove();
 
                 if (success) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    // return object of type Dialog
-                    return AlertDialog(
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      title: Text("Success",
-                          style: Theme.of(context).textTheme.displayLarge),
-                      content: Text("Nickname has been changed.",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      actions: <Widget>[
-                        // usually buttons at the bottom of the dialog
-                        TextButton(
-                          child: Text(
-                            "OK",
-                            style: Theme.of(context).textTheme.headlineMedium,
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      // return object of type Dialog
+                      return AlertDialog(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        title: Text("Success",
+                            style: Theme.of(context).textTheme.displayLarge),
+                        content: Text("Nickname has been changed.",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        actions: <Widget>[
+                          // usually buttons at the bottom of the dialog
+                          TextButton(
+                            child: Text(
+                              "OK",
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .popUntil(ModalRoute.withName("leaderboard"));
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .popUntil(ModalRoute.withName("leaderboard"));
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                errorDialog(context, "Nickname taken",
-                    "Please try a different name.");
-              }
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  errorDialog(context, "Nickname taken",
+                      "Please try a different name.");
+                }
               },
             ),
           ],
@@ -187,7 +188,8 @@ class _LeaderboardState extends State<Leaderboard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("LEADERBOARD",
-                                  style: Theme.of(context).textTheme.displayLarge),
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge),
                               Text(
                                 "Scroll to see the whole board!",
                                 style: Theme.of(context).textTheme.bodyMedium,
