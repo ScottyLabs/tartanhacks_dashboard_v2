@@ -59,7 +59,7 @@ class IDCheckInHeader extends StatelessWidget {
       children: [
         Text(
           "Check in with event ID",
-          style: Theme.of(context).textTheme.bodyMedium.copyWith(fontSize: 20),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 20),
         ),
         const SizedBox(
           height: 10,
@@ -197,7 +197,7 @@ class QREnlarged extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .displayLarge
-              .copyWith(color: Theme.of(context).primaryColorLight),
+              ?.copyWith(color: Theme.of(context).primaryColorLight),
         ),
 
         const SizedBox(
@@ -211,7 +211,7 @@ class QREnlarged extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(16))),
             child: Padding(
               padding: const EdgeInsets.all(30),
-              child: QrImage(
+              child: QrImageView(
                 data: id,
                 version: QrVersions.auto,
                 foregroundColor: isLight
