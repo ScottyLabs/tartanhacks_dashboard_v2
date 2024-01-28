@@ -46,7 +46,7 @@ class EditCheckInItemPage extends StatelessWidget {
 }
 
 class CheckInItemForm extends StatefulWidget {
-  final CheckInItem checkInItem;
+  final CheckInItem? checkInItem;
 
   const CheckInItemForm(this.checkInItem);
 
@@ -85,16 +85,16 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
   void initState() {
     super.initState();
 
-    CheckInItem item = widget.checkInItem;
-    _nameController.value = TextEditingValue(text: widget.checkInItem.name);
+    CheckInItem? item = widget.checkInItem;
+    _nameController.value = TextEditingValue(text: widget.checkInItem!.name);
     _descController.value =
-        TextEditingValue(text: widget.checkInItem.description);
+        TextEditingValue(text: widget.checkInItem!.description);
     _pointsController.value =
-        TextEditingValue(text: widget.checkInItem.points.toString());
+        TextEditingValue(text: widget.checkInItem!.points.toString());
 
     startDate =
-        DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.startTime);
-    endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem.endTime);
+        DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem!.startTime);
+    endDate = DateTime.fromMicrosecondsSinceEpoch(widget.checkInItem!.endTime);
     startTime = TimeOfDay.fromDateTime(startDate);
     endTime = TimeOfDay.fromDateTime(endDate);
 
@@ -108,8 +108,8 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
         TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
     newItem = false;
-    enableSelfCheckIn = item.enableSelfCheckIn;
-    accessLevel = item.accessLevel;
+    enableSelfCheckIn = item!.enableSelfCheckIn;
+    accessLevel = item!.accessLevel;
     }
 
   @override
@@ -156,7 +156,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
                                   Theme.of(context).colorScheme.background),
-                          child: child));
+                          child: child!));
                   _startDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
 
@@ -186,7 +186,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
                                   Theme.of(context).colorScheme.background),
-                          child: child));
+                          child: child!));
                   _endDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
                   endDate = picked;
@@ -343,7 +343,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                           await Provider.of<CheckInItemsModel>(context,
                                   listen: false)
                               .editCheckInItem(
-                                  updatedItem, widget.checkInItem.id);
+                                  updatedItem, widget.checkInItem!.id);
                         }
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -413,7 +413,7 @@ class EditCheckInDropDownFormField extends StatelessWidget {
   final String label;
   final String initial;
 
-  final Function onChange;
+  final void Function(dynamic)? onChange;
 
   const EditCheckInDropDownFormField(
       {required this.items,
