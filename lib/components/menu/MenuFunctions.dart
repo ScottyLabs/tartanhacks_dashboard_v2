@@ -7,7 +7,7 @@ import 'package:thdapp/providers/user_info_provider.dart';
 
 void logOut(entry, context) async {
   var prefs = await SharedPreferences.getInstance();
-  String theme = prefs.getString("theme")!;
+  String theme = prefs.getString("theme") ?? "dark";
   await prefs.clear();
   prefs.setString("theme", theme);
   entry.remove();
