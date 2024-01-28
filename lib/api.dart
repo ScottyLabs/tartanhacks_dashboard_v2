@@ -22,7 +22,7 @@ late SharedPreferences prefs;
 
 const baseUrl = "https://dev.backend.tartanhacks.com/";
 
-Future<User> checkCredentials(String email, String password) async {
+Future<User?> checkCredentials(String email, String password) async {
   Uri url = Uri.parse("${baseUrl}auth/login");
   Map<String, String> headers = {"Content-type": "application/json"};
   String json1 = '{"email":"$email","password":"$password"}';
@@ -42,12 +42,12 @@ Future<User> checkCredentials(String email, String password) async {
     prefs.setBool('judge', loginData.judge);
     prefs.setString('id', loginData.id);
     prefs.setString('status', loginData.status);
-    if (loginData.company != null) prefs.setString('company', loginData.company!);
+    prefs.setString('company', loginData.company ?? "");
 
     return loginData;
-  } else {
-    throw Error();
   }
+
+  return null;
 }
 
 Future<bool> resetPassword(String email) async {
@@ -74,7 +74,6 @@ Future<Profile> getProfile(String id, String token) async {
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Profile profile = Profile.fromJson(data);
-    print(data);
     // profile.picture = "lib/logos/defaultpfp.PNG";
     return profile;
   } else {
@@ -517,7 +516,7 @@ Future<List<Prize>> getPrizes() async {
   }
 }
 
-Future<Project> getProject(String id, String token) async {
+Future<Project?> getProject(String id, String token) async {
   Uri url = Uri.parse("${baseUrl}users/$id/project");
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -531,7 +530,7 @@ Future<Project> getProject(String id, String token) async {
     Project project = Project.fromJson(data);
     return project;
   } else {
-    throw Error();
+    return null;
   }
 }
 
