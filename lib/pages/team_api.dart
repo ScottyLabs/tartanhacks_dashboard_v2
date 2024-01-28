@@ -44,7 +44,7 @@ Future<bool> promoteToAdmin(String userID, String token) async {
   }
 }
 
-Future<Team> getUserTeam(String token) async {
+Future<Team?> getUserTeam(String token) async {
   String url = "${baseUrl}user/team";
 
   Map<String, String> headers = {
@@ -55,11 +55,14 @@ Future<Team> getUserTeam(String token) async {
   if (response.statusCode == 200) {
     var parsedJson = jsonDecode(response.body);
     if (response.body.contains("You are not in a team!")) {
-      throw Error();
+      return null;
     }
     Team team = Team.fromJson(parsedJson);
     return team;
+  } else if (response.statusCode == 404) {
+    return null;
   }
+
   throw Error();
 }
 
