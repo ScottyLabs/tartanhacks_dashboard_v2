@@ -63,8 +63,8 @@ class _CheckInState extends State<CheckIn> {
 class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var isAdmin = Provider.of<CheckInItemsModel>(context).isAdmin;
-    var points = Provider.of<CheckInItemsModel>(context).points;
+    bool isAdmin = Provider.of<CheckInItemsModel>(context).isAdmin ?? false;
+    int points = Provider.of<CheckInItemsModel>(context).points ?? -1;
     return Container(
       padding: const EdgeInsets.fromLTRB(30, 0, 15, 0),
       child: Row(
@@ -112,7 +112,7 @@ class QRHeader extends StatelessWidget {
                         ? Theme.of(context).colorScheme.onPrimary
                         : Theme.of(context).colorScheme.primary,
                     borderRadius: const BorderRadius.all(Radius.circular(16))),
-                child: QrImage(
+                child: QrImageView(
                   data: id,
                   version: QrVersions.auto,
                   foregroundColor: isLight
@@ -186,8 +186,8 @@ class CheckInEvents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<CheckInItemsModel>(context);
-    var editable = model.isAdmin;
-    var checkInItemsList = model.checkInItems;
+    var editable = model.isAdmin ??  false;
+    List<CheckInItem> checkInItemsList = model.checkInItems as List<CheckInItem>;
     return RefreshIndicator(
       onRefresh: model.fetchCheckInItems,
       child: Padding(
@@ -236,7 +236,7 @@ class CheckInEventList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<CheckInItemsModel>(context);
-    var editable = model.isAdmin;
+    bool editable = model.isAdmin ?? false;
     String userID = model.userID;
     bool isAdmin = editable;
     var hasCheckedIn = model.hasCheckedIn;
@@ -247,7 +247,7 @@ class CheckInEventList extends StatelessWidget {
         return CheckInEventListItem(
           name: events[index].name,
           points: events[index].points,
-          isChecked: editable ? false : hasCheckedIn[events[index].id],
+          isChecked: editable ? false : (hasCheckedIn?[events[index].id] ?? false),
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
             Navigator.push(
@@ -313,7 +313,7 @@ class CheckInEventListItem extends StatelessWidget {
 
   final bool enabled;
   final Function onCheck;
-  final Function onTap;
+  final void Function()? onTap;
   final int points;
 
   const CheckInEventListItem(
@@ -326,7 +326,7 @@ class CheckInEventListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var editable = Provider.of<CheckInItemsModel>(context).isAdmin;
+    bool editable = Provider.of<CheckInItemsModel>(context).isAdmin ?? false;
     bool isAdmin = editable;
     return IntrinsicHeight(
       child: Row(

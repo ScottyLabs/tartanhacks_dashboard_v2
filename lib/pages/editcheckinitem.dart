@@ -20,7 +20,7 @@ double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
 // MAIN WIDGET
 class EditCheckInItemPage extends StatelessWidget {
-  final CheckInItem checkInItem;
+  final CheckInItem? checkInItem;
 
   const EditCheckInItemPage(this.checkInItem);
 
