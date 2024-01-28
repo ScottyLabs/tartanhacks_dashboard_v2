@@ -41,8 +41,8 @@ Future<User> checkCredentials(String email, String password) async {
     prefs.setBool('admin', loginData.admin);
     prefs.setBool('judge', loginData.judge);
     prefs.setString('id', loginData.id);
-    prefs.setString('company', loginData.company);
     prefs.setString('status', loginData.status);
+    if (loginData.company != null) prefs.setString('company', loginData.company!);
 
     return loginData;
   } else {

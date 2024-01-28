@@ -4,7 +4,7 @@ class User {
   final String id;
   final String email;
   final String token;
-  final String company;
+  String? company;
   final String status;
 
   User({
@@ -13,7 +13,7 @@ class User {
     required this.id, 
     required this.email, 
     required this.token, 
-    required this.company,
+    this.company,
     required this.status
   });
 
