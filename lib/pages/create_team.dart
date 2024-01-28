@@ -37,7 +37,7 @@ class TeamTextField extends StatelessWidget {
 
 class IsVisibleCheckBox extends StatelessWidget {
   final bool visibility;
-  final Function onTap;
+  final void Function(bool?) onTap;
 
   const IsVisibleCheckBox(this.visibility, this.onTap);
 
@@ -76,7 +76,7 @@ class _CreateTeamState extends State<CreateTeam> {
   void getData() {
     hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
     if (hasTeam) {
-      Team team = Provider.of<UserInfoModel>(context, listen: false).team;
+      Team team = Provider.of<UserInfoModel>(context, listen: false).team!;
       visibility = team.visible;
       teamNameController.text = team.name;
       teamDescController.text = team.description;
@@ -139,7 +139,7 @@ class _CreateTeamState extends State<CreateTeam> {
                             TeamTextField(teamDescController, "Team Desc"),
                             const SizedBox(height: 20),
                             IsVisibleCheckBox(visibility, (val) {
-                              visibility = val;
+                              visibility = val ?? false;
                               setState(() {});
                             }),
                           ],
@@ -150,7 +150,7 @@ class _CreateTeamState extends State<CreateTeam> {
                             child: SolidButton(
                                 text: buttonText,
                                 onPressed: () async {
-                                  if (_formKey.currentState.validate()) {
+                                  if (_formKey.currentState?.validate() ?? false) {
                                     OverlayEntry loading =
                                         LoadingOverlay(context);
                                     Overlay.of(context).insert(loading);
