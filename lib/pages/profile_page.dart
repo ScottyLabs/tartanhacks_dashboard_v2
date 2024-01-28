@@ -39,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late CroppedFile? profilePicFile;
 
   final _editNicknameController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
 
   void getData() async {
     prefs = await SharedPreferences.getInstance();
@@ -236,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         OverlayEntry loading = LoadingOverlay(context);
                         Overlay.of(context).insert(loading);
                         bool didUpload =
-                            await uploadProfilePic(profilePicFile, token);
+                            await uploadProfilePic(File(profilePicFile!.path), token);
                         if (!didUpload) {
                           errorDialog(context, "Error",
                               "An error occurred. Please try again.");
@@ -257,7 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (profilePicFile != null) {
       profilePicFile = await ImageCropper().cropImage(
         sourcePath: profilePicFile != null
-            ? profilePicFile.path
+            ? profilePicFile!.path
             : Uri.parse(userData.profilePicture).path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
@@ -270,7 +271,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _getImage(ImageSource source, setState) async {
-    profilePicFile = await ImagePicker.pickImage(source: source);
+    String? profilePicFilePath = (await _picker.pickImage(source: source))?.path;
+    profilePicFile = profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
     setState(() {});
   }
 
@@ -330,14 +332,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     if (widget.bookmarks!.containsValue(id)) {
                                       String bmId = widget.bookmarks?.keys
                                           .firstWhere(
-                                              (k) => widget.bookmarks[k] == id,
+                                              (k) => widget.bookmarks?[k] == id,
                                               orElse: () => null);
                                       deleteBookmark(token, bmId);
                                       widget.bookmarks?.remove(bmId);
                                     } else {
                                       String bmId =
                                           await addBookmark(token, id);
-                                      widget.bookmarks[bmId] = id;
+                                      widget.bookmarks?[bmId] = id;
                                     }
                                     setState(() {});
                                   }))
@@ -378,7 +380,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                                     context,
                                                                 Object
                                                                     exception,
-                                                                StackTrace
+                                                                StackTrace?
                                                                     stackTrace) {
                                                             return Image.asset(
                                                                 'lib/logos/defaultpfp.PNG');
