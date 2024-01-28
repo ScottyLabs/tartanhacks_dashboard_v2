@@ -20,7 +20,7 @@ double toDouble(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 
 // MAIN WIDGET
 class EditEventPage extends StatelessWidget {
-  final Event event;
+  final Event? event;
   final bool editable;
 
   const EditEventPage(this.event, {this.editable = false});
@@ -41,7 +41,7 @@ class EditEventPage extends StatelessWidget {
             child: GradBox(
               curvature: 20,
               padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-              child: EventItemForm(event, editable),
+              child: EventItemForm(event!, editable),
             )));
   }
 }
