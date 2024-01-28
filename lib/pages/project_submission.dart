@@ -70,27 +70,29 @@ class _ProjSubmitState extends State<ProjSubmit> {
     id = prefs.getString('id') ?? "";
     token = prefs.getString('token') ?? "";
 
-    Team team = await getUserTeam(token);
+    Team? team = await getUserTeam(token);
 
-    Project proj = await getProject(id, token);
-    hasProj = true;
-    projId = proj.id;
-    _projName = proj.name;
-    _projDesc = proj.desc;
-    _githubUrl = proj.url;
-    _presUrl = proj.slides;
-    _vidUrl = proj.video;
-    isPresenting = proj.presentingVirtually;
-    prizes = proj.prizes;
+    Project? proj = await getProject(id, token);
 
-    nameController.text = _projName;
-    descController.text = _projDesc;
-    slidesController.text = _presUrl;
-    videoController.text = _vidUrl;
-    githubController.text = _githubUrl;
-  
+    if (proj != null) {
+      hasProj = true;
+      projId = proj.id;
+      _projName = proj.name;
+      _projDesc = proj.desc;
+      _githubUrl = proj.url;
+      _presUrl = proj.slides;
+      _vidUrl = proj.video;
+      isPresenting = proj.presentingVirtually;
+      prizes = proj.prizes;
+      nameController.text = _projName;
+      descController.text = _projDesc;
+      slidesController.text = _presUrl;
+      videoController.text = _vidUrl;
+      githubController.text = _githubUrl;
+    }
+
     loading?.remove();
-  
+
     setState(() {});
   }
 
@@ -118,16 +120,16 @@ class _ProjSubmitState extends State<ProjSubmit> {
   void submitDialog(BuildContext context) {
     Future proj;
 
-  proj = editProject(
-      context,
-      nameController.text,
-      descController.text,
-      slidesController.text,
-      videoController.text,
-      githubController.text,
-      isPresenting,
-      projId,
-      token);
+    proj = editProject(
+        context,
+        nameController.text,
+        descController.text,
+        slidesController.text,
+        videoController.text,
+        githubController.text,
+        isPresenting,
+        projId,
+        token);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -158,8 +160,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title:
-                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
+                title: Text("Error",
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Text("Project info failed to save. Please try again.",
                     style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
