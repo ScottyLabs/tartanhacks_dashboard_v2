@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,8 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _launchResume() async {
-    String url = userData.resume;
-    if (await canLaunch(url)) {
+    String? url = userData.resume;
+    if (url != null && await canLaunch(url)) {
       await launch(url);
     } else {
       errorDialog(context, "Error", 'Could not launch resume url.');
@@ -111,41 +110,42 @@ class _ProfilePageState extends State<ProfilePage> {
                 OverlayEntry loading = LoadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
-                    await setDisplayName(_editNicknameController.text, token) ?? false;
+                    await setDisplayName(_editNicknameController.text, token) ??
+                        false;
                 loading.remove();
 
                 if (success) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    // return object of type Dialog
-                    return AlertDialog(
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      title: Text("Success",
-                          style: Theme.of(context).textTheme.displayLarge),
-                      content: Text("Nickname has been changed.",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      actions: <Widget>[
-                        // usually buttons at the bottom of the dialog
-                        TextButton(
-                          child: Text(
-                            "OK",
-                            style: Theme.of(context).textTheme.headlineMedium,
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      // return object of type Dialog
+                      return AlertDialog(
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        title: Text("Success",
+                            style: Theme.of(context).textTheme.displayLarge),
+                        content: Text("Nickname has been changed.",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        actions: <Widget>[
+                          // usually buttons at the bottom of the dialog
+                          TextButton(
+                            child: Text(
+                              "OK",
+                              style: Theme.of(context).textTheme.headlineMedium,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .popUntil(ModalRoute.withName("profpage"));
+                            },
                           ),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .popUntil(ModalRoute.withName("profpage"));
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                errorDialog(context, "Nickname taken",
-                    "Please try a different name.");
-              }
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  errorDialog(context, "Nickname taken",
+                      "Please try a different name.");
+                }
               },
             ),
           ],
@@ -185,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               } else {
                                 loading.remove();
                               }
-                                                        })
+                            })
                       ]),
                       AspectRatio(
                           aspectRatio: 1.0 / 1.0,
@@ -236,8 +236,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       if (profilePicFile != null) {
                         OverlayEntry loading = LoadingOverlay(context);
                         Overlay.of(context).insert(loading);
-                        bool didUpload =
-                            await uploadProfilePic(File(profilePicFile!.path), token);
+                        bool didUpload = await uploadProfilePic(
+                            File(profilePicFile!.path), token);
                         if (!didUpload) {
                           errorDialog(context, "Error",
                               "An error occurred. Please try again.");
@@ -255,11 +255,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _cropPicture(setState) async {
+    if (userData.profilePicture != null) throw Error();
     if (profilePicFile != null) {
       profilePicFile = await ImageCropper().cropImage(
         sourcePath: profilePicFile != null
             ? profilePicFile!.path
-            : Uri.parse(userData.profilePicture).path,
+            : Uri.parse(userData.profilePicture!).path,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
         ],
@@ -271,8 +272,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _getImage(ImageSource source, setState) async {
-    String? profilePicFilePath = (await _picker.pickImage(source: source))?.path;
-    profilePicFile = profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
+    String? profilePicFilePath =
+        (await _picker.pickImage(source: source))?.path;
+    profilePicFile =
+        profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
     setState(() {});
   }
 
@@ -374,14 +377,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                                             null
                                                         ? Image.network(
                                                             userData
-                                                                .profilePicture,
+                                                                .profilePicture!,
                                                             fit: BoxFit.cover,
-                                                            errorBuilder: (BuildContext
-                                                                    context,
-                                                                Object
-                                                                    exception,
-                                                                StackTrace?
-                                                                    stackTrace) {
+                                                            errorBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    Object
+                                                                        exception,
+                                                                    StackTrace?
+                                                                        stackTrace) {
                                                             return Image.asset(
                                                                 'lib/logos/defaultpfp.PNG');
                                                           })
@@ -392,8 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     const SizedBox(width: 25),
                                     Expanded(
                                         child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -426,13 +429,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             Text(userData.school,
                                 style:
                                     Theme.of(context).textTheme.displaySmall),
-                            Text(userData.major,
-                                style:
-                                    Theme.of(context).textTheme.bodyMedium),
+                            Text(userData.major ?? "",
+                                style: Theme.of(context).textTheme.bodyMedium),
                             Text(
                                 "Expected graduation ${userData.graduationYear}",
-                                style:
-                                    Theme.of(context).textTheme.bodyMedium),
+                                style: Theme.of(context).textTheme.bodyMedium),
                             Row(
                               children: [
                                 ButtonBar(
