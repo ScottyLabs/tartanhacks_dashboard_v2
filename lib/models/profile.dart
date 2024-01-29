@@ -73,7 +73,6 @@ class Profile {
       this.profilePicture});
 
   factory Profile.fromJson(Map<String, dynamic> parsedJson) {
-    print(parsedJson);
     return Profile(
         totalPoints: parsedJson['totalPoints'],
         user: parsedJson['user'],
