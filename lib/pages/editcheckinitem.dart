@@ -128,8 +128,8 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 widget.checkInItem == null
                     ? "NEW CHECKIN ITEM"
                     : editable
-                        ? "EDIT CHECKIN ITEM"
-                        : "EVENT DETAILS",
+                    ? "EDIT CHECKIN ITEM"
+                    : "EVENT DETAILS",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               const SizedBox(
@@ -141,17 +141,13 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 label: "Name",
                 controller: _nameController,
                 onTap: () {},
-                validator: (String? val) {
-                  return null;
-                },
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "Description",
                 controller: _descController,
                 onTap: () {},
-                validator: (String? val) {
-                  return null;
-                },
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "Start Date",
@@ -166,7 +162,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       builder: (context, child) => Theme(
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
-                                  Theme.of(context).colorScheme.background),
+                              Theme.of(context).colorScheme.background),
                           child: child!));
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
@@ -175,9 +171,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     startDate = picked;
                   }
                 },
-                validator: (String? val) {
-                  return null;
-                },
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "End Date",
@@ -191,8 +185,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       daysBetween(startDate!, endDate!) < 0) {
                     return 'End date must be after start date';
                   }
-
-                  throw Error();
+                  return null;
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -204,7 +197,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       builder: (context, child) => Theme(
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
-                                  Theme.of(context).colorScheme.background),
+                              Theme.of(context).colorScheme.background),
                           child: child!));
                   _endDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
@@ -225,9 +218,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
                   startTime = picked;
                 },
-                validator: (String? val) {
-                  return null;
-                },
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                   label: "End Time",
@@ -245,7 +236,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                         return 'End time must be after start time';
                       }
                     }
-                    throw Error();
+                    return null;
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -262,9 +253,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 controller: _pointsController,
                 keyboardType: TextInputType.number,
                 onTap: () {},
-                validator: (String? value) {
-                  return null;
-                },
+                validator: (String? value) {},
               ),
 
               // Dropdown menus
@@ -274,11 +263,11 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   items: accessLevels
                       .asMap()
                       .map((i, label) => MapEntry(
-                          i,
-                          DropdownMenuItem(
-                            value: label,
-                            child: Text(label),
-                          )))
+                      i,
+                      DropdownMenuItem(
+                        value: label,
+                        child: Text(label),
+                      )))
                       .values
                       .toList(),
                   label: "Access levels",
@@ -353,7 +342,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                             description: _descController.text,
                             accessLevel: accessLevel,
                             startTime:
-                                startDateTime.toUtc().microsecondsSinceEpoch,
+                            startDateTime.toUtc().microsecondsSinceEpoch,
                             endTime: endDateTime.toUtc().microsecondsSinceEpoch,
                             enableSelfCheckIn: enableSelfCheckIn,
                             points: int.tryParse(_pointsController.text) ?? 0);
@@ -363,18 +352,18 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                             context: context,
                             barrierDismissible: false,
                             builder: (context) => const Center(
-                                    child: CircularProgressIndicator(
+                                child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                 )));
                         if (newItem) {
                           await Provider.of<CheckInItemsModel>(context,
-                                  listen: false)
+                              listen: false)
                               .addCheckInItem(updatedItem);
                         } else {
                           await Provider.of<CheckInItemsModel>(context,
-                                  listen: false)
+                              listen: false)
                               .editCheckInItem(
-                                  updatedItem, widget.checkInItem!.id);
+                              updatedItem, widget.checkInItem!.id);
                         }
                         Navigator.pop(context);
                         Navigator.pop(context);
@@ -401,10 +390,10 @@ class EditCheckInFormField extends StatelessWidget {
 
   const EditCheckInFormField(
       {required this.controller,
-      required this.label,
-      required this.onTap,
-      required this.validator,
-      this.keyboardType = TextInputType.text});
+        required this.label,
+        required this.onTap,
+        required this.validator,
+        this.keyboardType = TextInputType.text});
 
   @override
   Widget build(BuildContext context) {
@@ -418,12 +407,11 @@ class EditCheckInFormField extends StatelessWidget {
           onTap: onTap,
           enabled: editable,
           validator: validator ??
-              (val) {
+                  (val) {
                 if (val == null || val.isEmpty) {
                   return 'Cannot be empty';
                 }
-
-                throw Error();
+                return null;
               },
           enableSuggestions: false,
           inputFormatters: keyboardType == TextInputType.number
@@ -449,9 +437,9 @@ class EditCheckInDropDownFormField extends StatelessWidget {
 
   const EditCheckInDropDownFormField(
       {required this.items,
-      required this.label,
-      required this.initial,
-      required this.onChange});
+        required this.label,
+        required this.initial,
+        required this.onChange});
 
   @override
   Widget build(BuildContext context) {

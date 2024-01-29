@@ -81,7 +81,7 @@ class IDCheckInHeader extends StatelessWidget {
               String snackBarText = "";
               String id = eventIDController.text;
               var model =
-                  Provider.of<CheckInItemsModel>(context, listen: false);
+              Provider.of<CheckInItemsModel>(context, listen: false);
               if (id != "") {
                 try {
                   var contains = model.checkInItems.any((val) => val.id == id);
@@ -101,60 +101,60 @@ class IDCheckInHeader extends StatelessWidget {
                           return StatefulBuilder(builder: (context, setState) {
                             return isLoading
                                 ? const Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                              ),
+                            )
                                 : AlertDialog(
-                                    backgroundColor: Theme.of(context)
-                                        .scaffoldBackgroundColor,
-                                    title: const Text("Confirm Check In"),
-                                    content: RichText(
-                                      text: TextSpan(
-                                          text: "You are checking in to ",
-                                          style: TextStyle(
-                                            color: Theme.of(context).primaryColor,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                                text: "$name. \n\n",
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            const TextSpan(
-                                                text:
-                                                    "Ensure that you have selected the correct event before confirming you attendance.")
-                                          ]),
+                              backgroundColor: Theme.of(context)
+                                  .scaffoldBackgroundColor,
+                              title: const Text("Confirm Check In"),
+                              content: RichText(
+                                text: TextSpan(
+                                    text: "You are checking in to ",
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text("Cancel"),
-                                        onPressed: () =>
-                                            Navigator.pop(dialogContext),
-                                      ),
-                                      TextButton(
-                                          child: const Text("Confirm"),
-                                          onPressed: () async {
-                                            try {
-                                              setState(() {
-                                                isLoading = true;
-                                              });
-                                              await model.selfCheckIn(id);
-                                              Navigator.pop(context);
-                                              snackBarText =
-                                                  "Checked in to $name!";
-                                              eventIDController.clear();
-                                            } on Exception catch (e) {
-                                              Navigator.pop(context);
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    e.toString().substring(11)),
-                                              ));
-                                            }
-                                          })
-                                    ],
-                                  );
+                                    children: [
+                                      TextSpan(
+                                          text: "$name. \n\n",
+                                          style: const TextStyle(
+                                              fontWeight:
+                                              FontWeight.bold)),
+                                      const TextSpan(
+                                          text:
+                                          "Ensure that you have selected the correct event before confirming you attendance.")
+                                    ]),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: const Text("Cancel"),
+                                  onPressed: () =>
+                                      Navigator.pop(dialogContext),
+                                ),
+                                TextButton(
+                                    child: const Text("Confirm"),
+                                    onPressed: () async {
+                                      try {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        await model.selfCheckIn(id);
+                                        Navigator.pop(context);
+                                        snackBarText =
+                                        "Checked in to $name!";
+                                        eventIDController.clear();
+                                      } on Exception catch (e) {
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          content: Text(
+                                              e.toString().substring(11)),
+                                        ));
+                                      }
+                                    })
+                              ],
+                            );
                           });
                         });
                   }
