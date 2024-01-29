@@ -297,7 +297,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    if (ModalRoute.of(context) != null) {
+    if (ModalRoute.of(context)?.settings.arguments != null) {
       id = ModalRoute.of(context)?.settings.arguments as String;
     }
 
