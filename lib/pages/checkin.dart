@@ -6,7 +6,6 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/models/check_in_item.dart';
-import 'package:thdapp/models/old/json-classes.dart';
 import 'package:thdapp/pages/checkin_qr.dart';
 import 'package:thdapp/pages/editcheckinitem.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
@@ -210,7 +209,7 @@ class CheckInEvents extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const EditCheckInItemPage()))
+                                const EditCheckInItemPage(null)))
                   },
                   curvature: 12,
                   child: Text(

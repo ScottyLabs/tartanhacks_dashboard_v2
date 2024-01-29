@@ -81,8 +81,8 @@ class _LoginState extends State<Login> {
     prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('theme') == "light") {
-      var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-      _themeProvider.setTheme(lightTheme);
+      var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+      themeProvider.setTheme(lightTheme);
     }
 
     if (prefs.getString('email') != null &&
@@ -119,7 +119,7 @@ class _LoginState extends State<Login> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+    var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -140,7 +140,7 @@ class _LoginState extends State<Login> {
                             width: screenWidth,
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                            child: _themeProvider.getTheme == lightTheme
+                            child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))
                       ]),
@@ -164,7 +164,7 @@ class _LoginState extends State<Login> {
                                 decoration: const InputDecoration(
                                   labelText: "Email",
                                 ),
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next),
                           ),
@@ -177,7 +177,7 @@ class _LoginState extends State<Login> {
                               decoration: const InputDecoration(
                                 labelText: "Password",
                               ),
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           )
                         ],

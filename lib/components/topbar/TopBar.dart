@@ -16,20 +16,20 @@ class TopBar extends StatelessWidget {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    double safe_padding = mqData.padding.top;
+    double safePadding = mqData.padding.top;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Stack(alignment: Alignment.topLeft, children: [
           CustomPaint(
             size: Size(screenWidth * 0.65, screenHeight * 0.2),
-            painter: CurvedCorner(color: Theme.of(context).colorScheme.primary, padding: safe_padding),
+            painter: CurvedCorner(color: Theme.of(context).colorScheme.primary, padding: safePadding),
           ),
           Container(
               width: screenWidth * 0.65,
               height: screenHeight * 0.2,
               alignment: Alignment.topLeft,
-              padding: EdgeInsets.fromLTRB(10, safe_padding + 25, 0, 0),
+              padding: EdgeInsets.fromLTRB(10, safePadding + 25, 0, 0),
               child: TextLogo(
                   color: Theme.of(context).colorScheme.onSecondary,
                   width: screenWidth,
@@ -44,7 +44,7 @@ class TopBar extends StatelessWidget {
         Container(
             width: screenWidth * 0.35,
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.fromLTRB(0, safe_padding + 20, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, safePadding + 20, 0, 0),
             child: backflag
                 ? null
                 : Row(mainAxisAlignment: MainAxisAlignment.end, children: [

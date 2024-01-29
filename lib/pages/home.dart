@@ -16,7 +16,6 @@ import 'dart:math';
 
 import '../models/discord.dart';
 import '../models/profile.dart';
-import '../models/team.dart';
 import 'checkin.dart';
 import 'events/index.dart';
 import 'leaderboard.dart';
