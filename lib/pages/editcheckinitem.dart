@@ -86,7 +86,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
     super.initState();
 
     CheckInItem? item = widget.checkInItem;
-    if (item!=null) {
+    if (item != null) {
       _nameController.value = TextEditingValue(text: item.name);
       _descController.value = TextEditingValue(text: item.description);
       _pointsController.value = TextEditingValue(text: item.points.toString());
@@ -96,21 +96,24 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
       startTime = TimeOfDay.fromDateTime(startDate!);
       endTime = TimeOfDay.fromDateTime(endDate!);
 
-      _startDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate!));
-      _startTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(startDate!));
-      _endDateController.value = TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate!));
-      _endTimeController.value = TextEditingValue(text: DateFormat.Hm('en_US').format(endDate!));
+      _startDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(startDate!));
+      _startTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(startDate!));
+      _endDateController.value =
+          TextEditingValue(text: DateFormat.yMMMd('en_US').format(endDate!));
+      _endTimeController.value =
+          TextEditingValue(text: DateFormat.Hm('en_US').format(endDate!));
 
       newItem = false;
       enableSelfCheckIn = item.enableSelfCheckIn;
       accessLevel = item.accessLevel;
-    }
-    else {
+    } else {
       newItem = true;
       enableSelfCheckIn = false;
       accessLevel = accessLevels[0];
     }
-    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,11 +139,15 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
               // Form Fields
               EditCheckInFormField(
                 label: "Name",
-                controller: _nameController, onTap: () {  }, validator: (String? val) {  },
+                controller: _nameController,
+                onTap: () {},
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "Description",
-                controller: _descController, onTap: () {  }, validator: (String? val) {  },
+                controller: _descController,
+                onTap: () {},
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "Start Date",
@@ -157,11 +164,14 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                               dialogBackgroundColor:
                                   Theme.of(context).colorScheme.background),
                           child: child!));
-                  _startDateController.value = TextEditingValue(
-                      text: DateFormat.yMMMd('en_US').format(picked!));
+                  if (picked != null) {
+                    _startDateController.value = TextEditingValue(
+                        text: DateFormat.yMMMd('en_US').format(picked));
 
-                  startDate = picked!;
-                                }, validator: (String? val) {  },
+                    startDate = picked;
+                  }
+                },
+                validator: (String? val) {},
               ),
               EditCheckInFormField(
                 label: "End Date",
@@ -170,10 +180,12 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   if (val == null || val.isEmpty) {
                     return 'Cannot be empty';
                   }
-                  if (startDate != null && endDate != null && daysBetween(startDate!, endDate!) < 0) {
+                  if (startDate != null &&
+                      endDate != null &&
+                      daysBetween(startDate!, endDate!) < 0) {
                     return 'End date must be after start date';
                   }
-                                  return null;
+                  return null;
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -190,22 +202,24 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                   _endDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
                   endDate = picked;
-                                },
+                },
               ),
 
               EditCheckInFormField(
-                  label: "Start Time",
-                  controller: _startTimeController,
-                  onTap: () async {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    TimeOfDay? picked = await showTimePicker(
-                        context: context,
-                        initialTime: startTime ?? TimeOfDay.now());
-                    _startTimeController.value =
-                        TextEditingValue(text: picked!.format(context));
+                label: "Start Time",
+                controller: _startTimeController,
+                onTap: () async {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  TimeOfDay? picked = await showTimePicker(
+                      context: context,
+                      initialTime: startTime ?? TimeOfDay.now());
+                  _startTimeController.value =
+                      TextEditingValue(text: picked!.format(context));
 
-                    startTime = picked;
-                                    }, validator: (String? val) {  },),
+                  startTime = picked;
+                },
+                validator: (String? val) {},
+              ),
               EditCheckInFormField(
                   label: "End Time",
                   controller: _endTimeController,
@@ -213,12 +227,16 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     if (val == null || val.isEmpty) {
                       return 'Cannot be empty';
                     }
-                    if (startTime != null && endTime != null && startDate != null && endDate!=null && daysBetween(startDate!, endDate!) == 0) {
+                    if (startTime != null &&
+                        endTime != null &&
+                        startDate != null &&
+                        endDate != null &&
+                        daysBetween(startDate!, endDate!) == 0) {
                       if (toDouble(startTime!) > toDouble(endTime!)) {
                         return 'End time must be after start time';
                       }
                     }
-                                      return null;
+                    return null;
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -228,12 +246,14 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     _endTimeController.value =
                         TextEditingValue(text: picked!.format(context));
                     endTime = picked;
-                                    }),
+                  }),
 
               EditCheckInFormField(
                 label: "Points",
                 controller: _pointsController,
-                keyboardType: TextInputType.number, onTap: () {  }, validator: (String? value) {  },
+                keyboardType: TextInputType.number,
+                onTap: () {},
+                validator: (String? value) {},
               ),
 
               // Dropdown menus
