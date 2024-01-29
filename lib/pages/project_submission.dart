@@ -36,7 +36,6 @@ class ProjSubmitTextField extends StatelessWidget {
         if (value != null && value.isEmpty && !isOptional) {
           return '$fieldName is required';
         }
-        throw Error();
       },
     );
   }
@@ -60,9 +59,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String id = "";
-  String token = " ";
-  String projId = " ";
+  String token = "";
+  String projId = "";
   List prizes = [];
+  Team? team;
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -70,7 +70,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
     id = prefs.getString('id') ?? "";
     token = prefs.getString('token') ?? "";
 
-    Team? team = await getUserTeam(token);
+    team = await getUserTeam(token);
 
     Project? proj = await getProject(id, token);
 
@@ -126,16 +126,15 @@ class _ProjSubmitState extends State<ProjSubmit> {
   void submitDialog(BuildContext context) {
     Future proj;
 
-    proj = editProject(
-        context,
-        nameController.text,
-        descController.text,
-        slidesController.text,
-        videoController.text,
-        githubController.text,
-        isPresenting,
-        projId,
-        token);
+    if(team == null){
+      errorDialog(context, "Error", "You are not in a team!");
+      return;
+    } else if (projId != ""){
+      proj = editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    } else {
+      proj = newProject(context, nameController.text, descController.text, team?.teamID ?? "", slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
