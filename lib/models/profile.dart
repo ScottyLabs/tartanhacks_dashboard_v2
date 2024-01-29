@@ -7,7 +7,7 @@ class Profile {
   final int? age;
   final String school;
   final String? college;
-  final String level;
+  final String? level;
   final int graduationYear;
   final String gender;
   final String? genderOther;
@@ -44,7 +44,7 @@ class Profile {
       this.age,
       required this.school,
       this.college,
-      required this.level,
+      this.level,
       required this.graduationYear,
       required this.gender,
       this.genderOther,

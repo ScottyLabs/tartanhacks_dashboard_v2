@@ -19,7 +19,7 @@ class CheckInItemsModel with ChangeNotifier {
   List<CheckInItem> _list = [];
   late Map<String, bool>? hasCheckedIn;
 
-  late bool? isAdmin;
+  late bool isAdmin;
   late int? points;
 
   Status get checkInItemsStatus => _status;
@@ -38,11 +38,11 @@ class CheckInItemsModel with ChangeNotifier {
 
     _token = prefs.getString("token") ?? "";
     _uid = prefs.getString("id") ?? "";
-    isAdmin = prefs.getBool("admin");
+    isAdmin = prefs.getBool("admin") ?? false;
     _status = Status.fetching;
 
     try {
-      if (isAdmin != null) {
+      if (isAdmin) {
         _list = await api.getCheckInItems();
         hasCheckedIn = null;
         points = 0;

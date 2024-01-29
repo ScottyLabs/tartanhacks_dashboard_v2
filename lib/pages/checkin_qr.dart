@@ -112,6 +112,9 @@ class IDCheckInHeader extends StatelessWidget {
                                     content: RichText(
                                       text: TextSpan(
                                           text: "You are checking in to ",
+                                          style: TextStyle(
+                                            color: Theme.of(context).primaryColor,
+                                          ),
                                           children: [
                                             TextSpan(
                                                 text: "$name. \n\n",
