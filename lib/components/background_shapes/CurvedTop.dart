@@ -4,10 +4,12 @@ class CurvedTop extends CustomPainter {
   Color color1;
   Color color2;
   bool reverse;
+  double padding;
   CurvedTop({
     required this.color1, 
     required this.color2, 
-    this.reverse = false
+    this.reverse = false,
+    this.padding = 0
   });
   @override
   void paint(Canvas canvas, Size size) {
@@ -21,8 +23,8 @@ class CurvedTop extends CustomPainter {
       ).createShader(!reverse ? Rect.fromLTRB(0, 0, size.width, size.height) : Rect.fromLTRB(size.width, size.height, 0, 0));
     var path = Path();
     double curveHeight = size.height * (0.3);
-    path.moveTo(0, curveHeight);
-    path.cubicTo(.03*size.width, .17*curveHeight, .97*size.width, .83*curveHeight, size.width, 0);
+    path.moveTo(0, curveHeight - padding * 0.5);
+    path.cubicTo(.03*size.width, .17*curveHeight - padding * 0.5, .97*size.width, .83*curveHeight, size.width, -padding);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
     canvas.drawPath(path, paint);
