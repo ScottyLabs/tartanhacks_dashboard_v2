@@ -171,7 +171,7 @@ class _HomeState extends State<Home> {
                                 style: Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 8),
                             CountdownTimer(
-                              endTime: 1675549800000,
+                              endTime: 1706999400000,
                               endWidget: Text("Time's up!",
                                   style: TextStyle(
                                       fontSize: 24.0,
