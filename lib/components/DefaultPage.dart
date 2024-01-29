@@ -41,7 +41,8 @@ class DefaultPage extends StatelessWidget {
                                       painter: CurvedTop(
                                           color1: Theme.of(context).colorScheme.primary,
                                           color2: Theme.of(context).colorScheme.secondary,
-                                          reverse: reverse
+                                          reverse: reverse,
+                                        padding: mqData.padding.top
                                       )
                                   ),
                                 ]
