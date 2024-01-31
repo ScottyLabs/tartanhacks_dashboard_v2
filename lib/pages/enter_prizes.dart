@@ -22,8 +22,8 @@ class _EnterPrizesState extends State<EnterPrizes> {
   late String token;
   late String projId;
 
-  late List<Prize> prizes;
-  late List enteredPrizes;
+  List<Prize> prizes = [];
+  List enteredPrizes = [];
 
    _EnterPrizesState({required this.projId, required this.enteredPrizes});
 
