@@ -181,7 +181,7 @@ class _LeaderboardState extends State<Leaderboard> {
                     GradBox(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.55,
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
                         alignment: Alignment.topLeft,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
