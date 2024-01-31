@@ -20,7 +20,7 @@ import 'package:http_parser/http_parser.dart';
 
 late SharedPreferences prefs;
 
-const baseUrl = "https://dev.backend.tartanhacks.com/";
+const baseUrl = "https://backend.tartanhacks.com/";
 
 Future<User?> checkCredentials(String email, String password) async {
   Uri url = Uri.parse("${baseUrl}auth/login");
@@ -524,7 +524,6 @@ Future<Project?> getProject(String id, String token) async {
   };
 
   final response = await http.get(url, headers: headers);
-
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Project project = Project.fromJson(data);
@@ -560,7 +559,7 @@ Future<Project> newProject(
     "presentingVirtually": isVirtual
   });
   final response = await http.post(url, headers: headers, body: body);
-
+  print(response.body);
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Project project = Project.fromJson(data);
@@ -594,12 +593,14 @@ Future<Project> editProject(
     "presentingVirtually": isVirtual
   });
   final response = await http.patch(url, headers: headers, body: body);
-
+  print("ID: ${id}");
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Project project = Project.fromJson(data);
     return project;
   } else {
+    print("RESPONSE:");
+    print(response.body);
     return Future.error("Error");
     //errorDialog(context, "Error", json.decode(response.body)['message']);
   }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import '/models/team.dart';
 
-const baseUrl = "https://dev.backend.tartanhacks.com/";
+const baseUrl = "https://backend.tartanhacks.com/";
 
 Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {
@@ -59,11 +59,8 @@ Future<Team?> getUserTeam(String token) async {
     }
     Team team = Team.fromJson(parsedJson);
     return team;
-  } else if (response.statusCode == 404) {
-    return null;
   }
-
-  throw Error();
+  return null;
 }
 
 Future<List<dynamic>> getTeamMail(String token) async {
