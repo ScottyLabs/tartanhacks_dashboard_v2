@@ -45,6 +45,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     isAdmin = prefs.getBool('admin')!;
     token = prefs.getString('token')!;
+    id = prefs.getString('id')!;
+    isSelf = true;
 
     userData = await getProfile(id, token);
 
@@ -121,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       // return object of type Dialog
                       return AlertDialog(
                         backgroundColor:
-                        Theme.of(context).scaffoldBackgroundColor,
+                            Theme.of(context).scaffoldBackgroundColor,
                         title: Text("Success",
                             style: Theme.of(context).textTheme.displayLarge),
                         content: Text("Nickname has been changed.",
@@ -192,11 +194,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: profilePicFile != null
                               ? Image.file(profilePicFile as File)
                               : Container(
-                              color: Colors.black,
-                              child: const Center(
-                                  child: Text("No picture chosen",
-                                      style: TextStyle(
-                                          color: Colors.white))))),
+                                  color: Colors.black,
+                                  child: const Center(
+                                      child: Text("No picture chosen",
+                                          style: TextStyle(
+                                              color: Colors.white))))),
                       ButtonBar(alignment: MainAxisAlignment.center, children: [
                         SolidButton(
                             text: "Gallery",
@@ -275,7 +277,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String? profilePicFilePath =
         (await _picker.pickImage(source: source))?.path;
     profilePicFile =
-    profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
+        profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
     setState(() {});
   }
 
@@ -326,7 +328,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         if (!isSelf)
                           Expanded(
                               child: IconButton(
-                                  icon: widget.bookmarks!.containsValue(id)
+                                  icon: widget.bookmarks != null &&
+                                          widget.bookmarks!.containsValue(id)
                                       ? const Icon(Icons.bookmark)
                                       : const Icon(Icons.bookmark_outline),
                                   color: Theme.of(context).colorScheme.primary,
@@ -336,12 +339,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                       String bmId = widget.bookmarks?.keys
                                           .firstWhere(
                                               (k) => widget.bookmarks?[k] == id,
-                                          orElse: () => null);
+                                              orElse: () => null);
                                       deleteBookmark(token, bmId);
                                       widget.bookmarks?.remove(bmId);
                                     } else {
                                       String bmId =
-                                      await addBookmark(token, id);
+                                          await addBookmark(token, id);
                                       widget.bookmarks?[bmId] = id;
                                     }
                                     setState(() {});
@@ -354,7 +357,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Container(
                                 height: 150,
                                 padding:
-                                const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                    const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -368,56 +371,56 @@ class _ProfilePageState extends State<ProfilePage> {
                                           aspectRatio: 1 / 1,
                                           child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                               child: Container(
                                                 color: Colors.black,
                                                 child: Center(
                                                     child: userData
-                                                        .profilePicture !=
-                                                        null
+                                                                .profilePicture !=
+                                                            null
                                                         ? Image.network(
-                                                        userData
-                                                            .profilePicture!,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder:
-                                                            (BuildContext
-                                                        context,
-                                                            Object
-                                                            exception,
-                                                            StackTrace?
-                                                            stackTrace) {
-                                                          return Image.asset(
-                                                              'lib/logos/defaultpfp.PNG');
-                                                        })
+                                                            userData
+                                                                .profilePicture!,
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    Object
+                                                                        exception,
+                                                                    StackTrace?
+                                                                        stackTrace) {
+                                                            return Image.asset(
+                                                                'lib/logos/defaultpfp.PNG');
+                                                          })
                                                         : Image.asset(
-                                                        'lib/logos/defaultpfp.PNG')),
+                                                            'lib/logos/defaultpfp.PNG')),
                                               )),
                                         )),
                                     const SizedBox(width: 25),
                                     Expanded(
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          crossAxisAlignment:
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                          children: [
-                                            Text(userData.firstName,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall),
-                                            Text(userData.lastName,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall),
-                                            Text('"${userData.displayName}"',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium),
-                                            Text(teamName,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium),
-                                          ],
-                                        ))
+                                      children: [
+                                        Text(userData.firstName,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall),
+                                        Text(userData.lastName,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .displaySmall),
+                                        Text('"${userData.displayName}"',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
+                                        Text(teamName,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium),
+                                      ],
+                                    ))
                                   ],
                                 )),
                             if (isSelf)
@@ -428,7 +431,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             const SizedBox(height: 10),
                             Text(userData.school,
                                 style:
-                                Theme.of(context).textTheme.displaySmall),
+                                    Theme.of(context).textTheme.displaySmall),
                             Text(userData.major ?? "",
                                 style: Theme.of(context).textTheme.bodyMedium),
                             Text(

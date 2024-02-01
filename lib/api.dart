@@ -637,7 +637,7 @@ Future<Team?> getTeamById(String id, String token) async {
     Team team = Team.fromJson(data);
     return team;
   } else {
-    throw Error();
+    return null;
   }
 }
 
