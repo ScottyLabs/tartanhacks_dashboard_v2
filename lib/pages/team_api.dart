@@ -103,7 +103,7 @@ Future<void> cancelRequest(String token, String requestID) async {
 
 Future<void> declineRequest(String token, String requestID) async {
   String url =
-      "${baseUrl}requests/cancel/$requestID";
+      "${baseUrl}requests/decline/$requestID";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -125,7 +125,7 @@ Future<List<dynamic>> getUserMail(String token) async {
     var data = json.decode(response.body);
     return data;
   }
-  throw Error();
+  throw response.body;
 }
 
 Future<void> inviteTeamMember(String userEmail, String token) async {

@@ -150,15 +150,27 @@ class _ViewInvitesState extends State<ViewInvites> {
   Future<void> fetchData() async {
     String token = Provider.of<UserInfoModel>(context, listen: false).token;
     bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
-    List<dynamic> fetchedList;
+    List<dynamic>? fetchedList;
     if (hasTeam) {
       fetchedList = await getTeamMail(token);
     } else {
-      fetchedList = await getUserMail(token);
+      try {
+        fetchedList = await getUserMail(token);
+      } on String catch (e) {
+        if (e.toString().contains("You're already in a team!")) {
+          await Provider.of<UserInfoModel>(context, listen: false)
+              .fetchUserInfo();
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => ViewTeam()),
+              (route) => route.isFirst);
+        }
+      }
+
     }
     setState(() {
       fetchStatus = fetchedList == null ? Status.error : Status.loaded;
-      requestsList = fetchedList;
+      requestsList = fetchedList ?? [];
     });
   }
 
