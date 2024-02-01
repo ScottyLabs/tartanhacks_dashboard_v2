@@ -3,7 +3,7 @@ class Prize{
   final String event; //objectid
   final String name;
   final String description;
-  final String eligibility;
+  final String? eligibility;
   final String? provider; //objectid
   final String? winner; //objectid
 
@@ -13,7 +13,7 @@ class Prize{
     required this.event,
     required this.name,
     required this.description,
-    required this.eligibility,
+    this.eligibility,
     this.provider,
     this.winner
   });

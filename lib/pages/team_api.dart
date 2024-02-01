@@ -59,11 +59,8 @@ Future<Team?> getUserTeam(String token) async {
     }
     Team team = Team.fromJson(parsedJson);
     return team;
-  } else if (response.statusCode == 404) {
-    return null;
   }
-
-  throw Error();
+  return null;
 }
 
 Future<List<dynamic>> getTeamMail(String token) async {

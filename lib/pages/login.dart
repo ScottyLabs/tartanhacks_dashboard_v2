@@ -97,10 +97,10 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-        // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-        //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
-        //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-        //       "after you've been confirmed.");
+        } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+          errorDialog(context, "Unconfirmed", "Your participant account has not been "
+              "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+              "after you've been confirmed.");
       } else {
         Provider.of<UserInfoModel>(context, listen: false)
             .fetchUserInfo()
