@@ -165,11 +165,6 @@ class _TeamsListState extends State<TeamsList> {
     teams = await getTeams(token);
     teams = teams.where((e) => e.visible).toList();
     teams.sort((a, b) => a.name.compareTo(b.name));
-    List requestsList = await getUserMail(token);
-    requestedTeams =
-        requestsList.map((e) => e['team']['_id'].toString()).toSet() ?? {};
-    fetchStatus = Status.loaded;
-    setState(() {});
 
     // Reload user's team and redirect to ViewTeam page if user has a team
     await Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
@@ -180,7 +175,14 @@ class _TeamsListState extends State<TeamsList> {
           MaterialPageRoute(
               builder: (context) => ViewTeam(),
               settings: const RouteSettings(arguments: "")));
+      return;
     }
+
+    List requestsList = await getUserMail(token);
+    requestedTeams =
+        requestsList.map((e) => e['team']['_id'].toString()).toSet() ?? {};
+    fetchStatus = Status.loaded;
+    setState(() {});
   }
 
   @override
@@ -195,7 +197,7 @@ class _TeamsListState extends State<TeamsList> {
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
             child: RefreshIndicator(
-              onRefresh: () {
+              onRefresh: () async {
                 searchController.clear();
                 return fetchData();
               },

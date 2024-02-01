@@ -144,10 +144,10 @@ class LeaveJoinTeamBtn extends StatelessWidget {
               ));
               return;
             }
-            await Provider.of<UserInfoModel>(context, listen: false)
-                .fetchUserInfo();
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => TeamsList()));
+            Navigator.pushAndRemoveUntil(
+                context, MaterialPageRoute(builder: (context) => TeamsList()),
+                (route) => route.isFirst
+            );
           });
         },
         color: Theme.of(context).colorScheme.tertiaryContainer);
@@ -171,43 +171,51 @@ class MemberListElement extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
         child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                RichText(
-                    text: TextSpan(children: [
-                  TextSpan(
-                      text: "$nameStr  ",
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  if (isMemAdmin)
-                    WidgetSpan(
-                        child: Icon(Icons.star,
-                            size: 20,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .tertiaryContainer))
-                ])),
-                Text(emailStr, style: Theme.of(context).textTheme.bodyMedium)
-              ]),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+          Expanded(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    overflow: TextOverflow.ellipsis,
+                      text: TextSpan(children: [
+                    TextSpan(
+                        text: nameStr,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    if (isMemAdmin)
+                      WidgetSpan(
+                          child: Icon(Icons.star,
+                              size: 20,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .tertiaryContainer))
+                  ])),
+                  Text(emailStr, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis,)
+                ]),
+          ),
           if (isAdmin && !isMemAdmin)
-            SolidButton(
-              text: "Promote",
-              color: Theme.of(context).colorScheme.secondary,
-              onPressed: () {
-                showConfirmDialog(context,
-                    "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
-                    () {
-                  String token =
-                      Provider.of<UserInfoModel>(context, listen: false).token;
-                  promoteToAdmin(id, token).then((_) {
-                    Navigator.of(context).pop();
-                    Provider.of<UserInfoModel>(context, listen: false)
-                        .fetchUserInfo();
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+              child: SolidButton(
+                text: "Promote",
+                color: Theme.of(context).colorScheme.secondary,
+                onPressed: () {
+                  showConfirmDialog(context,
+                      "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
+                      () {
+                    String token =
+                        Provider.of<UserInfoModel>(context, listen: false).token;
+                    promoteToAdmin(id, token).then((_) {
+                      Navigator.of(context).pop();
+                      Provider.of<UserInfoModel>(context, listen: false)
+                          .fetchUserInfo();
+                    });
                   });
-                });
-              },
+                },
+              ),
             )
         ]));
   }
@@ -415,7 +423,7 @@ class ViewTeam extends StatelessWidget {
 
     String teamId = "";
     if (ModalRoute.of(context) != null) {
-      teamId = ModalRoute.of(context)?.settings.arguments as String;
+      teamId = ModalRoute.of(context)?.settings.arguments as String? ?? "";
     }
 
     return DefaultPage(
@@ -430,8 +438,13 @@ class ViewTeam extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 alignment: Alignment.topLeft,
                 child: SingleChildScrollView(
-                    child: teamId == ""
-                        ? OwnTeamView()
-                        : BrowseTeamView(teamId)))));
+                    child: () {
+                      if (teamId == "") {
+                        return OwnTeamView();
+                      } else {
+                        return BrowseTeamView(teamId);
+                      }
+                    }()
+                       ))));
   }
 }
