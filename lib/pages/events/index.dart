@@ -193,7 +193,18 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => EditEventPage(
-                          null,
+                          Event(
+                              id: "",
+                              name: "",
+                              description: "",
+                              location: "",
+                              platform: "IN_PERSON",
+                              platformUrl: "",
+                              startTime: DateTime.now().millisecondsSinceEpoch,
+                              endTime: DateTime.now().millisecondsSinceEpoch,
+                              active: true,
+                              lat: 0,
+                              lng: 0),
                           editable: isAdmin,
                         )),
               );

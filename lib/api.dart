@@ -234,7 +234,7 @@ Future<String> addBookmark(String token, String participantId) async {
 }
 
 Future<List<List<Event>>?> getEvents() async {
-  var url = Uri(host: baseUrl, path: 'schedule/');
+  var url = Uri.parse("${baseUrl}schedule/");
   final response = await http.get(url);
   if (response.statusCode == 200) {
     List<Event> eventsList;
@@ -271,7 +271,7 @@ Future<bool> addEvent(
 
   String token = prefs.getString("token")!;
 
-  Uri url = Uri(host: baseUrl, path: "schedule/");
+  Uri url = Uri.parse("${baseUrl}schedule");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token

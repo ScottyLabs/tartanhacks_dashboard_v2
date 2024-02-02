@@ -182,7 +182,12 @@ class _EventFormState extends State<EventItemForm> {
     _endTimeController.value =
         TextEditingValue(text: DateFormat.Hm('en_US').format(endDate));
 
-    newItem = false;
+    if (widget.event.id == "") {
+      newItem = true;
+    } else {
+      newItem = false;
+    }
+
     platform = item.platform;
   }
 
@@ -250,7 +255,8 @@ class _EventFormState extends State<EventItemForm> {
                       value.isEmpty && platform == "IN_PERSON") {
                     return "Location is required";
                   }
-                  throw Error();
+
+                  return null;
                 },
               ),
               EditEventFormField(
@@ -262,7 +268,8 @@ class _EventFormState extends State<EventItemForm> {
                       value.isEmpty && platform != "IN_PERSON") {
                     return "URL is required";
                   }
-                  throw Error();
+
+                  return null;
                 },
               ),
               EditEventFormField(
@@ -294,7 +301,8 @@ class _EventFormState extends State<EventItemForm> {
                   if (daysBetween(startDate, endDate) < 0) {
                     return 'End date must be after start date';
                   }
-                  throw Error();
+
+                  return null;
                 },
                 onTap: () async {
                   FocusScope.of(context).requestFocus(FocusNode());
@@ -337,7 +345,8 @@ class _EventFormState extends State<EventItemForm> {
                         return 'End time must be after start time';
                       }
                     }
-                    throw Error();
+
+                    return null;
                   },
                   onTap: () async {
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -457,7 +466,8 @@ class EditEventFormField extends StatelessWidget {
                 if (val == null || val.isEmpty) {
                   return 'Cannot be empty';
                 }
-                throw Error();
+
+                return null;
               },
           enableSuggestions: false,
           inputFormatters: keyboardType == TextInputType.number
