@@ -222,11 +222,19 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
               child: FutureBuilder(
                 future: getEvents(),
                 builder: (context, eventsSnapshot) {
-                  if (eventsSnapshot.data == null) {
+                  if (eventsSnapshot.connectionState ==
+                      ConnectionState.waiting) {
                     return ListView.builder(
                       itemCount: 1,
                       itemBuilder: (BuildContext context, int index) {
                         return const Center(child: CircularProgressIndicator());
+                      },
+                    );
+                  } else if (eventsSnapshot.hasError) {
+                    return ListView.builder(
+                      itemCount: 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return const Center(child: Text("Error"));
                       },
                     );
                   }
@@ -344,7 +352,13 @@ class EventsCard extends StatelessWidget {
   }
 
   _launchLink(BuildContext context) async {
-    String url = event.platformUrl;
+    String? url = event.platformUrl;
+
+    if (url == null) {
+      errorDialog(context, "Warning", "No link available for this event.");
+      return;
+    }
+
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -385,7 +399,7 @@ class EventsCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              event.description,
+                              event.description ?? "No Description.",
                               style: Theme.of(context).textTheme.bodyMedium,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

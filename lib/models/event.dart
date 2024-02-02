@@ -3,27 +3,27 @@ class Event {
   final String platform;
   final bool active;
   final String name;
-  final String description;
+  final String? description;
   //time is unix
   final int startTime;
   final int endTime;
   final String location;
-  final int lat;
-  final int lng;
-  final String platformUrl;
+  final int? lat;
+  final int? lng;
+  final String? platformUrl;
 
   Event({
     required this.id,
     required this.platform,
     required this.active,
     required this.name,
-    required this.description,
+    this.description,
     required this.startTime,
     required this.endTime,
     required this.location,
-    required this.lat,
-    required this.lng,
-    required this.platformUrl
+    this.lat,
+    this.lng,
+    this.platformUrl
   });
 
   factory Event.fromJson(Map<String, dynamic> parsedJson) {
@@ -46,12 +46,12 @@ class Event {
 class EventDTO {
   final String platform;
   final String name;
-  final String description;
+  final String? description;
   //time is unix
   final int startTime;
   final int endTime;
   final String location;
-  final String platformUrl;
+  final String? platformUrl;
 
   EventDTO({
     required this.name,

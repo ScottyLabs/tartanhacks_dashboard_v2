@@ -164,8 +164,8 @@ class _EventFormState extends State<EventItemForm> {
 
     Event item = widget.event;
     _nameController.value = TextEditingValue(text: widget.event.name);
-    _descController.value = TextEditingValue(text: widget.event.description);
-    _linkController.value = TextEditingValue(text: widget.event.platformUrl);
+    _descController.value = TextEditingValue(text: widget.event.description ?? "");
+    _linkController.value = TextEditingValue(text: widget.event.platformUrl ?? "");
     _locController.value = TextEditingValue(text: widget.event.location);
 
     startDate = DateTime.fromMicrosecondsSinceEpoch(widget.event.startTime);
