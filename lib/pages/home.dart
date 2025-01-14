@@ -10,7 +10,9 @@ import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/pages/teams_list.dart';
+import 'package:thdapp/providers/expo_config_provider.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
+import 'package:thdapp/pages/admin/manage_tables.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 
@@ -44,6 +46,9 @@ class _HomeState extends State<Home> {
   @override
   initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ExpoConfigProvider>(context, listen: false).loadConfig(token);
+    });
     getData();
   }
 
@@ -137,6 +142,38 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Widget _buildAdminSection() {
+    return Consumer<UserInfoModel>(
+      builder: (context, userInfo, child) {
+        if (userInfo.isAdmin) {
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                "Admin Controls",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 8),
+              SolidButton(
+                text: "Manage Project Tables",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ManageTablesPage(),
+                    ),
+                  );
+                },
+              ),
+              // ... any other admin buttons ...
+            ],
+          );
+        }
+        return const SizedBox.shrink(); // Return empty widget for non-admins
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -171,19 +208,24 @@ class _HomeState extends State<Home> {
                                 style: Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 8),
                             CountdownTimer(
-                              endTime: 1706999400000,
-                              endWidget: Text("Time's up!",
-                                  style: TextStyle(
-                                      fontSize: 24.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .tertiary)),
-                              textStyle: TextStyle(
-                                  fontSize: 30.0,
+                              endTime: Provider.of<ExpoConfigProvider>(context)
+                                  .config
+                                  ?.submissionDeadline
+                                  .millisecondsSinceEpoch ?? 
+                                  DateTime.now().millisecondsSinceEpoch,
+                              endWidget: Text(
+                                "Time's up!",
+                                style: TextStyle(
+                                  fontSize: 24.0,
                                   fontWeight: FontWeight.bold,
-                                  color:
-                                      Theme.of(context).colorScheme.tertiary),
+                                  color: Theme.of(context).colorScheme.tertiary
+                                )
+                              ),
+                              textStyle: TextStyle(
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.tertiary
+                              ),
                             ),
                           ])),
                   SizedBox(height: screenHeight * 0.08),
@@ -339,7 +381,8 @@ class _HomeState extends State<Home> {
                         "JOIN A TEAM",
                         style: Theme.of(context).textTheme.displayMedium,
                       ),
-                    )
+                    ),
+                  _buildAdminSection()
                 ],
               ));
   }

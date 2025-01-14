@@ -5,11 +5,13 @@ import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
+import 'package:thdapp/models/config.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
 import '../models/team.dart';
 import 'team_api.dart';
+import 'table_submission.dart';
 
 class ProjSubmit extends StatefulWidget {
   @override
@@ -55,6 +57,9 @@ class _ProjSubmitState extends State<ProjSubmit> {
   TextEditingController githubController = TextEditingController();
   TextEditingController slidesController = TextEditingController();
   TextEditingController videoController = TextEditingController();
+  final tableNumberController = TextEditingController();
+  ExpoConfig? expoConfig;
+  bool canSubmitTable = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -105,6 +110,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
   @override
   initState() {
     super.initState();
+    _loadExpoConfig();
     getData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loading = LoadingOverlay(context);
@@ -123,16 +129,55 @@ class _ProjSubmitState extends State<ProjSubmit> {
     super.dispose();
   }
 
+  Future<void> _loadExpoConfig() async {
+    try {
+      expoConfig = await getExpoConfig(token);
+      setState(() {
+        canSubmitTable = DateTime.now().isBefore(expoConfig!.expoStartTime);
+      });
+    } catch (e) {
+      print('Failed to load expo config: $e');
+    }
+  }
+
   void submitDialog(BuildContext context) {
     Future proj;
+    
+    int? tableNum;
+    if (tableNumberController.text.isNotEmpty) {
+      tableNum = int.tryParse(tableNumberController.text);
+    }
 
-    if(team == null){
+    if (team == null) {
       errorDialog(context, "Error", "You are not in a team!");
       return;
-    } else if (projId != ""){
-      proj = editProject(context, nameController.text, descController.text, slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+    } else if (projId != "") {
+      proj = editProject(
+        context,
+        nameController.text,
+        descController.text,
+        slidesController.text,
+        videoController.text,
+        githubController.text,
+        isPresenting,
+        projId,
+        token,
+        tableNumber: tableNum,
+      );
     } else {
-      proj = newProject(context, nameController.text, descController.text, team?.teamID ?? "", slidesController.text, videoController.text, githubController.text, isPresenting, projId, token);
+      proj = newProject(
+        context,
+        nameController.text,
+        descController.text,
+        team?.teamID ?? "",
+        slidesController.text,
+        videoController.text,
+        githubController.text,
+        isPresenting,
+        projId,
+        token,
+        tableNumber: tableNum,
+      );
     }
 
     showDialog(
@@ -197,6 +242,30 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
+  Widget _buildTableNumberField() {
+    if (!canSubmitTable) {
+      return const SizedBox.shrink();
+    }
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ProjSubmitTextField(
+          tableNumberController,
+          "Table Number",
+          isOptional: true,
+        ),
+        Text(
+          "Table number can only be submitted before expo starts",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -237,6 +306,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         ProjSubmitTextField(videoController, "Video URL",
                             isOptional: true),
                         const SizedBox(height: 8),
+                        _buildTableNumberField(),
+                        const SizedBox(height: 8),
                         SolidButton(
                           text: "Save",
                           onPressed: () {
@@ -266,7 +337,33 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                   "You do not have a project to enter!");
                             }
                           },
-                        )
+                        ),
+                        if (hasProj)
+                          SolidButton(
+                            text: "Submit Table Number",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TableSubmission(
+                                    project: Project(
+                                      id: projId,
+                                      name: nameController.text,
+                                      desc: descController.text,
+                                      event: "",
+                                      url: githubController.text,
+                                      slides: slidesController.text,
+                                      video: videoController.text,
+                                      team: team?.teamID ?? "",
+                                      prizes: prizes,
+                                      presentingVirtually: isPresenting,
+                                      tableNumber: null,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                       ],
                     ))))));
   }

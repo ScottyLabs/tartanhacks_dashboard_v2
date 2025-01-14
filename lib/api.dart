@@ -17,6 +17,7 @@ import 'models/project.dart';
 import 'models/team.dart';
 import 'models/discord.dart';
 import 'package:http_parser/http_parser.dart';
+import 'models/config.dart';
 
 late SharedPreferences prefs;
 
@@ -534,74 +535,93 @@ Future<Project?> getProject(String id, String token) async {
   }
 }
 
-Future<Project> newProject(
+Future<bool> newProject(
     BuildContext context,
     String name,
     String desc,
-    String teamId,
+    String team,
     String slides,
     String video,
-    String ghurl,
-    bool isVirtual,
-    String id,
-    String token) async {
-  Uri url = Uri.parse("${baseUrl}projects");
+    String github,
+    bool presenting,
+    String projId,
+    String token,
+    {int? tableNumber}
+    ) async {
+  Uri url = Uri.parse("${baseUrl}projects/");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({
+  
+  Map<String, dynamic> body = {
     "name": name,
     "description": desc,
-    "team": teamId,
+    "team": team,
     "slides": slides,
     "video": video,
-    "url": ghurl,
-    "presentingVirtually": isVirtual
-  });
-  final response = await http.post(url, headers: headers, body: body);
+    "url": github,
+    "presentingVirtually": presenting,
+  };
+  if (tableNumber != null) {
+    body["tableNumber"] = tableNumber;
+  }
+
+  final response = await http.post(
+    url, 
+    headers: headers,
+    body: json.encode(body)
+  );
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    Project project = Project.fromJson(data);
-    return project;
+    return true;
   } else {
-    return Future.error("Error");
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
   }
 }
 
-Future<Project> editProject(
+Future<bool> editProject(
     BuildContext context,
     String name,
     String desc,
     String slides,
     String video,
-    String ghurl,
-    bool isVirtual,
-    String id,
-    String token) async {
-  Uri url = Uri.parse("${baseUrl}projects/$id");
+    String github,
+    bool presenting,
+    String projId,
+    String token,
+    {int? tableNumber}
+    ) async {
+  Uri url = Uri.parse("${baseUrl}projects/$projId");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({
+
+  Map<String, dynamic> body = {
     "name": name,
     "description": desc,
     "slides": slides,
     "video": video,
-    "url": ghurl,
-    "presentingVirtually": isVirtual
-  });
-  final response = await http.patch(url, headers: headers, body: body);
+    "url": github,
+    "presentingVirtually": presenting,
+  };
+  if (tableNumber != null) {
+    body["tableNumber"] = tableNumber;
+  }
+
+  final response = await http.patch(
+    url, 
+    headers: headers,
+    body: json.encode(body)
+  );
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    Project project = Project.fromJson(data);
-    return project;
+    return true;
   } else {
-    return Future.error("Error");
-    //errorDialog(context, "Error", json.decode(response.body)['message']);
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
   }
 }
 
@@ -687,4 +707,60 @@ Future<bool> deleteProfilePic(String token) async {
   } else {
     return false;
   }
+}
+
+// Get all projects (admin only)
+Future<List<Project>> getAllProjects(String token) async {
+  Uri url = Uri.parse("${baseUrl}projects/all");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    List<dynamic> projectsJson = json.decode(response.body);
+    return projectsJson.map((json) => Project.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load projects');
+  }
+}
+
+// Update project table number (admin only)
+Future<bool> updateProjectTableNumber(String projectId, int tableNumber, String token) async {
+  Uri url = Uri.parse("${baseUrl}projects/$projectId/table");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  final response = await http.patch(
+    url,
+    headers: headers,
+    body: json.encode({"tableNumber": tableNumber})
+  );
+
+  return response.statusCode == 200;
+}
+
+Future<ExpoConfig> getExpoConfig(String token) async {
+  Uri url = Uri.parse("${baseUrl}config/expo");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    return ExpoConfig.fromJson(json.decode(response.body));
+  } else {
+    throw Exception('Failed to load expo configuration');
+  }
+}
+
+bool _canSubmitTableNumber(ExpoConfig config) {
+  final now = DateTime.now();
+  return now.isBefore(config.expoStartTime);
 }
