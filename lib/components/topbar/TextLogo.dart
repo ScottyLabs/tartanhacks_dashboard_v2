@@ -8,11 +8,11 @@ class TextLogo extends StatelessWidget {
   final double width;
   final double height;
 
-  const TextLogo({this.color, this.width, this.height});
+  const TextLogo({ required this.color, required this.width, required this.height });
 
   @override
   Widget build(BuildContext context) {
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+    var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
     return SizedBox(
         width: width,
         height: height,
@@ -23,7 +23,7 @@ class TextLogo extends StatelessWidget {
               SizedBox(
                   height: height,
                   width: min(width*0.20, 50),
-                  child: _themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight_small.png")
+                  child: themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoLight_small.png")
                       : Image.asset("lib/logos/thLogoLight_small.png")
               ),
               Text(" Tartanhacks ",

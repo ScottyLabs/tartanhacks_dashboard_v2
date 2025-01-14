@@ -3,7 +3,7 @@ import 'dart:math';
 
 class FlagPainter extends CustomPainter {
   Color color;
-  FlagPainter({this.color});
+  FlagPainter({ required this.color });
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()

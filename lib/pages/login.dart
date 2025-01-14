@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
   final _emailcontroller = TextEditingController();
   final _passwordcontroller = TextEditingController();
 
-  SharedPreferences prefs;
+  late SharedPreferences prefs;
 
   @override
   initState() {
@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
   void login(String email, String password) async {
     OverlayEntry loading = LoadingOverlay(context);
     Overlay.of(context).insert(loading);
-    User logindata = await checkCredentials(email, password);
+    User? logindata = await checkCredentials(email, password);
     if (logindata != null) {
       TextInput.finishAutofillContext();
       if (logindata.company != null) {
@@ -51,13 +51,18 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-      // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-      //   loading.remove();
-      //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
-      //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-      //       "after you've been confirmed.");
+      } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        loading.remove();
+        errorDialog(
+            context,
+            "Unconfirmed",
+            "Your participant account has not been "
+                "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+                "after you've been confirmed.");
       } else {
-        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+        Provider.of<UserInfoModel>(context, listen: false)
+            .fetchUserInfo()
+            .then((_) {
           loading.remove();
           Navigator.pushReplacement(
             context,
@@ -76,12 +81,14 @@ class _LoginState extends State<Login> {
     prefs = await SharedPreferences.getInstance();
 
     if (prefs.getString('theme') == "light") {
-      var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
-      _themeProvider.setTheme(lightTheme);
+      var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+      themeProvider.setTheme(lightTheme);
     }
 
-    if (prefs.get('email') != null) {
-      User logindata = await checkCredentials(prefs.get('email'), prefs.get('password'));
+    if (prefs.getString('email') != null &&
+        prefs.getString('password') != null) {
+      User? logindata = await checkCredentials(
+          prefs.getString('email')!, prefs.getString('password')!);
       if (logindata == null) {
         Provider.of<UserInfoModel>(context, listen: false).reset();
         prefs.clear();
@@ -90,12 +97,14 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-      // } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-      //   errorDialog(context, "Unconfirmed", "Your participant account has not been "
-      //       "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-      //       "after you've been confirmed.");
+        } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+          errorDialog(context, "Unconfirmed", "Your participant account has not been "
+              "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+              "after you've been confirmed.");
       } else {
-        Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo().then((_) {
+        Provider.of<UserInfoModel>(context, listen: false)
+            .fetchUserInfo()
+            .then((_) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (ctxt) => Home()),
@@ -110,7 +119,7 @@ class _LoginState extends State<Login> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+    var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -124,16 +133,14 @@ class _LoginState extends State<Login> {
                           size: Size(screenWidth, screenHeight * 0.45),
                           painter: CurvedBottom(
                               color1: Theme.of(context).colorScheme.primary,
-                              color2: Theme.of(context)
-                                  .colorScheme
-                                  .secondary),
+                              color2: Theme.of(context).colorScheme.secondary),
                         ),
                         Container(
                             height: screenHeight * 0.3,
                             width: screenWidth,
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                            child: _themeProvider.getTheme == lightTheme
+                            child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))
                       ]),
@@ -145,7 +152,7 @@ class _LoginState extends State<Login> {
                               color1: Theme.of(context).colorScheme.primary,
                               color2: Theme.of(context)
                                   .colorScheme
-                                  .secondaryVariant)),
+                                  .secondaryContainer)),
                       AutofillGroup(
                           child: Column(
                         children: [
@@ -157,7 +164,7 @@ class _LoginState extends State<Login> {
                                 decoration: const InputDecoration(
                                   labelText: "Email",
                                 ),
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next),
                           ),
@@ -170,7 +177,7 @@ class _LoginState extends State<Login> {
                               decoration: const InputDecoration(
                                 labelText: "Password",
                               ),
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           )
                         ],
@@ -198,8 +205,9 @@ class _LoginState extends State<Login> {
                           },
                           child: Text("Forgot Password",
                               style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.tertiaryContainer))),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .tertiaryContainer))),
                     ]))));
   }
 }

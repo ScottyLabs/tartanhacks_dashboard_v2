@@ -19,22 +19,23 @@ class Participant {
   final int v;
   final String last_login_time;
 
-  Participant(
-      {this.is_on_mobile,
-        this.is_admin,
-        this.total_points,
-        this.id,
-        this.name,
-        this.email,
-        this.reg_system_id,
-        this.team_id,
-        this.dp_url,
-        this.is_active,
-        this.github_profile_url,
-        this.resume_url,
-        this.account_creation_time,
-        this.v,
-        this.last_login_time});
+  Participant({
+        required this.is_on_mobile,
+        required this.is_admin,
+        required this.total_points,
+        required this.id,
+        required this.name,
+        required this.email,
+        required this.reg_system_id,
+        required this.team_id,
+        required this.dp_url,
+        required this.is_active,
+        required this.github_profile_url,
+        required this.resume_url,
+        required this.account_creation_time,
+        required this.v,
+        required this.last_login_time
+  });
 
   factory Participant.fromJson(Map<String, dynamic> parsedJson) {
     return new Participant(

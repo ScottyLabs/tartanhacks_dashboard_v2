@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class MenuChoice extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Function onTap;
-  const MenuChoice({this.icon, this.text, this.onTap});
+  final void Function()? onTap;
+  const MenuChoice({ required this.icon, required this.text, required this.onTap});
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
@@ -19,16 +19,16 @@ class MenuChoice extends StatelessWidget {
                 onPressed: onTap,
                 elevation: 2.0,
                 fillColor: Theme.of(context).colorScheme.errorContainer,
+                padding: const EdgeInsets.all(12),
+                shape: const CircleBorder(),
                 child: Icon(
                   icon,
                   size: 40.0,
                   color: Theme.of(context).colorScheme.onErrorContainer,
                 ),
-                padding: const EdgeInsets.all(12),
-                shape: const CircleBorder(),
               ),
               Text(text,
-                style: Theme.of(context).textTheme.bodyText1.copyWith(
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.errorContainer
                 ),
               )

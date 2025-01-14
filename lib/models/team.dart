@@ -10,12 +10,13 @@ class Team {
   
 
   Team({
-    this.teamID, 
-    this.visible, 
-    this.admins,
-    this.name, 
-    this.members, 
-    this.description});
+    required this.teamID, 
+    required this.visible, 
+    required this.admins,
+    required this.name, 
+    required this.members, 
+    required this.description
+  });
 
   factory Team.fromJson(Map<String, dynamic> parsedJson) {
     // var parsedJson = jsonDecode(parseString);

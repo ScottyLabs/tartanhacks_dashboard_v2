@@ -4,11 +4,18 @@ class User {
   final String id;
   final String email;
   final String token;
-  final String company;
+  String? company;
   final String status;
 
-  User({this.admin, this.judge, this.id, this.email, this.token, this.company,
-      this.status});
+  User({
+    required this.admin, 
+    required this.judge, 
+    required this.id, 
+    required this.email, 
+    required this.token, 
+    this.company,
+    required this.status
+  });
 
   factory User.fromJson(Map<String, dynamic> parsedJson) {
     return User(

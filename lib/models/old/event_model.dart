@@ -20,21 +20,22 @@ class Event {
   final int duration;
 
 
-  Event({this.zoom_access_enabled,
-    this.is_in_person,
-    this.id,
-    this.name,
-    this.description,
-    this.timestamp,
-    this.gcal_event_url,
-    this.zoom_link,
-    this.access_code,
-    this.zoom_id,
-    this.zoom_password,
-    this.created_at,
-    this.v,
-    this.duration}
-      );
+  Event({
+    required this.zoom_access_enabled,
+    required this.is_in_person,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.timestamp,
+    required this.gcal_event_url,
+    required this.zoom_link,
+    required this.access_code,
+    required this.zoom_id,
+    required this.zoom_password,
+    required this.created_at,
+    required this.v,
+    required this.duration
+  });
 
   factory Event.fromJson(Map<String, dynamic> parsedJson) {
     return new Event(

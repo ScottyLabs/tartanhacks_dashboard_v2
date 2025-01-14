@@ -7,12 +7,12 @@ class ParticipantBookmark {
   final ParticipantInfo participantData;
 
   ParticipantBookmark({
-    this.bookmarkId,
-    this.bookmarkType,
+    required this.bookmarkId,
+    required this.bookmarkType,
 
-    this.description,
-    this.createdAt,
-    this.participantData, // json data format
+    required this.description,
+    required this.createdAt,
+    required this.participantData, // stringified JSON
     // participantId, participantEmail, participantFirstName, participantLastName, participantResume
 
   });
@@ -38,7 +38,12 @@ class ParticipantInfo {
   final String firstName;
   final String lastName;
 
-  ParticipantInfo({this.id, this.email, this.firstName, this.lastName});
+  ParticipantInfo({
+    required this.id, 
+    required this.email, 
+    required this.firstName, 
+    required this.lastName
+  });
 
   factory ParticipantInfo.fromJson(Map<String, dynamic> parsedJson) {
     return ParticipantInfo(

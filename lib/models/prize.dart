@@ -3,19 +3,20 @@ class Prize{
   final String event; //objectid
   final String name;
   final String description;
-  final String eligibility;
-  final String provider; //objectid
-  final String winner; //objectid
+  final String? eligibility;
+  final String? provider; //objectid
+  final String? winner; //objectid
 
 
-  Prize(
-      {this.id,
-      this.event,
-      this.name,
-      this.description,
-      this.eligibility,
-      this.provider,
-      this.winner});
+  Prize({
+    required this.id,
+    required this.event,
+    required this.name,
+    required this.description,
+    this.eligibility,
+    this.provider,
+    this.winner
+  });
 
   factory Prize.fromJson(Map<String, dynamic> parsedJson) {
     Prize newPrize = Prize(

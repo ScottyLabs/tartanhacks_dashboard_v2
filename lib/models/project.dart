@@ -9,18 +9,21 @@ class Project{
   final String team; //objectid
   final List prizes; //objectid
   final bool presentingVirtually;
+  final int? tableNumber;
 
-  Project(
-      {this.id,
-      this.name,
-      this.desc,
-      this.event,
-      this.url,
-      this.slides,
-      this.video,
-      this.team,
-      this.prizes,
-      this.presentingVirtually});
+  Project({
+    required this.id,
+    required this.name,
+    required this.desc,
+    required this.event,
+    required this.url,
+    required this.slides,
+    required this.video,
+    required this.team,
+    required this.prizes,
+    required this.presentingVirtually,
+    this.tableNumber,
+  });
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
     Project project = Project(
@@ -33,7 +36,8 @@ class Project{
       video: parsedJson['video'],
       team: parsedJson['team'],
       prizes: parsedJson['prizes'],
-      presentingVirtually: parsedJson['presentingVirtually']
+      presentingVirtually: parsedJson['presentingVirtually'],
+      tableNumber: parsedJson['tableNumber'],
     );
     return project;
   }
