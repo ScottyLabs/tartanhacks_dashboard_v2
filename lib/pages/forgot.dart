@@ -115,7 +115,7 @@ class _ForgotState extends State<Forgot> {
                                   fontSize: 14,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .onBackground)),
+                                      .onSurface)),
                           TextButton(
                               onPressed: () {
                                 Navigator.push(

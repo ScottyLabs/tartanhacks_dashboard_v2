@@ -142,7 +142,7 @@ class BookmarkInfo extends StatelessWidget {
               child: Icon(
                 Icons.bookmark,
                 size: 50.0,
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
             ),
           ])),

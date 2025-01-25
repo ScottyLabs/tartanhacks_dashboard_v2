@@ -29,6 +29,7 @@ class TeamTextField extends StatelessWidget {
         if (val == null || val.isEmpty) {
           return "Cannot be empty";
         }
+        return null;
       },
     );
   }

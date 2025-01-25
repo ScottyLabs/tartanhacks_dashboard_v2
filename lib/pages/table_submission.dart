@@ -7,6 +7,7 @@ import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/providers/expo_config_provider.dart';
 import 'package:thdapp/models/project.dart';
+import 'package:thdapp/providers/user_info_provider.dart';
 
 class TableSubmission extends StatefulWidget {
   final Project project;

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="asset_statements" translatable="false">
-    [{
-    \"include\": \"https://tartanhacks.com/.well-known/assetlinks.json\"
-    }]
-    </string>
-</resources>

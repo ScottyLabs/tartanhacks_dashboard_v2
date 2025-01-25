@@ -89,7 +89,7 @@ class RequestCard extends StatelessWidget {
 
     return Card(
         margin: const EdgeInsets.all(12),
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
