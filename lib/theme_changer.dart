@@ -45,9 +45,9 @@ ThemeData baseTheme(
 }
 
 ThemeData genLightTheme() {
-  var primary = const Color(0xFF1B1818);
-  var secondary = const Color(0xFF1B1818);
-  var buttons = const Color(0xFF1B1818);
+  var primary = const Color(0xFF0B3B48);
+  var secondary = const Color(0xFF0B3B48);
+  var buttons = const Color(0xFF0B3B48);
   var altbuttons = const Color(0xFF1028F1);
   var surface = const Color(0xFFE8EAEF);
   var surface2 = const Color(0xFFA8C2fE);
