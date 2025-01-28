@@ -52,6 +52,13 @@ class _QRPageState extends State<QRPage> {
       dietaryRestrictions = "Dietary restrictions: ${userData.dietaryRestrictions!.join(', ')}";
     }
 
+    Color dietaryRestrictionsColor;
+    if (userData.dietaryRestrictions!.isEmpty) {
+      dietaryRestrictionsColor = const Color(0xFFF7F1E2);
+    } else {
+      dietaryRestrictionsColor = const Color(0xFFFF70A1);
+    }
+
     return DefaultPage(
         backflag: true,
         reverse: true,
@@ -69,7 +76,7 @@ class _QRPageState extends State<QRPage> {
                   style: Theme.of(context)
                       .textTheme
                       .displaySmall
-                      ?.copyWith(color: const Color(0xFFFF70A1)),
+                      ?.copyWith(color: dietaryRestrictionsColor),
                 ),
                 QREnlarged(
                   onPressed: () async {
