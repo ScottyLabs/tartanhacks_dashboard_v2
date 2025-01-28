@@ -44,8 +44,8 @@ class SponsorsState extends State<Sponsors> {
 
   _launchDiscord() async {
     String url = discordInfo.link;
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       errorDialog(context, "Error", 'Could not launch Discord Server.');
     }

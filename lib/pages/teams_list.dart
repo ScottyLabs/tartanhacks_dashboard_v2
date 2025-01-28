@@ -266,7 +266,7 @@ class _TeamsListState extends State<TeamsList> {
                                 return TeamEntryCard(teams[index], hasReqested,
                                     () async {
                                   OverlayEntry loading =
-                                      LoadingOverlay(context);
+                                      loadingOverlay(context);
                                   Overlay.of(context).insert(loading);
                                   String token = Provider.of<UserInfoModel>(
                                           context,

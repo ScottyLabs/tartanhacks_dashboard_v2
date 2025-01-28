@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
 
   _launchDiscord() async {
     String url = discordInfo.link;
-    launch(url);
+    launchUrl(Uri.parse(url));
   }
 
   void discordVerifyDialog(BuildContext context) {

@@ -760,6 +760,7 @@ Future<ExpoConfig> getExpoConfig(String token) async {
   }
 }
 
+// ignore: unused_element
 bool _canSubmitTableNumber(ExpoConfig config) {
   final now = DateTime.now();
   return now.isBefore(config.expoStartTime);

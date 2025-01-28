@@ -42,20 +42,23 @@ class _ManageTablesPageState extends State<ManageTablesPage> {
 
     final now = DateTime.now();
     final isBeforeExpo = now.isBefore(expoConfig!.expoStartTime);
-    
+
     return Container(
       padding: const EdgeInsets.all(8),
-      color: isBeforeExpo ? Colors.green.withOpacity(0.2) : Colors.orange.withOpacity(0.2),
+      color: isBeforeExpo
+          ? Colors.green.withAlpha(50)
+          : Colors.orange.withAlpha(50),
       child: Text(
-        isBeforeExpo 
-          ? "Participants can still submit table numbers"
-          : "Expo has started - Only admin can modify tables",
+        isBeforeExpo
+            ? "Participants can still submit table numbers"
+            : "Expo has started - Only admin can modify tables",
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }
 
-  Future<void> _updateTableNumber(Project project, String newTableNumber) async {
+  Future<void> _updateTableNumber(
+      Project project, String newTableNumber) async {
     try {
       int? tableNum = int.tryParse(newTableNumber);
       if (tableNum != null) {
@@ -94,7 +97,8 @@ class _ManageTablesPageState extends State<ManageTablesPage> {
                       final project = projects[index];
                       return ListTile(
                         title: Text(project.name),
-                        subtitle: Text("Current Table: ${project.tableNumber ?? 'Not assigned'}"),
+                        subtitle: Text(
+                            "Current Table: ${project.tableNumber ?? 'Not assigned'}"),
                         trailing: SizedBox(
                           width: 100,
                           child: TextField(
@@ -102,7 +106,8 @@ class _ManageTablesPageState extends State<ManageTablesPage> {
                             decoration: const InputDecoration(
                               labelText: "Table #",
                             ),
-                            onSubmitted: (value) => _updateTableNumber(project, value),
+                            onSubmitted: (value) =>
+                                _updateTableNumber(project, value),
                           ),
                         ),
                       );
@@ -115,4 +120,4 @@ class _ManageTablesPageState extends State<ManageTablesPage> {
       ),
     );
   }
-} 
+}

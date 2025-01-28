@@ -122,7 +122,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
           ),
           tooltip: 'Zoom Link!',
           color: const Color.fromARGB(255, 37, 130, 242),
-          onPressed: () => launch('${data.zoom_link}'));
+          onPressed: () => launchUrl(Uri.parse(data.zoom_link)));
     } else if (data.access_code == 1) {
       return IconButton(
           icon: const Icon(
@@ -132,7 +132,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
           ),
           tooltip: 'Zoom Link!',
           color: const Color.fromARGB(255, 37, 130, 242),
-          onPressed: () => launch('${data.zoom_link}'));
+          onPressed: () => launchUrl(Uri.parse(data.zoom_link)));
     } else {
       return IconButton(
           icon: Image.asset(
@@ -143,7 +143,7 @@ class _EventsHomeScreenState extends State<EventsHomeScreen> {
           ),
           tooltip: 'Zoom Link!',
           color: const Color.fromARGB(255, 37, 130, 242),
-          onPressed: () => launch('${data.zoom_link}'));
+          onPressed: () => launchUrl(Uri.parse(data.zoom_link)));
     }
   }
 
@@ -359,8 +359,8 @@ class EventsCard extends StatelessWidget {
       return;
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       errorDialog(context, "Error", 'Could not launch event url.');
     }

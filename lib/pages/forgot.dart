@@ -30,7 +30,7 @@ class _ForgotState extends State<Forgot> {
   }
 
   void passwordRecovery(BuildContext context) async {
-    OverlayEntry loading = LoadingOverlay(context);
+    OverlayEntry loading = loadingOverlay(context);
     Overlay.of(context).insert(loading);
     bool success = await resetPassword(_emailcontroller.text);
     loading.remove();
@@ -113,9 +113,8 @@ class _ForgotState extends State<Forgot> {
                           Text("Already have an account?",
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSurface)),
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface)),
                           TextButton(
                               onPressed: () {
                                 Navigator.push(

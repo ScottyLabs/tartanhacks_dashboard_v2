@@ -7,25 +7,29 @@ import '../api.dart';
 import '../models/prize.dart';
 
 class EnterPrizes extends StatefulWidget {
-  String projId;
-  List enteredPrizes;
-  EnterPrizes({required this.projId, required this.enteredPrizes});
+  final String projId;
+  final List enteredPrizes;
+  const EnterPrizes({required this.projId, required this.enteredPrizes});
 
   @override
-  _EnterPrizesState createState() =>
-      _EnterPrizesState(projId: projId, enteredPrizes: enteredPrizes);
+  EnterPrizesState createState() => EnterPrizesState();
 }
 
-class _EnterPrizesState extends State<EnterPrizes> {
+class EnterPrizesState extends State<EnterPrizes> {
   late bool isAdmin;
   late String id;
   late String token;
   late String projId;
-
   List<Prize> prizes = [];
   List enteredPrizes = [];
 
-   _EnterPrizesState({required this.projId, required this.enteredPrizes});
+  @override
+  void initState() {
+    super.initState();
+    projId = widget.projId;
+    enteredPrizes = widget.enteredPrizes;
+    getData();
+  }
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -84,12 +88,6 @@ class _EnterPrizesState extends State<EnterPrizes> {
       enteredPrizes.add(prizeId);
       setState(() {});
     }
-  }
-
-  @override
-  void initState() {
-    getData();
-    super.initState();
   }
 
   @override

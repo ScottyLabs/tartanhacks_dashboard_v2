@@ -255,9 +255,16 @@ class QREnlarged extends StatelessWidget {
               child: QrImageView(
                 data: id,
                 version: QrVersions.auto,
-                foregroundColor: isLight
-                    ? Theme.of(context).colorScheme.secondary
-                    : Theme.of(context).colorScheme.onPrimary,
+                eyeStyle: QrEyeStyle(
+                  color: isLight
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.onPrimary,
+                ),
+                dataModuleStyle: QrDataModuleStyle(
+                  color: isLight
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.onPrimary,
+                ),
               ),
             )),
         const SizedBox(

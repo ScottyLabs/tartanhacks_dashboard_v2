@@ -62,8 +62,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _launchResume() async {
     String? url = userData.resume;
-    if (url != null && await canLaunch(url)) {
-      await launch(url);
+    if (url != null && await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       errorDialog(context, "Error", 'Could not launch resume url.');
     }
@@ -71,8 +71,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _launchGithub() async {
     String url = "https://github.com/${userData.github}";
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       errorDialog(context, "Error", 'Could not launch GitHub url.');
     }
@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () async {
-                OverlayEntry loading = LoadingOverlay(context);
+                OverlayEntry loading = loadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
                     await setDisplayName(_editNicknameController.text, token) ??
@@ -174,21 +174,25 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      OverflowBar(alignment: MainAxisAlignment.center, children: [
-                        SolidButton(
-                            text: "Delete Uploaded Picture",
-                            onPressed: () async {
-                              OverlayEntry loading = LoadingOverlay(context);
-                              Overlay.of(context).insert(loading);
-                              bool didUpload = await deleteProfilePic(token);
-                              if (!didUpload) {
-                                errorDialog(context, "Error",
-                                    "An error occurred. Please try again.");
-                              } else {
-                                loading.remove();
-                              }
-                            })
-                      ]),
+                      OverflowBar(
+                          alignment: MainAxisAlignment.center,
+                          children: [
+                            SolidButton(
+                                text: "Delete Uploaded Picture",
+                                onPressed: () async {
+                                  OverlayEntry loading =
+                                      loadingOverlay(context);
+                                  Overlay.of(context).insert(loading);
+                                  bool didUpload =
+                                      await deleteProfilePic(token);
+                                  if (!didUpload) {
+                                    errorDialog(context, "Error",
+                                        "An error occurred. Please try again.");
+                                  } else {
+                                    loading.remove();
+                                  }
+                                })
+                          ]),
                       AspectRatio(
                           aspectRatio: 1.0 / 1.0,
                           child: profilePicFile != null
@@ -199,23 +203,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: Text("No picture chosen",
                                           style: TextStyle(
                                               color: Colors.white))))),
-                      OverflowBar(alignment: MainAxisAlignment.center, children: [
-                        SolidButton(
-                            text: "Gallery",
-                            onPressed: () {
-                              _getImage(ImageSource.gallery, setState);
-                            }),
-                        SolidButton(
-                            text: "Camera",
-                            onPressed: () {
-                              _getImage(ImageSource.camera, setState);
-                            }),
-                        SolidButton(
-                            text: "Crop",
-                            onPressed: () {
-                              _cropPicture(setState);
-                            }),
-                      ]),
+                      OverflowBar(
+                          alignment: MainAxisAlignment.center,
+                          children: [
+                            SolidButton(
+                                text: "Gallery",
+                                onPressed: () {
+                                  _getImage(ImageSource.gallery, setState);
+                                }),
+                            SolidButton(
+                                text: "Camera",
+                                onPressed: () {
+                                  _getImage(ImageSource.camera, setState);
+                                }),
+                            SolidButton(
+                                text: "Crop",
+                                onPressed: () {
+                                  _cropPicture(setState);
+                                }),
+                          ]),
                     ],
                   ),
                 ),
@@ -236,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     onPressed: () async {
                       if (profilePicFile != null) {
-                        OverlayEntry loading = LoadingOverlay(context);
+                        OverlayEntry loading = loadingOverlay(context);
                         Overlay.of(context).insert(loading);
                         bool didUpload = await uploadProfilePic(
                             File(profilePicFile!.path), token);

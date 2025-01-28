@@ -71,7 +71,7 @@ class Header extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children:
-        isAdmin ? [AdminHeader()] : [PointsHeader(points), QRHeader()],
+            isAdmin ? [AdminHeader()] : [PointsHeader(points), QRHeader()],
       ),
     );
   }
@@ -115,9 +115,16 @@ class QRHeader extends StatelessWidget {
                 child: QrImageView(
                   data: id,
                   version: QrVersions.auto,
-                  foregroundColor: isLight
-                      ? Theme.of(context).colorScheme.secondary
-                      : Theme.of(context).colorScheme.onPrimary,
+                  eyeStyle: QrEyeStyle(
+                    color: isLight
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  dataModuleStyle: QrDataModuleStyle(
+                    color: isLight
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).colorScheme.onPrimary,
+                  ),
                 )),
           )
         ],
@@ -188,7 +195,7 @@ class CheckInEvents extends StatelessWidget {
     var model = Provider.of<CheckInItemsModel>(context);
     var editable = model.isAdmin ?? false;
     List<CheckInItem> checkInItemsList =
-    model.checkInItems as List<CheckInItem>;
+        model.checkInItems as List<CheckInItem>;
     return RefreshIndicator(
       onRefresh: model.fetchCheckInItems,
       child: Padding(
@@ -209,7 +216,7 @@ class CheckInEvents extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                            const EditCheckInItemPage(null)))
+                                const EditCheckInItemPage(null)))
                   },
                   curvature: 12,
                   child: Text(
@@ -249,7 +256,7 @@ class CheckInEventList extends StatelessWidget {
           name: events[index].name,
           points: events[index].points,
           isChecked:
-          editable ? false : (hasCheckedIn?[events[index].id] ?? false),
+              editable ? false : (hasCheckedIn?[events[index].id] ?? false),
           enabled: events[index].enableSelfCheckIn,
           onTap: () {
             Navigator.push(
@@ -274,7 +281,7 @@ class CheckInEventList extends StatelessWidget {
                   context: context,
                   barrierDismissible: false,
                   builder: (context) => const Center(
-                      child: CircularProgressIndicator(
+                          child: CircularProgressIndicator(
                         strokeWidth: 2,
                       )));
               try {
@@ -319,11 +326,11 @@ class CheckInEventListItem extends StatelessWidget {
 
   const CheckInEventListItem(
       {required this.name,
-        required this.isChecked,
-        required this.enabled,
-        required this.onTap,
-        required this.onCheck,
-        required this.points});
+      required this.isChecked,
+      required this.enabled,
+      required this.onTap,
+      required this.onCheck,
+      required this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -363,37 +370,37 @@ class CheckInEventListItem extends StatelessWidget {
                         children: [
                           editable
                               ? Padding(
-                            padding: const EdgeInsets.all(9),
-                            child: Icon(
-                              Icons.linked_camera,
-                              color:
-                              Theme.of(context).colorScheme.primary,
-                            ),
-                          )
+                                  padding: const EdgeInsets.all(9),
+                                  child: Icon(
+                                    Icons.linked_camera,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                                )
                               : Transform.scale(
-                            scale: 1.4,
-                            child: Checkbox(
-                              side: BorderSide(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary,
-                                  width: 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              value: isChecked,
-                              onChanged: null,
-                            ),
-                          ),
+                                  scale: 1.4,
+                                  child: Checkbox(
+                                    side: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        width: 1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    value: isChecked,
+                                    onChanged: null,
+                                  ),
+                                ),
                           Flexible(
                             child: Text(
                               isChecked
                                   ? "You are checked in - ${points}pts"
                                   : isAdmin
-                                  ? "Scan Users in - ${points}pts"
-                                  : enabled
-                                  ? "Click to Check in - ${points}pts"
-                                  : "Check in at venue - ${points}pts",
+                                      ? "Scan Users in - ${points}pts"
+                                      : enabled
+                                          ? "Click to Check in - ${points}pts"
+                                          : "Check in at venue - ${points}pts",
                               overflow: TextOverflow.fade,
                               maxLines: 1,
                               softWrap: false,

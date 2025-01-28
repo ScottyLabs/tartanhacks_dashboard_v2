@@ -88,7 +88,7 @@ class _TableSubmissionState extends State<TableSubmission> {
                   if (!canSubmit)
                     Container(
                       padding: const EdgeInsets.all(8),
-                      color: Colors.orange.withOpacity(0.2),
+                      color: Colors.orange.withAlpha(50),
                       child: Text(
                         "Table number submission is closed - expo has started",
                         style: Theme.of(context).textTheme.bodyMedium,

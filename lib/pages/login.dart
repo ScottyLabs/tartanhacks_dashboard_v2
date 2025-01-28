@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
   }
 
   void login(String email, String password) async {
-    OverlayEntry loading = LoadingOverlay(context);
+    OverlayEntry loading = loadingOverlay(context);
     Overlay.of(context).insert(loading);
     User? logindata = await checkCredentials(email, password);
     if (logindata != null) {
@@ -97,10 +97,13 @@ class _LoginState extends State<Login> {
           context,
           MaterialPageRoute(builder: (ctxt) => Sponsors()),
         );
-        } else if (!logindata.admin && logindata.status != "CONFIRMED") {
-          errorDialog(context, "Unconfirmed", "Your participant account has not been "
-              "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
-              "after you've been confirmed.");
+      } else if (!logindata.admin && logindata.status != "CONFIRMED") {
+        errorDialog(
+            context,
+            "Unconfirmed",
+            "Your participant account has not been "
+                "confirmed and you are currently on the waitlist. \n\nYou may log into the dashboard "
+                "after you've been confirmed.");
       } else {
         Provider.of<UserInfoModel>(context, listen: false)
             .fetchUserInfo()
@@ -139,7 +142,8 @@ class _LoginState extends State<Login> {
                             height: screenHeight * 0.3,
                             width: screenWidth,
                             alignment: Alignment.topCenter,
-                            padding: EdgeInsets.fromLTRB(30, screenWidth * 0.2, 30, 0),
+                            padding: EdgeInsets.fromLTRB(
+                                30, screenWidth * 0.2, 30, 0),
                             child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))

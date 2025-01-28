@@ -128,7 +128,8 @@ class _CreateTeamState extends State<CreateTeam> {
                               height: 15,
                             ),
                             Text("TEAM INFO",
-                                style: Theme.of(context).textTheme.displayLarge),
+                                style:
+                                    Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 10),
                             Text("Basic Info",
                                 style:
@@ -152,7 +153,7 @@ class _CreateTeamState extends State<CreateTeam> {
                                 onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     OverlayEntry loading =
-                                        LoadingOverlay(context);
+                                        loadingOverlay(context);
                                     Overlay.of(context).insert(loading);
                                     String token = Provider.of<UserInfoModel>(
                                             context,

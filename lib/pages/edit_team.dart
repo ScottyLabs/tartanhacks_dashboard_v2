@@ -73,7 +73,7 @@ class _EditTeamState extends State<EditTeam> {
   }
 
   Widget _buildMember(int member) {
-    String emailStr = "${"(" + _teamMembers[member]['email']})";
+    String emailStr = "(${_teamMembers[member]['email']})";
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

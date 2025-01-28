@@ -114,7 +114,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
     _loadExpoConfig();
     getData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loading = LoadingOverlay(context);
+      loading = loadingOverlay(context);
       setState(() {});
       Overlay.of(context).insert(loading!);
     });
@@ -143,7 +143,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
   void submitDialog(BuildContext context) {
     Future proj;
-    
+
     int? tableNum;
     if (tableNumberController.text.isNotEmpty) {
       tableNum = int.tryParse(tableNumberController.text);
@@ -247,7 +247,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
     if (!canSubmitTable) {
       return const SizedBox.shrink();
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -259,8 +259,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
         Text(
           "Table number can only be submitted before expo starts",
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+                color: Theme.of(context).colorScheme.secondary,
+              ),
         ),
         const SizedBox(height: 8),
       ],
