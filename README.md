@@ -79,9 +79,6 @@ List of events in chronological order with times, locations, and links if applic
 ### Profile
 View personal profile card displaying information submitted during registration - this is the same profile that is visible to recruiters. Includes links to GitHub account and resume. Leaderboard nickname is editable from this page, as well as from the leaderboard page.
 
-### Leaderboard
-Displays points ranking of all hackathon participants (using leaderboard nickname), as well as the current user's own ranking. Leaderboard nickname is editable from this page, as well as from the profile page.
-
 ## Admin Features <a name="afeatures"></a>
 Admins can use the dashboard to add schedule items and check participants into events.
 
