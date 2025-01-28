@@ -2,8 +2,11 @@ import 'package:flutter_smart_scan/flutter_smart_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thdapp/api.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
+import 'package:thdapp/models/profile.dart';
 import 'package:thdapp/providers/check_in_items_provider.dart';
 import '../theme_changer.dart';
 
@@ -15,11 +18,39 @@ class QRPage extends StatefulWidget {
 class _QRPageState extends State<QRPage> {
   final _eventIDController = TextEditingController();
 
+  late Profile userData;
+  late String id;
+  late String token;
+
+  void getData() async {
+    prefs = await SharedPreferences.getInstance();
+
+    token = prefs.getString('token')!;
+    id = prefs.getString('id')!;
+
+    userData = await getProfile(id, token);
+
+    setState(() {});
+  }
+
+  @override
+  initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
+
+    String dietaryRestrictions;
+    if (userData.dietaryRestrictions!.isEmpty) {
+      dietaryRestrictions = "No dietary restrictions";
+    } else {
+      dietaryRestrictions = "Dietary restrictions: ${userData.dietaryRestrictions!.join(', ')}";
+    }
 
     return DefaultPage(
         backflag: true,
@@ -33,6 +64,13 @@ class _QRPageState extends State<QRPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IDCheckInHeader(_eventIDController),
+                Text(
+                  dietaryRestrictions, 
+                  style: Theme.of(context)
+                      .textTheme
+                      .displaySmall
+                      ?.copyWith(color: const Color(0xFFF7F1E2)),
+                ),
                 QREnlarged(
                   onPressed: () async {
                     final String id = await FlutterBarcodeScanner.scanBarcode(
