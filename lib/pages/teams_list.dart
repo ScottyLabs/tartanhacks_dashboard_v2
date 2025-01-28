@@ -180,7 +180,7 @@ class _TeamsListState extends State<TeamsList> {
 
     List requestsList = await getUserMail(token);
     requestedTeams =
-        requestsList.map((e) => e['team']['_id'].toString()).toSet() ?? {};
+        requestsList.map((e) => e['team']['_id'].toString()).toSet();
     fetchStatus = Status.loaded;
     setState(() {});
   }

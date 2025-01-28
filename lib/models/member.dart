@@ -15,12 +15,12 @@ class Member {
     // var parsedJson = jsonDecode(parsedString);
     bool isAdminBool = false;
     String currID = parsedJson["_id"];
-    if(currID == adminID) isAdminBool = true;
+    if (currID == adminID) isAdminBool = true;
     return Member(
-        id:  parsedJson["_id"],
+        id: parsedJson["_id"],
         isAdmin: isAdminBool,
-        name: (parsedJson["firstName"]??"") + " " + (parsedJson["lastName"]??""),
-        email: parsedJson["email"]
-    );
+        name:
+            "${parsedJson["firstName"] ?? ""} ${parsedJson["lastName"] ?? ""}",
+        email: parsedJson["email"]);
   }
 }

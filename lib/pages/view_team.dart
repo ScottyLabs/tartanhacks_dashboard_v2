@@ -57,7 +57,8 @@ class InviteMembersBtn extends StatelessWidget {
 
     return AlertDialog(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      title: Text('Send Invite', style: Theme.of(context).textTheme.displayLarge),
+      title:
+          Text('Send Invite', style: Theme.of(context).textTheme.displayLarge),
       content: TextFormField(
         decoration: const InputDecoration(labelText: "email"),
         style: Theme.of(context).textTheme.bodyMedium,
@@ -145,9 +146,9 @@ class LeaveJoinTeamBtn extends StatelessWidget {
               return;
             }
             Navigator.pushAndRemoveUntil(
-                context, MaterialPageRoute(builder: (context) => TeamsList()),
-                (route) => route.isFirst
-            );
+                context,
+                MaterialPageRoute(builder: (context) => TeamsList()),
+                (route) => route.isFirst);
           });
         },
         color: Theme.of(context).colorScheme.tertiaryContainer);
@@ -170,54 +171,59 @@ class MemberListElement extends StatelessWidget {
 
     return Container(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-          Expanded(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    overflow: TextOverflow.ellipsis,
-                      text: TextSpan(children: [
-                    TextSpan(
-                        text: nameStr,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    if (isMemAdmin)
-                      WidgetSpan(
-                          child: Icon(Icons.star,
-                              size: 20,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .tertiaryContainer))
-                  ])),
-                  Text(emailStr, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis,)
-                ]),
-          ),
-          if (isAdmin && !isMemAdmin)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: SolidButton(
-                text: "Promote",
-                color: Theme.of(context).colorScheme.secondary,
-                onPressed: () {
-                  showConfirmDialog(context,
-                      "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
-                      () {
-                    String token =
-                        Provider.of<UserInfoModel>(context, listen: false).token;
-                    promoteToAdmin(id, token).then((_) {
-                      Navigator.of(context).pop();
-                      Provider.of<UserInfoModel>(context, listen: false)
-                          .fetchUserInfo();
-                    });
-                  });
-                },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(children: [
+                            TextSpan(
+                                text: nameStr,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            if (isMemAdmin)
+                              WidgetSpan(
+                                  child: Icon(Icons.star,
+                                      size: 20,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer))
+                          ])),
+                      Text(
+                        emailStr,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    ]),
               ),
-            )
-        ]));
+              if (isAdmin && !isMemAdmin)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: SolidButton(
+                    text: "Promote",
+                    color: Theme.of(context).colorScheme.secondary,
+                    onPressed: () {
+                      showConfirmDialog(context,
+                          "Are you sure you want to promote this member to an admin? You will no longer be an admin.",
+                          () {
+                        String token =
+                            Provider.of<UserInfoModel>(context, listen: false)
+                                .token;
+                        promoteToAdmin(id, token).then((_) {
+                          Navigator.of(context).pop();
+                          Provider.of<UserInfoModel>(context, listen: false)
+                              .fetchUserInfo();
+                        });
+                      });
+                    },
+                  ),
+                )
+            ]));
   }
 }
 
@@ -290,10 +296,8 @@ class TeamDesc extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(team.name ?? "",
-              style: Theme.of(context).textTheme.headlineMedium),
-          Text(team.description ?? "",
-              style: Theme.of(context).textTheme.bodyMedium)
+          Text(team.name, style: Theme.of(context).textTheme.headlineMedium),
+          Text(team.description, style: Theme.of(context).textTheme.bodyMedium)
         ]);
   }
 }
@@ -437,14 +441,12 @@ class ViewTeam extends StatelessWidget {
                 height: screenHeight * 0.75,
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 alignment: Alignment.topLeft,
-                child: SingleChildScrollView(
-                    child: () {
-                      if (teamId == "") {
-                        return OwnTeamView();
-                      } else {
-                        return BrowseTeamView(teamId);
-                      }
-                    }()
-                       ))));
+                child: SingleChildScrollView(child: () {
+                  if (teamId == "") {
+                    return OwnTeamView();
+                  } else {
+                    return BrowseTeamView(teamId);
+                  }
+                }()))));
   }
 }

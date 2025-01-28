@@ -4,7 +4,6 @@ import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/pages/bookmarks.dart';
-import '../models/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:flutter_smart_scan/flutter_smart_scan.dart';
@@ -15,10 +14,10 @@ import 'package:flutter/services.dart';
 
 class Sponsors extends StatefulWidget {
   @override
-  _SponsorsState createState() => _SponsorsState();
+  SponsorsState createState() => SponsorsState();
 }
 
-class _SponsorsState extends State<Sponsors> {
+class SponsorsState extends State<Sponsors> {
   String myName = "";
   List studentIds = [];
   List students = []; // bunch of Profiles
@@ -67,7 +66,6 @@ class _SponsorsState extends State<Sponsors> {
           future: discordCode,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-
               DiscordInfo discordInfo = snapshot.data as DiscordInfo;
 
               return AlertDialog(
@@ -94,8 +92,7 @@ class _SponsorsState extends State<Sponsors> {
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: discordInfo.code));
+                      Clipboard.setData(ClipboardData(text: discordInfo.code));
                     },
                   ),
                   TextButton(
@@ -112,8 +109,8 @@ class _SponsorsState extends State<Sponsors> {
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title:
-                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
+                title: Text("Error",
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
                     style: Theme.of(context).textTheme.bodyMedium),
@@ -166,7 +163,7 @@ class _SponsorsState extends State<Sponsors> {
     int counter = 0;
     for (var i = 0; i < students.length; i++) {
       if (students[i] != null) {
-        var name = students[i].firstName + students[i].lastName;
+        var name = "${students[i].firstName} ${students[i].lastName}";
         if (name.contains(keyword)) {
           counter++;
         }
@@ -237,16 +234,21 @@ class _SponsorsState extends State<Sponsors> {
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           "  Scan  ",
-                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                         ),
                         onPressed: () async {
                           String id = await FlutterBarcodeScanner.scanBarcode(
                               '#ff6666', 'Cancel', true, ScanMode.QR);
                           if (["-1", "", null].contains(id)) return;
-                          Profile isValid = await getProfile(id, token);
+
+                          await getProfile(id, token);
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -257,16 +259,19 @@ class _SponsorsState extends State<Sponsors> {
                                   arguments: id,
                                 )),
                           ).then((value) => getBookmarks());
-                                                },
+                        },
                       ),
                       SolidButton(
                         color: Theme.of(context).colorScheme.tertiaryContainer,
                         child: Text(
                           " Bookmarks ",
-                          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onTertiaryContainer),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiaryContainer),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -282,10 +287,13 @@ class _SponsorsState extends State<Sponsors> {
                     color: Theme.of(context).colorScheme.tertiaryContainer,
                     child: Text(
                       "  Discord Server  ",
-                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onTertiaryContainer),
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium
+                          ?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onTertiaryContainer),
                     ),
                     onPressed: () {
                       discordVerifyDialog(context);
@@ -370,19 +378,13 @@ class _SponsorsState extends State<Sponsors> {
                                   : false;
                               return InfoTile(
                                   name: (students[index] != null)
-                                      ? students[index].firstName +
-                                          " " +
-                                          students[index].lastName
+                                      ? "${students[index].firstName} ${students[index].lastName}"
                                       : "NULL",
                                   team: (studentTeams[index] != null)
                                       ? studentTeams[index]
                                       : "No team",
                                   bio: (students[index] != null)
-                                      ? students[index].college +
-                                          " c/o " +
-                                          students[index]
-                                              .graduationYear
-                                              .toString()
+                                      ? "${students[index].college} c/o ${students[index].graduationYear}"
                                       : "NULL",
                                   participantId: studentIds[index],
                                   bookmarkId: (bookmarks.isNotEmpty &&
@@ -399,13 +401,11 @@ class _SponsorsState extends State<Sponsors> {
                             })))
               else
                 Center(
-                    child: placeholderText != null
-                        ? Text(
-                            placeholderText,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary),
-                          )
-                        : const CircularProgressIndicator())
+                    child: Text(
+                  placeholderText,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                ))
             ])));
   }
 }
