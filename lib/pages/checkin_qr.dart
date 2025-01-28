@@ -69,7 +69,7 @@ class _QRPageState extends State<QRPage> {
                   style: Theme.of(context)
                       .textTheme
                       .displaySmall
-                      ?.copyWith(color: const Color(0xFFF7F1E2)),
+                      ?.copyWith(color: const Color(0xFFFF70A1)),
                 ),
                 QREnlarged(
                   onPressed: () async {
