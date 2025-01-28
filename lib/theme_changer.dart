@@ -45,9 +45,9 @@ ThemeData baseTheme(
 }
 
 ThemeData genLightTheme() {
-  var primary = const Color(0xFF1B1818);
-  var secondary = const Color(0xFF1B1818);
-  var buttons = const Color(0xFF1B1818);
+  var primary = const Color(0xFF0B3B48);
+  var secondary = const Color(0xFF0B3B48);
+  var buttons = const Color(0xFF0B3B48);
   var altbuttons = const Color(0xFF1028F1);
   var surface = const Color(0xFFE8EAEF);
   var surface2 = const Color(0xFFA8C2fE);
@@ -60,8 +60,7 @@ ThemeData genLightTheme() {
       tertiary: buttons, //main button color
       tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      surfaceTint: surface2, //box gradient 2
-      background: background,
+      surfaceTint: surface2,
       error: altbuttons,
       errorContainer: secondary, //menu buttons
       onPrimary: background,
@@ -69,7 +68,6 @@ ThemeData genLightTheme() {
       onTertiary: surface,
       onTertiaryContainer: surface,
       onSurface: secondary,
-      onBackground: secondary,
       onError: secondary,
       onErrorContainer: background,
       shadow: shadow,
@@ -94,8 +92,7 @@ ThemeData genDarkTheme() {
       tertiary: buttons, //main button color
       tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      surfaceTint: surface2, //box gradient 2
-      background: background,
+      surfaceTint: surface2,
       error: buttons,
       errorContainer: primary, //menu buttons
       onPrimary: text,
@@ -104,7 +101,6 @@ ThemeData genDarkTheme() {
       onTertiaryContainer: background,
       onSurface: text,
       onSurfaceVariant: text,
-      onBackground: text,
       onError: text,
       onErrorContainer: text,
       shadow: shadow,

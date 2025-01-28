@@ -27,13 +27,13 @@ class SolidButton extends StatelessWidget {
     return ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.all(color),
-            backgroundColor: MaterialStateProperty.all(color),
+            foregroundColor: WidgetStateProperty.all(color),
+            backgroundColor: WidgetStateProperty.all(color),
             shadowColor:
-                MaterialStateProperty.all(Theme.of(context).colorScheme.shadow),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                WidgetStateProperty.all(Theme.of(context).colorScheme.shadow),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10))),
-            elevation: MaterialStateProperty.all(5)),
+            elevation: WidgetStateProperty.all(5)),
         child: child ??
             Text(
               text!,

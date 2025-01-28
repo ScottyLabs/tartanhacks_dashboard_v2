@@ -141,13 +141,17 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 label: "Name",
                 controller: _nameController,
                 onTap: () {},
-                validator: (String? val) {},
+                validator: (String? val) {
+                  return null;
+                },
               ),
               EditCheckInFormField(
                 label: "Description",
                 controller: _descController,
                 onTap: () {},
-                validator: (String? val) {},
+                validator: (String? val) {
+                  return null;
+                },
               ),
               EditCheckInFormField(
                 label: "Start Date",
@@ -162,7 +166,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       builder: (context, child) => Theme(
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
-                              Theme.of(context).colorScheme.background),
+                              Theme.of(context).colorScheme.surface),
                           child: child!));
                   if (picked != null) {
                     _startDateController.value = TextEditingValue(
@@ -171,7 +175,9 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     startDate = picked;
                   }
                 },
-                validator: (String? val) {},
+                validator: (String? val) {
+                  return null;
+                },
               ),
               EditCheckInFormField(
                 label: "End Date",
@@ -197,7 +203,7 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                       builder: (context, child) => Theme(
                           data: Theme.of(context).copyWith(
                               dialogBackgroundColor:
-                              Theme.of(context).colorScheme.background),
+                              Theme.of(context).colorScheme.surface),
                           child: child!));
                   _endDateController.value = TextEditingValue(
                       text: DateFormat.yMMMd('en_US').format(picked!));
@@ -218,7 +224,9 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
 
                   startTime = picked;
                 },
-                validator: (String? val) {},
+                validator: (String? val) {
+                  return null;
+                },
               ),
               EditCheckInFormField(
                   label: "End Time",
@@ -253,7 +261,9 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                 controller: _pointsController,
                 keyboardType: TextInputType.number,
                 onTap: () {},
-                validator: (String? value) {},
+                validator: (String? value) {
+                  return null;
+                },
               ),
 
               // Dropdown menus

@@ -38,6 +38,7 @@ class ProjSubmitTextField extends StatelessWidget {
         if (value != null && value.isEmpty && !isOptional) {
           return '$fieldName is required';
         }
+        return null;
       },
     );
   }

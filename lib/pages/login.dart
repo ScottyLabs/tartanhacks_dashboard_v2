@@ -139,7 +139,7 @@ class _LoginState extends State<Login> {
                             height: screenHeight * 0.3,
                             width: screenWidth,
                             alignment: Alignment.topCenter,
-                            padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                            padding: EdgeInsets.fromLTRB(30, screenWidth * 0.2, 30, 0),
                             child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))

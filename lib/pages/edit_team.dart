@@ -101,15 +101,15 @@ class _EditTeamState extends State<EditTeam> {
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         child: ElevatedButton(
             style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all(
+              foregroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.secondary),
-              backgroundColor: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.secondary),
-              shadowColor: MaterialStateProperty.all(
+              shadowColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.secondaryContainer),
-              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+              shape: WidgetStateProperty.all(RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10))),
-              elevation: MaterialStateProperty.all(5),
+              elevation: WidgetStateProperty.all(5),
             ),
             onPressed: () {},
             child: Container(

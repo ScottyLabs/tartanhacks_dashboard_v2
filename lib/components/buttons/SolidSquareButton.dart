@@ -12,15 +12,15 @@ class SolidSquareButton extends StatelessWidget {
       onPressed: onPressed,
       style: ButtonStyle(
           foregroundColor:
-              MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+              WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
           backgroundColor:
-              MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-          shadowColor: MaterialStateProperty.all(
+              WidgetStateProperty.all(Theme.of(context).colorScheme.primary),
+          shadowColor: WidgetStateProperty.all(
               Theme.of(context).colorScheme.secondaryContainer),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-          fixedSize: MaterialStateProperty.all<Size>(const Size.square(10)),
-          elevation: MaterialStateProperty.all(5)),
+          fixedSize: WidgetStateProperty.all<Size>(const Size.square(10)),
+          elevation: WidgetStateProperty.all(5)),
       child: const SizedBox(),
     );
   }

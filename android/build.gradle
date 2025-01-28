@@ -1,12 +1,12 @@
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '1.8.22'
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.android.tools.build:gradle:8.8.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -14,8 +14,44 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
+    // This code is where all the magic happens and fixes the error.
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    }
+    // This code is where all the magic happens and fixes the error.
+}
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// add These lines from here. in android/build.gradle  (NOT android/app/build.gradle)
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 35
+                buildToolsVersion "35.0.0"
+            }
+        }
+    }
+}
+
+
+// to here
+subprojects {
+    project.evaluationDependsOn(':app')
 }
 
 rootProject.buildDir = '../build'

@@ -83,7 +83,7 @@ class TeamEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(4),
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(

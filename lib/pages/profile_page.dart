@@ -174,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      ButtonBar(alignment: MainAxisAlignment.center, children: [
+                      OverflowBar(alignment: MainAxisAlignment.center, children: [
                         SolidButton(
                             text: "Delete Uploaded Picture",
                             onPressed: () async {
@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: Text("No picture chosen",
                                           style: TextStyle(
                                               color: Colors.white))))),
-                      ButtonBar(alignment: MainAxisAlignment.center, children: [
+                      OverflowBar(alignment: MainAxisAlignment.center, children: [
                         SolidButton(
                             text: "Gallery",
                             onPressed: () {
@@ -263,8 +263,20 @@ class _ProfilePageState extends State<ProfilePage> {
         sourcePath: profilePicFile != null
             ? profilePicFile!.path
             : Uri.parse(userData.profilePicture!).path,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.square,
+        uiSettings: [
+          AndroidUiSettings(
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+            ],
+          ),
+          IOSUiSettings(
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+            ],
+          ),
+          WebUiSettings(
+            context: context,
+          ),
         ],
       );
       setState(() {});
@@ -439,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: Theme.of(context).textTheme.bodyMedium),
                             Row(
                               children: [
-                                ButtonBar(
+                                OverflowBar(
                                   children: [
                                     SolidButton(
                                       text: " Link to GitHub ",
