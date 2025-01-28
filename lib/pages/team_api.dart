@@ -2,8 +2,9 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import '/models/team.dart';
+import '/config/environment.dart';
 
-const baseUrl = "https://backend.tartanhacks.com/";
+final baseUrl = Environment.baseUrl;
 
 Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {
@@ -126,7 +127,7 @@ Future<List<dynamic>> getUserMail(String token) async {
 }
 
 Future<void> inviteTeamMember(String userEmail, String token) async {
-  const url = "${baseUrl}team/invite";
+  final url = "${baseUrl}team/invite";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -136,7 +137,7 @@ Future<void> inviteTeamMember(String userEmail, String token) async {
 }
 
 Future<bool> leaveTeam(String token) async {
-  const url = "${baseUrl}team/leave";
+  final url = "${baseUrl}team/leave";
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
