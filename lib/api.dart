@@ -17,15 +17,16 @@ import 'models/project.dart';
 import 'models/team.dart';
 import 'models/discord.dart';
 import 'package:http_parser/http_parser.dart';
+import 'models/config.dart';
 
-SharedPreferences prefs;
+late SharedPreferences prefs;
 
-const baseUrl = "https://dev.backend.tartanhacks.com/";
+const baseUrl = "https://backend.tartanhacks.com/";
 
-Future<User> checkCredentials(String email, String password) async {
-  String url = baseUrl + "auth/login";
+Future<User?> checkCredentials(String email, String password) async {
+  Uri url = Uri.parse("${baseUrl}auth/login");
   Map<String, String> headers = {"Content-type": "application/json"};
-  String json1 = '{"email":"' + email + '","password":"' + password + '"}';
+  String json1 = '{"email":"$email","password":"$password"}';
 
   final response = await http.post(url, headers: headers, body: json1);
 
@@ -41,19 +42,19 @@ Future<User> checkCredentials(String email, String password) async {
     prefs.setBool('admin', loginData.admin);
     prefs.setBool('judge', loginData.judge);
     prefs.setString('id', loginData.id);
-    prefs.setString('company', loginData.company);
     prefs.setString('status', loginData.status);
+    prefs.setString('company', loginData.company ?? "");
 
     return loginData;
-  } else {
-    return null;
   }
+
+  return null;
 }
 
 Future<bool> resetPassword(String email) async {
-  String url = baseUrl + "auth/request-reset";
+  Uri url = Uri.parse("${baseUrl}auth/request-reset");
   Map<String, String> headers = {"Content-type": "application/json"};
-  String json1 = '{"email":"' + email + '"}';
+  String json1 = '{"email":"$email"}';
   final response = await http.post(url, headers: headers, body: json1);
 
   if (response.statusCode == 200) {
@@ -64,7 +65,7 @@ Future<bool> resetPassword(String email) async {
 }
 
 Future<Profile> getProfile(String id, String token) async {
-  String url = baseUrl + "users/" + id + "/profile";
+  Uri url = Uri.parse("${baseUrl}users/$id/profile");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -74,16 +75,15 @@ Future<Profile> getProfile(String id, String token) async {
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
     Profile profile = Profile.fromJson(data);
-    print(data);
     // profile.picture = "lib/logos/defaultpfp.PNG";
     return profile;
   } else {
-    return null;
+    throw Error();
   }
 }
 
 Future<bool> checkNameAvailable(String name, String token) async {
-  String url = baseUrl + "user/name/available";
+  Uri url = Uri.parse("${baseUrl}user/name/available");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -96,17 +96,17 @@ Future<bool> checkNameAvailable(String name, String token) async {
     var data = json.decode(response.body);
     return data;
   } else {
-    return null;
+    throw Error();
   }
 }
 
-Future<bool> setDisplayName(String name, String token) async {
+Future<bool?> setDisplayName(String name, String token) async {
   bool isAvailable = await checkNameAvailable(name, token);
   if (isAvailable != true) {
     return isAvailable;
   }
 
-  String url = baseUrl + "user/profile";
+  Uri url = Uri.parse("${baseUrl}user/profile");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -118,14 +118,14 @@ Future<bool> setDisplayName(String name, String token) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    return null;
+    throw Error();
   }
 }
 
-Future<List> getStudents(String token, {String query}) async {
-  String url = baseUrl + "participants";
+Future<List> getStudents(String token, {String? query}) async {
+  Uri url = Uri.parse("${baseUrl}participants");
   if (query != null) {
-    url = url + "?name=" + query;
+    url = Uri.parse("$url?name=$query");
   }
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -142,14 +142,14 @@ Future<List> getStudents(String token, {String query}) async {
         .toList();
     return [ids, profs, teams];
   }
-  return null;
+  throw Error();
 }
 
 Future<Map> getBookmarkIdsList(String token) async {
   var bookmarks = {};
   List bookmarkIds;
   List bmParticipantIds;
-  String url = baseUrl + "bookmarks/participant";
+  Uri url = Uri.parse("${baseUrl}bookmarks/participant");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -168,11 +168,11 @@ Future<Map> getBookmarkIdsList(String token) async {
     }
     return bookmarks;
   }
-  return null;
+  throw Error();
 }
 
 Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
-  String url = baseUrl + "bookmarks/participant";
+  Uri url = Uri.parse("${baseUrl}bookmarks/participant");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -182,13 +182,13 @@ Future<List<ParticipantBookmark>> getParticipantBookmarks(String token) async {
   if (response.statusCode == 200) {
     List data = json.decode(response.body);
     data = data.map((bm) => ParticipantBookmark.fromJson(bm)).toList();
-    return data;
+    return data as List<ParticipantBookmark>;
   }
-  return null;
+  throw Error();
 }
 
 Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
-  String url = baseUrl + "bookmarks/project";
+  Uri url = Uri.parse("${baseUrl}bookmarks/project");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -198,13 +198,14 @@ Future<List<ProjectBookmark>> getProjectBookmarks(String token) async {
   if (response.statusCode == 200) {
     List data = json.decode(response.body);
     data = data.map((bm) => ProjectBookmark.fromJson(bm)).toList();
-    return data;
+    return data as List<ProjectBookmark>;
   }
-  return null;
+
+  throw Error();
 }
 
 Future<void> deleteBookmark(String token, String id) async {
-  String url = baseUrl + "bookmark/" + id;
+  Uri url = Uri.parse("${baseUrl}bookmark/$id");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -213,19 +214,18 @@ Future<void> deleteBookmark(String token, String id) async {
 }
 
 Future<String> addBookmark(String token, String participantId) async {
-  String url = baseUrl + "bookmark";
+  Uri url = Uri.parse("${baseUrl}bookmark");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
 
-  String jsonInput = '{"bookmarkType": "PARTICIPANT", "participant":"' +
-      participantId.toString() +
-      '", "project":null, "description": "sample description"}';
+  String jsonInput =
+      '{"bookmarkType": "PARTICIPANT", "participant":"$participantId", "project":null, "description": "sample description"}';
   final response = await http.post(url, headers: headers, body: jsonInput);
 
   if (response.statusCode != 200) {
-    return null;
+    throw Error();
   } else {
     Map<String, dynamic> data =
         Map<String, dynamic>.from(json.decode(response.body));
@@ -234,8 +234,8 @@ Future<String> addBookmark(String token, String participantId) async {
   }
 }
 
-Future<List<List<Event>>> getEvents() async {
-  var url = baseUrl + 'schedule/';
+Future<List<List<Event>>?> getEvents() async {
+  var url = Uri.parse("${baseUrl}schedule/");
   final response = await http.get(url);
   if (response.statusCode == 200) {
     List<Event> eventsList;
@@ -254,7 +254,7 @@ Future<List<List<Event>>> getEvents() async {
     }
     return [upcomingEvents, pastEvents];
   } else {
-    return null;
+    throw Error();
   }
 }
 
@@ -270,9 +270,9 @@ Future<bool> addEvent(
     String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  String token = prefs.getString("token");
+  String token = prefs.getString("token")!;
 
-  String url = baseUrl + "schedule/";
+  Uri url = Uri.parse("${baseUrl}schedule");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -282,25 +282,8 @@ Future<bool> addEvent(
   // for (int i = 0; i < essayQuestions.length; i++) {
   //   essayQuestionsAgg += essayQuestions[i] + "\n";
   // }
-  String bodyJson = '{"name":"' +
-      name +
-      '","description":"' +
-      description +
-      '","startTime":' +
-      startTime.toString() +
-      ',"endTime":' +
-      endTime.toString() +
-      ',"location":"' +
-      location +
-      '","lat":' +
-      lat.toString() +
-      ',"lng":' +
-      lng.toString() +
-      ',"platform":"' +
-      platform +
-      '","platformUrl":"' +
-      platformUrl +
-      '"}';
+  String bodyJson =
+      '{"name":"$name","description":"$description","startTime":$startTime,"endTime":$endTime,"location":"$location","lat":$lat,"lng":$lng,"platform":"$platform","platformUrl":"$platformUrl"}';
 
   final response = await http.post(url, headers: headers, body: bodyJson);
   if (response.statusCode == 200) {
@@ -326,9 +309,9 @@ Future<bool> editEvent(
     String platformUrl) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  String token = prefs.getString("token");
+  String token = prefs.getString("token")!;
 
-  String url = baseUrl + "schedule/" + eventId;
+  Uri url = Uri.parse("${baseUrl}schedule/$eventId");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -358,9 +341,9 @@ Future<bool> editEvent(
 
 Future<bool> deleteEvent(String eventId) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString("token");
+  String token = prefs.getString("token")!;
 
-  String url = baseUrl + "schedule/" + eventId;
+  Uri url = Uri.parse("${baseUrl}schedule/$eventId");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -376,7 +359,7 @@ Future<bool> deleteEvent(String eventId) async {
 
 // Check In Endpoints
 Future<List<CheckInItem>> getCheckInItems() async {
-  String url = baseUrl + "check-in";
+  Uri url = Uri.parse("${baseUrl}check-in");
   Map<String, String> headers = {"Content-type": "application/json"};
   final response = await http.get(url, headers: headers);
 
@@ -394,7 +377,7 @@ Future<List<CheckInItem>> getCheckInItems() async {
 2 - List<CheckInItem>
  */
 Future<List> getUserHistory(String userID, String token) async {
-  String url = baseUrl + "check-in/history/$userID";
+  Uri url = Uri.parse("${baseUrl}check-in/history/$userID");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -421,7 +404,7 @@ Future<List> getUserHistory(String userID, String token) async {
 }
 
 Future<void> addCheckInItem(CheckInItemDTO item, String token) async {
-  String url = baseUrl + "check-in";
+  Uri url = Uri.parse("${baseUrl}check-in");
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -436,7 +419,7 @@ Future<void> addCheckInItem(CheckInItemDTO item, String token) async {
 
 Future<void> editCheckInItem(
     CheckInItemDTO item, String id, String token) async {
-  String url = baseUrl + "check-in/$id";
+  Uri url = Uri.parse("${baseUrl}check-in/$id");
   String itemJson = jsonEncode(item);
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -450,7 +433,7 @@ Future<void> editCheckInItem(
 }
 
 Future<void> deleteCheckInItem(String id, String token) async {
-  String url = baseUrl + "check-in/$id";
+  Uri url = Uri.parse("${baseUrl}check-in/$id");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -475,7 +458,7 @@ Future<void> checkInUser(String id, String uid, token) async {
   if (response.statusCode != 200) {
     Map<String, dynamic> error = jsonDecode(response.body);
     String msg = error['message'].toString();
-    if (msg.length<=2) {
+    if (msg.length <= 2) {
       msg = "We encountered an error while checking you in.";
     }
     throw Exception(msg);
@@ -484,11 +467,11 @@ Future<void> checkInUser(String id, String uid, token) async {
 
 Future<String> getCurrentUserID() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString("id");
+  return prefs.getString("id")!;
 }
 
 Future<List<LBEntry>> getLeaderboard() async {
-  String url = baseUrl + "leaderboard";
+  Uri url = Uri.parse("${baseUrl}leaderboard");
 
   final response = await http.get(url);
 
@@ -498,12 +481,12 @@ Future<List<LBEntry>> getLeaderboard() async {
         data.map<LBEntry>((json) => LBEntry.fromJson(json)).toList();
     return lb;
   } else {
-    return null;
+    throw Error();
   }
 }
 
 Future<int> getSelfRank(String token) async {
-  String url = baseUrl + "leaderboard/rank";
+  Uri url = Uri.parse("${baseUrl}leaderboard/rank");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -515,12 +498,12 @@ Future<int> getSelfRank(String token) async {
     var data = json.decode(response.body);
     return data;
   } else {
-    return null;
+    throw Error();
   }
 }
 
 Future<List<Prize>> getPrizes() async {
-  String url = baseUrl + "prizes";
+  Uri url = Uri.parse("${baseUrl}prizes");
 
   final response = await http.get(url);
 
@@ -530,12 +513,12 @@ Future<List<Prize>> getPrizes() async {
         data.map<Prize>((json) => Prize.fromJson(json)).toList();
     return prizes;
   } else {
-    return null;
+    throw Error();
   }
 }
 
-Future<Project> getProject(String id, String token) async {
-  String url = baseUrl + "users/" + id + "/project";
+Future<Project?> getProject(String id, String token) async {
+  Uri url = Uri.parse("${baseUrl}users/$id/project");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -552,81 +535,100 @@ Future<Project> getProject(String id, String token) async {
   }
 }
 
-Future<Project> newProject(
+Future<bool> newProject(
     BuildContext context,
     String name,
     String desc,
-    String teamId,
+    String team,
     String slides,
     String video,
-    String ghurl,
-    bool isVirtual,
-    String id,
-    String token) async {
-  String url = baseUrl + "projects";
+    String github,
+    bool presenting,
+    String projId,
+    String token,
+    {int? tableNumber}
+    ) async {
+  Uri url = Uri.parse("${baseUrl}projects/");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({
+  
+  Map<String, dynamic> body = {
     "name": name,
     "description": desc,
-    "team": teamId,
+    "team": team,
     "slides": slides,
     "video": video,
-    "url": ghurl,
-    "presentingVirtually": isVirtual
-  });
-  final response = await http.post(url, headers: headers, body: body);
+    "url": github,
+    "presentingVirtually": presenting,
+  };
+  if (tableNumber != null) {
+    body["tableNumber"] = tableNumber;
+  }
+
+  final response = await http.post(
+    url, 
+    headers: headers,
+    body: json.encode(body)
+  );
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    Project project = Project.fromJson(data);
-    return project;
+    return true;
   } else {
-    return Future.error("Error");
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
   }
 }
 
-Future<Project> editProject(
+Future<bool> editProject(
     BuildContext context,
     String name,
     String desc,
     String slides,
     String video,
-    String ghurl,
-    bool isVirtual,
-    String id,
-    String token) async {
-  String url = baseUrl + "projects/" + id;
+    String github,
+    bool presenting,
+    String projId,
+    String token,
+    {int? tableNumber}
+    ) async {
+  Uri url = Uri.parse("${baseUrl}projects/$projId");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  String body = json.encode({
+
+  Map<String, dynamic> body = {
     "name": name,
     "description": desc,
     "slides": slides,
     "video": video,
-    "url": ghurl,
-    "presentingVirtually": isVirtual
-  });
-  final response = await http.patch(url, headers: headers, body: body);
+    "url": github,
+    "presentingVirtually": presenting,
+  };
+  if (tableNumber != null) {
+    body["tableNumber"] = tableNumber;
+  }
+
+  final response = await http.patch(
+    url, 
+    headers: headers,
+    body: json.encode(body)
+  );
 
   if (response.statusCode == 200) {
-    var data = json.decode(response.body);
-    Project project = Project.fromJson(data);
-    return project;
+    return true;
   } else {
-    return Future.error("Error");
-    //errorDialog(context, "Error", json.decode(response.body)['message']);
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
   }
 }
 
 Future enterPrize(
     BuildContext context, String projId, String prizeId, String token) async {
-  String url =
-      baseUrl + "projects/prizes/enter/" + projId + "?prizeID=" + prizeId;
+  Uri url =
+      Uri.parse("${baseUrl}projects/prizes/enter/$projId?prizeID=$prizeId");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -642,8 +644,8 @@ Future enterPrize(
   }
 }
 
-Future<Team> getTeamById(String id, String token) async {
-  String url = baseUrl + "users/" + id + "/team";
+Future<Team?> getTeamById(String id, String token) async {
+  Uri url = Uri.parse("${baseUrl}users/$id/team");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -660,7 +662,7 @@ Future<Team> getTeamById(String id, String token) async {
 }
 
 Future<DiscordInfo> getDiscordInfo(String token) async {
-  String url = baseUrl + 'user/verification';
+  Uri url = Uri.parse('${baseUrl}user/verification');
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -672,29 +674,29 @@ Future<DiscordInfo> getDiscordInfo(String token) async {
     DiscordInfo discord = DiscordInfo.fromJson(data);
     return discord;
   } else {
-    return null;
+    throw Error();
   }
 }
 
 Future<bool> uploadProfilePic(io.File profilePicFile, String token) async {
-  String url = baseUrl + "user/profile-picture";
-  var uri = Uri.parse(url);
+  Uri uri = Uri.parse("${baseUrl}user/profile-picture");
   var request = http.MultipartRequest("POST", uri);
-  request.files.add(http.MultipartFile.fromBytes("file", profilePicFile.readAsBytesSync(), filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
+  request.files.add(http.MultipartFile.fromBytes(
+      "file", profilePicFile.readAsBytesSync(),
+      filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
   request.headers['x-access-token'] = token;
   var response = await request.send();
   if (response.statusCode == 200) {
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
 
 Future<bool> deleteProfilePic(String token) async {
-  String url = baseUrl + "user/profile-picture";
+  Uri url = Uri.parse("${baseUrl}user/profile-picture");
   final http.Response response = await http.delete(
-    Uri.parse(url),
+    url,
     headers: <String, String>{
       'Content-Type': 'application/json',
       "x-access-token": token
@@ -702,10 +704,64 @@ Future<bool> deleteProfilePic(String token) async {
   );
   if (response.statusCode == 200) {
     return true;
-  }
-  else {
+  } else {
     return false;
   }
 }
 
+// Get all projects (admin only)
+Future<List<Project>> getAllProjects(String token) async {
+  Uri url = Uri.parse("${baseUrl}projects/all");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
 
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    List<dynamic> projectsJson = json.decode(response.body);
+    return projectsJson.map((json) => Project.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load projects');
+  }
+}
+
+// Update project table number (admin only)
+Future<bool> updateProjectTableNumber(String projectId, int tableNumber, String token) async {
+  Uri url = Uri.parse("${baseUrl}projects/$projectId/table");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  final response = await http.patch(
+    url,
+    headers: headers,
+    body: json.encode({"tableNumber": tableNumber})
+  );
+
+  return response.statusCode == 200;
+}
+
+Future<ExpoConfig> getExpoConfig(String token) async {
+  Uri url = Uri.parse("${baseUrl}config/expo");
+  Map<String, String> headers = {
+    "Content-type": "application/json",
+    "x-access-token": token
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    return ExpoConfig.fromJson(json.decode(response.body));
+  } else {
+    throw Exception('Failed to load expo configuration');
+  }
+}
+
+// ignore: unused_element
+bool _canSubmitTableNumber(ExpoConfig config) {
+  final now = DateTime.now();
+  return now.isBefore(config.expoStartTime);
+}

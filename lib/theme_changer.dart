@@ -1,53 +1,53 @@
 import 'package:flutter/material.dart';
 
-
-ThemeData baseTheme({ColorScheme cScheme, Color background, Color text}) {
+ThemeData baseTheme(
+    {required ColorScheme cScheme,
+    required Color background,
+    required Color text}) {
   return ThemeData(
       fontFamily: 'Futura Md BT',
       colorScheme: cScheme,
       scaffoldBackgroundColor: background,
-      accentColor: text,
+      secondaryHeaderColor: text,
       textTheme: TextTheme(
-        headline1: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: text),
-        headline2: TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: text),
-        headline3: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: text),
-        headline4: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: text),
-        bodyText1: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600, color: background),
-        bodyText2: TextStyle(fontSize: 16.0, color: text),
+        displayLarge:
+            TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: text),
+        displayMedium:
+            TextStyle(fontSize: 26.0, fontWeight: FontWeight.bold, color: text),
+        displaySmall:
+            TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold, color: text),
+        headlineMedium:
+            TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: text),
+        bodyLarge: TextStyle(
+            fontSize: 14.0, fontWeight: FontWeight.w600, color: background),
+        bodyMedium: TextStyle(fontSize: 16.0, color: text),
       ),
       inputDecorationTheme: InputDecorationTheme(
-          labelStyle: TextStyle(color: text, fontWeight: FontWeight.bold),
-          errorStyle: TextStyle(color: cScheme.secondary),
-          isDense: true,
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0))
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0))
-          ),
-          disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2.0, color: text.withAlpha(87)),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0))
-          ),
-          errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(width: 2.0, color: text),
-              borderRadius: const BorderRadius.all(Radius.circular(15.0))
-          ),
+        labelStyle: TextStyle(color: text, fontWeight: FontWeight.bold),
+        errorStyle: TextStyle(color: cScheme.secondary),
+        isDense: true,
+        enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: text),
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: text),
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+        disabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: text.withAlpha(87)),
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+        errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2.0, color: text),
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
         focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(width: 2.0, color: text),
-            borderRadius: const BorderRadius.all(Radius.circular(15.0))
-        ),
-      )
-  );
+            borderRadius: const BorderRadius.all(Radius.circular(15.0))),
+      ));
 }
 
-ThemeData genLightTheme (){
-
-  var primary = const Color(0xFF1B1818);
-  var secondary = const Color(0xFF1B1818);
-  var buttons = const Color(0xFF1B1818);
+ThemeData genLightTheme() {
+  var primary = const Color(0xFF0B3B48);
+  var secondary = const Color(0xFF0B3B48);
+  var buttons = const Color(0xFF0B3B48);
   var altbuttons = const Color(0xFF1028F1);
   var surface = const Color(0xFFE8EAEF);
   var surface2 = const Color(0xFFA8C2fE);
@@ -60,8 +60,7 @@ ThemeData genLightTheme (){
       tertiary: buttons, //main button color
       tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      surfaceTint: surface2, //box gradient 2
-      background: background,
+      surfaceTint: surface2,
       error: altbuttons,
       errorContainer: secondary, //menu buttons
       onPrimary: background,
@@ -69,21 +68,14 @@ ThemeData genLightTheme (){
       onTertiary: surface,
       onTertiaryContainer: surface,
       onSurface: secondary,
-      onBackground: secondary,
       onError: secondary,
       onErrorContainer: background,
       shadow: shadow,
-      brightness: Brightness.light
-  );
-  return baseTheme(
-    cScheme: cScheme,
-    background: background,
-    text: secondary
-  );
+      brightness: Brightness.light);
+  return baseTheme(cScheme: cScheme, background: background, text: secondary);
 }
 
-ThemeData genDarkTheme (){
-
+ThemeData genDarkTheme() {
   var primary = const Color(0xFF1028F1);
   var secondary = const Color(0xFF735FFF);
   var buttons = const Color(0xFFFF7AA5);
@@ -100,8 +92,7 @@ ThemeData genDarkTheme (){
       tertiary: buttons, //main button color
       tertiaryContainer: altbuttons, //alt button color
       surface: surface, //box gradient 1
-      surfaceTint: surface2, //box gradient 2
-      background: background,
+      surfaceTint: surface2,
       error: buttons,
       errorContainer: primary, //menu buttons
       onPrimary: text,
@@ -110,16 +101,14 @@ ThemeData genDarkTheme (){
       onTertiaryContainer: background,
       onSurface: text,
       onSurfaceVariant: text,
-      onBackground: text,
       onError: text,
       onErrorContainer: text,
       shadow: shadow,
-      brightness: Brightness.light
-  );
+      brightness: Brightness.light);
   return baseTheme(
-      cScheme: cScheme,
-      background: background,
-      text: text,
+    cScheme: cScheme,
+    background: background,
+    text: text,
   );
 }
 

@@ -15,7 +15,7 @@ class Forgot extends StatefulWidget {
 }
 
 class _ForgotState extends State<Forgot> {
-  TextEditingController _emailcontroller;
+  late TextEditingController _emailcontroller;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _ForgotState extends State<Forgot> {
   }
 
   void passwordRecovery(BuildContext context) async {
-    OverlayEntry loading = LoadingOverlay(context);
+    OverlayEntry loading = loadingOverlay(context);
     Overlay.of(context).insert(loading);
     bool success = await resetPassword(_emailcontroller.text);
     loading.remove();
@@ -48,7 +48,7 @@ class _ForgotState extends State<Forgot> {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
-    var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+    var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
 
     return Scaffold(
         body: SingleChildScrollView(
@@ -64,14 +64,14 @@ class _ForgotState extends State<Forgot> {
                               color1: Theme.of(context).colorScheme.primary,
                               color2: Theme.of(context)
                                   .colorScheme
-                                  .secondaryVariant),
+                                  .secondaryContainer),
                         ),
                         Container(
                             height: screenHeight * 0.3,
                             width: screenWidth,
                             alignment: Alignment.topCenter,
                             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                            child: _themeProvider.getTheme == lightTheme
+                            child: themeProvider.getTheme == lightTheme
                                 ? Image.asset("lib/logos/thLogoLight.png")
                                 : Image.asset("lib/logos/thLogoLight.png"))
                       ]),
@@ -89,7 +89,7 @@ class _ForgotState extends State<Forgot> {
                           decoration: const InputDecoration(
                             labelText: "Email",
                           ),
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           keyboardType: TextInputType.emailAddress,
                           enableSuggestions: false,
                         ),
@@ -112,10 +112,9 @@ class _ForgotState extends State<Forgot> {
                         children: [
                           Text("Already have an account?",
                               style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onBackground
-                              )
-                          ),
+                                  fontSize: 14,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface)),
                           TextButton(
                               onPressed: () {
                                 Navigator.push(
@@ -126,11 +125,10 @@ class _ForgotState extends State<Forgot> {
                               },
                               child: Text("Try Logging In",
                                   style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(context).colorScheme.tertiaryContainer
-                                  )
-                              )
-                          ),
+                                      fontSize: 14,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer))),
                         ],
                       ),
                       const SizedBox(height: 5)

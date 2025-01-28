@@ -7,18 +7,17 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/components/DefaultPage.dart';
-import 'package:thdapp/components/ErrorDialog.dart';
 import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
-import 'package:thdapp/pages/team_api.dart';
 import 'package:thdapp/pages/teams_list.dart';
+import 'package:thdapp/providers/expo_config_provider.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
+import 'package:thdapp/pages/admin/manage_tables.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 
 import '../models/discord.dart';
 import '../models/profile.dart';
-import '../models/team.dart';
 import 'checkin.dart';
 import 'events/index.dart';
 import 'leaderboard.dart';
@@ -30,14 +29,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  SharedPreferences prefs;
-  String token;
+  String token = "";
 
-  DiscordInfo discordInfo;
+  DiscordInfo discordInfo = DiscordInfo(code: "0", expiry: "0", link: "0");
 
   void getData() async {
-    prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token') as String;
     Provider.of<UserInfoModel>(context, listen: false).fetchUserInfo();
 
     discordInfo = await getDiscordInfo(token);
@@ -48,12 +46,15 @@ class _HomeState extends State<Home> {
   @override
   initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ExpoConfigProvider>(context, listen: false).loadConfig(token);
+    });
     getData();
   }
 
   _launchDiscord() async {
     String url = discordInfo.link;
-    launch(url);
+    launchUrl(Uri.parse(url));
   }
 
   void discordVerifyDialog(BuildContext context) {
@@ -69,16 +70,16 @@ class _HomeState extends State<Home> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Verification Code",
-                    style: Theme.of(context).textTheme.headline1),
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                         "When you join our Discord server, you'll be prompted to enter the following verification code by the Discord Bot running the server. This code will expire in 10 minutes.\n",
-                        style: Theme.of(context).textTheme.bodyText2),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     Text(
-                      snapshot.data.code,
-                      style: Theme.of(context).textTheme.headline3,
+                      snapshot.data.hashCode.toString(),
+                      style: Theme.of(context).textTheme.displaySmall,
                       textAlign: TextAlign.center,
                     )
                   ],
@@ -87,17 +88,17 @@ class _HomeState extends State<Home> {
                   TextButton(
                     child: Text(
                       "COPY",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: snapshot.data.code));
+                      Clipboard.setData(ClipboardData(
+                          text: snapshot.data.hashCode.toString()));
                     },
                   ),
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -109,15 +110,15 @@ class _HomeState extends State<Home> {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title:
-                    Text("Error", style: Theme.of(context).textTheme.headline1),
+                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
-                    style: Theme.of(context).textTheme.bodyText2),
+                    style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
                     child: Text(
                       "OK",
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -129,7 +130,7 @@ class _HomeState extends State<Home> {
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text("Verifying...",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               content: Container(
                   alignment: Alignment.center,
                   height: 70,
@@ -141,14 +142,45 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Widget _buildAdminSection() {
+    return Consumer<UserInfoModel>(
+      builder: (context, userInfo, child) {
+        if (userInfo.isAdmin) {
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              Text(
+                "Admin Controls",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 8),
+              SolidButton(
+                text: "Manage Project Tables",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ManageTablesPage(),
+                    ),
+                  );
+                },
+              ),
+              // ... any other admin buttons ...
+            ],
+          );
+        }
+        return const SizedBox.shrink(); // Return empty widget for non-admins
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final mqData = MediaQuery.of(context);
     final screenHeight = mqData.size.height;
     final screenWidth = mqData.size.width;
 
-    Profile userData = Provider.of<UserInfoModel>(context).userProfile;
-    Team userTeam = Provider.of<UserInfoModel>(context).team;
+    Profile? userData = Provider.of<UserInfoModel>(context).userProfile;
     Status status = Provider.of<UserInfoModel>(context).userInfoStatus;
     bool hasTeam = Provider.of<UserInfoModel>(context).hasTeam;
 
@@ -173,20 +205,27 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("HACKING TIME LEFT",
-                                style: Theme.of(context).textTheme.headline1),
+                                style: Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 8),
                             CountdownTimer(
-                              endTime: 1675549800000,
-                              endWidget: Text("Time's up!",
-                                  style: TextStyle(
-                                      fontSize: 24.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.tertiary)
+                              endTime: Provider.of<ExpoConfigProvider>(context)
+                                  .config
+                                  ?.submissionDeadline
+                                  .millisecondsSinceEpoch ?? 
+                                  DateTime.now().millisecondsSinceEpoch,
+                              endWidget: Text(
+                                "Time's up!",
+                                style: TextStyle(
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.tertiary
+                                )
                               ),
                               textStyle: TextStyle(
-                                  fontSize: 30.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.tertiary),
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.tertiary
+                              ),
                             ),
                           ])),
                   SizedBox(height: screenHeight * 0.08),
@@ -196,11 +235,8 @@ class _HomeState extends State<Home> {
                       alignment: Alignment.bottomCenter,
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: Text(
-                        "Swipe to see all the places where\n" +
-                            String.fromCharCode($larr) +
-                            "the hacking is happening" +
-                            String.fromCharCode(($rarr)),
-                        style: Theme.of(context).textTheme.bodyText1,
+                        "Swipe to see all the places where\n${String.fromCharCode($larr)}the hacking is happening${String.fromCharCode(($rarr))}",
+                        style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.center,
                       )),
                   CarouselSlider(
@@ -213,17 +249,14 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                    "Hi " +
-                                        userData.firstName +
-                                        " " +
-                                        userData.lastName +
-                                        "!",
+                                    "Hi ${userData?.firstName} ${userData?.lastName}!",
                                     textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
                                   "Welcome to TartanHacks!",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.center,
                                 ),
                                 SolidButton(
@@ -256,13 +289,13 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text("Swag Points",
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
-                                    "Points Earned: " +
-                                        userData.totalPoints.toString(),
+                                    "Points Earned: ${userData?.totalPoints}",
                                     style:
-                                        Theme.of(context).textTheme.bodyText2),
+                                        Theme.of(context).textTheme.bodyMedium),
                                 SolidButton(
                                   text: "Leaderboard",
                                   onPressed: () {
@@ -294,11 +327,12 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text("Discord Server",
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 Text(
                                   "Join the official TartanHacks Discord!",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyMedium,
                                   textAlign: TextAlign.center,
                                 ),
                                 SolidButton(
@@ -330,7 +364,7 @@ class _HomeState extends State<Home> {
                       },
                       child: Text(
                         "VIEW YOUR PROJECT",
-                        style: Theme.of(context).textTheme.headline2,
+                        style: Theme.of(context).textTheme.displayMedium,
                       ),
                     )
                   else
@@ -345,9 +379,10 @@ class _HomeState extends State<Home> {
                       },
                       child: Text(
                         "JOIN A TEAM",
-                        style: Theme.of(context).textTheme.headline2,
+                        style: Theme.of(context).textTheme.displayMedium,
                       ),
-                    )
+                    ),
+                  _buildAdminSection()
                 ],
               ));
   }

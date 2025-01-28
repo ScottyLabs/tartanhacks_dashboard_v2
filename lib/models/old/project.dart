@@ -11,7 +11,16 @@ class Project{
   final List<String> prizes;
   final String id;
 
-  Project({this.name, this.desc, this.slides, this.video, this.willPresent, this.prizes, this.github, this.id});
+  Project({
+    required this.name, 
+    required this.desc, 
+    required this.slides, 
+    required this.video, 
+    required this.willPresent, 
+    required this.prizes, 
+    required this.github, 
+    required this.id
+  });
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
     var jsonList = parsedJson['eligible_prizes'] as List;

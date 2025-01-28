@@ -17,9 +17,9 @@ import './MenuButton.dart';
 OverlayEntry menuOverlay(BuildContext context) {
   final mqData = MediaQuery.of(context);
   final screenWidth = mqData.size.width;
-  var _themeProvider = Provider.of<ThemeChanger>(context, listen: false);
+  var themeProvider = Provider.of<ThemeChanger>(context, listen: false);
   bool hasTeam = Provider.of<UserInfoModel>(context, listen: false).hasTeam;
-  OverlayEntry entry;
+  late OverlayEntry entry;
 
   entry = OverlayEntry(
       builder: (context) => GestureDetector(
@@ -85,12 +85,12 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 (route) => false);
                           },
                         ),
-                        _themeProvider.getTheme == lightTheme
+                        themeProvider.getTheme == lightTheme
                             ? MenuChoice(
                                 icon: Icons.mode_night,
                                 text: "Dark",
                                 onTap: () {
-                                  _themeProvider.setTheme(darkTheme);
+                                  themeProvider.setTheme(darkTheme);
                                   setThemePref("dark", entry, context);
                                 },
                               )
@@ -98,7 +98,7 @@ OverlayEntry menuOverlay(BuildContext context) {
                                 icon: Icons.wb_sunny,
                                 text: "Light",
                                 onTap: () {
-                                  _themeProvider.setTheme(lightTheme);
+                                  themeProvider.setTheme(lightTheme);
                                   setThemePref("light", entry, context);
                                 },
                               ),

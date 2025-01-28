@@ -9,7 +9,12 @@ class DefaultPage extends StatelessWidget {
   final bool backflag;
   final bool isSponsor;
 
-  const DefaultPage({this.child, this.reverse=true, this.backflag=false, this.isSponsor=false});
+  const DefaultPage({ 
+    required this.child, 
+    this.reverse=true, 
+    this.backflag=false, 
+    this.isSponsor=false
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,8 @@ class DefaultPage extends StatelessWidget {
                                       painter: CurvedTop(
                                           color1: Theme.of(context).colorScheme.primary,
                                           color2: Theme.of(context).colorScheme.secondary,
-                                          reverse: reverse
+                                          reverse: reverse,
+                                        padding: mqData.padding.top
                                       )
                                   ),
                                 ]

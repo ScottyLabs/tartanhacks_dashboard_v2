@@ -15,20 +15,25 @@ class Leaderboard extends StatefulWidget {
 }
 
 class _LeaderboardState extends State<Leaderboard> {
-  List<LBEntry> lbData;
-  int selfRank;
-  Profile userData;
-  String token;
+  List<LBEntry> lbData = [];
+  int selfRank = 0;
+  String displayName = "";
+  int totalPoints = 0;
+  String token = "";
+  bool loading = true;
   final TextEditingController _editNicknameController = TextEditingController();
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
-    String id = prefs.getString('id');
+    token = prefs.getString('token') ?? "";
+    String id = prefs.getString('id') ?? "";
 
     lbData = await getLeaderboard();
     selfRank = await getSelfRank(token);
-    userData = await getProfile(id, token);
+    Profile userData = await getProfile(id, token);
+    totalPoints = userData.totalPoints;
+    displayName = userData.displayName;
+    loading = false;
     setState(() {});
   }
 
@@ -41,17 +46,17 @@ class _LeaderboardState extends State<Leaderboard> {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text("Enter New Nickname",
-              style: Theme.of(context).textTheme.headline1),
+              style: Theme.of(context).textTheme.displayLarge),
           content: TextField(
             controller: _editNicknameController,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             TextButton(
               child: Text(
                 "Cancel",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () async {
                 Navigator.of(context).pop();
@@ -60,19 +65,17 @@ class _LeaderboardState extends State<Leaderboard> {
             TextButton(
               child: Text(
                 "Save",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               onPressed: () async {
-                OverlayEntry loading = LoadingOverlay(context);
+                OverlayEntry loading = loadingOverlay(context);
                 Overlay.of(context).insert(loading);
                 bool success =
-                    await setDisplayName(_editNicknameController.text, token);
+                    await setDisplayName(_editNicknameController.text, token) ??
+                        false;
                 loading.remove();
 
-                if (success == null) {
-                  errorDialog(
-                      context, "Error", "An error occurred. Please try again.");
-                } else if (success) {
+                if (success) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -81,15 +84,15 @@ class _LeaderboardState extends State<Leaderboard> {
                         backgroundColor:
                             Theme.of(context).scaffoldBackgroundColor,
                         title: Text("Success",
-                            style: Theme.of(context).textTheme.headline1),
+                            style: Theme.of(context).textTheme.displayLarge),
                         content: Text("Nickname has been changed.",
-                            style: Theme.of(context).textTheme.bodyText2),
+                            style: Theme.of(context).textTheme.bodyMedium),
                         actions: <Widget>[
                           // usually buttons at the bottom of the dialog
                           TextButton(
                             child: Text(
                               "OK",
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             onPressed: () {
                               Navigator.of(context)
@@ -132,7 +135,7 @@ class _LeaderboardState extends State<Leaderboard> {
 
     return DefaultPage(
         backflag: true,
-        child: (userData == null)
+        child: (loading)
             ? const Center(child: CircularProgressIndicator())
             : Container(
                 alignment: Alignment.center,
@@ -154,52 +157,56 @@ class _LeaderboardState extends State<Leaderboard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("YOUR POSITION:",
-                                  style: Theme.of(context).textTheme.headline3),
+                                  style:
+                                      Theme.of(context).textTheme.displaySmall),
                               SolidButton(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer,
+                                onPressed: _editNickname,
                                 child: Icon(Icons.edit,
                                     color: Theme.of(context)
                                         .colorScheme
                                         .onTertiaryContainer),
-                                color: Theme.of(context).colorScheme.tertiaryContainer,
-                                onPressed: _editNickname,
                               ),
                             ],
                           ),
                           LBRow(
                               place: selfRank,
-                              name: userData.displayName,
-                              points: userData.totalPoints),
+                              name: displayName,
+                              points: totalPoints),
                         ],
                       ),
                     ),
                     GradBox(
                         width: screenWidth * 0.9,
                         height: screenHeight * 0.55,
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
                         alignment: Alignment.topLeft,
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("LEADERBOARD",
-                                  style: Theme.of(context).textTheme.headline1),
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge),
                               Text(
                                 "Scroll to see the whole board!",
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               Expanded(
                                   child: Container(
-                                    alignment: Alignment.center,
-                                    child: ListView.builder(
-                                      itemCount: lbData.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return LBRow(
-                                            place: lbData[index].rank,
-                                            name: lbData[index].displayName,
-                                            points: lbData[index].totalPoints);
-                                      },
-                                    ),
+                                alignment: Alignment.center,
+                                child: ListView.builder(
+                                  itemCount: lbData.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return LBRow(
+                                        place: lbData[index].rank,
+                                        name: lbData[index].displayName,
+                                        points: lbData[index].totalPoints);
+                                  },
+                                ),
                               ))
                             ]))
                   ],
@@ -212,7 +219,7 @@ class LBRow extends StatelessWidget {
   final String name;
   final int points;
 
-  const LBRow({this.place, this.name, this.points});
+  const LBRow({required this.place, required this.name, required this.points});
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +233,7 @@ class LBRow extends StatelessWidget {
               alignment: Alignment.center,
               child: Text(
                 place.toString(),
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.displayLarge,
               ),
             ),
             Expanded(child: SolidButton(text: name, onPressed: null)),
@@ -235,7 +242,7 @@ class LBRow extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   "$points pts",
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ))
           ],
         ));

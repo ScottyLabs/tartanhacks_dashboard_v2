@@ -16,11 +16,11 @@ class CheckInItemsModel with ChangeNotifier {
   String _token = "";
   String _uid = "";
 
-  List<CheckInItem> _list;
-  Map<String, bool> hasCheckedIn;
+  List<CheckInItem> _list = [];
+  late Map<String, bool>? hasCheckedIn;
 
-  bool isAdmin;
-  int points;
+  late bool isAdmin;
+  late int? points;
 
   Status get checkInItemsStatus => _status;
   List get checkInItems => _list;
@@ -36,9 +36,9 @@ class CheckInItemsModel with ChangeNotifier {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    _token = prefs.getString("token");
-    _uid = prefs.getString("id");
-    isAdmin = prefs.getBool("admin");
+    _token = prefs.getString("token") ?? "";
+    _uid = prefs.getString("id") ?? "";
+    isAdmin = prefs.getBool("admin") ?? false;
     _status = Status.fetching;
 
     try {
@@ -47,7 +47,7 @@ class CheckInItemsModel with ChangeNotifier {
         hasCheckedIn = null;
         points = 0;
       } else {
-        List history = await api.getUserHistory(prefs.getString("id"), _token);
+        List history = await api.getUserHistory(prefs.getString("id")!, _token);
         points = history[0];
         hasCheckedIn = history[1];
         _list = history[2];
@@ -86,7 +86,7 @@ class CheckInItemsModel with ChangeNotifier {
 
   void reset() {
     _status = Status.notLoaded;
-    _list = null;
+    _list = [];
     _uid = "";
     hasCheckedIn = null;
     notifyListeners();

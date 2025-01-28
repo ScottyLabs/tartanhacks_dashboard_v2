@@ -11,10 +11,10 @@ description: TartanHacks app
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 3.0.1+14
+version: 5.0.0+1
 
 environment:
-  sdk: ">=2.5.2 <3.0.0"
+  sdk: ">=2.12.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -24,26 +24,28 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  http: ^0.12.2
-  shared_preferences: ^0.5.3+1
-  url_launcher: ^5.0.3
-  flutter_countdown_timer: ^3.0.1
-  intl: ^0.16.1
-  share: ^0.6.5+4
-  date_time_picker: ^1.1.1
-  qr_flutter: ^3.1.0
+  cupertino_icons: ^1.0.6
+  http: ^1.2.0
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.3.1
+  url_launcher_ios: ^6.3.2
+  flutter_countdown_timer: ^4.1.0
+  intl: ^0.17.0
+  share: ^2.0.4
+  date_time_picker: ^2.1.0
+  qr_flutter: ^4.1.0
   flutter_smart_scan: ^1.0.4
-  json_annotation: ^3.1.1
+  json_annotation: ^4.8.1
   charcode: ^1.2.0
-  carousel_slider: ^2.3.1
-  flutter_svg: ^0.22.0
+  carousel_slider: ^5.0.0
+  flutter_svg: ^2.0.9
   decorated_icon: ^1.2.1
   image_picker:
-  image_cropper: ^1.5.0
+  image_cropper: ^8.1.0
 
+  http_parser: any
 dev_dependencies:
-  flutter_lints: ^1.0.4
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
   integration_test:

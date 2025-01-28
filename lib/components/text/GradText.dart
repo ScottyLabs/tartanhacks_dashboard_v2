@@ -5,7 +5,12 @@ class GradText extends StatelessWidget {
   final Color color1;
   final Color color2;
   final double size;
-  const GradText({this.text, this.size, this.color1, this.color2});
+  const GradText({ 
+    required this.text, 
+    required this.size, 
+    required this.color1, 
+    required this.color2 
+  });
   @override
   Widget build(BuildContext context) {
     return ShaderMask(

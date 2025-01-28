@@ -5,9 +5,10 @@ class DiscordInfo {
 
 
   DiscordInfo({
-    this.code,
-    this.expiry,
-    this.link});
+    required this.code,
+    required this.expiry,
+    required this.link
+  });
 
   factory DiscordInfo.fromJson(Map<String, dynamic> parsedJson) {
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ListRefreshable extends StatelessWidget {
   Widget child;
 
-  ListRefreshable({this.child});
+  ListRefreshable({ required this.child });
 
   @override
   Widget build(BuildContext context) {

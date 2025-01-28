@@ -3,7 +3,11 @@ class Prize{
   final String name;
   final String description;
 
-  Prize({this.id, this.name, this.description});
+  Prize({
+    required this.id, 
+    required this.name, 
+    required this.description
+  });
 
   factory Prize.fromJson(Map<String, dynamic> parsedJson) {
     Prize newPrize = new Prize(

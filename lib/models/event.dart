@@ -3,24 +3,24 @@ class Event {
   final String platform;
   final bool active;
   final String name;
-  final String description;
+  final String? description;
   //time is unix
   final int startTime;
   final int endTime;
   final String location;
-  final int lat;
-  final int lng;
-  final String platformUrl;
+  final int? lat;
+  final int? lng;
+  final String? platformUrl;
 
   Event({
-    this.id,
-    this.platform,
-    this.active,
-    this.name,
+    required this.id,
+    required this.platform,
+    required this.active,
+    required this.name,
     this.description,
-    this.startTime,
-    this.endTime,
-    this.location,
+    required this.startTime,
+    required this.endTime,
+    required this.location,
     this.lat,
     this.lng,
     this.platformUrl
@@ -46,21 +46,22 @@ class Event {
 class EventDTO {
   final String platform;
   final String name;
-  final String description;
+  final String? description;
   //time is unix
   final int startTime;
   final int endTime;
   final String location;
-  final String platformUrl;
+  final String? platformUrl;
 
-  EventDTO(
-      {this.name,
-        this.description,
-        this.startTime,
-        this.endTime,
-        this.platform,
-        this.platformUrl,
-        this.location});
+  EventDTO({
+    required this.name,
+    required this.description,
+    required this.startTime,
+    required this.endTime,
+    required this.platform,
+    required this.platformUrl,
+    required this.location
+  });
 
   EventDTO.fromEventItem(Event item):
         name = item.name,
