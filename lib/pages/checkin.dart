@@ -153,14 +153,6 @@ class PointsHeader extends StatelessWidget {
         const SizedBox(
           height: 2,
         ),
-        Text(
-          "Points earned:",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        Text(
-          "$points pts",
-          style: Theme.of(context).textTheme.displayMedium,
-        )
       ],
     );
   }

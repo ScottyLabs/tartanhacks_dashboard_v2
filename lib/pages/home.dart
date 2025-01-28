@@ -20,7 +20,6 @@ import '../models/discord.dart';
 import '../models/profile.dart';
 import 'checkin.dart';
 import 'events/index.dart';
-import 'leaderboard.dart';
 import 'project_submission.dart';
 
 class Home extends StatefulWidget {
@@ -288,26 +287,13 @@ class _HomeState extends State<Home> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Text("Swag Points",
+                                Text("Check In",
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineMedium),
-                                Text(
-                                    "Points Earned: ${userData?.totalPoints}",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                                SolidButton(
-                                  text: "Leaderboard",
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          settings: const RouteSettings(
-                                              name: "leaderboard"),
-                                          builder: (context) => Leaderboard()),
-                                    );
-                                  },
-                                ),
+                                Text("Check in for meals, talks, and more!",
+                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.center),
                                 SolidButton(
                                   text: "Check In",
                                   onPressed: () {
