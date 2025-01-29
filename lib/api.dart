@@ -18,11 +18,10 @@ import 'models/team.dart';
 import 'models/discord.dart';
 import 'package:http_parser/http_parser.dart';
 import 'models/config.dart';
-import 'config/environment.dart';
 
 late SharedPreferences prefs;
 
-final baseUrl = Environment.baseUrl;
+const baseUrl = "https://backend.tartanhacks.com/";
 
 Future<User?> checkCredentials(String email, String password) async {
   Uri url = Uri.parse("${baseUrl}auth/login");

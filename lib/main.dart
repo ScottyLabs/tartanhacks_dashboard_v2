@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import 'package:thdapp/providers/check_in_items_provider.dart';
@@ -9,16 +8,7 @@ import 'pages/login.dart';
 import 'theme_changer.dart';
 import 'package:thdapp/providers/expo_config_provider.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  try {
-    await dotenv.load( fileName: ".env");
-  } catch (e) {
-    print(e);
-  }
-  
-  runApp(
+void main() => runApp(
     MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => CheckInItemsModel()),
@@ -28,7 +18,7 @@ void main() async {
         ],
       child: MyApp()
     )
-);}
+);
 
 class MyApp extends StatelessWidget {
 
