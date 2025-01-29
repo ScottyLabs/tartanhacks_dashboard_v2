@@ -7,5 +7,5 @@
 
 [build]
 
-command = "touch .env && echo "BASE_URL=$BASE_URL" > .env && flutter build web --release"
+command = "touch .env && echo 'BASE_URL=$BASE_URL' > .env && flutter build web --release"
 publish = "build/web"
