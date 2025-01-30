@@ -30,6 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late SharedPreferences prefs;
   bool isAdmin = false;
   late String id;
+  late String? participantId;
   late String token;
 
   late Profile userData;
@@ -46,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
     isAdmin = prefs.getBool('admin')!;
     token = prefs.getString('token')!;
     id = prefs.getString('id')!;
+    id = participantId ?? prefs.getString('id')!;
     isSelf = true;
 
     userData = await getProfile(id, token);
@@ -297,6 +299,12 @@ class _ProfilePageState extends State<ProfilePage> {
     profilePicFile =
         profilePicFilePath == null ? null : CroppedFile(profilePicFilePath);
     setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    participantId = ModalRoute.of(context)?.settings.arguments as String?;
   }
 
   @override

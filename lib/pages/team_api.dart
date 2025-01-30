@@ -3,7 +3,7 @@ import 'dart:async';
 import 'dart:convert';
 import '/models/team.dart';
 
-const baseUrl = "https://backend.tartanhacks.com/";
+const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<http.Response> createTeam(
     String teamName, String description, bool visibility, String token) async {

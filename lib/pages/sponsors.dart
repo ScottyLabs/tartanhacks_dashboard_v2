@@ -392,7 +392,7 @@ class SponsorsState extends State<Sponsors> {
                                               .containsValue(studentIds[index]))
                                       ? bookmarks.keys.firstWhere((k) =>
                                           bookmarks[k] == studentIds[index])
-                                      : null,
+                                      : "NULL",
                                   isBookmark: isBookmark,
                                   toggleFn:
                                       isBookmark ? removeBookmark : newBookmark,

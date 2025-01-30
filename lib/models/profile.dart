@@ -1,7 +1,7 @@
 class Profile {
-  final int totalPoints;
-  final String user;
-  final String event; //objectid
+  final int? totalPoints;
+  final String? user;
+  final String? event; //objectid
   final String firstName;
   final String lastName;
   final int? age;
@@ -9,11 +9,11 @@ class Profile {
   final String? college;
   final String? level;
   final int graduationYear;
-  final String gender;
+  final String? gender;
   final String? genderOther;
-  final String ethnicity;
+  final String? ethnicity;
   final String? ethnicityOther;
-  final String phoneNumber;
+  final String? phoneNumber;
   final String? major;
   final String? coursework;
   final String? language;
@@ -22,7 +22,7 @@ class Profile {
   final String? workLocation;
   final String? workStrengths;
   final List? sponsorRanking; //objectid
-  final String github;
+  final String? github;
   final String? resume;
   final String? design;
   final String? website;

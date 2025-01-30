@@ -21,7 +21,7 @@ import 'models/config.dart';
 
 late SharedPreferences prefs;
 
-const baseUrl = "https://backend.tartanhacks.com/";
+const baseUrl = "https://dev.backend.tartanhacks.com/";
 
 Future<User?> checkCredentials(String email, String password) async {
   Uri url = Uri.parse("${baseUrl}auth/login");
@@ -135,6 +135,7 @@ Future<List> getStudents(String token, {String? query}) async {
 
   if (response.statusCode == 200) {
     var data = json.decode(response.body);
+    data = data.where((json) => json['profile'] != null).toList();
     var ids = data.map((json) => json['_id']).toList();
     List profs = data.map((json) => Profile.fromJson(json['profile'])).toList();
     List teams = data
