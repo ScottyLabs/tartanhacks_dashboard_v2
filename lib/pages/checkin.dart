@@ -387,12 +387,12 @@ class CheckInEventListItem extends StatelessWidget {
                           Flexible(
                             child: Text(
                               isChecked
-                                  ? "You are checked in - ${points}pts"
+                                  ? "You are checked in"
                                   : isAdmin
-                                      ? "Scan Users in - ${points}pts"
+                                      ? "Scan Users in"
                                       : enabled
-                                          ? "Click to Check in - ${points}pts"
-                                          : "Check in at venue - ${points}pts",
+                                          ? "Click to Check in"
+                                          : "Check in at venue",
                               overflow: TextOverflow.fade,
                               maxLines: 1,
                               softWrap: false,
