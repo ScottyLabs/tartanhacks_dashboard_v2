@@ -27,7 +27,7 @@ class TextLogo extends StatelessWidget {
                   child: themeProvider.getTheme==lightTheme ? Image.asset("lib/logos/thLogoDark.png")
                       : Image.asset("lib/logos/thLogoDark.png")
               ),
-              Text(" Tartanhacks ",
+              Text(" TartanHacks ",
                   style: TextStyle(
                     fontSize: min(width*0.1, 30),
                     fontWeight: FontWeight.w600,

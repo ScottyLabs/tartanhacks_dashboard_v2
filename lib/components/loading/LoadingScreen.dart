@@ -21,7 +21,7 @@ class LoadingScreen extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
                   child: Image.asset("lib/logos/thLogoDark.png")),
               Text(
-                "Tartanhacks",
+                "TartanHacks",
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               Text(
