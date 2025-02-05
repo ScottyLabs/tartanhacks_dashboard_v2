@@ -256,16 +256,6 @@ class _CheckInItemFormState extends State<CheckInItemForm> {
                     endTime = picked;
                   }),
 
-              EditCheckInFormField(
-                label: "Points",
-                controller: _pointsController,
-                keyboardType: TextInputType.number,
-                onTap: () {},
-                validator: (String? value) {
-                  return null;
-                },
-              ),
-
               // Dropdown menus
 
               if (editable)
