@@ -58,7 +58,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
   TextEditingController githubController = TextEditingController();
   TextEditingController slidesController = TextEditingController();
   TextEditingController videoController = TextEditingController();
-  final tableNumberController = TextEditingController();
+
   ExpoConfig? expoConfig;
   bool canSubmitTable = true;
 
@@ -141,86 +141,59 @@ class _ProjSubmitState extends State<ProjSubmit> {
     }
   }
 
-  void submitDialog(BuildContext context) {
-    Future proj;
-
-    int? tableNum;
-    if (tableNumberController.text.isNotEmpty) {
-      tableNum = int.tryParse(tableNumberController.text);
-    }
-
-    if (team == null) {
-      errorDialog(context, "Error", "You are not in a team!");
+  void saveProjectDialog(BuildContext context) {
+    if (!_formKey.currentState!.validate()) {
       return;
-    } else if (projId != "") {
-      proj = editProject(
-        context,
-        nameController.text,
-        descController.text,
-        slidesController.text,
-        videoController.text,
-        githubController.text,
-        isPresenting,
-        projId,
-        token,
-        tableNumber: tableNum,
-      );
-    } else {
-      proj = newProject(
-        context,
-        nameController.text,
-        descController.text,
-        team?.teamID ?? "",
-        slidesController.text,
-        videoController.text,
-        githubController.text,
-        isPresenting,
-        projId,
-        token,
-        tableNumber: tableNum,
-      );
     }
+
+    _formKey.currentState?.save();
+
+    Future proj = hasProj
+        ? saveProject(
+            context,
+            nameController.text,
+            descController.text,
+            slidesController.text,
+            videoController.text,
+            githubController.text,
+            isPresenting,
+            projId,
+            token,
+          )
+        : newProject(
+            context,
+            nameController.text,
+            descController.text,
+            team?.teamID ?? "",
+            slidesController.text,
+            videoController.text,
+            githubController.text,
+            isPresenting,
+            projId,
+            token,
+          );
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        // Remove barrierDismissible: false
         return FutureBuilder(
           future: proj,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return AlertDialog(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title: Text("Success",
-                    style: Theme.of(context).textTheme.displayLarge),
-                content: Text("Project info was saved.",
-                    style: Theme.of(context).textTheme.bodyMedium),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                      "OK",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => ProjSubmit()));
-                    },
-                  ),
-                ],
-              );
+              Navigator.pop(context); // Close the dialog
+              return Container();
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Error",
                     style: Theme.of(context).textTheme.displayLarge),
-                content: Text("Project info failed to save. Please try again.",
+                content: Text("Failed to save project. Please try again.",
                     style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
-                    child: Text(
-                      "OK",
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
+                    child: Text("OK",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -230,7 +203,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
             }
             return AlertDialog(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              title: Text("Processing...",
+              title: Text("Saving...",
                   style: Theme.of(context).textTheme.displayLarge),
               content: Container(
                   alignment: Alignment.center,
@@ -243,27 +216,114 @@ class _ProjSubmitState extends State<ProjSubmit> {
     );
   }
 
-  Widget _buildTableNumberField() {
-    if (!canSubmitTable) {
-      return const SizedBox.shrink();
-    }
+  void submitProjectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text("Confirm Project Submission",
+              style: Theme.of(context).textTheme.displayLarge),
+          content: Text(
+              "Are you sure you want to submit your project? Once submitted:\n\n" +
+                  "• You must enter your table number\n" +
+                  "• You cannot modify your project details\n" +
+                  "• This action cannot be undone",
+              style: Theme.of(context).textTheme.bodyMedium),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Cancel",
+                  style: Theme.of(context).textTheme.headlineMedium),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Submit",
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Colors.red,
+                      )),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _submitProject(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ProjSubmitTextField(
-          tableNumberController,
-          "Table Number",
-          isOptional: true,
-        ),
-        Text(
-          "Table number can only be submitted before expo starts",
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-        ),
-        const SizedBox(height: 8),
-      ],
+  void _submitProject(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: false,
+          child: FutureBuilder(
+            future: submitProject(projId, token),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return AlertDialog(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text("Submitting Project...",
+                      style: Theme.of(context).textTheme.displayLarge),
+                  content: Container(
+                    alignment: Alignment.center,
+                    height: 70,
+                    child: const CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              if (snapshot.hasError) {
+                return AlertDialog(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  title: Text("Error",
+                      style: Theme.of(context).textTheme.displayLarge),
+                  content: Text("Failed to submit project: ${snapshot.error}",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text("OK",
+                          style: Theme.of(context).textTheme.headlineMedium),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TableSubmission(
+                      project: Project(
+                        id: projId,
+                        name: nameController.text,
+                        desc: descController.text,
+                        event: "",
+                        url: githubController.text,
+                        slides: slidesController.text,
+                        video: videoController.text,
+                        team: team?.teamID ?? "",
+                        prizes: prizes,
+                        presentingVirtually: isPresenting,
+                        tableNumber: null,
+                      ),
+                      isSubmitted: true,
+                    ),
+                  ),
+                );
+              });
+              return Container();
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -307,7 +367,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         ProjSubmitTextField(videoController, "Video URL",
                             isOptional: true),
                         const SizedBox(height: 8),
-                        _buildTableNumberField(),
                         const SizedBox(height: 8),
                         SolidButton(
                           text: "Save",
@@ -318,11 +377,11 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
                             _formKey.currentState?.save();
 
-                            submitDialog(context);
+                            saveProjectDialog(context);
                           },
                         ),
                         SolidButton(
-                          text: "Submit for Prizes",
+                          text: "Select Prize Tracks",
                           onPressed: () {
                             if (hasProj) {
                               Navigator.push(
@@ -341,29 +400,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         ),
                         if (hasProj)
                           SolidButton(
-                            text: "Submit Table Number",
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TableSubmission(
-                                    project: Project(
-                                      id: projId,
-                                      name: nameController.text,
-                                      desc: descController.text,
-                                      event: "",
-                                      url: githubController.text,
-                                      slides: slidesController.text,
-                                      video: videoController.text,
-                                      team: team?.teamID ?? "",
-                                      prizes: prizes,
-                                      presentingVirtually: isPresenting,
-                                      tableNumber: null,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                            text: "Submit Project",
+                            onPressed: () => submitProjectDialog(context),
                           ),
                       ],
                     ))))));
