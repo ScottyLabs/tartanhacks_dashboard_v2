@@ -1,4 +1,4 @@
-class Project{
+class Project {
   final String id;
   final String name;
   final String desc;
@@ -9,7 +9,7 @@ class Project{
   final String team; //objectid
   final List prizes; //objectid
   final bool presentingVirtually;
-  final int? tableNumber;
+  final String? tableNumber;
   final bool submitted;
 
   Project({
@@ -43,5 +43,35 @@ class Project{
       submitted: parsedJson['submitted'],
     );
     return project;
+  }
+
+  Project copyWith({
+    String? id,
+    String? name,
+    String? desc,
+    String? event,
+    String? url,
+    String? slides,
+    String? video,
+    String? team,
+    List? prizes,
+    bool? presentingVirtually,
+    String? tableNumber,
+    bool? submitted,
+  }) {
+    return Project(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      desc: desc ?? this.desc,
+      event: event ?? this.event,
+      url: url ?? this.url,
+      slides: slides ?? this.slides,
+      video: video ?? this.video,
+      team: team ?? this.team,
+      prizes: prizes ?? this.prizes,
+      presentingVirtually: presentingVirtually ?? this.presentingVirtually,
+      tableNumber: tableNumber ?? this.tableNumber,
+      submitted: submitted ?? this.submitted,
+    );
   }
 }
