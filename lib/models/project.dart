@@ -10,6 +10,7 @@ class Project{
   final List prizes; //objectid
   final bool presentingVirtually;
   final int? tableNumber;
+  final bool submitted;
 
   Project({
     required this.id,
@@ -23,6 +24,7 @@ class Project{
     required this.prizes,
     required this.presentingVirtually,
     this.tableNumber,
+    this.submitted = false,
   });
 
   factory Project.fromJson(Map<String, dynamic> parsedJson) {
@@ -38,6 +40,7 @@ class Project{
       prizes: parsedJson['prizes'],
       presentingVirtually: parsedJson['presentingVirtually'],
       tableNumber: parsedJson['tableNumber'],
+      submitted: parsedJson['submitted'],
     );
     return project;
   }
