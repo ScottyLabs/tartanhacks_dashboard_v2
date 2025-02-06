@@ -81,7 +81,11 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
     Project? proj = await getProject(id, token);
 
-    loading?.remove();
+    try {
+      loading?.remove();
+    } catch (e) {
+      print("How do I check null?? $e");
+    }
 
     if (proj != null && proj.tableNumber != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -205,6 +209,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
           future: proj,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              getData();
               Navigator.pop(context); // Close the dialog
               return Container();
             } else if (snapshot.hasError) {
@@ -419,7 +424,8 @@ class _ProjSubmitState extends State<ProjSubmit> {
                               );
                             } else {
                               errorDialog(context, "Error",
-                                  "You do not have a project to enter!");
+                                  "You do not have a project to enter! "
+                                  "Please save your project first.");
                             }
                           },
                         ),
