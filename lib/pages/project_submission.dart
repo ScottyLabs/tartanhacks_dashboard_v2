@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:thdapp/api.dart';
 import 'package:thdapp/components/DefaultPage.dart';
 import 'package:thdapp/components/ErrorDialog.dart';
@@ -7,6 +9,7 @@ import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
 import 'package:thdapp/models/config.dart';
 import 'package:thdapp/pages/project_success.dart';
+import 'package:thdapp/providers/expo_config_provider.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
@@ -70,6 +73,23 @@ class _ProjSubmitState extends State<ProjSubmit> {
   String projId = "";
   List prizes = [];
   Team? team;
+
+  String get submissionDeadline {
+    final expoConfig =
+        Provider.of<ExpoConfigProvider>(context, listen: false).config;
+    if (expoConfig == null) return '';
+
+    final formatter =
+        DateFormat('MMM d, y h:mm a'); // Example: "Mar 15, 2024 2:30 PM"
+    return formatter.format(expoConfig.submissionDeadline);
+  }
+
+  bool get canSubmit {
+    final expoConfig =
+        Provider.of<ExpoConfigProvider>(context, listen: false).config;
+    if (expoConfig == null) return false;
+    return DateTime.now().isBefore(expoConfig.submissionDeadline);
+  }
 
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -246,6 +266,11 @@ class _ProjSubmitState extends State<ProjSubmit> {
   }
 
   void submitProjectDialog(BuildContext context) {
+    if (!canSubmit) {
+      errorDialog(context, "Error", "Project submission deadline has passed!");
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -256,9 +281,9 @@ class _ProjSubmitState extends State<ProjSubmit> {
           content: Text(
               "Are you sure you want to submit your project? Ensure you have"
               " selected all prize tracks you want to enter. Once submitted:\n\n"
-                  "• You must enter your table number\n"
-                  "• You cannot modify your project details\n"
-                  "• This action cannot be undone",
+              "• You must enter your table number\n"
+              "• You cannot modify your project details\n"
+              "• This action cannot be undone",
               style: Theme.of(context).textTheme.bodyMedium),
           actions: <Widget>[
             TextButton(
@@ -383,6 +408,19 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         Text("PROJECT SUBMISSION",
                             style: Theme.of(context).textTheme.displayMedium),
                         const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          color: canSubmit
+                              ? Colors.green.withAlpha(50)
+                              : Colors.orange.withAlpha(50),
+                          child: Text(
+                            canSubmit
+                                ? "Project submission is open until $submissionDeadline"
+                                : "Project submission is closed - deadline has passed",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                         ProjSubmitTextField(nameController, "Project Name"),
                         const SizedBox(height: 8),
                         ProjSubmitTextField(
@@ -423,16 +461,20 @@ class _ProjSubmitState extends State<ProjSubmit> {
                                         )),
                               );
                             } else {
-                              errorDialog(context, "Error",
+                              errorDialog(
+                                  context,
+                                  "Error",
                                   "You do not have a project to enter! "
-                                  "Please save your project first.");
+                                      "Please save your project first.");
                             }
                           },
                         ),
                         if (hasProj)
                           SolidButton(
                             text: "Submit Project",
-                            onPressed: () => submitProjectDialog(context),
+                            onPressed: canSubmit
+                                ? () => submitProjectDialog(context)
+                                : null,
                           ),
                       ],
                     ))))));
