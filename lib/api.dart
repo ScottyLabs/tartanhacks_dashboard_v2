@@ -548,6 +548,7 @@ Future<bool> newProject(
   String projId,
   String token,
 ) async {
+  String errorMessage;
   try {
     Uri url = Uri.parse("${baseUrl}projects/");
     Map<String, String> headers = {
@@ -570,12 +571,12 @@ Future<bool> newProject(
 
     if (response.statusCode == 200) {
       return true;
-    } else {
-      throw Exception(json.decode(response.body)['message']);
     }
+    errorMessage = json.decode(response.body)['message'];
   } catch (e) {
     throw Exception('Failed to create project: $e');
   }
+  throw Exception(errorMessage);
 }
 
 Future<bool> saveProject(
