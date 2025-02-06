@@ -64,7 +64,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
   TextEditingController videoController = TextEditingController();
 
   ExpoConfig? expoConfig;
-  bool canSubmitTable = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -159,7 +158,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
   @override
   initState() {
     super.initState();
-    _loadExpoConfig();
     getData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loading = loadingOverlay(context);
@@ -176,17 +174,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
     slidesController.dispose();
     videoController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadExpoConfig() async {
-    try {
-      expoConfig = await getExpoConfig(token);
-      setState(() {
-        canSubmitTable = DateTime.now().isBefore(expoConfig!.expoStartTime);
-      });
-    } catch (e) {
-      print('Failed to load expo config: $e');
-    }
   }
 
   void saveProjectDialog(BuildContext context) {
@@ -266,11 +253,6 @@ class _ProjSubmitState extends State<ProjSubmit> {
   }
 
   void submitProjectDialog(BuildContext context) {
-    if (!canSubmit) {
-      errorDialog(context, "Error", "Project submission deadline has passed!");
-      return;
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -472,9 +454,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                         if (hasProj)
                           SolidButton(
                             text: "Submit Project",
-                            onPressed: canSubmit
-                                ? () => submitProjectDialog(context)
-                                : null,
+                            onPressed: () => submitProjectDialog(context),
                           ),
                       ],
                     ))))));

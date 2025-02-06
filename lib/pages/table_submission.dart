@@ -115,24 +115,18 @@ class _TableSubmissionState extends State<TableSubmission> {
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 16),
-                  if (canSubmit)
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      color: Colors.green.withAlpha(50),
-                      child: Text(
-                        "Table number submission is open until $expoStartTime. Please enter your table number to submit.",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    color: canSubmit
+                        ? Colors.green.withAlpha(50)
+                        : Colors.orange.withAlpha(50),
+                    child: Text(
+                      canSubmit
+                          ? "Table number submission is open until $expoStartTime. Please enter your table number to submit."
+                          : "Table number submission is closed - expo has started. Please contact the organizers if you need to change your table number.",
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                  if (!canSubmit)
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      color: Colors.orange.withAlpha(50),
-                      child: Text(
-                        "Table number submission is closed - expo has started. Please contact the organizers if you need to change your table number.",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
+                  ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _tableNumberController,
@@ -146,7 +140,6 @@ class _TableSubmissionState extends State<TableSubmission> {
                     ),
                     style: Theme.of(context).textTheme.bodyMedium,
                     keyboardType: TextInputType.number,
-                    enabled: canSubmit,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a table number';
@@ -161,9 +154,7 @@ class _TableSubmissionState extends State<TableSubmission> {
                   Center(
                     child: SolidButton(
                       text: _isSubmitting ? "Submitting..." : "Submit",
-                      onPressed: canSubmit && !_isSubmitting
-                          ? _submitTableNumber
-                          : null,
+                      onPressed: !_isSubmitting ? _submitTableNumber : null,
                     ),
                   ),
                 ],
