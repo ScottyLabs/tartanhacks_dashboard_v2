@@ -6,6 +6,7 @@ import 'package:thdapp/components/buttons/GradBox.dart';
 import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/components/loading/LoadingOverlay.dart';
 import 'package:thdapp/models/config.dart';
+import 'package:thdapp/pages/project_success.dart';
 import 'enter_prizes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/project.dart';
@@ -80,24 +81,20 @@ class _ProjSubmitState extends State<ProjSubmit> {
 
     Project? proj = await getProject(id, token);
 
-    if (proj != null) {
-      hasProj = true;
-      projId = proj.id;
-      _projName = proj.name;
-      _projDesc = proj.desc;
-      _githubUrl = proj.url;
-      _presUrl = proj.slides;
-      _vidUrl = proj.video;
-      isPresenting = proj.presentingVirtually;
-      prizes = proj.prizes;
-      nameController.text = _projName;
-      descController.text = _projDesc;
-      slidesController.text = _presUrl;
-      videoController.text = _vidUrl;
-      githubController.text = _githubUrl;
-    }
-
     loading?.remove();
+
+    if (proj != null && proj.tableNumber != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProjectSuccess(project: proj),
+          ),
+        );
+      });
+
+      return;
+    }
 
     if (proj != null && proj.submitted == true) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -113,6 +110,23 @@ class _ProjSubmitState extends State<ProjSubmit> {
       });
 
       return;
+    }
+
+    if (proj != null) {
+      hasProj = true;
+      projId = proj.id;
+      _projName = proj.name;
+      _projDesc = proj.desc;
+      _githubUrl = proj.url;
+      _presUrl = proj.slides;
+      _vidUrl = proj.video;
+      isPresenting = proj.presentingVirtually;
+      prizes = proj.prizes;
+      nameController.text = _projName;
+      descController.text = _projDesc;
+      slidesController.text = _presUrl;
+      videoController.text = _vidUrl;
+      githubController.text = _githubUrl;
     }
 
     setState(() {});
