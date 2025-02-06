@@ -210,9 +210,7 @@ Future<List<Team>> getTeams(String token) async {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  print(token);
   final response = await http.get(Uri.parse(url), headers: headers);
-  print(response.body);
   if (response.statusCode == 200) {
     List<dynamic> teamStrings = List.from(jsonDecode(response.body));
     List<Team> teamsList = [];
