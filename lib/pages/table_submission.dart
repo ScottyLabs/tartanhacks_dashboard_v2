@@ -46,7 +46,7 @@ class _TableSubmissionState extends State<TableSubmission> {
     final expoConfig =
         Provider.of<ExpoConfigProvider>(context, listen: false).config;
     if (expoConfig == null) return false;
-    return DateTime.now().isBefore(expoConfig.expoStartTime);
+    return DateTime.now().millisecondsSinceEpoch < expoConfig.expoStartTime;
   }
 
   String get expoStartTime {
@@ -56,7 +56,7 @@ class _TableSubmissionState extends State<TableSubmission> {
 
     final formatter =
         DateFormat('MMM d, y h:mm a'); // Example: "Mar 15, 2024 2:30 PM"
-    return formatter.format(expoConfig.expoStartTime);
+    return "${formatter.format(DateTime.fromMillisecondsSinceEpoch(expoConfig.expoStartTime))} EST";
   }
 
   Future<void> _submitTableNumber() async {
@@ -69,6 +69,7 @@ class _TableSubmissionState extends State<TableSubmission> {
       final token = Provider.of<UserInfoModel>(context, listen: false).token;
 
       final success = await updateProjectTableNumber(
+        context,
         widget.project.id,
         tableNum,
         token,
@@ -85,8 +86,6 @@ class _TableSubmissionState extends State<TableSubmission> {
             ),
           ),
         );
-      } else {
-        errorDialog(context, "Error", "Failed to update table number");
       }
     } catch (e) {
       errorDialog(context, "Error", "Invalid table number");

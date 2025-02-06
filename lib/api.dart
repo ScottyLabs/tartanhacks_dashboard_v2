@@ -714,8 +714,8 @@ Future<List<Project>> getAllProjects(String token) async {
 }
 
 // Update project table number
-Future<bool> updateProjectTableNumber(
-    String projectId, int tableNumber, String token) async {
+Future<bool> updateProjectTableNumber(BuildContext context, String projectId,
+    int tableNumber, String token) async {
   Uri url = Uri.parse("${baseUrl}projects/$projectId/table-number");
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -725,7 +725,12 @@ Future<bool> updateProjectTableNumber(
   final response = await http.patch(url,
       headers: headers, body: json.encode({"tableNumber": tableNumber}));
 
-  return response.statusCode == 200;
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    errorDialog(context, "Error", json.decode(response.body)['message']);
+    return false;
+  }
 }
 
 Future<ExpoConfig> getExpoConfig(String token) async {
@@ -742,12 +747,6 @@ Future<ExpoConfig> getExpoConfig(String token) async {
   } else {
     throw Exception('Failed to load expo configuration');
   }
-}
-
-// ignore: unused_element
-bool _canSubmitTableNumber(ExpoConfig config) {
-  final now = DateTime.now();
-  return now.isBefore(config.expoStartTime);
 }
 
 Future<bool> submitProject(String projectId, String token) async {

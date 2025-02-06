@@ -73,21 +73,21 @@ class _ProjSubmitState extends State<ProjSubmit> {
   List prizes = [];
   Team? team;
 
+  bool get canSubmit {
+    final expoConfig =
+        Provider.of<ExpoConfigProvider>(context, listen: false).config;
+    if (expoConfig == null) return false;
+    return DateTime.now().millisecondsSinceEpoch <
+        expoConfig.submissionDeadline;
+  }
+
   String get submissionDeadline {
     final expoConfig =
         Provider.of<ExpoConfigProvider>(context, listen: false).config;
     if (expoConfig == null) return '';
 
-    final formatter =
-        DateFormat('MMM d, y h:mm a'); // Example: "Mar 15, 2024 2:30 PM"
-    return formatter.format(expoConfig.submissionDeadline);
-  }
-
-  bool get canSubmit {
-    final expoConfig =
-        Provider.of<ExpoConfigProvider>(context, listen: false).config;
-    if (expoConfig == null) return false;
-    return DateTime.now().isBefore(expoConfig.submissionDeadline);
+    final formatter = DateFormat('MMM d, y h:mm a');
+    return "${formatter.format(DateTime.fromMillisecondsSinceEpoch(expoConfig.submissionDeadline))} EST";
   }
 
   void getData() async {
