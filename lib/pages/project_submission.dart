@@ -97,13 +97,23 @@ class _ProjSubmitState extends State<ProjSubmit> {
       githubController.text = _githubUrl;
     }
 
-    nameController.text = _projName;
-    descController.text = _projDesc;
-    slidesController.text = _presUrl;
-    videoController.text = _vidUrl;
-    githubController.text = _githubUrl;
-
     loading?.remove();
+
+    if (proj != null && proj.submitted == true) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TableSubmission(
+              project: proj,
+              isSubmitted: true,
+            ),
+          ),
+        );
+      });
+
+      return;
+    }
 
     setState(() {});
   }
