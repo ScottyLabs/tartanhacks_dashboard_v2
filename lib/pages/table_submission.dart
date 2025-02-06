@@ -11,8 +11,13 @@ import 'package:thdapp/providers/user_info_provider.dart';
 
 class TableSubmission extends StatefulWidget {
   final Project project;
-  
-  const TableSubmission({Key? key, required this.project}) : super(key: key);
+  final bool isSubmitted;
+
+  const TableSubmission({
+    Key? key,
+    required this.project,
+    this.isSubmitted = false,
+  }) : super(key: key);
 
   @override
   _TableSubmissionState createState() => _TableSubmissionState();
@@ -35,6 +40,13 @@ class _TableSubmissionState extends State<TableSubmission> {
     super.dispose();
   }
 
+  bool get canSubmit {
+    final expoConfig =
+        Provider.of<ExpoConfigProvider>(context, listen: false).config;
+    if (expoConfig == null) return false;
+    return DateTime.now().isBefore(expoConfig.expoStartTime);
+  }
+
   Future<void> _submitTableNumber() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -43,7 +55,7 @@ class _TableSubmissionState extends State<TableSubmission> {
     try {
       final tableNum = int.parse(_tableNumberController.text);
       final token = Provider.of<UserInfoModel>(context, listen: false).token;
-      
+
       final success = await updateProjectTableNumber(
         widget.project.id,
         tableNum,
@@ -64,11 +76,8 @@ class _TableSubmissionState extends State<TableSubmission> {
 
   @override
   Widget build(BuildContext context) {
-    final expoConfig = Provider.of<ExpoConfigProvider>(context);
-    final canSubmit = expoConfig.canSubmitTableNumber();
-
     return DefaultPage(
-      backflag: true,
+      backflag: false,
       child: Container(
         padding: const EdgeInsets.all(16),
         child: GradBox(
@@ -90,7 +99,7 @@ class _TableSubmissionState extends State<TableSubmission> {
                       padding: const EdgeInsets.all(8),
                       color: Colors.orange.withAlpha(50),
                       child: Text(
-                        "Table number submission is closed - expo has started",
+                        "Table number submission is closed - expo has started. Please contact the organizers if you need to change your table number.",
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
@@ -117,7 +126,9 @@ class _TableSubmissionState extends State<TableSubmission> {
                   Center(
                     child: SolidButton(
                       text: _isSubmitting ? "Submitting..." : "Submit",
-                      onPressed: canSubmit && !_isSubmitting ? _submitTableNumber : null,
+                      onPressed: canSubmit && !_isSubmitting
+                          ? _submitTableNumber
+                          : null,
                     ),
                   ),
                 ],
@@ -128,4 +139,4 @@ class _TableSubmissionState extends State<TableSubmission> {
       ),
     );
   }
-} 
+}
