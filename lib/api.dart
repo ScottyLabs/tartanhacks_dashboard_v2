@@ -716,7 +716,7 @@ Future<List<Project>> getAllProjects(String token) async {
 // Update project table number
 Future<bool> updateProjectTableNumber(
     String projectId, int tableNumber, String token) async {
-  Uri url = Uri.parse("${baseUrl}projects/$projectId/table");
+  Uri url = Uri.parse("${baseUrl}projects/$projectId/table-number");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
