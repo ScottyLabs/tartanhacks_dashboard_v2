@@ -546,15 +546,13 @@ Future<bool> newProject(
     String github,
     bool presenting,
     String projId,
-    String token,
-    {int? tableNumber}
-    ) async {
+    String token) async {
   Uri url = Uri.parse("${baseUrl}projects/");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
-  
+
   Map<String, dynamic> body = {
     "name": name,
     "description": desc,
@@ -564,15 +562,9 @@ Future<bool> newProject(
     "url": github,
     "presentingVirtually": presenting,
   };
-  if (tableNumber != null) {
-    body["tableNumber"] = tableNumber;
-  }
 
-  final response = await http.post(
-    url, 
-    headers: headers,
-    body: json.encode(body)
-  );
+  final response =
+      await http.post(url, headers: headers, body: json.encode(body));
 
   if (response.statusCode == 200) {
     return true;
@@ -582,18 +574,17 @@ Future<bool> newProject(
   }
 }
 
-Future<bool> editProject(
-    BuildContext context,
-    String name,
-    String desc,
-    String slides,
-    String video,
-    String github,
-    bool presenting,
-    String projId,
-    String token,
-    {int? tableNumber}
-    ) async {
+Future<bool> saveProject(
+  BuildContext context,
+  String name,
+  String desc,
+  String slides,
+  String video,
+  String github,
+  bool presenting,
+  String projId,
+  String token,
+) async {
   Uri url = Uri.parse("${baseUrl}projects/$projId");
   Map<String, String> headers = {
     "Content-type": "application/json",
@@ -608,15 +599,9 @@ Future<bool> editProject(
     "url": github,
     "presentingVirtually": presenting,
   };
-  if (tableNumber != null) {
-    body["tableNumber"] = tableNumber;
-  }
 
-  final response = await http.patch(
-    url, 
-    headers: headers,
-    body: json.encode(body)
-  );
+  final response =
+      await http.patch(url, headers: headers, body: json.encode(body));
 
   if (response.statusCode == 200) {
     return true;
@@ -728,25 +713,23 @@ Future<List<Project>> getAllProjects(String token) async {
   }
 }
 
-// Update project table number (admin only)
-Future<bool> updateProjectTableNumber(String projectId, int tableNumber, String token) async {
+// Update project table number
+Future<bool> updateProjectTableNumber(
+    String projectId, int tableNumber, String token) async {
   Uri url = Uri.parse("${baseUrl}projects/$projectId/table");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
   };
 
-  final response = await http.patch(
-    url,
-    headers: headers,
-    body: json.encode({"tableNumber": tableNumber})
-  );
+  final response = await http.patch(url,
+      headers: headers, body: json.encode({"tableNumber": tableNumber}));
 
   return response.statusCode == 200;
 }
 
 Future<ExpoConfig> getExpoConfig(String token) async {
-  Uri url = Uri.parse("${baseUrl}config/expo");
+  Uri url = Uri.parse("${baseUrl}settings/expo");
   Map<String, String> headers = {
     "Content-type": "application/json",
     "x-access-token": token
@@ -765,4 +748,24 @@ Future<ExpoConfig> getExpoConfig(String token) async {
 bool _canSubmitTableNumber(ExpoConfig config) {
   final now = DateTime.now();
   return now.isBefore(config.expoStartTime);
+}
+
+Future<bool> submitProject(String projectId, String token) async {
+  try {
+    final response = await http.post(
+      Uri.parse('${baseUrl}projects/$projectId/submit'),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception('Failed to submit project: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Failed to submit project: $e');
+  }
 }
