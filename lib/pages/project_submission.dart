@@ -249,9 +249,10 @@ class _ProjSubmitState extends State<ProjSubmit> {
           title: Text("Confirm Project Submission",
               style: Theme.of(context).textTheme.displayLarge),
           content: Text(
-              "Are you sure you want to submit your project? Once submitted:\n\n" +
-                  "• You must enter your table number\n" +
-                  "• You cannot modify your project details\n" +
+              "Are you sure you want to submit your project? Ensure you have"
+              " selected all prize tracks you want to enter. Once submitted:\n\n"
+                  "• You must enter your table number\n"
+                  "• You cannot modify your project details\n"
                   "• This action cannot be undone",
               style: Theme.of(context).textTheme.bodyMedium),
           actions: <Widget>[
