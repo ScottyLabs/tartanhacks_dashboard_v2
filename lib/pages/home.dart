@@ -12,7 +12,6 @@ import 'package:thdapp/components/buttons/SolidButton.dart';
 import 'package:thdapp/pages/teams_list.dart';
 import 'package:thdapp/providers/expo_config_provider.dart';
 import 'package:thdapp/providers/user_info_provider.dart';
-import 'package:thdapp/pages/admin/manage_tables.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
 
@@ -108,8 +107,8 @@ class _HomeState extends State<Home> {
             } else if (snapshot.hasError) {
               return AlertDialog(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                title:
-                    Text("Error", style: Theme.of(context).textTheme.displayLarge),
+                title: Text("Error",
+                    style: Theme.of(context).textTheme.displayLarge),
                 content: Text(
                     "We ran into an error while getting your Discord verification code",
                     style: Theme.of(context).textTheme.bodyMedium),
@@ -137,38 +136,6 @@ class _HomeState extends State<Home> {
             );
           },
         );
-      },
-    );
-  }
-
-  Widget _buildAdminSection() {
-    return Consumer<UserInfoModel>(
-      builder: (context, userInfo, child) {
-        if (userInfo.isAdmin) {
-          return Column(
-            children: [
-              const SizedBox(height: 16),
-              Text(
-                "Admin Controls",
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 8),
-              SolidButton(
-                text: "Manage Project Tables",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ManageTablesPage(),
-                    ),
-                  );
-                },
-              ),
-              // ... any other admin buttons ...
-            ],
-          );
-        }
-        return const SizedBox.shrink(); // Return empty widget for non-admins
       },
     );
   }
@@ -204,27 +171,26 @@ class _HomeState extends State<Home> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("HACKING TIME LEFT",
-                                style: Theme.of(context).textTheme.displayLarge),
+                                style:
+                                    Theme.of(context).textTheme.displayLarge),
                             const SizedBox(height: 8),
                             CountdownTimer(
                               endTime: Provider.of<ExpoConfigProvider>(context)
-                                  .config
-                                  ?.submissionDeadline
-                                  .millisecondsSinceEpoch ?? 
+                                      .config
+                                      ?.submissionDeadline ??
                                   DateTime.now().millisecondsSinceEpoch,
-                              endWidget: Text(
-                                "Time's up!",
-                                style: TextStyle(
-                                  fontSize: 24.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.tertiary
-                                )
-                              ),
+                              endWidget: Text("Time's up!",
+                                  style: TextStyle(
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary)),
                               textStyle: TextStyle(
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.tertiary
-                              ),
+                                  fontSize: 30.0,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.tertiary),
                             ),
                           ])),
                   SizedBox(height: screenHeight * 0.08),
@@ -292,7 +258,8 @@ class _HomeState extends State<Home> {
                                         .textTheme
                                         .headlineMedium),
                                 Text("Check in for meals, talks, and more!",
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
                                     textAlign: TextAlign.center),
                                 SolidButton(
                                   text: "Check In",
@@ -368,7 +335,6 @@ class _HomeState extends State<Home> {
                         style: Theme.of(context).textTheme.displayMedium,
                       ),
                     ),
-                  _buildAdminSection()
                 ],
               ));
   }

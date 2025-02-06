@@ -25,9 +25,4 @@ class ExpoConfigProvider with ChangeNotifier {
       notifyListeners();
     }
   }
-
-  bool canSubmitTableNumber() {
-    if (_config == null) return false;
-    return DateTime.now().isBefore(_config!.expoStartTime);
-  }
-} 
+}
