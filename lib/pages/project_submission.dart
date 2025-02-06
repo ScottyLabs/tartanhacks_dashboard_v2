@@ -224,7 +224,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 title: Text("Error",
                     style: Theme.of(context).textTheme.displayLarge),
-                content: Text("Failed to save project. Please try again.",
+                content: Text(snapshot.error.toString(),
                     style: Theme.of(context).textTheme.bodyMedium),
                 actions: <Widget>[
                   TextButton(
@@ -319,7 +319,7 @@ class _ProjSubmitState extends State<ProjSubmit> {
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   title: Text("Error",
                       style: Theme.of(context).textTheme.displayLarge),
-                  content: Text("Failed to submit project: ${snapshot.error}",
+                  content: Text(snapshot.error.toString(),
                       style: Theme.of(context).textTheme.bodyMedium),
                   actions: <Widget>[
                     TextButton(

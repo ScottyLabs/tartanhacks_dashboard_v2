@@ -537,40 +537,44 @@ Future<Project?> getProject(String id, String token) async {
 }
 
 Future<bool> newProject(
-    BuildContext context,
-    String name,
-    String desc,
-    String team,
-    String slides,
-    String video,
-    String github,
-    bool presenting,
-    String projId,
-    String token) async {
-  Uri url = Uri.parse("${baseUrl}projects/");
-  Map<String, String> headers = {
-    "Content-type": "application/json",
-    "x-access-token": token
-  };
+  BuildContext context,
+  String name,
+  String desc,
+  String team,
+  String slides,
+  String video,
+  String github,
+  bool presenting,
+  String projId,
+  String token,
+) async {
+  try {
+    Uri url = Uri.parse("${baseUrl}projects/");
+    Map<String, String> headers = {
+      "Content-type": "application/json",
+      "x-access-token": token
+    };
 
-  Map<String, dynamic> body = {
-    "name": name,
-    "description": desc,
-    "team": team,
-    "slides": slides,
-    "video": video,
-    "url": github,
-    "presentingVirtually": presenting,
-  };
+    Map<String, dynamic> body = {
+      "name": name,
+      "description": desc,
+      "team": team,
+      "slides": slides,
+      "video": video,
+      "url": github,
+      "presentingVirtually": presenting,
+    };
 
-  final response =
-      await http.post(url, headers: headers, body: json.encode(body));
+    final response =
+        await http.post(url, headers: headers, body: json.encode(body));
 
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    errorDialog(context, "Error", json.decode(response.body)['message']);
-    return false;
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception(json.decode(response.body)['message']);
+    }
+  } catch (e) {
+    throw Exception('Failed to create project: $e');
   }
 }
 
@@ -606,8 +610,7 @@ Future<bool> saveProject(
   if (response.statusCode == 200) {
     return true;
   } else {
-    errorDialog(context, "Error", json.decode(response.body)['message']);
-    return false;
+    throw Exception(json.decode(response.body)['message']);
   }
 }
 
@@ -750,21 +753,17 @@ Future<ExpoConfig> getExpoConfig(String token) async {
 }
 
 Future<bool> submitProject(String projectId, String token) async {
-  try {
-    final response = await http.post(
-      Uri.parse('${baseUrl}projects/$projectId/submit'),
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': token,
-      },
-    );
+  final response = await http.post(
+    Uri.parse('${baseUrl}projects/$projectId/submit'),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-access-token': token,
+    },
+  );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      throw Exception('Failed to submit project: ${response.statusCode}');
-    }
-  } catch (e) {
-    throw Exception('Failed to submit project: $e');
+  if (response.statusCode == 200) {
+    return true;
+  } else {
+    throw Exception(json.decode(response.body)['message']);
   }
 }
